@@ -1,0 +1,17 @@
+format: "0.2.0"
+
+openEHR:
+  templateId: "KDS_Diagnose"
+  archetypes:
+    - "openEHR-EHR-CLUSTER.anatomical_location.v1"
+    - "openEHR-EHR-CLUSTER.lebensphase.v0"
+    - "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
+    - "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+
+fhir:
+  resourceType: "Bundle"
+  condition:
+    targetRoot: "$fhirResource"
+    targetAttribute: "meta.profile"
+    operator: "one of"
+    criteria: "[KDS_Diagnose]"

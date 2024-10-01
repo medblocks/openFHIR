@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://hl7.org/fhir/STU3/Consent.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<Consent xmlns="http://hl7.org/fhir">
+  <id value="consent-example-treatmentpermitted"/>
+  <meta>
+    <profile value="http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective"/>
+  </meta>
+  <text>
+    <status value="additional"/>
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      Example of a patient's treatment instruction.
+    </div>
+  </text>
+  <extension url="http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-Verification">
+    <extension url="Verified">
+      <valueBoolean value="true"/>
+    </extension>
+    <extension url="VerifiedWith">
+      <valueCodeableConcept>
+        <coding>
+          <system value="http://snomed.info/sct"/>
+          <code value="116154003"/>
+          <display value="Patient"/>
+        </coding>
+      </valueCodeableConcept>
+    </extension>
+    <extension url="VerificationDate">
+      <valueDateTime value="2015-01-05"/>
+    </extension>
+  </extension>
+  <extension url="http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-Treatment">
+    <valueCodeableConcept>
+      <coding>
+        <system value="http://snomed.info/sct" />
+        <code value="89666000" />
+        <display value="Cardiopulmonary resuscitation (procedure)" />
+      </coding>
+    </valueCodeableConcept>
+  </extension>
+  <extension url="http://nictiz.nl/fhir/StructureDefinition/Comment">
+    <valueString value="Comment of this treatment directive"/>
+  </extension>
+  <modifierExtension url="http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-TreatmentPermitted">
+    <valueCodeableConcept>
+      <coding>
+        <system value="urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4" />
+        <code value="JA_MAAR" />
+        <display value="Ja, maar met beperkingen" />
+      </coding>
+    </valueCodeableConcept>
+  </modifierExtension>
+  <status value="active"/>
+  <category>
+    <coding>
+      <system value="http://snomed.info/sct"/>
+      <code value="11291000146105"/>
+      <display value="Treatment instructions (record artifact)"/>
+    </coding>
+  </category>
+  <patient>
+    <reference value="Patient/example"/>
+  </patient>
+  <period>
+    <start value="2015-01-06"/>
+  </period>
+  <dateTime value="2015-01-05"/>
+  <consentingParty>
+    <reference value="Practitioner/example"/>
+  </consentingParty>
+  <consentingParty>
+    <reference value="Organization/example"/>
+  </consentingParty>
+  <actor>
+    <role>
+      <coding>
+        <system value="http://hl7.org/fhir/v3/RoleClass"/>
+        <code value="ASSIGNED"/>
+        <display value="assigned entity"/>
+      </coding>
+    </role>
+    <reference>
+      <reference value="Practitioner/example"/>
+    </reference>
+  </actor>
+  <organization>
+    <reference value="Organization/example"/>
+  </organization>
+  <sourceReference>
+    <reference value="Consent/example"/>
+    <display value="LivingWill"/>
+  </sourceReference>
+  <!-- Example of a policyRule -->
+  <policyRule value="http://wetten.overheid.nl/BWBR0012410/2014-02-15"/>
+  <except>
+    <extension url="http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-Constraints">
+      <valueString value="First consult the partner of the patient"/>
+    </extension>
+    <type value="deny"/>
+    <actor>
+      <role>
+        <coding>
+          <system value="http://hl7.org/fhir/v3/RoleClass"/>
+          <code value="ASSIGNED"/>
+          <display value="assigned entity"/>
+        </coding>
+      </role>
+      <reference>
+        <reference value="Practitioner/example"/>
+      </reference>
+    </actor>
+    <purpose>
+      <system value="http://snomed.info/sct"/>
+      <code value="89666000"/>
+      <display value="Cardiopulmonary resuscitation (procedure)"/>
+    </purpose>
+  </except>
+</Consent>

@@ -1,0 +1,27 @@
+format: "0.2.0"
+version: "0.0.1"
+
+fhirConfig:
+  resource: "Observation"
+  condition:
+    - targetRoot: "$fhirResource"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.1104441000000107]"
+    - targetRoot: "$fhirResource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[final]"
+    - targetRoot: "$fhirResource"
+      targetAttribute: "category.coding.code"
+      operator: "one of"
+      criteria: "[survey]"
+openEhrConfig:
+  archetype: "openEHR-EHR-OBSERVATION.acvpu.v1"
+
+mappings:
+  - name: "ACVPU"
+    with:
+      fhir: "$fhirResource.value"
+      openehr: "$openEhrArchetype.acvpu_scale.any_point_in_time_event.acvpu"
+      type: "CODEABLECONCEPT"

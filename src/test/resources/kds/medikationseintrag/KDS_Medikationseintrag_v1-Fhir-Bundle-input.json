@@ -1,0 +1,338 @@
+{
+  "resourceType": "Bundle",
+  "id": "b15bb2cd-b8b7-4a69-a7d3-bb659003594e",
+  "meta": {"profile": ["KDS_Medikationseintrag_v1"]},
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000001",
+      "request": {
+        "method": "POST",
+        "url": "List"
+      },
+      "resource": {
+        "resourceType": "List",
+        "id": "example-medication-list",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/medikationsliste"
+          ],
+          "source": "urn:uuid:example-source"
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "system": "urn:uuid:example-identifier",
+            "value": "medlist-001"
+          }
+        ],
+        "status": "current",
+        "mode": "snapshot",
+        "code": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/list-example-use-codes",
+              "code": "medications",
+              "display": "Medication list"
+            },
+            {
+              "system": "http://ihe-d.de/CodeSystems/FallkontextBeiDokumentenerstellung",
+              "code": "E210",
+              "display": "Admission"
+            }
+          ],
+          "text": "Medication list for admission"
+        },
+        "subject": {
+          "reference": "Patient/example"
+        },
+        "encounter": {
+          "reference": "Encounter/example"
+        },
+        "date": "2024-08-24T10:00:00Z",
+        "entry": [
+          {
+            "item": {
+              "reference": "MedicationStatement/example-med1"
+            }
+          },
+          {
+            "item": {
+              "reference": "MedicationStatement/example-med2"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000002",
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      },
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "example-med1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
+          ]
+        },
+        "status": "active",
+        "medicationReference": {
+          "reference": "urn:uuid:69f8e214-b4e6-11ec-b909-0242ac120002",
+          "display": "Atorvastatin 20mg"
+        },
+        "statusReason": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "50621000087108",
+                "display": "Recommendation to restart drug treatment"
+              }
+            ],
+            "text": "Recommendation to restart drug treatment"
+          }
+        ],
+        "effectiveDateTime": "2023-08-23T10:30:00Z",
+        "reasonCode": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "13644009",
+                "display": "Hypercholesterolemia"
+              }
+            ],
+            "text": "High cholesterol"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/example"
+        },
+        "dateAsserted": "2024-08-01",
+        "dosage": [
+          {
+            "text": "Take 1 tablet every 6 hours as needed for pain",
+            "timing": {
+              "repeat": {
+                "frequency": 4,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/dose-rate-type",
+                      "code": "calculated",
+                      "display": "Calculated"
+                    }
+                  ]
+                },
+                "doseQuantity": {
+                  "value": 500,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                },
+                "rateRatio": {
+                  "numerator": {
+                    "value": 500,
+                    "unit": "mg",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "mg"
+                  },
+                  "denominator": {
+                    "value": 6,
+                    "unit": "h",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "h"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000003",
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      },
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "example-med2",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
+          ]
+        },
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.whocc.no/atc",
+              "code": "C09AA05",
+              "display": "Ramipril"
+            }
+          ],
+          "text": "Ramipril 5mg capsule"
+        },
+        "subject": {
+          "reference": "Patient/example"
+        },
+        "effectiveDateTime": {
+          "start": "2024-07-15",
+          "end": "2024-08-01"
+        },
+        "dateAsserted": "2024-07-15",
+        "dosage": [
+          {
+            "text": "Take 1 capsule daily",
+            "timing": {
+              "repeat": {
+                "frequency": 1,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 5,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:69f8e214-b4e6-11ec-b909-0242ac120002",
+      "request": {
+        "method": "POST",
+        "url": "Medication"
+      },
+      "resource": {
+        "resourceType": "Medication",
+        "id": "urn:uuid:69f8e214-b4e6-11ec-b909-0242ac120002",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication"
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://www.whocc.no/atc",
+              "code": "N02BE01",
+              "display": "Paracetamol"
+            }
+          ],
+          "text": "Paracetamol 500mg tablet"
+        },
+        "form": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "385055001",
+              "display": "Tablet"
+            }
+          ]
+        },
+        "ingredient": [
+          {
+            "itemCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://www.whocc.no/atc",
+                  "code": "N02BE01",
+                  "display": "Paracetamol"
+                }
+              ],
+              "text": "Paracetamol"
+            },
+            "strength": {
+              "numerator": {
+                "value": 500,
+                "unit": "mg",
+                "system": "http://unitsofmeasure.org",
+                "code": "mg"
+              },
+              "denominator": {
+                "value": 1,
+                "unit": "tablet",
+                "system": "http://unitsofmeasure.org",
+                "code": "tablet"
+              }
+            }
+          },
+          {
+            "itemCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://www.whocc.no/atc",
+                  "code": "1_N02BE01",
+                  "display": "Paracetamol"
+                }
+              ],
+              "text": "11Paracetamol"
+            },
+            "strength": {
+              "numerator": {
+                "value": 1500,
+                "unit": "mg",
+                "system": "http://unitsofmeasure.org",
+                "code": "mg"
+              },
+              "denominator": {
+                "value": 11,
+                "unit": "tablet",
+                "system": "http://unitsofmeasure.org",
+                "code": "tablet"
+              }
+            }
+          },
+          {
+            "itemCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://www.whocc.no/atc",
+                  "code": "2_N02BE01",
+                  "display": "Paracetamol"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

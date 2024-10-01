@@ -1,0 +1,147 @@
+{
+  "resourceType": "Patient",
+  "contained": [
+    {
+      "resourceType": "Organization",
+      "id": "1",
+      "name": "contact person org name"
+    },
+    {
+      "resourceType": "Organization",
+      "id": "2",
+      "identifier": [
+        {
+          "value": "org id val"
+        }
+      ],
+      "name": "org name"
+    }
+  ],
+  "extension": [
+    {
+      "url": "extension_url_to_be_defined",
+      "valueCoding": {
+        "system": "http://fhir.de/ValueSet/gender-other-de",
+        "code": "D",
+        "display": "divers"
+      }
+    }
+  ],
+  "identifier": [
+    {
+      "system": "id",
+      "value": "dev/null"
+    },
+    {
+      "system": "gkv",
+      "value": "gkv id value"
+    },
+    {
+      "system": "pkv",
+      "value": "pkv id value"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "given": [
+        "Given1"
+      ],
+      "suffix": [
+        "sufix0"
+      ]
+    },
+    {
+      "use": "maiden",
+      "family": "family1",
+      "given": [
+        "Given2"
+      ],
+      "prefix": [
+        "family1 prefix"
+      ],
+      "suffix": [
+        "sufix1"
+      ]
+    }
+  ],
+  "gender": "F",
+  "birthDate": "2022-02-03",
+  "_birthDate": {
+    "extension": [
+      {
+        "url": "isdeceased",
+        "valueBoolean": true
+      }
+    ]
+  },
+  "deceasedDateTime": "2022-02-03T04:05:06+01:00",
+  "address": [
+    {
+      "line": [
+        "strasse",
+        "hausnummer",
+        "adresszusatz",
+        "stadtteil",
+        "gemeindeschlüssel"
+      ],
+      "city": "stadt",
+      "state": "42",
+      "postalCode": "postal strasse"
+    },
+    {
+      "line": [
+        "postfach line 0",
+        "postfach town"
+      ],
+      "city": "postfach city",
+      "state": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/iso/bundeslaender",
+      "postalCode": "postal postfach"
+    }
+  ],
+  "contact": [
+    {
+      "relationship": [
+        {
+          "coding": [
+            {
+              "system": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship",
+              "code": "42",
+              "display": "another contact person role relationship"
+            }
+          ],
+          "text": "another contact person role relationship"
+        },
+        {
+          "coding": [
+            {
+              "system": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship",
+              "code": "42",
+              "display": "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship' available"
+            }
+          ],
+          "text": "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship' available"
+        }
+      ],
+      "name": {
+        "text": "contact person name"
+      },
+      "telecom": [
+        {
+          "value": "contact person telecom value"
+        }
+      ],
+      "address": {
+        "text": "contact person address"
+      }
+    },
+    {
+      "organization": {
+        "reference": "#1"
+      }
+    }
+  ],
+  "managingOrganization": {
+    "reference": "#2"
+  }
+}

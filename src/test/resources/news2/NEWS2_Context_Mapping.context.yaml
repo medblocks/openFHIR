@@ -1,0 +1,15 @@
+format: "0.2.0"
+
+openEHR:
+  templateId: "NEWS2 Encounter Parent"
+  archetypes:
+    - "openEHR-EHR-OBSERVATION.news2.v1"
+    - "openEHR-EHR-OBSERVATION.acvpu.v1"
+    - "openEHR-EHR-OBSERVATION.blood_pressure.v2"
+    - "openEHR-EHR-OBSERVATION.body_temperature.v2"
+    - "openEHR-EHR-OBSERVATION.pulse.v2"
+    - "openEHR-EHR-OBSERVATION.respiration.v2"
+    - "openEHR-EHR-OBSERVATION.pulse_oximetry.v1"
+
+fhir:
+  resourceType: "Bundle"

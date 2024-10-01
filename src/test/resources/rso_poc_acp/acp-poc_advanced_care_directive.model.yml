@@ -1,0 +1,69 @@
+
+
+format: "0.0.2"
+version: "0.2.0"
+
+fhirConfig:
+  resource: "Consent"
+  condition:
+    - targetRoot: "$fhirResource"
+      targetAttribute: "meta.profile"
+      operator: "one of"
+      criteria: "[http://nictiz.nl/fhir/StructureDefinition/zib-AdvanceDirective]"
+openEhrConfig:
+  archetype: "openEHR-EHR-EVALUATION.advance_care_directive.v2"
+
+mappings:
+  - name: "author"
+    with:
+      fhir: "$fhirResource.patient.display"
+      openehr: "$openEhrArchetype.composer|name"
+      type: "TEXT"
+
+  - name: "type of directive"
+    with:
+      fhir: "$fhirResource.category.coding"
+      openehr: "$openEhrArchetype.advance_care_directive.type_of_directive"
+      type: "CODING"
+    condition:
+      targetRoot: "$fhirResource.category.coding"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria: "[urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4.14.1]"
+
+  - name: "status"
+    with:
+      fhir: "$fhirResource.status"
+      openehr: "$openEhrArchetype.advance_care_directive.status"
+      type: "TEXT"
+
+  - name: "comment"
+    with:
+      fhir: "$fhirResource.extension"
+      openehr: "$openEhrArchetype.advance_care_directive.comment"
+      type: "TEXT"
+    condition:
+      targetRoot: "$fhirResource.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://nictiz.nl/fhir/StructureDefinition/Comment]"
+
+  - name: "media"
+    with:
+      fhir: "$fhirResource.source.as(Attachment)"
+      openehr: "$openEhrArchetype.advance_care_directive.media_file.content"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-CLUSTER.media_file.v1"
+    followedBy:
+      mappings:
+        - name: "media title"
+          with:
+            fhir: "title"
+            openehr: "$openEhrArchetype.advance_care_directive.media_file.content_name"
+            type: "TEXT"
+
+#  - name: "media name"
+#    with:
+#      fhir: "$fhirResource.source.as(Attachment).title"
+#      openehr: "$openEhrArchetype.advance_care_directive.media_file.content_name"
+#      type: "TEXT"

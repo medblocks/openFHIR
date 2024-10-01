@@ -1,0 +1,54 @@
+format: "0.2.0"
+version: "0.0.1"
+
+fhirConfig:
+  resource: "Condition"
+  multiple: true
+  condition:
+    - targetRoot: "$fhirResource"
+      targetAttribute: "extension.url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+openEhrConfig:
+  archetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+
+mappings:
+  - name: "primar"
+    with:
+      fhir: "$fhirResource"
+      openehr: "$openEhrArchetype.primärcode"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+
+  - name: "recordedTime"
+    with:
+      fhir: "$fhirResource.recordedDate"
+      openehr: "$openEhrArchetype.context.start_time"
+      type: "DATETIME"
+
+  - name: "sekundärcode"
+    with:
+      fhir: "$fhirResource.extension"
+      openehr: "$openEhrArchetype.sekundärcode"
+      type: "NONE"
+    condition:
+      targetRoot: "$fhirResource.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+    followedBy:
+      mappings:
+        - name: "referenced condition"
+          with:
+            fhir: "value"
+            openehr: "$reference"
+            type: "NONE"
+          reference:
+            resourceType: "Condition"
+            mappings:
+              - name: "sekundar"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "$openEhrArchetype"
+                  type: "NONE"
+                slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"

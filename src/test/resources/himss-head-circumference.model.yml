@@ -1,0 +1,35 @@
+format: "0.2.0"
+version: "0.0.1"
+
+fhirConfig:
+  # For this Resource: https://www.hl7.org/fhir/observation-example.json.html
+  resource: "Observation"
+  condition:
+    - targetRoot: "$fhirResource"
+      targetAttribute: "category.coding.code"
+      operator: "one of"
+      criteria: "[head_circumference]"
+    - targetRoot: "$fhirResource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[final]"
+openEhrConfig:
+  archetype: "openEHR-EHR-OBSERVATION.head_circumference.v1"
+
+mappings:
+  - name: "head-circumference"
+    with:
+      fhir: "$fhirResource.value"
+      openehr: "$openEhrArchetype.head_circumference.any_event.head_circumference"
+      type: "QUANTITY"
+    condition:
+      targetRoot: "$fhirResource"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$loinc.8287-5]"
+      identifying: true
+  - name: "time"
+    with:
+      fhir: "$fhirResource.effective"
+      openehr: "$openEhrArchetype.head_circumference.any_event.time"
+      type: "DATETIME"

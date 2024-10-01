@@ -1,0 +1,27 @@
+format: "0.2.0"
+version: "0.0.1"
+
+fhirConfig:
+  resource: "Observation"
+  condition:
+    - targetRoot: "$fhirResource"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.103228002,$loinc.2708-6]" #need to add support for adding two codes
+    - targetRoot: "$fhirResource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[final]"
+    - targetRoot: "$fhirResource"
+      targetAttribute: "category.coding.code"
+      operator: "one of"
+      criteria: "[vital-signs]"
+openEhrConfig:
+  archetype: "openEHR-EHR-OBSERVATION.pulse_oximetry.v1"
+
+mappings:
+  - name: "value"
+    with:
+      fhir: "$fhirResource.value"
+      openehr: "$openEhrArchetype.pulse_oximetry.any_event.spo"
+      type: "PROPORTION"

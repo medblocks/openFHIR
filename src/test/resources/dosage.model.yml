@@ -1,0 +1,21 @@
+format: "0.2.0"
+version: "0.2.0"
+
+# No fhirConfig, because this model has no direct Resource equivalent in FHIR. It can only be used in openEHR Archetype slots or as FHIR Resource attribute.
+
+openEhrConfig:
+  archetype: "openEHR-EHR-CLUSTER.dosage.v1"
+
+mappings:
+  - name: "dosage"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$openEhrArchetype"
+      type: "DOSAGE"
+    followedBy:
+      mappings:
+        - name: "doseQuantityValue"
+          with:
+            fhir: "doseAndRate.dose"
+            openehr: "dose_amount.quantity_value"
+            type: "QUANTITY"

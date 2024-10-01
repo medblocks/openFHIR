@@ -1,0 +1,42 @@
+format: "0.2.0"
+version: "0.0.2"
+
+fhirConfig:
+  # For this Resource: https://www.hl7.org/fhir/observation-example.json.html
+  resource: "Observation"
+  condition:
+    - targetRoot: "$fhirResource"
+      targetAttribute: "category.coding.code"
+      operator: "one of"
+      criteria: "[weight]"
+openEhrConfig:
+  # For this Archetype: https://ckm.openehr.org/ckm/archetypes/1013.1.2960
+  archetype: "openEHR-EHR-OBSERVATION.body_weight.v2"
+
+mappings:
+  - name: "patient"
+    with:
+      fhir: "$fhirResource.subject.reference"
+      openehr: "$openEhrContext.$ehr"
+      type: "STRING"
+  - name: "weight"
+    with:
+      fhir: "$fhirResource.value"
+      openehr: "$openEhrArchetype.body_weight.any_event.weight"
+      type: "QUANTITY"
+    condition:
+      targetRoot: "$fhirResource"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$loinc.29463-7, $snomed.27113001]"
+      identifying: true
+  - name: "time"
+    with:
+      fhir: "$fhirResource.effective"
+      openehr: "$openEhrArchetype.body_weight.any_event.time"
+      type: "DATETIME"
+  - name: "comment"
+    with:
+      fhir: "$fhirResource.note.text"
+      openehr: "$openEhrArchetype.body_weight.any_event.comment"
+      type: "STRING"

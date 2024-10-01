@@ -1,0 +1,239 @@
+{
+    "ctx/language": "en",
+    "ctx/territory": "SI",
+    "ctx/composer_name": "Silvia Blake",
+    "ctx/id_namespace": "HOSPITAL-NS",
+    "ctx/id_scheme": "HOSPITAL-NS",
+    "ctx/participation_name": "Dr. Marcus Johnson",
+    "ctx/participation_function": "requester",
+    "ctx/participation_mode": "face-to-face communication",
+    "ctx/participation_id": "199",
+    "ctx/participation_name:1": "Lara Markham",
+    "ctx/participation_function:1": "performer",
+    "ctx/participation_id:1": "198",
+    "ctx/health_care_facility|name": "Hospital",
+    "ctx/health_care_facility|id": "9091",
+    "news2_encounter_parent": {
+        "national_early_warning_score_2_news2": [
+            {
+                "respiration_rate": [
+                    {
+                        "|code": "at0018",
+                        "|value": "12-20",
+                        "|ordinal": 0
+                    }
+                ],
+                "spo_scale_1": [
+                    {
+                        "|code": "at0030",
+                        "|value": "≥96",
+                        "|ordinal": 0
+                    }
+                ],
+                "spo_scale_2": [
+                    {
+                        "|code": "at0062",
+                        "|value": "93-94 on oxygen",
+                        "|ordinal": 1
+                    }
+                ],
+                "air_or_oxygen": [
+                    {
+                        "|code": "at0037",
+                        "|value": "Oxygen",
+                        "|ordinal": 2
+                    }
+                ],
+                "systolic_blood_pressure": [
+                    {
+                        "|code": "at0014",
+                        "|value": "111-219",
+                        "|ordinal": 0
+                    }
+                ],
+                "pulse": [
+                    {
+                        "|code": "at0010",
+                        "|value": "≤40",
+                        "|ordinal": 3
+                    }
+                ],
+                "consciousness": [
+                    {
+                        "|code": "at0025",
+                        "|value": "C, V, P or U",
+                        "|ordinal": 3
+                    }
+                ],
+                "temperature": [
+                    {
+                        "|code": "at0022",
+                        "|value": "36.1-38.0",
+                        "|ordinal": 0
+                    }
+                ],
+                "total_score": [
+                    19
+                ],
+                "clinical_risk_category": [
+                    {
+                        "|code": "at0060"
+                    }
+                ]
+            }
+        ],
+        "acvpu_scale": [
+            {
+                "any_point_in_time_event": [
+                    {
+                        "acvpu": [
+                            {
+                                "|code": "at0007"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "blood_pressure": [
+            {
+                "any_event": [
+                    {
+                        "systolic": [
+                            {
+                                "|magnitude": 353.0,
+                                "|unit": "mm[Hg]"
+                            }
+                        ],
+                        "diastolic": [
+                            {
+                                "|magnitude": 405.0,
+                                "|unit": "mm[Hg]"
+                            }
+                        ],
+                        "position": [
+                            {
+                                "|code": "at1000"
+                            }
+                        ]
+                    }
+                ],
+                "a24_hour_average": [
+                    {
+                        "math_function": [
+                            {
+                                "|code": "146",
+                                "|value": "mean"
+                            }
+                        ],
+                        "width": [
+                            "P3DT5H47M"
+                        ]
+                    }
+                ],
+                "location_of_measurement": [
+                    {
+                        "|code": "at0027"
+                    }
+                ]
+            }
+        ],
+        "body_temperature": [
+            {
+                "any_event": [
+                    {
+                        "temperature": [
+                            {
+                                "|magnitude": 25.4,
+                                "|unit": "Cel"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "pulse_heart_beat": [
+            {
+                "any_event": [
+                    {
+                        "rate": [
+                            {
+                                "|magnitude": 208.0,
+                                "|unit": "/min"
+                            }
+                        ]
+                    }
+                ],
+                "maximum": [
+                    {
+                        "math_function": [
+                            {
+                                "|code": "144",
+                                "|value": "maximum"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "respiration": [
+            {
+                "any_event": [
+                    {
+                        "rate": [
+                            {
+                                "|magnitude": 144.0,
+                                "|unit": "/min"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "pulse_oximetry": [
+            {
+                "any_event": [
+                    {
+                        "spo": [
+                            {
+                                "|numerator": 66.11,
+                                "|denominator": 100.0,
+                                "|type": 2
+                            }
+                        ],
+                        "inspired_oxygen": [
+                            {
+                                "flow_rate": [
+                                    {
+                                        "|magnitude": 15174.39,
+                                        "|unit": "ml/min"
+                                    }
+                                ],
+                                "fio": [
+                                    {
+                                        "|numerator": 0.96,
+                                        "|denominator": 1.0,
+                                        "|type": 1
+                                    }
+                                ],
+                                "percent_o": [
+                                    {
+                                        "|numerator": 85.24,
+                                        "|denominator": 100.0,
+                                        "|type": 2
+                                    }
+                                ],
+                                "on_air": [
+                                    false
+                                ],
+                                "method_of_oxygen_delivery": [
+                                    "Method of oxygen delivery 24"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,102 @@
+format: "0.2.0"
+version: "0.2.0"
+
+# No fhirConfig, because this model has no direct Resource equivalent in FHIR. It can only be used in openEHR Archetype slots or as FHIR Resource attribute.
+
+openEhrConfig:
+  archetype: "openEHR-EHR-CLUSTER.address.v1"
+
+mappings:
+  - name: "address straßenanschrift"
+    with:
+      fhir: "$fhirRoot.address"
+      openehr: "$openEhrArchetype.straßenanschrift"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "stadt"
+          with:
+            fhir: "city"
+            openehr: "stadt"
+            type: "STRING"
+        - name: "bundesland"
+          with:
+            fhir: "state"
+            openehr: "bundesland"
+            type: "STRING"
+        - name: "postal code"
+          with:
+            fhir: "postalCode"
+            openehr: "postleitzahl"
+            type: "STRING"
+
+        - name: "line"
+          with:
+            fhir: "line"
+            openehr: "$openEhrArchetype"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "straße"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "straße"
+                  type: "STRING"
+              - name: "hausnummer"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "hausnummer"
+                  type: "STRING"
+              - name: "adresszusatz"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "adresszusatz"
+                  type: "STRING"
+              - name: "stadtteil"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "stadtteil"
+                  type: "STRING"
+              - name: "gemeindeschlüssel"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "gemeindeschlüssel"
+                  type: "STRING"
+
+
+
+
+  - name: "address postfach"
+    with:
+      fhir: "$fhirRoot.address"
+      openehr: "$openEhrArchetype.postfach"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "postfach"
+          with:
+            fhir: "line"
+            openehr: "postfach"
+            type: "STRING"
+        - name: "town"
+          with:
+            fhir: "line"
+            openehr: "stadtteil"
+            type: "STRING"
+        - name: "stadt"
+          with:
+            fhir: "city"
+            openehr: "stadt"
+            type: "STRING"
+        - name: "state"
+          with:
+            fhir: "state"
+            openehr: "bundesland" # code mapping?
+            type: "STRING"
+        - name: "postal code"
+          with:
+            fhir: "postalCode"
+            openehr: "postleitzahl"
+            type: "STRING"
+
+
