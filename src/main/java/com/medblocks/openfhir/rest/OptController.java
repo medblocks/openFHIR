@@ -2,6 +2,7 @@ package com.medblocks.openfhir.rest;
 
 import com.medblocks.openfhir.db.OptService;
 import com.medblocks.openfhir.db.entity.OptEntity;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,16 @@ public class OptController {
      */
     @PostMapping("/opt")
     OptEntity newOpt(@RequestBody String opt, @RequestHeader(value = "x-req-id", required = false) final String reqId) {
-        return optService.create(opt, reqId);
+        return optService.upsert(opt, null, reqId);
+    }
+
+
+    @PutMapping("/opt/{id}")
+    OptEntity newOpt(@PathVariable String id, @RequestBody String opt, @RequestHeader(value = "x-req-id", required = false) final String reqId) {
+        if (StringUtils.isEmpty(id)) {
+            throw new IllegalArgumentException("Id must no be empty when updating.");
+        }
+        return optService.upsert(opt, id, reqId);
     }
 
     /**
@@ -36,7 +46,7 @@ public class OptController {
      */
     @GetMapping("/opt")
     List<OptEntity> usersOpts(@RequestHeader(value = "x-req-id", required = false) final String reqId) {
-        return optService.all();
+        return optService.all(reqId);
     }
 
     /**
@@ -48,7 +58,7 @@ public class OptController {
      */
     @GetMapping("/opt/{templateId}")
     ResponseEntity<String> read(@PathVariable String templateId, @RequestHeader(value = "x-req-id", required = false) final String reqId) {
-        final String content = optService.getContent(templateId);
+        final String content = optService.getContent(templateId, reqId);
         return ResponseEntity.ok().contentType(MediaType.TEXT_XML).body(content);
     }
 

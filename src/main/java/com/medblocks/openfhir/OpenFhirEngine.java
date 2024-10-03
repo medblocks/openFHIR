@@ -26,12 +26,14 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
 @Component
 @Slf4j
+@Transactional
 public class OpenFhirEngine {
 
     private FhirToOpenEhr fhirToOpenEhr;
@@ -151,7 +153,14 @@ public class OpenFhirEngine {
      */
     public String toOpenEhr(final String incomingFhirResource, final String incomingTemplateId, final Boolean flat) {
         // get context and operational template
+        final Resource resource = parseIncomingFhirResource(incomingFhirResource);
         final FhirConnectContextEntity fhirConnectContext = getContextForFhir(incomingTemplateId, incomingFhirResource);
+        if(fhirConnectContext == null) {
+            final String logMsg = String.format("Couldn't find any Context mapper for the given Resource. Make sure at least one Context mapper exists where fhir.resourceType is of this type (%s) and condition within the context mapper allows for it to be applied on this specific resource.",
+                    resource.getResourceType().name());
+            log.error(logMsg);
+            throw new IllegalArgumentException(logMsg);
+        }
         final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId();
 
         validatePrerequisites(fhirConnectContext, templateIdToUse);
@@ -161,7 +170,6 @@ public class OpenFhirEngine {
 
         prodOpenFhirMappingContext.initMappingCache(fhirConnectContext.getFhirConnectContext(), operationalTemplate, webTemplate);
 
-        final Resource resource = parseIncomingFhirResource(incomingFhirResource);
         if (flat != null && flat) {
             final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(fhirConnectContext.getFhirConnectContext(),
                     resource,
@@ -189,9 +197,11 @@ public class OpenFhirEngine {
 
     public String toFhir(final String flatJson, final String incomingTemplateId) {
         final FhirConnectContextEntity fhirConnectContext = getContextForOpenEhr(flatJson, incomingTemplateId);
+
+        validatePrerequisites(fhirConnectContext, fhirConnectContext != null ? fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId() : incomingTemplateId);
+
         final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId();
 
-        validatePrerequisites(fhirConnectContext, templateIdToUse);
 
         final OPERATIONALTEMPLATE operationalTemplate = cachedUtils.getOperationalTemplate(templateIdToUse);
         final WebTemplate webTemplate = cachedUtils.parseWebTemplate(operationalTemplate);
@@ -218,7 +228,9 @@ public class OpenFhirEngine {
 
     private void validatePrerequisites(final FhirConnectContextEntity fhirConnectContext, final String templateId) {
         if (fhirConnectContext == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Context not found for this template '%s'", templateId));
+            log.error("Couldn't find a Context Mapper for the inbound request. If using flat format for the input body, make sure you set query parameter 'templateId' that matches a fhirConnectContext.openEHR.templateId value.");
+            final String format = String.format("Couldn't find a Context Mapper for the inbound request. If using flat format for the input body, make sure you set query parameter 'templateId' that matches a fhirConnectContext.openEHR.templateId value. Current template id '%s'", templateId);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format);
         }
         final OPERATIONALTEMPLATE operationalTemplate = cachedUtils.getOperationalTemplate(templateId);
         if (operationalTemplate == null) {

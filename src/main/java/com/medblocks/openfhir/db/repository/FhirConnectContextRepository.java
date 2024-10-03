@@ -1,11 +1,14 @@
 package com.medblocks.openfhir.db.repository;
 
 import com.medblocks.openfhir.db.entity.FhirConnectContextEntity;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
-public interface FhirConnectContextRepository extends MongoRepository<FhirConnectContextEntity, String> {
+import java.util.List;
 
-    @Query("{'fhirConnectContext.openEHR.templateId': ?0}")
+public interface FhirConnectContextRepository {
     FhirConnectContextEntity findByTemplateId(final String templateId);
+    List<FhirConnectContextEntity> findAll();
+
+    FhirConnectContextEntity save(final FhirConnectContextEntity entity);
+
+    void deleteAll();
 }
