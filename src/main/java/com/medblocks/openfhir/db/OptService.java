@@ -48,7 +48,7 @@ public class OptService {
     }
 
     public List<OptEntity> all() {
-        return optRepository.findEmptyContent();
+        return optRepository.searchWithEmptyContent();
     }
 
     public String getContent(final String templateId) {

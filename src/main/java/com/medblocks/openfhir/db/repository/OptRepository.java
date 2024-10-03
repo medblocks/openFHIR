@@ -7,7 +7,8 @@ import org.springframework.data.mongodb.repository.Query;
 import java.util.List;
 
 public interface OptRepository extends MongoRepository<OptEntity, String> {
-    @Query(fields = "{ 'content' : 0 }")
-    List<OptEntity> findEmptyContent();
+    @Query(value = "{}", fields = "{ 'content' : 0 }")
+    List<OptEntity> searchWithEmptyContent();
+
     OptEntity findByTemplateId(final String templateId);
 }

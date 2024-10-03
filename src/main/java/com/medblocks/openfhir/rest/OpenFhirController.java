@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Controller for the openFHIR Engine; mapping from openEHR to FHIR and vice versa REST endpoints are created here
  */
-@RestController("/openfhir")
+@RestController
 public class OpenFhirController {
 
     @Autowired
@@ -26,7 +26,7 @@ public class OpenFhirController {
      * @param reqId
      * @return FHIR Bundle with mapped Resources inside
      */
-    @PostMapping("/tofhir")
+    @PostMapping("/openfhir/tofhir")
     ResponseEntity toFhir(@RequestBody String composition, @RequestParam(required = false) String templateId, @RequestHeader(value = "x-req-id", required = false) final String reqId) {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(openFhirEngine.toFhir(composition, templateId));
     }
@@ -44,7 +44,7 @@ public class OpenFhirController {
      * @param reqId
      * @return openEHR Composition in either flat or canonical format, depending on "flat" argument (default is canonical)
      */
-    @PostMapping("/toopenehr")
+    @PostMapping("/openfhir/toopenehr")
     ResponseEntity toOpenEhr(@RequestBody String fhirResource,
                              @RequestParam(required = false) String templateId,
                              @RequestParam(required = false) Boolean flat,
