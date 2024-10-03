@@ -74,7 +74,6 @@ public class OpenFhirStringUtils {
 
     public String prepareOpenEhrSyntax(final String openEhr, final String openEhrArchetypeId) {
         return openEhr
-//                .replace("$", ".")
                 .replaceAll("(?<!\\\\)\\.", "/") // This is the negative lookbehind. It ensures that the dot (.) is not preceded by two backslashes (\\). The backslashes are escaped, so \\\\ means "two literal backslashes."
                 .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, openEhrArchetypeId);
     }
@@ -377,7 +376,12 @@ public class OpenFhirStringUtils {
                     // all is done already
                     return originalFhirPath;
                 } else {
-                    return setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath);
+                    if(originalFhirPath.startsWith(parentPath.replace(parentsWhereCondition, ""))) {
+                        return setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath);
+                    } else {
+                        final String remainingItemsFromParent = originalFhirPath.replace(setParentsWherePathToTheCorrectPlace(parentPath, originalFhirPath), "");
+                        return setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath) + remainingItemsFromParent;
+                    }
                 }
             }
         } else {

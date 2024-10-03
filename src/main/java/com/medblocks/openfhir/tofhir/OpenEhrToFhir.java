@@ -331,6 +331,20 @@ public class OpenEhrToFhir {
                 }
                 for (Resource instance : resources) {
 
+
+                    if ("NONE".equals(helper.getOpenEhrType())) {
+                        handleConditionMapping(helper.getCondition(),
+                                instance,
+                                fullOpenEhrPath,
+                                instantiatedIntermediateElements,
+                                helper.getTargetResource(),
+                                helper.isFollowedBy(),
+                                helper.getParentFollowedByFhirPath(),
+                                helper.getParentFollowedByOpenEhr(),
+                                helper.getFhirPath());
+                        continue;
+                    }
+
                     final String fhirPathWithoutConditions = openFhirStringUtils.getFhirPathWithConditions(helper.getFhirPath(), helper.getCondition(), helper.getTargetResource(), helper.getParentFollowedByFhirPath());
 
                     log.debug("Processing data point from openEhr {}, value : {}, fhirPath: {}", fullOpenEhrPath, dataForAllResources.getData().getClass(), fhirPathWithoutConditions);
