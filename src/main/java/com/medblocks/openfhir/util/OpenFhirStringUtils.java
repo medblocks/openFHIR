@@ -2,6 +2,7 @@ package com.medblocks.openfhir.util;
 
 import com.medblocks.openfhir.fc.FhirConnectConst;
 import com.medblocks.openfhir.fc.model.Condition;
+import com.medblocks.openfhir.toopenehr.FhirToOpenEhrHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Coding;
@@ -34,6 +35,20 @@ public class OpenFhirStringUtils {
         }
     }
 
+    /**
+     * When writing simplified openEHR flat path in FHIR Connect mappings, you may need to escape dots if they are a part
+     * of the archetype name. Before we adjust openEHR paths to the actual ones based on RM, this needs to be removed
+     * which is what this method does.
+     */
+    public void fixEscapedDotsInOpenEhrPaths(final List<FhirToOpenEhrHelper> flattened) {
+        for (FhirToOpenEhrHelper fhirToOpenEhrHelper : flattened) {
+            fhirToOpenEhrHelper.setOpenEhrPath(fhirToOpenEhrHelper.getOpenEhrPath().replace("\\.", "."));
+            if (fhirToOpenEhrHelper.getFhirToOpenEhrHelpers() != null) {
+                fixEscapedDotsInOpenEhrPaths(fhirToOpenEhrHelper.getFhirToOpenEhrHelpers());
+            }
+        }
+    }
+
     public String endsWithOpenEhrType(final String path) {
         final Set<String> openEhrTypes = new HashSet<>();
         openEhrTypes.add("magnitude");
@@ -58,7 +73,9 @@ public class OpenFhirStringUtils {
     }
 
     public String prepareOpenEhrSyntax(final String openEhr, final String openEhrArchetypeId) {
-        return openEhr.replace(".", "/")
+        return openEhr
+//                .replace("$", ".")
+                .replaceAll("(?<!\\\\)\\.", "/") // This is the negative lookbehind. It ensures that the dot (.) is not preceded by two backslashes (\\). The backslashes are escaped, so \\\\ means "two literal backslashes."
                 .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, openEhrArchetypeId);
     }
 
@@ -173,6 +190,24 @@ public class OpenFhirStringUtils {
         return sj.toString();
     }
 
+    public String getCommonPaths(final String parent, final String toReplace) {
+        final List<String> splitParent = List.of(parent.split("\\."));
+        final List<String> childSplit = List.of(toReplace.split("\\."));
+
+        final StringJoiner sj = new StringJoiner(".");
+        for (int i = 0; i < childSplit.size(); i++) {
+            if (i >= splitParent.size()) {
+                sj.add(childSplit.get(i));
+                continue;
+            }
+            String parentPath = splitParent.get(i);
+            if (parentPath.equals(childSplit.get(i))) {
+                sj.add(childSplit.get(i));
+            }
+        }
+        return sj.toString();
+    }
+
     /**
      * fixes fhirPath casting, as BooleanType is not a valid FHIR path, but boolean is.. similar to StringType > String, ..
      *
@@ -261,7 +296,7 @@ public class OpenFhirStringUtils {
             }
             // add condition in there within the fhirpath itself
             final String base;
-            if(condition.getTargetRoot().startsWith(fhirPath)) {
+            if (condition.getTargetRoot().startsWith(fhirPath)) {
                 base = condition.getTargetRoot();
             } else {
                 base = fhirPath;
@@ -269,29 +304,6 @@ public class OpenFhirStringUtils {
             stringJoiner.add(base
                     .replace(condition.getTargetRoot(), condition.getTargetRoot() + ".where(" + targetAttribute + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))").replace(FhirConnectConst.FHIR_RESOURCE_FC, resource));
 
-        }
-        return stringJoiner.toString();
-    }
-
-    public String amendFhirPathForToOpenEhr(final String originalFhirPath, final List<Condition> conditions, final String resource) {
-        final String fhirPath = originalFhirPath.replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
-        if (conditions == null || conditions.isEmpty() || conditions.stream().allMatch(Objects::isNull)) {
-            return fhirPath;
-        }
-        final StringJoiner stringJoiner = new StringJoiner(" and ");
-        for (Condition condition : conditions) {
-            if (condition == null) {
-                continue;
-            }
-            final String targetAttribute = condition.getTargetAttribute();
-
-            if (condition.getTargetRoot().startsWith(FhirConnectConst.FHIR_RESOURCE_FC)) {
-                condition.setTargetRoot(condition.getTargetRoot().replace(FhirConnectConst.FHIR_RESOURCE_FC, resource));
-            }
-            // add condition in there within the fhirpath itself
-            final String suffix = originalFhirPath.replace(FhirConnectConst.FHIR_RESOURCE_FC, resource).replace(condition.getTargetRoot(), "");
-            final String suffixToAdd = condition.getTargetRoot().endsWith(fhirPath) ? "" : (suffix.startsWith(".") ? suffix : ("." + suffix));
-            stringJoiner.add((condition.getTargetRoot() + ".where(" + targetAttribute + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))").replace(FhirConnectConst.FHIR_RESOURCE_FC, resource) + suffixToAdd);
         }
         return stringJoiner.toString();
     }
@@ -347,13 +359,13 @@ public class OpenFhirStringUtils {
     }
 
     public String getFhirPathWithConditions(String originalFhirPath,
-                                               final Condition condition,
-                                               final String resource,
-                                               final String parentPath) {
+                                            final Condition condition,
+                                            final String resource,
+                                            final String parentPath) {
         originalFhirPath = originalFhirPath.replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
         if (condition == null || condition.getTargetAttribute() == null) {
             // only make sure parent's where path is added to the child
-            if(StringUtils.isEmpty(parentPath)) {
+            if (StringUtils.isEmpty(parentPath)) {
                 return originalFhirPath;
             }
             final String parentsWhereCondition = extractWhereCondition(parentPath);
@@ -373,7 +385,7 @@ public class OpenFhirStringUtils {
             final String withParentsWhereInPlace;
             final String remainingItems;
             final String actualConditionTargetRoot = condition.getTargetRoot().replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
-            if(originalFhirPath.startsWith(actualConditionTargetRoot)) {
+            if (originalFhirPath.startsWith(actualConditionTargetRoot)) {
                 // then we use target root as the base path
                 remainingItems = originalFhirPath.replace(actualConditionTargetRoot, "");
                 withParentsWhereInPlace = setParentsWherePathToTheCorrectPlace(actualConditionTargetRoot, parentPath);
@@ -382,10 +394,22 @@ public class OpenFhirStringUtils {
                 remainingItems = "";
             }
 
-            // then do your own where path
-            final String whereClause = ".where(" + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
-            // then suffix with whatever is left from the children's path
-            return withParentsWhereInPlace + whereClause + remainingItems;
+            if (actualConditionTargetRoot.startsWith(resource) && withParentsWhereInPlace.equals(originalFhirPath)) {
+                // find the right place first
+                final String commonPath = setParentsWherePathToTheCorrectPlace(originalFhirPath, actualConditionTargetRoot); // path right before the condition should start
+                final String remainingToEndUpInWhere = actualConditionTargetRoot
+                        .replace(commonPath + ".", "")
+                        .replace(commonPath, "");
+                final String remainingToAdd = StringUtils.isBlank(remainingToEndUpInWhere) ? "" : (remainingToEndUpInWhere + ".");
+                final String whereClause = ".where(" + remainingToAdd + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
+                final String remainingItemsFromParent = originalFhirPath.replace(commonPath, "");
+                return commonPath + whereClause + remainingItemsFromParent;
+            } else {
+                // then do your own where path
+                final String whereClause = ".where(" + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
+                // then suffix with whatever is left from the children's path
+                return withParentsWhereInPlace + whereClause + remainingItems;
+            }
         }
     }
 
@@ -422,7 +446,6 @@ public class OpenFhirStringUtils {
 
         return childPathJoiner.toString();
     }
-
 
 
     /**

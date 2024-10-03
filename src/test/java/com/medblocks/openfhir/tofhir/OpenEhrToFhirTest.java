@@ -2,6 +2,8 @@ package com.medblocks.openfhir.tofhir;
 
 import ca.uhn.fhir.context.FhirContext;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.nedap.archie.rm.composition.Composition;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.TestOpenFhirMappingContext;
@@ -322,6 +324,44 @@ public class OpenEhrToFhirTest {
         Assert.assertEquals(3, stringListMap.get("growth_chart/body_weight/any_event:2/math_function").size());
         Assert.assertEquals(2, stringListMap.get("growth_chart/body_weight/encoding").size());
         Assert.assertEquals(1, stringListMap.get("growth_chart/body_weight/any_event:1/confounding_factors:0").size());
+    }
+
+    @Test
+    public void joinValuesThatAreOne_dots() {
+        final List<String> toJoin = Arrays.asList("stationärer_versorgungsfall/context/start_time",
+                "stationärer_versorgungsfall/context/setting|terminology",
+                "stationärer_versorgungsfall/context/setting|code",
+                "stationärer_versorgungsfall/context/setting|value",
+                "stationärer_versorgungsfall/context/_end_time",
+                "stationärer_versorgungsfall/context/_health_care_facility|name",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|terminology",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|code",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|value",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|terminology",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|value",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|code",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|value",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|code",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|terminology",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|terminology",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|value",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|code",
+                "stationärer_versorgungsfall/aufnahmedaten/kennung_vor_der_aufnahme",
+                "stationärer_versorgungsfall/aufnahmedaten/datum_uhrzeit_der_aufnahme",
+                "stationärer_versorgungsfall/aufnahmedaten/vorheriger_patientenstandort_vor_aufnahme/campus"
+        );
+
+        final JsonObject flatJsonObject = new JsonObject();
+        toJoin.forEach(tj -> flatJsonObject.add(tj, new JsonPrimitive("random")));
+
+        final String testingPath = "$openEhrArchetype.aufnahmedaten.aufnahmegrund_-_1\\._und_2\\._stelle";
+
+        final String prepared = openFhirStringUtils.prepareOpenEhrSyntax(testingPath, "stationärer_versorgungsfall");
+
+        final String withRegex = openFhirStringUtils.addRegexPatternToSimplifiedFlatFormat(prepared);
+        final List<String> matchingEntries = openEhrToFhir.getAllEntriesThatMatch(withRegex, flatJsonObject);
+        Assert.assertEquals(3, matchingEntries.size());
+
     }
 
     private String getFlat(final String path) throws IOException {

@@ -82,6 +82,8 @@ public class FhirToOpenEhr {
 
         flattened.addAll(coverHelpers);
 
+        openFhirStringUtils.fixEscapedDotsInOpenEhrPaths(flattened);
+
         openEhrRmWorker.fixFlatWithOccurrences(flattened, webTemplate);
         return resolveFhirPaths(flattened, toRunEngineOn, bundle);
     }
@@ -664,9 +666,11 @@ public class FhirToOpenEhr {
                 continue;
             }
             final Condition condition = parentCondition != null ? parentCondition : mapping.getCondition();
-            final String fhirPath = openFhirStringUtils.amendFhirPathForToOpenEhr(mapping.getWith().getFhir(),
-                    Collections.singletonList(condition),
-                    modelMappingTemplate.getFhirConfig().getResource());
+
+            final String fhirPath = openFhirStringUtils.getFhirPathWithConditions(mapping.getWith().getFhir(),
+                    condition,
+                    modelMappingTemplate.getFhirConfig().getResource(),
+                    null);
 
             // because it references Resources not directly tied to a Resource itself, i.e. Condition as a cause of death for a Patient
             final boolean needsToBeAddedToParentHelpers = StringUtils.isNotEmpty(fhirPath)

@@ -15,7 +15,7 @@ mappings:
       openehr: "$openEhrArchetype.pid"
       type: "IDENTIFIER"
     condition:
-      targetRoot: "$fhirResource.identifier"
+      targetRoot: "$fhirRoot.identifier"
       targetAttribute: "system"
       operator: "one of"
       criteria: "[id]"
@@ -75,7 +75,7 @@ mappings:
       openehr: "$openEhrArchetype.versicherten_id_gkv"
       type: "IDENTIFIER"
     condition:
-      targetRoot: "$fhirResource.identifier"
+      targetRoot: "$fhirRoot.identifier"
       targetAttribute: "system"
       operator: "one of"
       criteria: "[gkv]"
@@ -86,7 +86,7 @@ mappings:
       openehr: "$openEhrArchetype.versicherungsnummer_pkv"
       type: "IDENTIFIER"
     condition:
-      targetRoot: "$fhirResource.identifier"
+      targetRoot: "$fhirRoot.identifier"
       targetAttribute: "system"
       operator: "one of"
       criteria: "[pkv]"

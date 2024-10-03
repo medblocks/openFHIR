@@ -27,6 +27,7 @@
   "stationärer_versorgungsfall/context/setting|value" : "home",
   "stationärer_versorgungsfall/context/_end_time" : "2022-02-03T04:05:06",
   "stationärer_versorgungsfall/context/_health_care_facility|name" : "DOE, John",
+
   "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/AufnahmegrundErsteUndZweiteStelle",
   "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|code" : "01",
   "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|value" : "Krankenhausbehandlung, vollstationär",
@@ -36,6 +37,7 @@
   "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|value" : "Normalfall",
   "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|code" : "1",
   "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/AufnahmegrundVierteStelle",
+
   "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dgkev/Aufnahmeanlass",
   "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dgkev/Aufnahmeanlass' available",
   "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|code" : "42",

@@ -226,7 +226,8 @@ public class OpenEhrToFhir {
                             helper.getTargetResource(),
                             helper.isFollowedBy(),
                             helper.getParentFollowedByFhirPath(),
-                            helper.getParentFollowedByOpenEhr());
+                            helper.getParentFollowedByOpenEhr(),
+                            helper.getFhirPath());
 
                     createdPerIndex.put(mapKey, instance);
                     continue;
@@ -314,7 +315,8 @@ public class OpenEhrToFhir {
                         helper.getTargetResource(),
                         helper.isFollowedBy(),
                         helper.getParentFollowedByFhirPath(),
-                        helper.getParentFollowedByOpenEhr());
+                        helper.getParentFollowedByOpenEhr(),
+                        helper.getFhirPath());
 
                 createdPerIndex.put(mapKey, instance);
             }
@@ -405,7 +407,8 @@ public class OpenEhrToFhir {
                             helper.getTargetResource(),
                             helper.isFollowedBy(),
                             helper.getParentFollowedByFhirPath(),
-                            helper.getParentFollowedByOpenEhr());
+                            helper.getParentFollowedByOpenEhr(),
+                            helper.getFhirPath());
                 }
             }
         }
@@ -451,13 +454,16 @@ public class OpenEhrToFhir {
                                         final String targetResource,
                                         final boolean isFollowedBy,
                                         final String parentFhirEhr,
-                                        final String parentOpenEhr) {
+                                        final String parentOpenEhr,
+                                        final String fhirPath) {
         if (condition == null) {
             return;
         }
+//        condition.setTargetRoot(condition.getTargetRoot().replace(FhirConnectConst.FHIR_RESOURCE_FC, targetResource));
         final String stringFromCriteria = openFhirStringUtils.getStringFromCriteria(condition.getCriteria()).getCode();
-        String conditionFhirPathWithConditions = openFhirStringUtils.getFhirPathWithConditions(condition.getTargetRoot(), condition, targetResource, parentFhirEhr);
 
+        final String commonPath = openFhirStringUtils.getCommonPaths(condition.getTargetRoot(), fhirPath);
+        final String conditionFhirPathWithConditions = openFhirStringUtils.getFhirPathWithConditions(condition.getTargetRoot(), condition, targetResource, parentFhirEhr);
         final FindingOuterMost existing = findTheOuterMostThatExistsWithinCache(instantiatedIntermediateElements,
                 instance,
                 conditionFhirPathWithConditions,
@@ -467,6 +473,9 @@ public class OpenEhrToFhir {
                 parentFhirEhr,
                 parentOpenEhr);
         existing.setRemovedPath(existing.getRemovedPath() + "." + condition.getTargetAttribute());
+
+//        final String conditionPathWithoutParentsCondition = openFhirStringUtils.getFhirPathWithConditions(condition.getTargetRoot(), condition, targetResource, parentFhirEhr);
+//        existing.setRemovedPath(conditionPathWithoutParentsCondition.replace(commonPath, ""));
         if (existing.getLastObject() != null) {
             final FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn = fhirInstanceCreator.instantiateAndSetElement(existing.getLastObject(),
                     existing.getLastObject().getClass(),
@@ -736,7 +745,8 @@ public class OpenEhrToFhir {
                         followedByParentOpenEhr);
             }
 
-        } else if (followedByParentFhir != null && followedByParentFhir.replace("." + FHIR_ROOT_FC, "").endsWith(RESOLVE) || addingNewSeparateInstance) {
+//        } else if (followedByParentFhir != null && followedByParentFhir.replace("." + FHIR_ROOT_FC, "").endsWith(RESOLVE) || addingNewSeparateInstance) {
+        } else if (followedByParentFhir != null) {
             final String preparedParentOpenEhrPath = openFhirStringUtils.prepareParentOpenEhrPath(followedByParentOpenEhr, fullOpenEhrPath);
             Object returning = hardcodedReturn.getReturning();
             if (returning instanceof Reference) {
@@ -801,7 +811,7 @@ public class OpenEhrToFhir {
     private String createKeyForIntermediateElements(final String objectRef, final String fhirPath, final String fullOpenEhrPath) {
         // from full openEhrPath, only indexes should be part of the key. And even that, all indexes BUT the first one (because the first one is a Resource and that's the objectRef one)
         final String fixedFhirPath = fhirPath
-                .replace("."+RESOLVE, "")
+                .replace("." + RESOLVE, "")
                 .replace("." + FHIR_ROOT_FC, "")
                 .replace(FHIR_ROOT_FC, "");
         return new StringJoiner("_").add(objectRef).add(fixedFhirPath).add(fullOpenEhrPath.replace("[n]", "")).toString();
@@ -1205,7 +1215,7 @@ public class OpenEhrToFhir {
         return null;
     }
 
-    private List<String> getAllEntriesThatMatch(final String withRegex, final JsonObject flatted) {
+    List<String> getAllEntriesThatMatch(final String withRegex, final JsonObject flatted) {
         Pattern compiledPattern = Pattern.compile(withRegex);
         final List<String> match = new ArrayList<>();
         for (Map.Entry<String, JsonElement> flatEntry : flatted.entrySet()) {
