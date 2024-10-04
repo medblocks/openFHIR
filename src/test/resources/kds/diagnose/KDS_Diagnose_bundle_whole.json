@@ -103,7 +103,8 @@
               "code": "active",
               "display": "Active"
             }
-          ]
+          ],
+          "text": "active"
         },
         "verificationStatus": {
           "coding": [
@@ -348,7 +349,8 @@
               "code": "ref_active",
               "display": "ref_Active"
             }
-          ]
+          ],
+          "text": "ref_active"
         },
         "verificationStatus": {
           "coding": [
@@ -357,7 +359,8 @@
               "code": "ref_confirmed",
               "display": "ref_Confirmed"
             }
-          ]
+          ],
+          "text": "ref_confirmed"
         },
         "category": [
           {
@@ -640,7 +643,8 @@
               "code": "ref1_active",
               "display": "ref1_Active"
             }
-          ]
+          ],
+          "text": "ref1_active"
         },
         "verificationStatus": {
           "coding": [
@@ -649,7 +653,8 @@
               "code": "ref1_confirmed",
               "display": "ref1_Confirmed"
             }
-          ]
+          ],
+          "text": "ref1_confirmed"
         },
         "category": [
           {

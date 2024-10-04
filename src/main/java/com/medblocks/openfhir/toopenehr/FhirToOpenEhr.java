@@ -521,6 +521,7 @@ public class FhirToOpenEhr {
                 if (extractedValue instanceof Coding) {
                     final Coding extractedCoding = (Coding) extractedValue;
                     addToConstructingFlat(openEhrPath + "|code", extractedCoding.getCode(), constructingFlat);
+                    addToConstructingFlat(openEhrPath + "|value", extractedCoding.getCode(), constructingFlat); // todo? why?? not per fhir connect spec, but what if some require it?
                     addToConstructingFlat(openEhrPath + "|terminology", extractedCoding.getSystem(), constructingFlat);
                     return;
                 } else if (extractedValue instanceof Extension extractedExtension) {

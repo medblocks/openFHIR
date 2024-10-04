@@ -14,16 +14,12 @@
   "diagnose/context/setting|value" : "home",
   "diagnose/context/_end_time" : "2022-02-03T04:05:06",
   "diagnose/context/_health_care_facility|name" : "DOE, John",
-
-
   "diagnose/primärcode:0/kodierte_diagnose_-_icd-10-gm|code" : "C34.1",
   "diagnose/primärcode:0/kodierte_diagnose_-_icd-10-gm|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/CodeSystem/bfarm/icd-10-gm",
   "diagnose/primärcode:0/kodierte_diagnose_-_icd-10-gm|value" : "Malignant neoplasm of upper lobe, bronchus or lung",
-
   "diagnose/primärcode:0/kodierte_diagnose_-_alpha-id|terminology" : "primärcode//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/alpha-id",
   "diagnose/primärcode:0/kodierte_diagnose_-_alpha-id|code" : "primärcode057E3",
   "diagnose/primärcode:0/kodierte_diagnose_-_alpha-id|value" : "primärcodesecondary malignant neoplasm of lymph nodes",
-
   "diagnose/primärcode:0/kodierte_diagnose_-_sct|value" : "Malignant neoplasm of upper lobe of lung",
   "diagnose/primärcode:0/kodierte_diagnose_-_sct|code" : "254626006",
   "diagnose/primärcode:0/kodierte_diagnose_-_sct|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=http://snomed.info/sct",
@@ -79,9 +75,6 @@
   "diagnose/primärcode:0/_guideline_id|id_scheme" : "scheme",
   "diagnose/primärcode:0/_guideline_id|namespace" : "unknown",
   "diagnose/primärcode:0/_guideline_id|type" : "ANY",
-
-
-
   "diagnose/sekundärcode:0/kodierte_diagnose_-_icd-10-gm|value" : "Malignant neoplasm of lymph nodes",
   "diagnose/sekundärcode:0/kodierte_diagnose_-_icd-10-gm|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm",
   "diagnose/sekundärcode:0/kodierte_diagnose_-_icd-10-gm|code" : "C77.0",
