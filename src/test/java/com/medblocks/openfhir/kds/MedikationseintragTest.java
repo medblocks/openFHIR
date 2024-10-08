@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
+import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
@@ -26,17 +27,18 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
     final String CONTEXT = "medikation.context.yaml";
     final String BUNDLE = "KDS_Medikationseintrag_v1-Fhir-Bundle-input.json";
 
+    @SneakyThrows
     @Override
     protected void prepareState() {
         context = getContext(RESOURCES_ROOT + CONTEXT);
         repo.initRepository(context, getClass().getResource(RESOURCES_ROOT).getFile());
-        operationaltemplate = getOperationalTemplate(RESOURCES_ROOT + OPT);
+        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCES_ROOT + OPT));
+        operationaltemplate = getOperationalTemplate();
         webTemplate = new OPTParser(operationaltemplate).parse();
     }
 
 
-    @Test
-    public void kdsMedicationList_toOpenEhr() throws IOException {
+    public JsonObject toOpenEhr() {
         final Bundle testBundle = FhirContext.forR4().newJsonParser().parseResource(Bundle.class, getClass().getResourceAsStream(RESOURCES_ROOT + BUNDLE));
 
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
@@ -96,12 +98,20 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
         final JsonObject jsonObject2 = fhirToOpenEhr.fhirToFlatJsonObject(context, bundle, operationaltemplate);
 
 
-        final JsonObject expected = new Gson().fromJson(IOUtils.toString(getClass().getResourceAsStream(RESOURCES_ROOT + "Medikationseintrag_expected-jsonobject-from-flat.json")),
-                JsonObject.class);
+        final JsonObject expected;
+        try {
+            expected = new Gson().fromJson(IOUtils.toString(getClass().getResourceAsStream(RESOURCES_ROOT + "Medikationseintrag_expected-jsonobject-from-flat.json")),
+                    JsonObject.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 
         compareJsonObjects(jsonObject2, expected);
         compareJsonObjects(expected, jsonObject2);
+
+
+        return jsonObject2;
     }
 
     @Test

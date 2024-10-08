@@ -10,9 +10,21 @@ openEhrConfig:
 mappings:
   - name: "identifier"
     with:
-      fhir: "$fhirResource.identifier.value"
-      openehr: "$openEhrArchetype.laborleistung.receiver_order_identifier.text_value"
-      type: "STRING"
+      fhir: "$fhirResource.identifier"
+      openehr: "$openEhrArchetype.laborleistung"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "identifier value"
+          with:
+            fhir: "value"
+            openehr: "receiver_order_identifier.text_value"
+            type: "STRING"
+        - name: "identifier type"
+          with:
+            fhir: "type.coding.code"
+            openehr: "auftrags-id_des_anfordernden_einsendenden_systems_plac|id"
+            type: "STRING"
 
   - name: "status"
     with:

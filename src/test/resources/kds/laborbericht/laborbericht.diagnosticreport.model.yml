@@ -15,6 +15,12 @@ mappings:
       openehr: "$openEhrArchetype.laborbefund.labortest-kategorie"
       type: "CODEABLECONCEPT"
 
+  - name: "Status"
+    with:
+      fhir: "$fhirResource.status"
+      openehr: "$openEhrArchetype.laborbefund.pro_laboranalyt.result_status|code"
+      type: "STRING"
+
   - name: "Conclusion"
     with:
       fhir: "$fhirResource.conclusion"
@@ -47,6 +53,12 @@ mappings:
                   fhir: "value.as(Quantity)"
                   openehr: "messwert.quantity_value"
                   type: "QUANTITY"
+
+              - name: "code"
+                with:
+                  fhir: "code"
+                  openehr: "analyte_name"
+                  type: "CODEABLECONCEPT"
 
   - name: "specimen"
     with:

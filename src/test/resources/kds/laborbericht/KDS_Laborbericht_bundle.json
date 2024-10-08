@@ -44,7 +44,7 @@
           {
             "coding": [
               {
-                "system": "http://loinc.org",
+                "system": "LOINC",
                 "code": "26436-6",
                 "display": "Laboratory studies (set)"
               },
@@ -172,7 +172,8 @@
               "code": "718-7",
               "display": "Hemoglobin [Mass/volume] in Blood"
             }
-          ]
+          ],
+          "text": "Hemoglobin [Mass/volume] in Blood"
         },
         "subject": {
           "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49",

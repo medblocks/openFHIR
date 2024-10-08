@@ -2,6 +2,8 @@ package com.medblocks.openfhir.kds;
 
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
+import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.r4.model.*;
@@ -19,16 +21,18 @@ public class StationarerversorgungsfallTest extends KdsBidirectionalTest {
     final String CONTEXT = "stationarerversorgungsfall.context.yaml";
     final String BUNDLE = "KDS_StationarerVersorgungsfall_bundle.json";
 
+    @SneakyThrows
     @Override
     protected void prepareState() {
         context = getContext(RESOURCES_ROOT + CONTEXT);
         repo.initRepository(context, getClass().getResource(RESOURCES_ROOT).getFile());
-        operationaltemplate = getOperationalTemplate(RESOURCES_ROOT + OPT);
+        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCES_ROOT + OPT));
+        operationaltemplate = getOperationalTemplate();
         webTemplate = new OPTParser(operationaltemplate).parse();
     }
 
-    @Test
-    public void toOpenEhr() {
+
+    public JsonObject toOpenEhr() {
         final Bundle testBundle = getTestBundle(RESOURCES_ROOT + BUNDLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
@@ -69,6 +73,8 @@ public class StationarerversorgungsfallTest extends KdsBidirectionalTest {
         Assert.assertEquals("1", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|terminology").getAsString());
 
+
+        return jsonObject;
     }
 
     @Test

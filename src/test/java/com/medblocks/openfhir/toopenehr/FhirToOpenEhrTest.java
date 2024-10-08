@@ -66,7 +66,7 @@ public class FhirToOpenEhrTest {
 
         final JsonObject flat = fhirToOpenEhr.fhirToFlatJsonObject(context, testBloodPressureObservation(), getOperationalTemplate("/Blood Pressure.opt"));
 
-        Assert.assertEquals(8, flat.size());
+        Assert.assertEquals(9, flat.size());
         Assert.assertEquals("456.0", flat.get("blood_pressure/blood_pressure/any_event:0/systolic|magnitude").getAsString());
         Assert.assertEquals("mm[Hg]", flat.get("blood_pressure/blood_pressure/any_event:0/systolic|unit").getAsString());
         Assert.assertEquals("789.0", flat.get("blood_pressure/blood_pressure/any_event:0/diastolic|magnitude").getAsString());

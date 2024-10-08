@@ -106,6 +106,12 @@ public class FhirToOpenEhr {
         final JsonObject flattenedWithValues = fhirToFlatJsonObject(context, resource, operationaltemplate);
         final Composition composition = flatJsonUnmarshaller.unmarshal(gson.toJson(flattenedWithValues), webTemplate);
 
+        enrichComposition(composition);
+
+        return composition;
+    }
+
+    public void enrichComposition(final Composition composition) {
         // default values; set if not already set by mappings
         if (composition.getLanguage() == null) {
             composition.setLanguage(new CodePhrase(new TerminologyId("ISO_639-1"), "en"));
@@ -116,8 +122,6 @@ public class FhirToOpenEhr {
         if (composition.getComposer() == null) {
             composition.setComposer(new PartySelf());
         }
-
-        return composition;
     }
 
     private JsonObject resolveFhirPaths(final List<FhirToOpenEhrHelper> flattenedHelpers, final Resource resource, final boolean bundle) {

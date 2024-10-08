@@ -2,6 +2,8 @@ package com.medblocks.openfhir.kds;
 
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
+import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.r4.model.Bundle;
@@ -22,11 +24,13 @@ public class ProcedureTest extends KdsBidirectionalTest {
     final String CONTEXT = "procedure.context.yaml";
     final String BUNDLE = "KDS_Prozedur_bundle.json";
 
+    @SneakyThrows
     @Override
     protected void prepareState() {
         context = getContext(RESOURCES_ROOT + CONTEXT);
         repo.initRepository(context, getClass().getResource(RESOURCES_ROOT).getFile());
-        operationaltemplate = getOperationalTemplate(RESOURCES_ROOT + OPT);
+        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCES_ROOT + OPT));
+        operationaltemplate = getOperationalTemplate();
         webTemplate = new OPTParser(operationaltemplate).parse();
     }
 
@@ -76,8 +80,7 @@ public class ProcedureTest extends KdsBidirectionalTest {
         Assert.assertEquals("2022-02-03T04:05:06+01:00", theProcedure.getPerformedDateTimeType().getValueAsString());
     }
 
-    @Test
-    public void toOpenEhr() {
+    public JsonObject toOpenEhr() {
         final Bundle testBundle = getTestBundle(RESOURCES_ROOT + BUNDLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
@@ -107,5 +110,7 @@ public class ProcedureTest extends KdsBidirectionalTest {
 
 //        - name: "time"
         Assert.assertEquals("2024-08-20T16:00:00", jsonObject.getAsJsonPrimitive("kds_prozedur/procedure/time").getAsString());
+
+        return jsonObject;
     }
 }

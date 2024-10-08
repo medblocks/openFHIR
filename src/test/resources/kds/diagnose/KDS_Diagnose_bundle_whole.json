@@ -150,8 +150,8 @@
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc",
-                        "code": "M",
+                        "system": "local",
+                        "code": "at0002",
                         "display": "Primary code in multiple coding"
                       }
                     ],
@@ -396,8 +396,8 @@
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc",
-                        "code": "ref_P",
+                        "system": "local",
+                        "code": "at0002",
                         "display": "ref_Primary code in multiple coding"
                       }
                     ],
@@ -690,8 +690,8 @@
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc",
-                        "code": "ref1_P",
+                        "system": "local",
+                        "code": "at0002",
                         "display": "ref1_Primary code in multiple coding"
                       }
                     ],

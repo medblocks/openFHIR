@@ -65,6 +65,12 @@ mappings:
       type: "NONE"
     followedBy:
       mappings:
+        - name: "body site text"
+          with:
+            fhir: "text"
+            openehr: "anatomical_location.body_site_name"
+            type: "STRING"
+
         - name: "body site SCT code"
           with:
             fhir: "coding"

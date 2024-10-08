@@ -3,6 +3,7 @@ package com.medblocks.openfhir.kds;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
+import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
@@ -27,11 +28,13 @@ public class LaborauftragTest extends KdsBidirectionalTest {
     final String CONTEXT = "laborauftrag.context.yaml";
     final String BUNDLE = "KDS_Laborauftrag_bundle.json";
 
+    @SneakyThrows
     @Override
     protected void prepareState() {
         context = getContext(RESOURCES_ROOT + CONTEXT);
         repo.initRepository(context, getClass().getResource(RESOURCES_ROOT).getFile());
-        operationaltemplate = getOperationalTemplate(RESOURCES_ROOT + OPT);
+        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCES_ROOT + OPT));
+        operationaltemplate = getOperationalTemplate();
         webTemplate = new OPTParser(operationaltemplate).parse();
     }
 
@@ -59,6 +62,7 @@ public class LaborauftragTest extends KdsBidirectionalTest {
         Assert.assertEquals("SR comment", serviceRequest.getNoteFirstRep().getText());
 
         Assert.assertEquals("sr id", serviceRequest.getIdentifierFirstRep().getValue());
+        Assert.assertEquals("dev/null", serviceRequest.getIdentifierFirstRep().getType().getCodingFirstRep().getCode());
         Assert.assertEquals("completed", serviceRequest.getStatusElement().getValueAsString());
 
         // Specimen
@@ -109,10 +113,12 @@ public class LaborauftragTest extends KdsBidirectionalTest {
         compareJsonObjects(jsonObject2, expected);
         compareJsonObjects(expected, jsonObject2);
 
+        // do this just to assert all flat paths are legit
+        new FlatJsonUnmarshaller().unmarshal(new Gson().toJson(jsonObject2), webTemplate);
+
     }
 
-    @Test
-    public void toOpenEhr() {
+    public JsonObject toOpenEhr() {
         final Bundle testBundle = getTestBundle(RESOURCES_ROOT + BUNDLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
@@ -129,6 +135,7 @@ public class LaborauftragTest extends KdsBidirectionalTest {
         Assert.assertEquals("Example Hospital", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/einsender/name").getAsString());
         Assert.assertEquals("ORG-001", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/einsender/identifier|id").getAsString());
 
+        return jsonObject;
     }
 
     @Test

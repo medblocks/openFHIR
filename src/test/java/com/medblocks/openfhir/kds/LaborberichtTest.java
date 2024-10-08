@@ -2,6 +2,8 @@ package com.medblocks.openfhir.kds;
 
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
+import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.r4.model.Bundle;
@@ -24,21 +26,22 @@ public class LaborberichtTest extends KdsBidirectionalTest {
     final String CONTEXT = "laborbericht.context.yaml";
     final String BUNDLE = "KDS_Laborbericht_bundle.json";
 
+    @SneakyThrows
     @Override
     protected void prepareState() {
         context = getContext(RESOURCES_ROOT + CONTEXT);
         repo.initRepository(context, getClass().getResource(RESOURCES_ROOT).getFile());
-        operationaltemplate = getOperationalTemplate(RESOURCES_ROOT + OPT);
+        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCES_ROOT + OPT));
+        operationaltemplate = getOperationalTemplate();
         webTemplate = new OPTParser(operationaltemplate).parse();
     }
 
-    @Test
-    public void toOpenEhr() {
+    public JsonObject toOpenEhr() {
         final Bundle testBundle = getTestBundle(RESOURCES_ROOT + BUNDLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
         Assert.assertEquals("26436-6", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/labortest-kategorie|code").getAsString());
-        Assert.assertEquals("http://loinc.org", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/labortest-kategorie|terminology").getAsString());
+        Assert.assertEquals("LOINC", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/labortest-kategorie|terminology").getAsString());
         Assert.assertEquals("Normal blood count", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/conclusion").getAsString());
         Assert.assertEquals("2024-08-22T10:30:00", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/time").getAsString());
         Assert.assertEquals("122555007", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/probenmaterial:0/specimen_type|code").getAsString());
@@ -52,6 +55,8 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         Assert.assertEquals("1234567", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/probenmaterial:0/specimen_collector_identifier|id").getAsString());
         Assert.assertEquals("7.4", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/pro_laboranalyt:0/messwert:0/quantity_value|magnitude").getAsString());
         Assert.assertEquals("g/dL", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/pro_laboranalyt:0/messwert:0/quantity_value|unit").getAsString());
+
+        return jsonObject;
     }
 
     @Test
@@ -65,6 +70,9 @@ public class LaborberichtTest extends KdsBidirectionalTest {
 
         //  - name: "Conclusion"
         assertEquals("Normal blood count", diagnosticReport.getConclusion());
+
+        //  - name: "Status"
+        assertEquals("final", diagnosticReport.getStatusElement().getValueAsString());
 
         //   - name: "Effective"
         assertEquals("2022-02-03T04:05:06+01:00", diagnosticReport.getEffectiveDateTimeType().getValueAsString());
@@ -106,6 +114,11 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         //     - name: "value"
         assertEquals(7.4, observation.getValueQuantity().getValue().doubleValue(), 0);
         assertEquals("g/dL", observation.getValueQuantity().getUnit());
+
+        // laboryte name
+        assertEquals("718-7", observation.getCode().getCodingFirstRep().getCode());
+        assertEquals("//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/results-laboratory-observations-uv-ips", observation.getCode().getCodingFirstRep().getSystem());
+        assertEquals("Hemoglobin [Mass/volume] in Blood", observation.getCode().getText());
     }
 
     @Test

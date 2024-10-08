@@ -9,11 +9,14 @@ import com.google.gson.JsonObject;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.TestOpenFhirMappingContext;
 import com.medblocks.openfhir.fc.model.FhirConnectContext;
+import com.medblocks.openfhir.kds.ehrbase.EhrBaseTestClient;
 import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
 import com.medblocks.openfhir.util.*;
+import com.nedap.archie.rm.composition.Composition;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
@@ -24,15 +27,29 @@ import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
 import org.hl7.fhir.r4.model.Reference;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
+import org.springframework.http.ResponseEntity;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Map;
 
+@Slf4j
 public abstract class KdsBidirectionalTest {
+
+    /**
+     * Change this to 'true' and set corresponding ehrbase variables if you want mapped Composition
+     * to automatically be created against a running (by yourself) EHRBase instance. Meant for an integration
+     * test and implicit validation of the mapped Composition.
+     */
+    final boolean TEST_AGAINST_EHRBASE = false;
+    final String EHRBASE_BASIC_USERNAME = "ehrbase-user";
+    final String EHRBASE_BASIC_PASSWORD = "SuperSecretPassword";
+    final String EHRBASE_HOST = "http://localhost:8081";
 
     final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
     final FhirPathR4 fhirPath = new FhirPathR4(FhirContext.forR4());
@@ -44,6 +61,7 @@ public abstract class KdsBidirectionalTest {
 
     FhirConnectContext context;
     OPERATIONALTEMPLATE operationaltemplate;
+    String operationaltemplateSerialized;
     WebTemplate webTemplate;
 
     protected abstract void prepareState();
@@ -82,6 +100,32 @@ public abstract class KdsBidirectionalTest {
         prepareState();
     }
 
+    @Test
+    public void toOpenEhrTest() {
+        final JsonObject flatPaths = toOpenEhr();
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(new Gson().toJson(flatPaths), webTemplate);
+        fhirToOpenEhr.enrichComposition(compositionFromFlat);
+
+
+        if (TEST_AGAINST_EHRBASE) {
+            final ResponseEntity<String> result = new EhrBaseTestClient(EHRBASE_HOST,
+                    EHRBASE_BASIC_USERNAME,
+                    EHRBASE_BASIC_PASSWORD)
+                    .createComposition(compositionFromFlat, operationaltemplateSerialized);
+            final int resultCode = result.getStatusCode().value();
+            if (resultCode != 204) {
+                final String body = result.getBody();
+                final String[] errors = body.split(", /");
+                Arrays.stream(errors).forEach(log::error);
+            }
+            log.info("SUCCESSfully stored to EHRBase.");
+            Assert.assertEquals(204, resultCode);
+
+        }
+    }
+
+    protected abstract JsonObject toOpenEhr();
+
     protected String getFlat(final String path) {
         final InputStream inputStream = this.getClass().getResourceAsStream(path);
         try {
@@ -96,7 +140,7 @@ public abstract class KdsBidirectionalTest {
             final String initialKey = initialEntrySet.getKey();
             final String initialValue = initialEntrySet.getValue().getAsString();
             final String actualValue = initial.getAsJsonPrimitive(initialKey).getAsString();
-            if(!initialValue.equals(actualValue)) {
+            if (!initialValue.equals(actualValue)) {
                 System.out.println(initialKey);
             }
             Assert.assertEquals(initialValue, actualValue);
@@ -114,9 +158,9 @@ public abstract class KdsBidirectionalTest {
         return yaml.loadAs(inputStream, FhirConnectContext.class);
     }
 
-    protected OPERATIONALTEMPLATE getOperationalTemplate(final String path) {
+    protected OPERATIONALTEMPLATE getOperationalTemplate() {
         try {
-            return TemplateDocument.Factory.parse(this.getClass().getResourceAsStream(path)).getTemplate();
+            return TemplateDocument.Factory.parse(operationaltemplateSerialized).getTemplate();
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }

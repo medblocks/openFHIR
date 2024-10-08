@@ -1,7 +1,10 @@
 package com.medblocks.openfhir.kds;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
+import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.r4.model.*;
@@ -21,11 +24,13 @@ public class DiagnoseTest extends KdsBidirectionalTest {
     final String BUNDLE = "KDS_Diagnose_bundle_whole.json";
     final String BUNDLE_SINGLE = "KDS_Diagnose_bundle.json";
 
+    @SneakyThrows
     @Override
     protected void prepareState() {
         context = getContext(RESOURCES_ROOT + CONTEXT);
         repo.initRepository(context, getClass().getResource(RESOURCES_ROOT).getFile());
-        operationaltemplate = getOperationalTemplate(RESOURCES_ROOT + OPT);
+        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCES_ROOT + OPT));
+        operationaltemplate = getOperationalTemplate();
         webTemplate = new OPTParser(operationaltemplate).parse();
     }
 
@@ -487,7 +492,7 @@ public class DiagnoseTest extends KdsBidirectionalTest {
     }
 
     @Test
-    public void toOpenEhr() {
+    public void toOpenEhr_single() {
         final Bundle testBundle = getTestBundle(RESOURCES_ROOT + BUNDLE_SINGLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
@@ -526,10 +531,12 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/icd-o-3", jsonObject.get("diagnose/primärcode:0/kodierte_diagnose_-_icd-o-3|terminology").getAsString());
         Assert.assertEquals("2022-02-03T01:00:00", jsonObject.get("diagnose/context/start_time").getAsString());
 
+        // do this just to assert all flat paths are legit
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(new Gson().toJson(jsonObject), webTemplate);
+
     }
 
-    @Test
-    public void toOpenEhr_withReferenced() {
+    public JsonObject toOpenEhr() {
         final Bundle testBundle = getTestBundle(RESOURCES_ROOT + BUNDLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
@@ -549,8 +556,8 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/icd-o-3", jsonObject.get("diagnose/primärcode:0/körperstelle_-_icd-o-3|terminology").getAsString());
         Assert.assertEquals("C34.1", jsonObject.get("diagnose/primärcode:0/kodierte_diagnose_-_icd-10-gm|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm", jsonObject.get("diagnose/primärcode:0/kodierte_diagnose_-_icd-10-gm|terminology").getAsString());
-        Assert.assertEquals("M", jsonObject.get("diagnose/primärcode:0/multiple_coding_icd-10-gm/multiple_coding_identifier|code").getAsString());
-        Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc", jsonObject.get("diagnose/primärcode:0/multiple_coding_icd-10-gm/multiple_coding_identifier|terminology").getAsString());
+        Assert.assertEquals("at0002", jsonObject.get("diagnose/primärcode:0/multiple_coding_icd-10-gm/multiple_coding_identifier|code").getAsString());
+        Assert.assertEquals("local", jsonObject.get("diagnose/primärcode:0/multiple_coding_icd-10-gm/multiple_coding_identifier|terminology").getAsString());
         Assert.assertEquals("Primary code in multiple coding", jsonObject.get("diagnose/primärcode:0/multiple_coding_icd-10-gm/multiple_coding_identifier|value").getAsString());
         Assert.assertEquals("L", jsonObject.get("diagnose/primärcode:0/anatomical_location/laterality|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation", jsonObject.get("diagnose/primärcode:0/anatomical_location/laterality|terminology").getAsString());
@@ -569,7 +576,6 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("2022-02-03T01:00:00", jsonObject.get("diagnose/context/start_time").getAsString());
 
 
-
         Assert.assertEquals("2125-02-03T05:05:06", jsonObject.get("diagnose/sekundärcode:0/feststellungsdatum").getAsString());
         Assert.assertEquals("ref_active", jsonObject.get("diagnose/sekundärcode:0/klinischer_status/klinischer_status|code").getAsString());
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/condition-clinical", jsonObject.get("diagnose/sekundärcode:0/klinischer_status/klinischer_status|terminology").getAsString());
@@ -586,8 +592,8 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/icd-o-3", jsonObject.get("diagnose/sekundärcode:0/körperstelle_-_icd-o-3|terminology").getAsString());
         Assert.assertEquals("ref_C34.1", jsonObject.get("diagnose/sekundärcode:0/kodierte_diagnose_-_icd-10-gm|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm", jsonObject.get("diagnose/sekundärcode:0/kodierte_diagnose_-_icd-10-gm|terminology").getAsString());
-        Assert.assertEquals("ref_P", jsonObject.get("diagnose/sekundärcode:0/multiple_coding_icd-10-gm/multiple_coding_identifier|code").getAsString());
-        Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc", jsonObject.get("diagnose/sekundärcode:0/multiple_coding_icd-10-gm/multiple_coding_identifier|terminology").getAsString());
+        Assert.assertEquals("at0002", jsonObject.get("diagnose/sekundärcode:0/multiple_coding_icd-10-gm/multiple_coding_identifier|code").getAsString());
+        Assert.assertEquals("local", jsonObject.get("diagnose/sekundärcode:0/multiple_coding_icd-10-gm/multiple_coding_identifier|terminology").getAsString());
         Assert.assertEquals("ref_Primary code in multiple coding", jsonObject.get("diagnose/sekundärcode:0/multiple_coding_icd-10-gm/multiple_coding_identifier|value").getAsString());
         Assert.assertEquals("ref_U", jsonObject.get("diagnose/sekundärcode:0/anatomical_location/laterality|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation", jsonObject.get("diagnose/sekundärcode:0/anatomical_location/laterality|terminology").getAsString());
@@ -620,8 +626,8 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/icd-o-3", jsonObject.get("diagnose/sekundärcode:1/körperstelle_-_icd-o-3|terminology").getAsString());
         Assert.assertEquals("ref1_C34.1", jsonObject.get("diagnose/sekundärcode:1/kodierte_diagnose_-_icd-10-gm|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm", jsonObject.get("diagnose/sekundärcode:1/kodierte_diagnose_-_icd-10-gm|terminology").getAsString());
-        Assert.assertEquals("ref1_P", jsonObject.get("diagnose/sekundärcode:1/multiple_coding_icd-10-gm/multiple_coding_identifier|code").getAsString());
-        Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc", jsonObject.get("diagnose/sekundärcode:1/multiple_coding_icd-10-gm/multiple_coding_identifier|terminology").getAsString());
+        Assert.assertEquals("at0002", jsonObject.get("diagnose/sekundärcode:1/multiple_coding_icd-10-gm/multiple_coding_identifier|code").getAsString());
+        Assert.assertEquals("local", jsonObject.get("diagnose/sekundärcode:1/multiple_coding_icd-10-gm/multiple_coding_identifier|terminology").getAsString());
         Assert.assertEquals("ref1_Primary code in multiple coding", jsonObject.get("diagnose/sekundärcode:1/multiple_coding_icd-10-gm/multiple_coding_identifier|value").getAsString());
         Assert.assertEquals("ref1_U", jsonObject.get("diagnose/sekundärcode:1/anatomical_location/laterality|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation", jsonObject.get("diagnose/sekundärcode:1/anatomical_location/laterality|terminology").getAsString());
@@ -638,5 +644,6 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("ref1_C34.1", jsonObject.get("diagnose/sekundärcode:1/kodierte_diagnose_-_icd-o-3|code").getAsString());
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/icd-o-3", jsonObject.get("diagnose/sekundärcode:1/kodierte_diagnose_-_icd-o-3|terminology").getAsString());
 
+        return jsonObject;
     }
 }

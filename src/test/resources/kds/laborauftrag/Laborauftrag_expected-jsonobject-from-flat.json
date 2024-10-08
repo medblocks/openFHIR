@@ -16,5 +16,6 @@
   "request_for_service/laborleistung/einsender/identifier|id": "Einsender id",
   "request_for_service/laborleistung/einsender/name": "Einsender name",
   "request_for_service/laborleistung/receiver_order_identifier/text_value": "sr id",
+  "request_for_service/laborleistung/auftrags-id_des_anfordernden_einsendenden_systems_plac|id": "dev/null",
   "request_for_service/laborleistung/request_status|code": "completed"
 }

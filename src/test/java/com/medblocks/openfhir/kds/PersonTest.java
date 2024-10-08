@@ -3,6 +3,7 @@ package com.medblocks.openfhir.kds;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
+import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
@@ -22,11 +23,13 @@ public class PersonTest extends KdsBidirectionalTest {
     final String CONTEXT = "person.context.yaml";
     final String BUNDLE = "KDS_Person-Fhir-Bundle-input.json";
 
+    @SneakyThrows
     @Override
     protected void prepareState() {
         context = getContext(RESOURCES_ROOT + CONTEXT);
         repo.initRepository(context, getClass().getResource(RESOURCES_ROOT).getFile());
-        operationaltemplate = getOperationalTemplate(RESOURCES_ROOT + OPT);
+        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCES_ROOT + OPT));
+        operationaltemplate = getOperationalTemplate();
         webTemplate = new OPTParser(operationaltemplate).parse();
     }
 
@@ -138,8 +141,7 @@ public class PersonTest extends KdsBidirectionalTest {
         compareJsonObjects(jsonObject, expected);
     }
 
-    @Test
-    public void kdsPerson_toOpenEhr() {
+    public JsonObject toOpenEhr() {
         final Bundle testBundle = getTestBundle(RESOURCES_ROOT + BUNDLE);
 
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
@@ -201,8 +203,7 @@ public class PersonTest extends KdsBidirectionalTest {
         Assert.assertEquals("final", jsonObject.getAsJsonPrimitive("person/vitalstatus/fhir_status_der_beobachtung/status").getAsString());
         Assert.assertEquals("2022-02-03T04:05:06", jsonObject.getAsJsonPrimitive("person/vitalstatus/zeitpunkt_der_feststellung").getAsString());
 
-        // run this so you assert it properly "compiles" to Composition (so all flat paths are in fact valid)
-        final Composition composition = fhirToOpenEhr.fhirToCompositionRm(context, testBundle, operationaltemplate);
+        return jsonObject;
 
     }
 }
