@@ -37,6 +37,15 @@
             </roles>
             <organization>Syntaric d.o.o.</organization>
         </developer>
+        <developer>
+            <id>sidharth</id>
+            <name>Sidharth Ramesh</name>
+            <email>sidharth@medblocks.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <organization>Medblocks Inc.</organization>
+        </developer>
     </developers>
 
     <properties>
@@ -227,6 +236,22 @@
             <artifactId>json-schema-validator</artifactId>
         </dependency>
     </dependencies>
-
+    <build>
+      <pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.5.1</version>
+            <configuration>
+              <includes>
+                <include>**/*Test.java</include>
+                <include>**/*Tests.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </pluginManagement>
+    </build>
 
 </project>
