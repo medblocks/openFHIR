@@ -119,7 +119,7 @@
                 <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
-
+            
             <!-- EHRBase -->
             <dependency>
                 <groupId>org.ehrbase.openehr.sdk</groupId>
@@ -136,7 +136,7 @@
                 <artifactId>web-template</artifactId>
                 <version>${ehrbase.version}</version>
             </dependency>
-
+            
 
             <!-- JSON Schema Validator -->
             <dependency>
@@ -192,6 +192,11 @@
             <artifactId>jjwt</artifactId>
         </dependency>
         <dependency>
+              <groupId>org.junit.vintage</groupId>
+              <artifactId>junit-vintage-engine</artifactId>
+              <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.nedap.healthcare.archie</groupId>
             <artifactId>archie-all</artifactId>
         </dependency>
@@ -244,6 +249,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <version>3.5.1</version>
             <configuration>
+              <argLine>-Duser.timezone=CET</argLine>
               <includes>
                 <include>**/*Test.java</include>
                 <include>**/*Tests.java</include>
