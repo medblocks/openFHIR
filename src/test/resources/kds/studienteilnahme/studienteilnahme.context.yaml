@@ -1,0 +1,16 @@
+format: "0.2.0"
+
+openEHR:
+  templateId: "Studienteilnahme"
+  archetypes:
+    - "openEHR-EHR-ACTION.informed_consent.v0"
+    - "openEHR-EHR-CLUSTER.study_details.v1"
+    - "openEHR-EHR-CLUSTER.study_participation.v1"
+
+fhir:
+  resourceType: "Bundle"
+  condition:
+    targetRoot: "$fhirResource"
+    targetAttribute: "meta.profile"
+    operator: "one of"
+    criteria: "[Studienteilnahme]"

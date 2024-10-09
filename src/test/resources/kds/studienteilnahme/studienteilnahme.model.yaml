@@ -1,0 +1,33 @@
+format: "0.2.0"
+version: "0.0.1"
+
+fhirConfig:
+  resource: "Consent"
+  multiple: false
+openEhrConfig:
+  archetype: "openEHR-EHR-ACTION.informed_consent.v0"
+
+mappings:
+  - name: "category"
+    with:
+      fhir: "$fhirResource.category.coding.code"
+      openehr: "$openEhrArchetype.einwilligungserklärung.studie_prüfung.studientyp"
+      type: "STRING"
+
+  - name: "period"
+    with:
+      fhir: "$fhirResource.provision.period"
+      openehr: "$openEhrArchetype.einwilligungserklärung.studienteilnahme"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "start"
+          with:
+            fhir: "start"
+            openehr: "beginn_der_teilnahme"
+            type: "DATETIME"
+        - name: "end"
+          with:
+            fhir: "end"
+            openehr: "ende_der_teilnahme"
+            type: "DATETIME"
