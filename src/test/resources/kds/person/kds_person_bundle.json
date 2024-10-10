@@ -1,0 +1,414 @@
+{
+    "resourceType": "Bundle",
+    "id": "example-bundle",
+    "type": "transaction",
+    "entry": [
+      {
+        "fullUrl": "urn:uuid:04121321-4af5-424c-a0e1-ed3aab1c589d",
+        "resource": {
+          "resourceType": "Patient",
+          "id": "example-patient",
+          "meta": {
+            "profile": [
+              "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+            ]
+          },
+          "identifier": [
+            {
+              "use": "official",
+              "type": {
+                "coding": [
+                  {
+                    "system": "http://fhir.de/NamingSystem/gkv/patient",
+                    "code": "GKV",
+                    "display": "Versicherten-ID (GKV)"
+                  }
+                ]
+              },
+              "system": "http://fhir.de/NamingSystem/gkv/patient",
+              "value": "GKV123456789",
+              "assigner": {
+                "display": "German Public Health Insurance"
+              }
+            },
+            {
+              "use": "usual",
+              "type": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                    "code": "MR",
+                    "display": "Patient Identification Number"
+                  }
+                ]
+              },
+              "system": "http://hospital.smarthealthit.org",
+              "value": "PID987654321",
+              "assigner": {
+                "display": "Example Hospital"
+              }
+            },
+            {
+              "use": "official",
+              "type": {
+                "coding": [
+                  {
+                    "system": "http://fhir.de/NamingSystem/pkv/patient",
+                    "code": "PKV",
+                    "display": "Versichertennummer (PKV)"
+                  }
+                ]
+              },
+              "system": "http://fhir.de/NamingSystem/pkv/patient",
+              "value": "PKV543210987",
+              "assigner": {
+                "display": "German Private Health Insurance"
+              }
+            }
+          ],
+          "name": [
+            {
+              "family": {
+                "extension": [
+                  {
+                    "url": "http://fhir.de/StructureDefinition/humanname-namenszusatz",
+                    "valueString": "Doe"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-name",
+                    "valueString": "John"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix",
+                    "valueString": "zu"
+                  }
+                ]
+              },
+              "given": [
+                "John"
+              ],
+              "text": "John Doe",
+              "use": "official",
+              "prefix": [
+                "Mr."
+              ]
+            },
+            {
+              "family": {
+                "extension": [
+                  {
+                    "url": "http://fhir.de/StructureDefinition/humanname-namenszusatz",
+                    "valueString": "Von"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-name",
+                    "valueString": "Smith"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix",
+                    "valueString": "zu"
+                  }
+                ]
+              },
+             
+              "text": "Von Smith",
+              "use": "maiden",
+              "prefix": [
+                "Mr."
+              ]
+            }
+          ],
+          "gender": "male",
+          "birthDate": "1980-01-01",
+          "deceasedBoolean": true,
+          "address": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-precinct",
+                  "valueString": "Mitte"
+                }
+              ],
+              "use": "home",
+              "type": "both",
+              "line": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                      "valueString": "123 Main St"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                      "valueString": "Apt 4B"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-additionalLocator",
+                      "valueString": "Wohnung 3"
+                    }
+                  ]
+                }
+              ],
+              "city": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://fhir.de/StructureDefinition/destatis/ags",
+                      "valueString": "Hamburg"
+                    }
+                  ]
+                }
+              ],
+              "state": "Hamburg",
+              "postalCode": "20095",
+              "country": "Germany"
+            },
+            {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-precinct",
+                    "valueString": "Kreuzberg"
+                  }
+                ],
+                "use": "home",
+                "type": "postal",
+                "line": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-postBox",
+                        "valueString": "Musterstrasse"
+                      }
+                    ]
+                  }
+                ],
+                "city": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://fhir.de/StructureDefinition/destatis/ags",
+                        "valueString": "Berlin"
+                      }
+                    ]
+                  }
+                ],
+                "state": "Berlin",
+                "postalCode": "10997",
+                "country": "Germany"
+              }
+          ],
+          "contact": [
+            {
+              "relationship": [
+                {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/contact-relationship",
+                      "code": "emergency",
+                      "display": "Emergency Contact"
+                    }
+                  ],
+                  "text": "Emergency Contact"
+                }
+              ],
+              "name": {
+                "use": "official",
+                "given": [
+                  "John"
+                ],
+                "family": "Smith",
+                "prefix": [
+                  "Mr."
+                ]
+              },
+              "telecom": [
+                {
+                  "system": "phone",
+                  "value": "+1-555-1234"
+                },
+                {
+                  "system": "email",
+                  "value": "jane.doe@example.com"
+                }
+              ],
+              "organization": [
+                {
+                  "reference": "Organization/5678",
+                  "display": "Organization"
+                }
+              ]
+            }
+          ],
+          "managingOrganization": [
+            {
+              "reference": "Organization/1234",
+              "display": "managing Organization"
+            }
+          ]
+        },
+        "request": {
+          "method": "POST",
+          "url": "Patient"
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:04121321-4af5-424c-a0e1-ed3aab1c589d",
+        "resource": {
+          "resourceType": "Condition",
+          "id": "example-cause-of-death",
+          "meta": {
+            "profile": [
+              "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache"
+            ],
+            "versionId": "1",
+            "lastUpdated": "2024-08-24T00:00:00Z"
+          },
+          "identifier": [
+            {
+              "use": "official",
+              "system": "http://hospital.example.org",
+              "value": "123456"
+            }
+          ],
+          "clinicalStatus": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                "code": "resolved",
+                "display": "Resolved"
+              }
+            ]
+          },
+          "verificationStatus": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                "code": "confirmed",
+                "display": "Confirmed"
+              }
+            ]
+          },
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "16100001",
+                  "display": "Cause of death"
+                },
+                {
+                  "system": "http://loinc.org",
+                  "code": "79378-6",
+                  "display": "Cause of death"
+                }
+              ],
+              "text": "Cause of death"
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/sid/icd-10",
+                "code": "I60",
+                "display": "Subarachnoid hemorrhage"
+              }
+            ],
+            "text": "Subarachnoid hemorrhage"
+          },
+          "subject": {
+            "reference": "Patient/example-patient"
+          },
+          "recordedDate": "2024-08-24T00:00:00Z",
+          "note": [
+            {
+              "text": "This condition is recorded as the cause of death based on the patient's medical history."
+            }
+          ]
+        },
+        "request": {
+          "method": "POST",
+          "url": "Condition"
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:04121321-4af5-424c-a0e1-ed1aab1c589d",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "vitalstatus-example",
+          "meta": {
+            "profile": [
+              "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus"
+            ]
+          },
+          "status": "final",
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8716-3",
+                "display": "Vital signs"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "Patient/example-patient"
+          },
+          "effectiveDateTime": "2024-08-21T14:30:00+00:00",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/ValueSet/Vitalstatus",
+                "code": "dead",
+                "display": "Dead"
+              }
+            ]
+          },
+          "note": [
+            {
+              "text": "The patient is recorded Dead. Cause of death is based on the patient's medical history."
+            }
+          ]
+        },
+        "request": {
+          "method": "POST",
+          "url": "Observation"
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000002",
+        "request": {
+          "method": "POST",
+          "url": "Organization"
+        },
+        "resource": {
+          "resourceType": "Organization",
+          "id": "1234",
+          "name": "Example Administrative Organization",
+          "identifier": [
+            {
+              "system": "http://hl7.org/fhir/identifier",
+              "value": "ORG-98765"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "5678",
+        "request": {
+          "method": "POST",
+          "url": "Organization"
+        },
+        "resource": {
+          "resourceType": "Organization",
+          "id": "5678",
+          "name": "Example Health Clinic",
+          "identifier": [
+            {
+              "system": "http://hl7.org/fhir/identifier",
+              "value": "ORG-12345"
+            }
+          ]
+        }
+      }
+    ]
+  }

@@ -68,6 +68,7 @@ public abstract class KdsBidirectionalTest {
 
     @Before
     public void init() {
+        //todo: GASPER: see how to refactor tests so context and opt is not explicitly referenced but rather taken based on the context.condition
         repo = new TestOpenFhirMappingContext(fhirPath, openFhirStringUtils);
         fhirPath.setEvaluationContext(new IFhirPathEvaluationContext() {
             // todo!!
@@ -103,11 +104,12 @@ public abstract class KdsBidirectionalTest {
     @Test
     public void toOpenEhrTest() {
         final JsonObject flatPaths = toOpenEhr();
+
         final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(new Gson().toJson(flatPaths), webTemplate);
         fhirToOpenEhr.enrichComposition(compositionFromFlat);
 
 
-        if (TEST_AGAINST_EHRBASE) {
+        if (testAgainstEhrBase()) {
             final ResponseEntity<String> result = new EhrBaseTestClient(EHRBASE_HOST,
                     EHRBASE_BASIC_USERNAME,
                     EHRBASE_BASIC_PASSWORD)
@@ -117,14 +119,19 @@ public abstract class KdsBidirectionalTest {
                 final String body = result.getBody();
                 final String[] errors = body.split(", /");
                 Arrays.stream(errors).forEach(log::error);
+            } else {
+                log.info("SUCCESSfully stored to EHRBase.");
             }
-            log.info("SUCCESSfully stored to EHRBase.");
             Assert.assertEquals(204, resultCode);
 
         }
     }
 
     protected abstract JsonObject toOpenEhr();
+
+    protected boolean testAgainstEhrBase() {
+        return TEST_AGAINST_EHRBASE;
+    }
 
     protected String getFlat(final String path) {
         final InputStream inputStream = this.getClass().getResourceAsStream(path);

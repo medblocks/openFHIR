@@ -3,7 +3,6 @@ package com.medblocks.openfhir;
 import ca.uhn.fhir.parser.JsonParser;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.nedap.archie.rm.composition.Composition;
 import com.medblocks.openfhir.db.entity.FhirConnectContextEntity;
 import com.medblocks.openfhir.db.repository.FhirConnectContextRepository;
 import com.medblocks.openfhir.fc.FhirConnectConst;
@@ -12,6 +11,7 @@ import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
+import com.nedap.archie.rm.composition.Composition;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
@@ -155,7 +155,7 @@ public class OpenFhirEngine {
         // get context and operational template
         final Resource resource = parseIncomingFhirResource(incomingFhirResource);
         final FhirConnectContextEntity fhirConnectContext = getContextForFhir(incomingTemplateId, incomingFhirResource);
-        if(fhirConnectContext == null) {
+        if (fhirConnectContext == null) {
             final String logMsg = String.format("Couldn't find any Context mapper for the given Resource. Make sure at least one Context mapper exists where fhir.resourceType is of this type (%s) and condition within the context mapper allows for it to be applied on this specific resource.",
                     resource.getResourceType().name());
             log.error(logMsg);
@@ -195,9 +195,11 @@ public class OpenFhirEngine {
         }
     }
 
-    public String toFhir(final String flatJson, final String incomingTemplateId) {
-        final FhirConnectContextEntity fhirConnectContext = getContextForOpenEhr(flatJson, incomingTemplateId);
+    public String toFhir(final String openEhrCompositionJson, final String incomingTemplateId) {
+        // find the context mapper for the given template
+        final FhirConnectContextEntity fhirConnectContext = getContextForOpenEhr(openEhrCompositionJson, incomingTemplateId);
 
+        // validate prerequisites before starting any kind of mapping logic
         validatePrerequisites(fhirConnectContext, fhirConnectContext != null ? fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId() : incomingTemplateId);
 
         final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId();
@@ -206,15 +208,20 @@ public class OpenFhirEngine {
         final OPERATIONALTEMPLATE operationalTemplate = cachedUtils.getOperationalTemplate(templateIdToUse);
         final WebTemplate webTemplate = cachedUtils.parseWebTemplate(operationalTemplate);
 
+        // prepare cache (OpenFhirContextRepository) for the mapping
         prodOpenFhirMappingContext.initMappingCache(fhirConnectContext.getFhirConnectContext(), operationalTemplate, webTemplate);
 
         Composition composition;
         try {
-            composition = flatJsonUnmarshaller.unmarshal(flatJson, cachedUtils.parseWebTemplate(operationalTemplate));
+            // try to unmarshall to Composition with a flat json unmarshaller, if it fails, we assume it's actually
+            // Composition in a Canonical format (//todo if this proves to be a performance issue, perhaps whether
+            // todo its in flat format or canonical should be passed as an input parameter to the RESTful call)
+            composition = flatJsonUnmarshaller.unmarshal(openEhrCompositionJson, cachedUtils.parseWebTemplate(operationalTemplate));
         } catch (Exception e) {
             log.error("Error trying to unmarshall flat path, {}. Will try with a canonical json unmarshaller.", e.getMessage());
-            composition = new CanonicalJson().unmarshal(flatJson);
-            if(composition.getContent().isEmpty()) {
+            // try to unmarshall content from a canonical parser
+            composition = new CanonicalJson().unmarshal(openEhrCompositionJson);
+            if (composition.getContent().isEmpty()) {
                 log.error("Composition not properly unmarshalled. Empty content. Aborting translation.", e);
                 throw new IllegalArgumentException("Composition not properly unmarshalled. Empty content. Aborting translation. See log for more info.");
             }
@@ -226,6 +233,13 @@ public class OpenFhirEngine {
         return jsonParser.encodeResourceToString(fhir);
     }
 
+    /**
+     * Validating prerequisites for the mapping, which are that fhir connect context mapper actually exists, that
+     * operational template exists within the openFHIR state and that it's a valid one (can be parsed to WebTemplate).
+     *
+     * @param fhirConnectContext context mapper as found in the database based on the template id
+     * @param templateId         template id of the operational template used for mapping
+     */
     private void validatePrerequisites(final FhirConnectContextEntity fhirConnectContext, final String templateId) {
         if (fhirConnectContext == null) {
             log.error("Couldn't find a Context Mapper for the inbound request. If using flat format for the input body, make sure you set query parameter 'templateId' that matches a fhirConnectContext.openEHR.templateId value.");

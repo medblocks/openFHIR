@@ -78,20 +78,20 @@
                     },
                     "dose": {
                         "value": 250,
-                        "unit": "mg",
+                        "unit": "1",
                         "system": "http://unitsofmeasure.org",
                         "code": "mg"
                     },
                     "rateRatio": {
                         "numerator": {
                             "value": 250,
-                            "unit": "mg",
+                            "unit": "1",
                             "system": "http://unitsofmeasure.org",
                             "code": "mg"
                         },
                         "denominator": {
                             "value": 8,
-                            "unit": "h",
+                            "unit": "1",
                             "system": "http://unitsofmeasure.org",
                             "code": "h"
                         }
@@ -127,11 +127,12 @@
                 "form": {
                     "coding": [
                         {
-                            "system": "http://standardterms.edqm.eu",
-                            "code": "385055001",
+                            "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_BMP_DARREICHUNGSFORM",
+                            "code": "UTA",
                             "display": "Tablet"
                         }
-                    ]
+                    ],
+                    "text": "Tablet"
                 },
                 "ingredient": [
                     {
@@ -143,7 +144,7 @@
                                     "display": "Paracetamol"
                                 }
                             ],
-                            "text": "Paracetamol"
+                            "text": "Active"
                         },
                         "strength": {
                             "numerator": {

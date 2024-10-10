@@ -6,12 +6,12 @@ package com.medblocks.openfhir.fc;
 public class FhirConnectConst {
     public static final String FHIR_RESOURCE_FC = "$fhirResource";
     public static final String FHIR_ROOT_FC = "$fhirRoot";
+    public static final String THIS = "$this";
     public static final String OPENEHR_ARCHETYPE_FC = "$openEhrArchetype";
     public static final String OPENEHR_CONTEXT_FC = "$openEhrContext";
     public static final String OPENEHR_TYPE_NONE = "NONE";
     public static final String OPENEHR_TYPE_MEDIA = "MEDIA";
     public static final String OPENEHR_TYPE_DOSAGE = "DOSAGE";
-    public static final String OPENEHR_CONTEXT_EHRID_FC = "$ehr";
     public static final String REFERENCE = "$reference";
     public static final String DV_MULTIMEDIA= "MULTIMEDIA";
     public static final String DV_QUANTITY = "DV_QUANTITY";

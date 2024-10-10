@@ -12,23 +12,60 @@ mappings:
       fhir: "$fhirRoot.address"
       openehr: "$openEhrArchetype.straßenanschrift"
       type: "NONE"
+    condition:
+      targetRoot: "$fhirRoot.address"
+      targetAttribute: "type"
+      operator: "one of"
+      criteria: "[both]"
     followedBy:
       mappings:
-        - name: "stadt"
+        - name: "city"
           with:
-            fhir: "city"
-            openehr: "stadt"
+            fhir: "city.extension.value"
+            openehr: "gemeindeschlüssel"
             type: "STRING"
+
         - name: "bundesland"
           with:
             fhir: "state"
-            openehr: "bundesland"
+            openehr: "bundesland|value"
             type: "STRING"
+
         - name: "postal code"
           with:
             fhir: "postalCode"
             openehr: "postleitzahl"
             type: "STRING"
+
+        - name: "precinct"
+          with:
+            fhir: "extension.value"
+            openehr: "stadtteil"
+            type: "STRING"
+
+        - name: "state"
+          with:
+            fhir: "state"
+            openehr: "stadt"
+            type: "STRING"
+
+        - name: "country"
+          with:
+            fhir: "country"
+            openehr: "land|value"
+            type: "STRING"
+
+        - name: "type"
+          with:
+            fhir: "type"
+            openehr: "art|value"
+            type: "STRING"
+
+#        - name: "type"
+#          with:
+#            fhir: "type"
+#            openehr: "art2|value"
+#            type: "STRING"
 
         - name: "line"
           with:
@@ -39,29 +76,36 @@ mappings:
             mappings:
               - name: "straße"
                 with:
-                  fhir: "$fhirRoot"
+                  fhir: "extension.value"
                   openehr: "straße"
                   type: "STRING"
+                condition:
+                  targetRoot: "extension"
+                  targetAttribute: "url"
+                  operator: "one of"
+                  criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName]"
+
               - name: "hausnummer"
                 with:
-                  fhir: "$fhirRoot"
+                  fhir: "extension.value"
                   openehr: "hausnummer"
                   type: "STRING"
+                condition:
+                  targetRoot: "extension"
+                  targetAttribute: "url"
+                  operator: "one of"
+                  criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber]"
+
               - name: "adresszusatz"
                 with:
-                  fhir: "$fhirRoot"
+                  fhir: "extension.value"
                   openehr: "adresszusatz"
                   type: "STRING"
-              - name: "stadtteil"
-                with:
-                  fhir: "$fhirRoot"
-                  openehr: "stadtteil"
-                  type: "STRING"
-              - name: "gemeindeschlüssel"
-                with:
-                  fhir: "$fhirRoot"
-                  openehr: "gemeindeschlüssel"
-                  type: "STRING"
+                condition:
+                  targetRoot: "extension"
+                  targetAttribute: "url"
+                  operator: "one of"
+                  criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-additionalLocator]"
 
 
 
@@ -71,32 +115,99 @@ mappings:
       fhir: "$fhirRoot.address"
       openehr: "$openEhrArchetype.postfach"
       type: "NONE"
+    condition:
+      targetRoot: "$fhirRoot.address"
+      targetAttribute: "type"
+      operator: "one of"
+      criteria: "[postal]"
     followedBy:
       mappings:
-        - name: "postfach"
+        - name: "city"
           with:
-            fhir: "line"
-            openehr: "postfach"
+            fhir: "city.extension.value"
+            openehr: "gemeindeschlüssel"
             type: "STRING"
-        - name: "town"
+
+        - name: "bundesland"
           with:
-            fhir: "line"
-            openehr: "stadtteil"
+            fhir: "state"
+            openehr: "bundesland|value"
             type: "STRING"
-        - name: "stadt"
-          with:
-            fhir: "city"
-            openehr: "stadt"
-            type: "STRING"
+
         - name: "state"
           with:
             fhir: "state"
-            openehr: "bundesland" # code mapping?
+            openehr: "stadt"
             type: "STRING"
+
         - name: "postal code"
           with:
             fhir: "postalCode"
             openehr: "postleitzahl"
             type: "STRING"
+
+        - name: "precinct"
+          with:
+            fhir: "extension.value"
+            openehr: "stadtteil"
+            type: "STRING"
+
+        - name: "country"
+          with:
+            fhir: "country"
+            openehr: "land|value"
+            type: "STRING"
+
+        - name: "type"
+          with:
+            fhir: "type"
+            openehr: "art|value"
+            type: "STRING"
+
+#        - name: "type"
+#          with:
+#            fhir: "type"
+#            openehr: "art2|value"
+#            type: "STRING"
+
+        - name: "line"
+          with:
+            fhir: "line"
+            openehr: "$openEhrArchetype"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "straße"
+                with:
+                  fhir: "extension.value"
+                  openehr: "straße"
+                  type: "STRING"
+                condition:
+                  targetRoot: "extension"
+                  targetAttribute: "url"
+                  operator: "one of"
+                  criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName]"
+
+              - name: "hausnummer"
+                with:
+                  fhir: "extension.value"
+                  openehr: "hausnummer"
+                  type: "STRING"
+                condition:
+                  targetRoot: "extension"
+                  targetAttribute: "url"
+                  operator: "one of"
+                  criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber]"
+
+              - name: "adresszusatz"
+                with:
+                  fhir: "extension.value"
+                  openehr: "adresszusatz"
+                  type: "STRING"
+                condition:
+                  targetRoot: "extension"
+                  targetAttribute: "url"
+                  operator: "one of"
+                  criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-additionalLocator]"
 
 

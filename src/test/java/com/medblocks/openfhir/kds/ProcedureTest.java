@@ -111,6 +111,13 @@ public class ProcedureTest extends KdsBidirectionalTest {
 //        - name: "time"
         Assert.assertEquals("2024-08-20T16:00:00", jsonObject.getAsJsonPrimitive("kds_prozedur/procedure/time").getAsString());
 
+        /**
+         * manually fixing things for ehrbase
+         */
+        jsonObject.addProperty("kds_prozedur/procedure/ism_transition/current_state|terminology", "openehr");
+        jsonObject.addProperty("kds_prozedur/procedure/ism_transition/current_state|code", "532");
+        jsonObject.addProperty("kds_prozedur/procedure/ism_transition/current_state|value", "completed");
+
         return jsonObject;
     }
 }

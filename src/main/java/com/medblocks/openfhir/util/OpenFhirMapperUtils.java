@@ -116,11 +116,32 @@ public class OpenFhirMapperUtils {
         for (Mapping mapping : referencedMapping) {
             mapping.getWith().setFhir(parentFhirPath + "." + RESOLVE + "." + mapping.getWith().getFhir());
             if (!FhirConnectConst.REFERENCE.equals(openEhrPath) && mapping.getWith().getOpenehr() != null) {
-                mapping.getWith().setOpenehr(openEhrPath
-                        .replace(FhirConnectConst.REFERENCE + "/", "")
-                        .replaceAll("/", ".")
-                        + mapping.getWith().getOpenehr()
-                        .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
+                if(openEhrPath.startsWith(FhirConnectConst.REFERENCE)) {
+                    mapping.getWith().setOpenehr(openEhrPath
+                            .replace(FhirConnectConst.REFERENCE + "/", "")
+                            .replace(FhirConnectConst.REFERENCE+ ".", "")
+                            .replaceAll("/", ".")
+                            + mapping.getWith().getOpenehr()
+                            .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
+                } else if(openEhrPath.endsWith(FhirConnectConst.REFERENCE)) {
+                    final String followingOpenEhr = mapping.getWith().getOpenehr().replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, "");
+                    final String openEhrSuffix = StringUtils.isBlank(followingOpenEhr) ? "" : ("."+followingOpenEhr);
+                    mapping.getWith().setOpenehr(openEhrPath
+                            .replace("/"+FhirConnectConst.REFERENCE, "")
+                            .replace("."+FhirConnectConst.REFERENCE, "")
+                            .replaceAll("/", ".")
+                            + openEhrSuffix);
+                } else {
+                    mapping.getWith().setOpenehr(openEhrPath
+                            .replace(FhirConnectConst.REFERENCE + "/", ".")
+                            .replace("/"+FhirConnectConst.REFERENCE, ".")
+                            .replace("."+FhirConnectConst.REFERENCE, ".")
+                            .replace(FhirConnectConst.REFERENCE+ ".", ".")
+                            .replaceAll("/", ".")
+                            + mapping.getWith().getOpenehr()
+                            .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
+                }
+
             }
 
         }

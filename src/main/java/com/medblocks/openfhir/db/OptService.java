@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Component
 @Slf4j
@@ -41,8 +40,8 @@ public class OptService {
             final String normalizedTemplateId = OpenFhirMappingContext.normalizeTemplateId(operationaltemplate.getTemplateId().getValue());
             openEhrApplicationScopedUtils.parseWebTemplate(operationaltemplate);
             final OptEntity existing = optRepository.findByTemplateId(normalizedTemplateId);
-            if(existing != null) {
-                throw new IllegalArgumentException("Template with templateId " + operationaltemplate.getTemplateId() + " (normalized to: "+normalizedTemplateId+") already exists.");
+            if (existing != null) {
+                throw new IllegalArgumentException("Template with templateId " + operationaltemplate.getTemplateId() + " (normalized to: " + normalizedTemplateId + ") already exists.");
             }
             // get name from it
             final OptEntity entity = new OptEntity(StringUtils.isEmpty(id) ? null : id, opt, normalizedTemplateId, operationaltemplate.getTemplateId().getValue(), operationaltemplate.getTemplateId().getValue());
@@ -65,6 +64,13 @@ public class OptService {
         return optRepository.findByTemplateId(templateId).getContent();
     }
 
+    /**
+     * Ignore any white character at the beginning of the payload and parse content to OPERATIONALTEMPLATE
+     *
+     * @param content XML that represents a serialized operational template
+     * @return parsed OPERATIONALTEMPLATE from the given payload
+     * @throws XmlException if content is invalid XML after removing the white characters
+     */
     private OPERATIONALTEMPLATE parseOptFromString(final String content) throws XmlException {
         return TemplateDocument.Factory.parse(content.trim().replaceFirst("^([\\W]+)<", "<")).getTemplate();
     }

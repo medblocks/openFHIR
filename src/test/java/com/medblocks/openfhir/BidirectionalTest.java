@@ -309,7 +309,7 @@ public class BidirectionalTest {
     public void acpPoc() throws IOException {
         final FhirConnectContext context = getContext("/rso_poc_acp/acp-poc.context.yml");
         repo.initRepository(context, getClass().getResource("/rso_poc_acp/").getFile());
-        final OPERATIONALTEMPLATE operationalTemplate = getOperationalTemplate("/rso_poc_acp/dataset_poc_rso-zl.opt");
+        final OPERATIONALTEMPLATE operationalTemplate = getOperationalTemplate("/rso_poc_acp/ACP_POC.opt");
         final Bundle testBundle = testAcp();
         final Composition composition = fhirToOpenEhr.fhirToCompositionRm(context, testBundle, operationalTemplate);
 

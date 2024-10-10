@@ -95,10 +95,8 @@
             "text": "Recommendation to restart drug treatment"
           }
         ],
-        "effectivePeriod": {
-          "start": "2024-07-15",
-          "end": "2024-08-01"
-        },        "reasonCode": [
+        "effectiveDateTime": "2023-08-23T10:30:00Z",
+        "reasonCode": [
           {
             "coding": [
               {
@@ -188,7 +186,7 @@
         "medicationCodeableConcept": {
           "coding": [
             {
-              "system": "local",
+              "system": "http://www.whocc.no/atc",
               "code": "C09AA05",
               "display": "Ramipril"
             }
@@ -198,7 +196,7 @@
         "subject": {
           "reference": "Patient/example"
         },
-        "effectivePeriod": {
+        "effectiveDateTime": {
           "start": "2024-07-15",
           "end": "2024-08-01"
         },
@@ -253,8 +251,8 @@
         "code": {
           "coding": [
             {
-              "system": "local",
-              "code": "at0143",
+              "system": "http://www.whocc.no/atc",
+              "code": "N02BE01",
               "display": "Paracetamol"
             }
           ],
@@ -275,8 +273,8 @@
             "itemCodeableConcept": {
               "coding": [
                 {
-                  "system": "local",
-                  "code": "at0143",
+                  "system": "http://www.whocc.no/atc",
+                  "code": "N02BE01",
                   "display": "Paracetamol"
                 }
               ],
@@ -301,8 +299,8 @@
             "itemCodeableConcept": {
               "coding": [
                 {
-                  "system": "local",
-                  "code": "at0143",
+                  "system": "http://www.whocc.no/atc",
+                  "code": "1_N02BE01",
                   "display": "Paracetamol"
                 }
               ],
@@ -327,8 +325,8 @@
             "itemCodeableConcept": {
               "coding": [
                 {
-                  "system": "local",
-                  "code": "at0143",
+                  "system": "http://www.whocc.no/atc",
+                  "code": "2_N02BE01",
                   "display": "Paracetamol"
                 }
               ]

@@ -9,7 +9,7 @@ openEhrConfig:
 mappings:
   - name: "death date"
     with:
-      fhir: "$fhirRoot.deceased.as(DateTimeType)"
+      fhir: "$fhirRoot.deceased"
       openehr: "$openEhrArchetype.personendaten.angaben_zum_tod.angaben_zum_tod.sterbedatum"
       type: "DATETIME"
 
@@ -25,23 +25,5 @@ mappings:
             fhir: "code"
             openehr: "todesdiagnose"
             type: "CODEABLECONCEPT"
-
-        - name: "condition category"
-          with:
-            fhir: "category"
-            openehr: "todesdiagnose"
-            type: "CODEABLECONCEPT"
-
-        - name: "date"
-          with:
-            fhir: "recordedDate"
-            openehr: "sterbedatum"
-            type: "DATETIME"
-
-#        - name: "note"
-#          with:
-#            fhir: "note.text"
-#            openehr: "kommentar" # ????
-#            type: "STRING"
 
 
