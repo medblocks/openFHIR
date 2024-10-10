@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
+import static com.medblocks.openfhir.fc.FhirConnectConst.THIS;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
 
 /**
@@ -96,8 +98,8 @@ public class FhirInstanceCreator {
             }
 
             fhirPath = fhirPath
-                    .replace(RESOLVE + ".$fhirRoot.", "")
-                    .replace(RESOLVE + ".$fhirRoot", "");
+                    .replace(RESOLVE + "." + FHIR_ROOT_FC + ".", "")
+                    .replace(RESOLVE + "." + FHIR_ROOT_FC, "");
         }
 
         if (fhirPath.startsWith(".")) {
@@ -125,11 +127,11 @@ public class FhirInstanceCreator {
         final String preparedFhirPath = prepareFhirPathForInstantiation(clazz, fhirPath);
         final String[] splitFhirPaths = preparedFhirPath.split("\\.");
         for (int i = 0; i < splitFhirPaths.length; i++) {
-            String splitPath = splitFhirPaths[i];
+            String splitPath = splitFhirPaths[i].equals("class") ? "class_" : splitFhirPaths[i];
 
             final Field[] childElements = FieldUtils.getFieldsWithAnnotation(clazz, Child.class);
             final Field theField = Arrays.stream(childElements).filter(child -> splitPath.equals(child.getName())).findFirst().orElse(null);
-            boolean specialThisHandling = "$this".equals(splitPath); // means we really just one this same element, nothing else
+            boolean specialThisHandling = THIS.equals(splitPath); // means we really just one this same element, nothing else
             if (!specialThisHandling && theField == null) {
                 continue;
             }
@@ -137,7 +139,6 @@ public class FhirInstanceCreator {
             final boolean castFollows = i != (splitFhirPaths.length - 1) ? splitFhirPaths[i + 1].startsWith("as(") : false;
 
             // second part of the condition is there to solve cases when the path ends with a cast, i.e. asNeeded.as(Boolean)
-            // (preparedFhirPath.startsWith(splitPath) && splitFhirPaths.length == 2 && splitFhirPaths[1].startsWith("as("))
             if (preparedFhirPath.equals(splitPath)) {
                 // means we've reached the end
                 final String forcingClassToUse = resolveFollows ? resolveResourceType : forcingClass;
@@ -161,7 +162,7 @@ public class FhirInstanceCreator {
                 final String path = splitPath + (StringUtils.isBlank(followingWhereCondition) ? "" : ("." + followingWhereCondition));
                 return InstantiateAndSetReturn.builder()
                         .returning(specialThisHandling ? originalResource : setObj)
-                        .path(path.replace("$this", ""))
+                        .path(path.replace(THIS, ""))
                         .isList(specialThisHandling ? originalResource instanceof List : theField.getType() == List.class)
                         .build();
             }

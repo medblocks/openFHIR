@@ -19,6 +19,18 @@ mappings:
       operator: "one of"
       criteria: "[http://hospital.smarthealthit.org]"
 
+  - name: "fallstatus"
+    with:
+      fhir: "$fhirResource.class"
+      openehr: "$openEhrArchetype.context.fallstatus"
+      type: "CODING"
+
+  - name: "falltyp"
+    with:
+      fhir: "$fhirResource.type"
+      openehr: "$openEhrArchetype.context.falltyp"
+      type: "CODING"
+
 
   - name: "Aufnahmegrund extension"
     with:
@@ -177,7 +189,7 @@ mappings:
             targetRoot: "coding"
             targetAttribute: "system"
             operator: "one of"
-            criteria: "[http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert]"
+            criteria: "[local_terms]" # was http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert, but had to change to local_terms to conform to terminology
         - name: "Fachabteilungsschluessel"
           with:
             fhir: "coding"
@@ -187,5 +199,5 @@ mappings:
             targetRoot: "coding"
             targetAttribute: "system"
             operator: "one of"
-            criteria: "[http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel]"
+            criteria: "[local_terms]"  # was http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel, but had to change to local_terms to conform to terminology
 

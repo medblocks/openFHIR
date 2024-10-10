@@ -81,7 +81,7 @@
             {
               "coding": [
                 {
-                  "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                  "system": "local_terms",
                   "code": "einrichtungskontakt",
                   "display": "Einrichtungskontakt"
                 },
@@ -248,13 +248,13 @@
           "serviceType": {
             "coding": [
               {
-                "system":"http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert",
-                "code": "0100",
+                "system":"local_terms",
+                "code": "dept",
                 "display": "Innere Medizin"
               },
               {
-                "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel",
-                "code": "0200",
+                "system": "local_terms",
+                "code": "prov",
                 "display": "Geriatrie"
               }
             ],

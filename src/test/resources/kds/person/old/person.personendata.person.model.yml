@@ -18,31 +18,20 @@ mappings:
       targetRoot: "$fhirRoot.identifier"
       targetAttribute: "system"
       operator: "one of"
-      criteria: "[http://hospital.smarthealthit.org]"
+      criteria: "[id]"
 
-  - name: "maiden name"
+  - name: "person data name"
     with:
       fhir: "$fhirRoot.name"
       openehr: "$openEhrArchetype.geburtsname"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.structured_name.v1"
-    condition:
-      targetRoot: "$fhirRoot.name"
-      targetAttribute: "use"
-      operator: "one of"
-      criteria: "[maiden]"
 
-  - name: "official name"
+  - name: "non structured name"
     with:
-      fhir: "$fhirRoot.name"
+      fhir: "$fhirRoot.name.text"
       openehr: "$openEhrArchetype.name"
-      type: "NONE"
-    slotArchetype: "openEHR-EHR-CLUSTER.structured_name.v1"
-    condition:
-      targetRoot: "$fhirRoot.name"
-      targetAttribute: "use"
-      operator: "one of"
-      criteria: "[official]"
+      type: "STRING"
 
   - name: "organization"
     with:
@@ -89,7 +78,7 @@ mappings:
       targetRoot: "$fhirRoot.identifier"
       targetAttribute: "system"
       operator: "one of"
-      criteria: "[http://fhir.de/NamingSystem/gkv/patient]"
+      criteria: "[gkv]"
 
   - name: "pvk identifier"
     with:
@@ -100,4 +89,4 @@ mappings:
       targetRoot: "$fhirRoot.identifier"
       targetAttribute: "system"
       operator: "one of"
-      criteria: "[http://fhir.de/NamingSystem/pkv/patient]"
+      criteria: "[pkv]"

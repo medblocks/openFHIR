@@ -71,10 +71,4 @@ mappings:
             type: "NONE"
           slotArchetype: "openEHR-EHR-CLUSTER.medication.v2"
 
-  - name: "medication"
-    with:
-      fhir: "$fhirResource.medication.as(CodeableConcept).text"
-      openehr: "$openEhrArchetype.medikationseintrag.arzneimittel.arzneimittel-name"
-      type: "STRING"
-
 

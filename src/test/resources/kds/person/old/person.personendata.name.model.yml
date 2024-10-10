@@ -1,0 +1,42 @@
+format: "0.2.0"
+version: "0.2.0"
+
+# No fhirConfig, because this model has no direct Resource equivalent in FHIR. It can only be used in openEHR Archetype slots or as FHIR Resource attribute.
+
+openEhrConfig:
+  archetype: "openEHR-EHR-CLUSTER.structured_name.v1"
+
+mappings:
+  - name: "name"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$openEhrArchetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "vollständiger_name"
+          with:
+            fhir: "given"
+            openehr: "vollständiger_name"
+            type: "STRING"
+        - name: "use"
+          with:
+            fhir: "use"
+            openehr: "namensart"
+            type: "CODING"
+        - name: "family"
+          with:
+            fhir: "family"
+            openehr: "familienname-nachname"
+            type: "STRING"
+        - name: "prefix"
+          with:
+            fhir: "prefix"
+            openehr: "familienname-vorsatzwort"
+            type: "STRING"
+        - name: "suffix"
+          with:
+            fhir: "suffix"
+            openehr: "suffix"
+            type: "STRING"
+

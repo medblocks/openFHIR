@@ -56,6 +56,12 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         Assert.assertEquals("7.4", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/pro_laboranalyt:0/messwert:0/quantity_value|magnitude").getAsString());
         Assert.assertEquals("g/dL", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/pro_laboranalyt:0/messwert:0/quantity_value|unit").getAsString());
 
+        /**
+         * manually adding required things for ehrbase
+         */
+        jsonObject.addProperty("laborbericht/laborbefund/pro_laboranalyt:0/result_status|value", "final");
+        jsonObject.addProperty("laborbericht/laborbefund/pro_laboranalyt:0/result_status|code", "Final");
+
         return jsonObject;
     }
 

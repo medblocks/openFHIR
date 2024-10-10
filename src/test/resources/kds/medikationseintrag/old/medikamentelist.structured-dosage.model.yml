@@ -1,0 +1,40 @@
+format: "0.2.0"
+version: "0.2.0"
+
+# No fhirConfig, because this model has no direct Resource equivalent in FHIR. It can only be used in openEHR Archetype slots or as FHIR Resource attribute.
+
+openEhrConfig:
+  archetype: "openEHR-EHR-CLUSTER.dosage.v2"
+
+mappings:
+  - name: "free text"
+    with:
+      fhir: "$fhirRoot.text"
+      openehr: "$openEhrArchetype.dosierung_freitext"
+      type: "STRING"
+
+  - name: "sequence"
+    with:
+      fhir: "$fhirRoot.sequence"
+      openehr: "$openEhrArchetype.dosierungsreihenfolge"
+      type: "QUANTITY" # should this be something else?
+
+  - name: "dose and rate"
+    with:
+      fhir: "$fhirRoot.doseAndRate.dose.as(Quantity)"
+      openehr: "$openEhrArchetype.dosis.quantity_value"
+      type: "QUANTITY"
+
+
+  - name: "as needed"
+    with:
+      fhir: "$fhirRoot.asNeeded.as(BooleanType)"
+      openehr: "$openEhrArchetype.tägliche_dosierung.bei_bedarf"
+      type: "BOOL"
+
+  - name: "dosage timing"
+    with:
+      fhir: "$fhirRoot.timing"
+      openehr: "$openEhrArchetype.tägliche_dosierung"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-CLUSTER.timing_daily.v1"

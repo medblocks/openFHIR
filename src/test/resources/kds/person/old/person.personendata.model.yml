@@ -108,9 +108,4 @@ mappings:
                         fhir: "name"
                         openehr: "namenszeile"
                         type: "STRING"
-                    - name: "identifier"
-                      with:
-                        fhir: "identifier"
-                        openehr: "identifier.identifier_value"
-                        type: "IDENTIFIER"
 

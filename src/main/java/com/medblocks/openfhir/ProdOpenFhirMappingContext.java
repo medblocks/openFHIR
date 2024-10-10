@@ -18,6 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * RequestScoped cache of all the needed information for mapping (Context mappers, Model mappers and parsed
+ * OPERATIONALTEMPLATE and WebTemplate. This is requested multiple time throughout the mapping but except for the first
+ * time, should only be taken from cache directly to avoid performance issues
+ */
 @Component
 @RequestScope
 @Slf4j

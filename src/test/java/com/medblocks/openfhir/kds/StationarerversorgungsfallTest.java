@@ -40,8 +40,8 @@ public class StationarerversorgungsfallTest extends KdsBidirectionalTest {
         Assert.assertEquals("encounter-id-12345", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/context/fall-kennung").getAsString());
 
         // "Fachabteilungsschluessel-erweitert"
-        Assert.assertEquals("0100", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/aufnahmedaten/vorherige_verantwortliche_organisationseinheit_vor_aufnahme/typ|code").getAsString());
-        Assert.assertEquals("http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/aufnahmedaten/vorherige_verantwortliche_organisationseinheit_vor_aufnahme/typ|terminology").getAsString());
+        Assert.assertEquals("dept", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/aufnahmedaten/vorherige_verantwortliche_organisationseinheit_vor_aufnahme/typ|code").getAsString());
+        Assert.assertEquals("local_terms", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/aufnahmedaten/vorherige_verantwortliche_organisationseinheit_vor_aufnahme/typ|terminology").getAsString());
 
         // "discharge disposition" todo: fix this once mapping is confirmed to not be the same as the extension one
 //        Assert.assertEquals("home", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/entlassungsdaten/entlassungsgrund|code").getAsString());
@@ -56,8 +56,8 @@ public class StationarerversorgungsfallTest extends KdsBidirectionalTest {
         Assert.assertEquals("2022-04-03T06:05:06", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/entlassungsdaten/datum_uhrzeit_der_entlassung").getAsString());
 
         // service type coding
-        Assert.assertEquals("0100", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/aufnahmedaten/vorherige_verantwortliche_organisationseinheit_vor_aufnahme/organisationsschlüssel|code").getAsString());
-        Assert.assertEquals("http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/aufnahmedaten/vorherige_verantwortliche_organisationseinheit_vor_aufnahme/organisationsschlüssel|terminology").getAsString());
+        Assert.assertEquals("dept", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/aufnahmedaten/vorherige_verantwortliche_organisationseinheit_vor_aufnahme/organisationsschlüssel|code").getAsString());
+        Assert.assertEquals("local_terms", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/aufnahmedaten/vorherige_verantwortliche_organisationseinheit_vor_aufnahme/organisationsschlüssel|terminology").getAsString());
 
 
         Assert.assertEquals("zimmer-1", jsonObject.getAsJsonPrimitive("stationärer_versorgungsfall/aufnahmedaten/vorheriger_patientenstandort_vor_aufnahme/zimmer").getAsString());
@@ -116,10 +116,10 @@ public class StationarerversorgungsfallTest extends KdsBidirectionalTest {
 
         final List<Coding> serviceTypeCodings = encounter.getServiceType().getCoding();
         Assert.assertEquals(2, serviceTypeCodings.size());
-        Assert.assertEquals("42", serviceTypeCodings.stream().filter(stc -> stc.getSystem().equals("http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert")).map(sct -> sct.getCode()).findFirst().orElse(null));
-        Assert.assertEquals("No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/Fachabteilungsschluessel-erweitert' available", serviceTypeCodings.stream().filter(stc -> stc.getSystem().equals("http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert")).map(sct -> sct.getDisplay()).findFirst().orElse(null));
-        Assert.assertEquals("E", serviceTypeCodings.stream().filter(stc -> stc.getSystem().equals("http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel")).map(sct -> sct.getCode()).findFirst().orElse(null));
-        Assert.assertEquals("Einweisung durch einen Arzt", serviceTypeCodings.stream().filter(stc -> stc.getSystem().equals("http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel")).map(sct -> sct.getDisplay()).findFirst().orElse(null));
+        Assert.assertEquals("42", serviceTypeCodings.stream().filter(stc -> stc.getSystem().equals("local_terms")).map(sct -> sct.getCode()).findFirst().orElse(null));
+        Assert.assertEquals("No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/Fachabteilungsschluessel-erweitert' available", serviceTypeCodings.stream().filter(stc -> stc.getSystem().equals("local_terms")).map(sct -> sct.getDisplay()).findFirst().orElse(null));
+        Assert.assertEquals("E", serviceTypeCodings.stream().filter(stc -> stc.getSystem().equals("local_terms")).map(sct -> sct.getCode()).collect(Collectors.toList()).get(1));
+        Assert.assertEquals("Einweisung durch einen Arzt", serviceTypeCodings.stream().filter(stc -> stc.getSystem().equals("local_terms")).map(sct -> sct.getDisplay()).collect(Collectors.toList()).get(1));
 
         Assert.assertEquals("2022-04-03T04:05:06+02:00", encounter.getPeriod().getStartElement().getValueAsString());
         Assert.assertEquals("2022-02-03T04:05:06+01:00", encounter.getPeriod().getEndElement().getValueAsString());

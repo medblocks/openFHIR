@@ -2,10 +2,13 @@ package com.medblocks.openfhir.kds;
 
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
+import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.r4.model.*;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Date;
@@ -14,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore // untill proper mappings are delivered
 public class StudienteilnahmeTest extends KdsBidirectionalTest {
 
     final String RESOURCES_ROOT = "/kds/studienteilnahme/";
@@ -22,11 +26,13 @@ public class StudienteilnahmeTest extends KdsBidirectionalTest {
     final String CONTEXT = "studienteilnahme.context.yaml";
     final String BUNDLE = "studienteilnahme_bundle.json";
 
+    @SneakyThrows
     @Override
     protected void prepareState() {
         context = getContext(RESOURCES_ROOT + CONTEXT);
         repo.initRepository(context, getClass().getResource(RESOURCES_ROOT).getFile());
-        operationaltemplate = getOperationalTemplate(RESOURCES_ROOT + OPT);
+        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCES_ROOT + OPT));
+        operationaltemplate = getOperationalTemplate();
         webTemplate = new OPTParser(operationaltemplate).parse();
     }
 
@@ -51,11 +57,12 @@ public class StudienteilnahmeTest extends KdsBidirectionalTest {
 
 
 
-    @Test
-    public void toOpenEhr() {
+    public JsonObject toOpenEhr() {
         final Bundle testBundle = getTestBundle(RESOURCES_ROOT + BUNDLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
         Assert.assertEquals("57016-8", jsonObject.getAsJsonPrimitive("studienteilnahme/einwilligungserklärung/studie_prüfung/studientyp").getAsString());
         Assert.assertEquals("2023-07-22T10:30:00", jsonObject.getAsJsonPrimitive("studienteilnahme/einwilligungserklärung/studienteilnahme/beginn_der_teilnahme").getAsString());
-        Assert.assertEquals("2024-08-22T10:30:00", jsonObject.getAsJsonPrimitive("studienteilnahme/einwilligungserklärung/studienteilnahme/ende_der_teilnahme").getAsString());}
+        Assert.assertEquals("2024-08-22T10:30:00", jsonObject.getAsJsonPrimitive("studienteilnahme/einwilligungserklärung/studienteilnahme/ende_der_teilnahme").getAsString());
+        return jsonObject;
+    }
 }

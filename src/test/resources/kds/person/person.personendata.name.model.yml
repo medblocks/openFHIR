@@ -16,27 +16,58 @@ mappings:
       mappings:
         - name: "vollständiger_name"
           with:
-            fhir: "given"
-            openehr: "vollständiger_name"
+            fhir: "text"
+            openehr: "vollständiger_name" #full name
             type: "STRING"
+
         - name: "use"
           with:
             fhir: "use"
             openehr: "namensart"
             type: "CODING"
+
+        - name: "given"
+          with:
+            fhir: "given"
+            openehr: "vorname"
+            type: "STRING"
+
+        - name: "familyfull"
+          with:
+            fhir: "text"
+            openehr: "familienname"
+            type: "STRING"
+
         - name: "family"
           with:
-            fhir: "family"
+            fhir: "family.extension"
             openehr: "familienname-nachname"
             type: "STRING"
-        - name: "prefix"
+          condition:
+            targetRoot: "$fhirRoot.family.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-name]"
+
+        - name: "namens zusatz"
           with:
-            fhir: "prefix"
+            fhir: "family.extension"
+            openehr: "familienname-namenszusatz"
+            type: "STRING"
+          condition:
+            targetRoot: "$fhirRoot.family.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/humanname-namenszusatz]"
+
+        - name: "familienname vorsatzwort"
+          with:
+            fhir: "family.extension"
             openehr: "familienname-vorsatzwort"
             type: "STRING"
-        - name: "suffix"
-          with:
-            fhir: "suffix"
-            openehr: "suffix"
-            type: "STRING"
+          condition:
+            targetRoot: "$fhirRoot.family.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-prefix]"
 
