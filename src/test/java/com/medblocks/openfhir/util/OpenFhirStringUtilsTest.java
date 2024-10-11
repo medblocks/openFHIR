@@ -190,6 +190,17 @@ public class OpenFhirStringUtilsTest {
                         "Encounter",
                         null));
 
+        condition = new Condition();
+        condition.setTargetRoot("Patient.address.line.extension");
+        condition.setTargetAttribute("url");
+        condition.setCriteria("[http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName]");
+        condition.setOperator("one of");
+        Assert.assertEquals("Patient.address.where(type.toString().contains('both')).line.extension.where(url.toString().contains('http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName')).value",
+                openFhirStringUtils.getFhirPathWithConditions("Patient.address.line.extension.value",
+                        condition,
+                        "Patient",
+                        "Patient.address.where(type.toString().contains('both')).line"));
+
     }
 
     @Test

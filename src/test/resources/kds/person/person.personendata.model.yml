@@ -73,6 +73,11 @@ mappings:
     slotArchetype: "openEHR-EHR-CLUSTER.person.v1"
     followedBy:
       mappings:
+        - name: "name"
+          with:
+            fhir: "name.text"
+            openehr: "name"
+            type: "STRING"
         - name: "role"
           with:
             fhir: "relationship"

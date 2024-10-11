@@ -115,13 +115,20 @@ public class FhirInstanceCreator {
             } else {
                 shouldHandleWhere = splitByDot[1].startsWith("where");
             }
+
+            if(fhirPath.startsWith("where")) {
+                shouldHandleWhere = true;
+            }
+
             if (shouldHandleWhere) {
                 followingWhereCondition = openFhirStringUtils.extractWhereCondition(fhirPath);
             }
         }
 
         if (followingWhereCondition != null) {
-            fhirPath = fhirPath.replace("." + followingWhereCondition, "");
+            fhirPath = fhirPath
+                    .replace("." + followingWhereCondition, "")
+                    .replace(followingWhereCondition, "");
         }
 
         final String preparedFhirPath = prepareFhirPathForInstantiation(clazz, fhirPath);
