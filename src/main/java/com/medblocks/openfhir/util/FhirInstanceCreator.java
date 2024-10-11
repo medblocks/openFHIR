@@ -73,6 +73,14 @@ public class FhirInstanceCreator {
             clazz = resource.getClass();
         }
 
+        if(StringUtils.isBlank(fhirPath)) {
+            return InstantiateAndSetReturn.builder()
+                    .returning(resource)
+                    .path("")
+                    .isList(resource instanceof List)
+                    .build();
+        }
+
         if (resource instanceof Reference) {
             resource = ((Reference) resource).getResource() == null ? resource : ((Reference) resource).getResource();
             clazz = resource.getClass();
