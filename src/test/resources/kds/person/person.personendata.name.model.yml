@@ -40,33 +40,33 @@ mappings:
 
         - name: "family"
           with:
-            fhir: "family.extension"
+            fhir: "family.extension.value"
             openehr: "familienname-nachname"
             type: "STRING"
           condition:
-            targetRoot: "$fhirRoot.family.extension"
+            targetRoot: "family.extension"
             targetAttribute: "url"
             operator: "one of"
             criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-name]"
 
         - name: "namens zusatz"
           with:
-            fhir: "family.extension"
+            fhir: "family.extension.value"
             openehr: "familienname-namenszusatz"
             type: "STRING"
           condition:
-            targetRoot: "$fhirRoot.family.extension"
+            targetRoot: "family.extension"
             targetAttribute: "url"
             operator: "one of"
             criteria: "[http://fhir.de/StructureDefinition/humanname-namenszusatz]"
 
         - name: "familienname vorsatzwort"
           with:
-            fhir: "family.extension"
+            fhir: "family.extension.value"
             openehr: "familienname-vorsatzwort"
             type: "STRING"
           condition:
-            targetRoot: "$fhirRoot.family.extension"
+            targetRoot: "family.extension"
             targetAttribute: "url"
             operator: "one of"
             criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-prefix]"

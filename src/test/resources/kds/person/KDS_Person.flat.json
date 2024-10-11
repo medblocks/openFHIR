@@ -48,15 +48,15 @@
   "person/personendaten/person/pid:0|id" : "PID987654321",
   "person/personendaten/person/versicherungsnummer_pkv|id" : "PKV543210987",
 
-  "person/personendaten/person/straßenanschrift:0/straße:0" : "123 Main St", --
-  "person/personendaten/person/straßenanschrift:0/hausnummer:0" : "Apt 4B", --
-  "person/personendaten/person/straßenanschrift:0/adresszusatz:0" : "Wohnung 3", --
-  "person/personendaten/person/straßenanschrift:0/stadtteil" : "Mitte", --
-  "person/personendaten/person/straßenanschrift:0/gemeindeschlüssel" : "Hamburg", --
-  "person/personendaten/person/straßenanschrift:0/bundesland" : "Hamburg", --
-  "person/personendaten/person/straßenanschrift:0/postleitzahl" : "20095", --
+  "person/personendaten/person/straßenanschrift:0/straße:0" : "123 Main St", 
+  "person/personendaten/person/straßenanschrift:0/hausnummer:0" : "Apt 4B", 
+  "person/personendaten/person/straßenanschrift:0/adresszusatz:0" : "Wohnung 3", 
+  "person/personendaten/person/straßenanschrift:0/stadtteil" : "Mitte", 
+  "person/personendaten/person/straßenanschrift:0/gemeindeschlüssel" : "Hamburg", 
+  "person/personendaten/person/straßenanschrift:0/bundesland" : "Hamburg", 
+  "person/personendaten/person/straßenanschrift:0/postleitzahl" : "20095", 
   "person/personendaten/person/straßenanschrift:0/land|code" : "DE",
-  "person/personendaten/person/straßenanschrift:0/land|value" : "Germany", --
+  "person/personendaten/person/straßenanschrift:0/land|value" : "Germany", 
   "person/personendaten/person/straßenanschrift:0/land|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/iso3166-1-2",
   "person/personendaten/person/straßenanschrift:0/art|value" : "both",
   "person/personendaten/person/straßenanschrift:0/art|terminology" : "address-type",
@@ -101,10 +101,16 @@
   "person/personendaten/angaben_zum_tod/angaben_zum_tod/todesdiagnose|value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm' available",
   "person/personendaten/angaben_zum_tod/angaben_zum_tod/todesdiagnose|code" : "42",
   "person/personendaten/angaben_zum_tod/angaben_zum_tod/todesdiagnose|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm",
-  "person/personendaten/kontaktperson/rolle_relationship:0|value" : "Emergency Contact",
-  "person/personendaten/kontaktperson/rolle_relationship:0|code" : "emergency",
-  "person/personendaten/kontaktperson/rolle_relationship:0|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship",
-  "person/personendaten/kontaktperson/adresse/adresszeile" : "Lorem ipsum",
+  "person/personendaten/kontaktperson/name": "contact person name",
+  "person/personendaten/kontaktperson/rolle_relationship:0|value": "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship' available",
+  "person/personendaten/kontaktperson/rolle_relationship:0|code": "42",
+  "person/personendaten/kontaktperson/rolle_relationship:0|terminology": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship",
+  "person/personendaten/kontaktperson/rolle_relationship:1|value": "another contact person role relationship",
+  "person/personendaten/kontaktperson/rolle_relationship:1|code": "43",
+  "person/personendaten/kontaktperson/rolle_relationship:1|terminology": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship",
+
+  "person/personendaten/kontaktperson/adresse/adresszeile": "contact person address",
+
   "person/personendaten/kontaktperson/elektronische_kommunikation:0/art|other" : "phone",
   "person/personendaten/kontaktperson/elektronische_kommunikation:0/daten/text_value" : "+1-555-1234",
   "person/personendaten/kontaktperson/organisation/namenszeile" : "Example Health Clinic",
@@ -120,7 +126,7 @@
   "person/personendaten/_work_flow_id|id_scheme" : "scheme",
   "person/personendaten/_work_flow_id|namespace" : "unknown",
   "person/personendaten/_work_flow_id|type" : "ANY",
-  "person/vitalstatus/vitalstatus" : "Lorem ipsum",
+  "person/vitalstatus/vitalstatus" : "vital status text",
   "person/vitalstatus/fhir_status_der_beobachtung/status" : "final",
   "person/vitalstatus/zeitpunkt_der_feststellung" : "2022-02-03T04:05:06",
   "person/vitalstatus/language|code" : "de",

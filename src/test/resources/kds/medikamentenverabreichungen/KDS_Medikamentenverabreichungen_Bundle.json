@@ -78,20 +78,20 @@
                     },
                     "dose": {
                         "value": 250,
-                        "unit": "1",
+                        "unit": "mg",
                         "system": "http://unitsofmeasure.org",
                         "code": "mg"
                     },
                     "rateRatio": {
                         "numerator": {
                             "value": 250,
-                            "unit": "1",
+                            "unit": "mg",
                             "system": "http://unitsofmeasure.org",
                             "code": "mg"
                         },
                         "denominator": {
                             "value": 8,
-                            "unit": "1",
+                            "unit": "h",
                             "system": "http://unitsofmeasure.org",
                             "code": "h"
                         }

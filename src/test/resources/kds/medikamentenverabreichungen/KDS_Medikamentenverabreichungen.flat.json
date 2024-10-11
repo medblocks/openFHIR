@@ -46,7 +46,7 @@
   "kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/dosis|magnitude": 22.0,
   "kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/dosis|unit": "1",
   "kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/dosierung_freitext": "20 mg orally once daily",
-  "kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/zeitablauf_-_täglich/verabreichungszeitpunkt_-intervall": "04:05:06",
+  "kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/zeitablauf_-_täglich/verabreichungszeitpunkt_-intervall/time_value": "04:05:06",
   "kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/verabreichungsrate/quantity_value|unit": "l/h",
   "kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/verabreichungsrate/quantity_value|magnitude": 21.0,
   "kds_medikamentenverabreichungen/arzneimittelanwendung:0/klinische_indikation": "Reason code",

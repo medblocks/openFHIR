@@ -24,6 +24,7 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -248,6 +249,9 @@ public class OpenEhrToFhir {
                         && (whereInRemovedPath.equals(findingOuterMost.getRemovedPath())
                         || ("." + whereInRemovedPath).equals(findingOuterMost.getRemovedPath()));
                 if (StringUtils.isNotEmpty(findingOuterMost.getRemovedPath())) {
+
+                    handleReturnedListWithWhereCondition(findingOuterMost);
+
                     final FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn = fhirInstanceCreator.instantiateAndSetElement(findingOuterMost.getLastObject(),
                             findingOuterMost.getLastObject().getClass(),
                             removedPathIsOnlyWhere ? THIS : findingOuterMost.getRemovedPath(),
@@ -268,25 +272,29 @@ public class OpenEhrToFhir {
                                 .replace(generatingResource + ".", "")
                                 .replace(removedPath, "") + "." + castString + actualRemovedAndResolvedPartString;
 
+
                     } else {
-                        final String removedPath = findingOuterMost.getRemovedPath();
-                        final List<String> splitByDots = Arrays.stream(removedPath.split("\\.")).filter(e -> StringUtils.isNotBlank(e)).collect(Collectors.toList());
-                        final String suffix = splitByDots.get(0);
-                        final String where = splitByDots.size() > 1 && splitByDots.get(1).startsWith("where") ? ("." + openFhirStringUtils.extractWhereCondition(findingOuterMost.getRemovedPath())) : "";
-                        final String cast = splitByDots.size() > 1 && splitByDots.get(1).startsWith("as") ? ("." + splitByDots.get(1)) : "";
                         if (removedPathIsOnlyWhere) {
                             preparedFullFhirPathForCachePopulation = fhirPathWithConditions;
                         } else {
+                            String removedPath = findingOuterMost.getRemovedPath();
+                            final boolean startsWithWhere = removedPath.startsWith(".where(");
+                            if (startsWithWhere) {
+                                removedPath = removedPath.replace("." + openFhirStringUtils.extractWhereCondition(removedPath), "");
+                            }
+                            final List<String> splitByDots = Arrays.stream(removedPath.split("\\.")).filter(e -> StringUtils.isNotBlank(e)).collect(Collectors.toList());
+                            final String suffix = splitByDots.get(0);
+                            final String where = splitByDots.size() > 1 && splitByDots.get(1).startsWith("where") ? ("." + openFhirStringUtils.extractWhereCondition(removedPath)) : "";
+                            final String cast = splitByDots.size() > 1 && splitByDots.get(1).startsWith("as") ? ("." + splitByDots.get(1)) : "";
+
                             preparedFullFhirPathForCachePopulation = fhirPathWithConditions
                                     .replace(generatingResource + ".", "")
-                                    .replace(findingOuterMost.getRemovedPath(), "")
+                                    .replace(removedPath, "")
                                     + "."
                                     + suffix + where + cast;
                         }
                     }
-
                     hardcodedReturn.setPath(preparedFullFhirPathForCachePopulation);
-
 
                     populateIntermediateCache(hardcodedReturn,
                             instance.toString(),
@@ -361,6 +369,9 @@ public class OpenEhrToFhir {
                             || ("." + whereInRemoved).equals(findingOuterMost.getRemovedPath()));
 
                     if (StringUtils.isNotEmpty(findingOuterMost.getRemovedPath())) {
+
+                        handleReturnedListWithWhereCondition(findingOuterMost);
+
                         final FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn = fhirInstanceCreator.instantiateAndSetElement(findingOuterMost.getLastObject(),
                                 findingOuterMost.getLastObject().getClass(),
                                 removedPathIsOnlyWhere ? THIS : findingOuterMost.getRemovedPath(),
@@ -369,28 +380,39 @@ public class OpenEhrToFhir {
                         /**
                          * Needs to have full path to this item that will be added to the cache
                          */
-                        String preparedFullFhirPathForCachePopulation = fhirPathWithoutConditions
-                                .replace(conditioningFhirPath + ".", "")
-                                .replace(findingOuterMost.getRemovedPath(), "") + "." + (findingOuterMost.getRemovedPath().startsWith(".") ? findingOuterMost.getRemovedPath().split("\\.")[1] : findingOuterMost.getRemovedPath().split("\\.")[0]);
+                        final String preparedFullFhirPathForCachePopulation;
+                        if (findingOuterMost.getRemovedPath().startsWith(".as(")) {
+                            // was casting
+                            final String removedPath = findingOuterMost.getRemovedPath();
+                            final String[] splitRemovedPathByDot = removedPath.split("\\.");
+                            final String castString = splitRemovedPathByDot[1];
+                            final String actualRemovedAndResolvedPartString = splitRemovedPathByDot.length > 2 ? ("." + splitRemovedPathByDot[2]) : null;
+                            preparedFullFhirPathForCachePopulation = fhirPathWithoutConditions
+                                    .replace(generatingResource + ".", "")
+                                    .replace(removedPath, "") + "." + castString + actualRemovedAndResolvedPartString;
 
-                        // if the first item in removedPath after the 0th is 'where', add that as well
-                        boolean followedByWhere = false;
-                        if (findingOuterMost.getRemovedPath().startsWith(".")) {
-                            final String[] split = findingOuterMost.getRemovedPath().split("\\.");
-                            if (split.length > 2) {
-                                followedByWhere = split[2].startsWith("where");
-                            }
+
                         } else {
-                            final String[] split = findingOuterMost.getRemovedPath().split("\\.");
-                            if (split.length > 1) {
-                                followedByWhere = split[1].startsWith("where");
+                            if (removedPathIsOnlyWhere) {
+                                preparedFullFhirPathForCachePopulation = fhirPathWithoutConditions;
+                            } else {
+                                String removedPath = findingOuterMost.getRemovedPath();
+                                final boolean startsWithWhere = removedPath.startsWith(".where(");
+                                if (startsWithWhere) {
+                                    removedPath = removedPath.replace("." + openFhirStringUtils.extractWhereCondition(removedPath), "");
+                                }
+                                final List<String> splitByDots = Arrays.stream(removedPath.split("\\.")).filter(e -> StringUtils.isNotBlank(e)).collect(Collectors.toList());
+                                final String suffix = splitByDots.get(0);
+                                final String where = splitByDots.size() > 1 && splitByDots.get(1).startsWith("where") ? ("." + openFhirStringUtils.extractWhereCondition(removedPath)) : "";
+                                final String cast = splitByDots.size() > 1 && splitByDots.get(1).startsWith("as") ? ("." + splitByDots.get(1)) : "";
+
+                                preparedFullFhirPathForCachePopulation = fhirPathWithoutConditions
+                                        .replace(generatingResource + ".", "")
+                                        .replace(removedPath, "")
+                                        + "."
+                                        + suffix + where + cast;
                             }
                         }
-
-                        if (followedByWhere) {
-                            preparedFullFhirPathForCachePopulation += ("." + openFhirStringUtils.extractWhereCondition(findingOuterMost.getRemovedPath()));
-                        }
-
                         hardcodedReturn.setPath(preparedFullFhirPathForCachePopulation);
 
 
@@ -455,6 +477,50 @@ public class OpenEhrToFhir {
         return createdResources;
     }
 
+    /**
+     * When from instantiated cache we get a list of some elements and removedPath is a where, we need to check if
+     * something within that list actually matches the where or not. If it does - good - removedPath is applied on that element,
+     * but if it doesn't, setting removedPath objects on that element would overwrite what was already set there. So in this case,
+     * (when no elements within the list match the where), we rather instantiate a new such element, add it to the list and
+     * let the fhirInstanceCreator.instantiateAndSetElement be processed on that one.
+     * <p>
+     * Example of such a thing is where you get a list of extensions from the intermediate cache, but your fhirPath
+     * defines only a very specific extension (i.e. the one with url=123).
+     *
+     * @param findingOuterMost
+     */
+    private void handleReturnedListWithWhereCondition(final FindingOuterMost findingOuterMost) {
+        if (findingOuterMost.getLastObject() instanceof List<?> && (findingOuterMost.getRemovedPath().startsWith(".where") || findingOuterMost.getRemovedPath().startsWith("where"))) {
+            // i.e., returned found element was an array of extensions and what we're looking for is a very specific extension, not necessarily the one within the list
+            String where = openFhirStringUtils.extractWhereCondition(findingOuterMost.getRemovedPath());
+            if (where.startsWith(".")) {
+                where = where.substring(1);
+            }
+
+            boolean matchFound = false;
+            for (Object baseObj : ((List<?>) findingOuterMost.getLastObject())) {
+                final List<Base> matchingElements = fhirPathR4.evaluate((Base) baseObj, where, Base.class);
+                matchFound = !matchingElements.isEmpty();
+                if (matchFound) {
+                    break;
+                }
+            }
+
+            if (!matchFound) {
+                // it means a new one needs to be added because the one currently in there is not the one we should be setting anything to!
+                try {
+                    final Object newInstanceOfThisObject = ((List) findingOuterMost.getLastObject()).get(0).getClass().getDeclaredConstructor().newInstance();
+                    ((List) findingOuterMost.getLastObject()).add(newInstanceOfThisObject);
+                    findingOuterMost.setRemovedPath(findingOuterMost.getRemovedPath()
+                            .replace("." + where, "")
+                            .replace(where, ""));
+                } catch (final Exception e) {
+                    log.error("Error trying to handle returning list with a where condition", e);
+                }
+            }
+        }
+    }
+
     private void handleConditionMapping(final Condition condition,
                                         final Resource instance,
                                         final String fullOpenEhrPath,
@@ -469,7 +535,9 @@ public class OpenEhrToFhir {
         }
         final String stringFromCriteria = openFhirStringUtils.getStringFromCriteria(condition.getCriteria()).getCode();
 
-        final String conditionFhirPathWithConditions = openFhirStringUtils.getFhirPathWithConditions(condition.getTargetRoot(), condition, targetResource, parentFhirEhr);
+        final String fhirPathSuffix = ("." + condition.getTargetAttribute());
+
+        final String conditionFhirPathWithConditions = openFhirStringUtils.getFhirPathWithConditions(condition.getTargetRoot(), condition, targetResource, parentFhirEhr) + fhirPathSuffix;
         final FindingOuterMost existing = findTheOuterMostThatExistsWithinCache(instantiatedIntermediateElements,
                 instance,
                 conditionFhirPathWithConditions,
@@ -478,7 +546,6 @@ public class OpenEhrToFhir {
                 isFollowedBy,
                 parentFhirEhr,
                 parentOpenEhr);
-        existing.setRemovedPath(existing.getRemovedPath() + "." + condition.getTargetAttribute());
 
         if (existing.getLastObject() != null) {
             final FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn = fhirInstanceCreator.instantiateAndSetElement(existing.getLastObject(),
@@ -493,7 +560,7 @@ public class OpenEhrToFhir {
                     instance.getClass(),
                     fhirPathWithoutConditions,
                     null);
-            hardcodedReturn.setPath(conditionFhirPathWithConditions.replace(targetResource + ".", "")); // this may not be entirely correct, should probably replace differently....depending on whether targetRoot is fhirResource or not
+            hardcodedReturn.setPath(openFhirStringUtils.getFhirPathWithConditions(condition.getTargetRoot(), condition, targetResource, parentFhirEhr).replace(targetResource + ".", "")); // this may not be entirely correct, should probably replace differently....depending on whether targetRoot is fhirResource or not
             populateIntermediateCache(hardcodedReturn,
                     instance.toString(),
                     instantiatedIntermediateElements,
@@ -573,7 +640,7 @@ public class OpenEhrToFhir {
         String nextPath = fhirPathWithoutConditions.substring(0, fhirPathWithoutConditions.lastIndexOf("."));
         String removingPath = fhirPathWithoutConditions.replace(nextPath, "") + removedPath;
 
-        // if we'd be removing only a cast synatch (as(DateTimeType)), we actually need to remove more than that
+        // if we'd be removing only a cast syntax (as(DateTimeType)), we actually need to remove more than that
         if (Arrays.stream(removingPath.split("\\.")).filter(StringUtils::isNotBlank).allMatch(e -> e.startsWith(".as(") || e.startsWith("as("))) {
             final String[] splitNextPath = nextPath.split("\\.");
             removingPath = "." + splitNextPath[splitNextPath.length - 1] + removingPath;

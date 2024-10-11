@@ -23,7 +23,7 @@ mappings:
   - name: "effective"
     with:
       fhir: "$fhirResource.effective.as(DateTimeType)"
-      openehr: "$openEhrArchetype.arzneimittelanwendung.dosierung.zeitablauf_-_täglich.verabreichungszeitpunkt_-intervall"
+      openehr: "$openEhrArchetype.arzneimittelanwendung.dosierung.zeitablauf_-_täglich.verabreichungszeitpunkt_-intervall/time_value"
       type: "TIME"
 
   #order for structured dosage matters; it needs to be ABOVE "unstructured dosage" because of openEhrPaths being so similar (belows openehr path is actually within aboves)

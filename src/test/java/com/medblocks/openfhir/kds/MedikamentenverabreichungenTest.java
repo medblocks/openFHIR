@@ -88,7 +88,7 @@ public class MedikamentenverabreichungenTest extends KdsBidirectionalTest {
         Assert.assertEquals("Encounter/encounter-12345", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/context/fallidentifikation/fall-kennung").getAsString());
 
         // effective
-        Assert.assertEquals("16:30:00", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/zeitablauf_-_täglich/verabreichungszeitpunkt_-intervall").getAsString());
+        Assert.assertEquals("16:30:00", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/zeitablauf_-_täglich/verabreichungszeitpunkt_-intervall/time_value").getAsString());
 
         // reason code
         Assert.assertEquals("Hypertensive disorder, systemic arterial", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/klinische_indikation").getAsString());
@@ -100,17 +100,17 @@ public class MedikamentenverabreichungenTest extends KdsBidirectionalTest {
 
         // dose ratio
         Assert.assertEquals(250.0, jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/arzneimittel/wirkstoff/wirkstoffmenge/zähler|magnitude").getAsDouble(), 0);
-        Assert.assertEquals("1", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/arzneimittel/wirkstoff/wirkstoffmenge/zähler|unit").getAsString());
+        Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/arzneimittel/wirkstoff/wirkstoffmenge/zähler|unit").getAsString());
 
         Assert.assertEquals(8.0, jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/arzneimittel/wirkstoff/wirkstoffmenge/nenner|magnitude").getAsDouble(), 0);
-        Assert.assertEquals("1", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/arzneimittel/wirkstoff/wirkstoffmenge/nenner|unit").getAsString());
+        Assert.assertEquals("h", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/arzneimittel/wirkstoff/wirkstoffmenge/nenner|unit").getAsString());
 
         // dosage text
         Assert.assertEquals("20 mg orally once daily", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/dosierung_freitext").getAsString());
 
         // dose value
         Assert.assertEquals(250.0, jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/dosis|magnitude").getAsDouble(), 0);
-        Assert.assertEquals("1", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/dosis|unit").getAsString());
+        Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/dosierung/dosis|unit").getAsString());
 
         // name
         Assert.assertEquals("Paracetamol 500mg tablet", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/arzneimittel/arzneimittel-name").getAsString());

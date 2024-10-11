@@ -18,7 +18,7 @@ public class OpenFhirStringUtils {
 
     private final String TYPE_PATTERN = "\\[TYPE:[^\\]]+\\]";
     private final String RIGHT_MOST_INDEX = ":(\\d+)(?!.*:)";
-    private final String CAST_TYPE = "\\(([^()]*)\\)";
+    private final String CAST_TYPE = "as\\(([^()]*)\\)";
     private final String ALL_INDEXES = ":(\\d+)";
     private final String WHERE_EXTRACTOR = "where\\(.*?\\)";
     public static final String RESOLVE = "resolve()";
@@ -376,7 +376,7 @@ public class OpenFhirStringUtils {
                     // all is done already
                     return originalFhirPath;
                 } else {
-                    if(originalFhirPath.startsWith(parentPath.replace(parentsWhereCondition, ""))) {
+                    if (originalFhirPath.startsWith(parentPath.replace(parentsWhereCondition, ""))) {
                         return setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath);
                     } else {
                         final String remainingItemsFromParent = originalFhirPath.replace(setParentsWherePathToTheCorrectPlace(parentPath, originalFhirPath), "");
@@ -386,13 +386,18 @@ public class OpenFhirStringUtils {
             }
         } else {
             // append parent's where path first
-            final String withParentsWhereInPlace;
+            String withParentsWhereInPlace;
             final String remainingItems;
             final String actualConditionTargetRoot = condition.getTargetRoot().replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
             if (originalFhirPath.startsWith(actualConditionTargetRoot)) {
                 // then we use target root as the base path
-                remainingItems = originalFhirPath.replace(actualConditionTargetRoot, "");
                 withParentsWhereInPlace = setParentsWherePathToTheCorrectPlace(actualConditionTargetRoot, parentPath);
+                final String addedWhere = parentPath == null ? "" : extractWhereCondition(parentPath, true);
+                final String remainingFromCondition = actualConditionTargetRoot.replace(withParentsWhereInPlace.replace("." + addedWhere, ""), "");
+                if(!withParentsWhereInPlace.equals(remainingFromCondition)) {
+                    withParentsWhereInPlace += remainingFromCondition;
+                }
+                remainingItems = originalFhirPath.replace(actualConditionTargetRoot, "");
             } else {
                 withParentsWhereInPlace = setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath);
                 remainingItems = "";
@@ -412,7 +417,7 @@ public class OpenFhirStringUtils {
                 // then do your own where path
                 final String whereClause = ".where(" + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
                 // then suffix with whatever is left from the children's path
-                return withParentsWhereInPlace + whereClause + remainingItems;
+                return withParentsWhereInPlace + whereClause + (StringUtils.isBlank(remainingItems) ? "" : (remainingItems.startsWith(".") ? remainingItems : ("." + remainingItems)));
             }
         }
     }
@@ -440,7 +445,7 @@ public class OpenFhirStringUtils {
                 final String string = parents[parentIndex];
                 if (string.startsWith("where")) {
                     // a where follows
-                    final String firstWhereCondition = extractWhereCondition(parent.substring(parentSubstringCount));
+                    final String firstWhereCondition = extractWhereCondition(parent.substring(parentSubstringCount - 1));
                     childPathJoiner.add(firstWhereCondition);
                     childPathJoiner.add(childPath);
                     parentIndex += (firstWhereCondition.chars().filter(ch -> ch == '.').count() + 1);

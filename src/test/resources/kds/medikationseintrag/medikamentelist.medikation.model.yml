@@ -56,6 +56,14 @@ mappings:
             openehr: "endzeitpunkt_einnahme"
             type: "DATETIME"
 
+
+# order is important, because when mapping from openEHR to FHIR, we want the second mapping (better one) to be applied
+  - name: "medication"
+    with:
+      fhir: "$fhirResource.medication.as(CodeableConcept).text"
+      openehr: "$openEhrArchetype.medikationseintrag.arzneimittel.arzneimittel-name"
+      type: "STRING"
+
   - name: "medication"
     with:
       fhir: "$fhirResource.medication"
@@ -70,11 +78,5 @@ mappings:
             openehr: "$openEhrArchetype.medikationseintrag.arzneimittel"
             type: "NONE"
           slotArchetype: "openEHR-EHR-CLUSTER.medication.v2"
-
-  - name: "medication"
-    with:
-      fhir: "$fhirResource.medication.as(CodeableConcept).text"
-      openehr: "$openEhrArchetype.medikationseintrag.arzneimittel.arzneimittel-name"
-      type: "STRING"
 
 
