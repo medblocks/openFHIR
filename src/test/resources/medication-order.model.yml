@@ -1,0 +1,48 @@
+format: "0.2.0"
+version: "0.2.0"
+
+fhirConfig:
+  # For this Resource: http://hl7.org/fhir/medicationrequest.html
+  resource: "MedicationRequest"
+  # Convenience property to indicate at least one mapping directly works with a FHIR reference -> the resulting FHIR has to be a Bundle.
+  alwaysBundled: true
+openEhrConfig:
+  # For this Archetype: https://ckm.openehr.org/ckm/archetypes/1013.1.5946
+  archetype: "openEHR-EHR-INSTRUCTION.medication_order.v2"  # Note: Is actually at v3 but the use-case has v2
+
+mappings:
+  - name: "medication"
+    with:
+      fhir: "$fhirResource.medication"
+      openehr: "$reference"   # the path of the following reference mapping will be used
+      type: "NONE"
+    # States the FHIR target/source is a Reference.
+    reference:
+      # Implicitly is a "direct" reference, i.e. creates ad-hoc sub-resource. It will be added to the Bundle and referenced in the root Resource.
+      resourceType: "Medication"
+      mappings:
+        - name: "medication-item"
+          with:
+            fhir: "code.text"
+            openehr: "$openEhrArchetype.medication_order.order.medication_item"
+            type: "STRING"
+
+  - name: note
+    with:
+      fhir: "$fhirResource.note.text"
+      openehr: "$openEhrArchetype.medication_order.order.additional_instruction"
+      type: "STRING"
+
+  - name: time
+    with:
+      fhir: "$fhirResource.authoredOn"
+      openehr: "$openEhrArchetype.medication_order.order.order_details.order_start_date_time"
+      type: "DATETIME"
+
+  # openEHR data is linking to another Archetype (Cluster Slot)
+  - name: "therapeutic-direction"
+    with:
+      fhir: "$fhirResource" # Only forwarding the root resource, as attributes will be handled on following mappings.
+      openehr: "$openEhrArchetype.medication_order.order.therapeutic_direction"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-CLUSTER.therapeutic_direction.v1"   # acts as link to Model Mapping of given Archetype

@@ -1,0 +1,74 @@
+format: "0.2.0"
+version: "0.0.1"
+
+fhirConfig:
+  resource: "MedicationStatement"
+openEhrConfig:
+  archetype: "openEHR-EHR-OBSERVATION.medication_statement.v0"
+
+mappings:
+  - name: "identifier"
+    with:
+      fhir: "$fhirResource.identifier"
+      openehr: "$openEhrArchetype.medikationseintrag.identifier.externer_identifier"
+      type: "IDENTIFIER"
+    condition:
+      targetRoot: "$fhirResource.identifier"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria: "[external identifier]"
+
+  - name: "description"
+    with:
+      fhir: "$fhirResource.note.text"
+      openehr: "$openEhrArchetype.medikationseintrag.beschreibung"
+
+  #order for structured dosage matters; it needs to be ABOVE "unstructured dosage" because of openEhrPaths being so similar (belows openehr path is actually within aboves)
+
+  - name: "structured dosage"
+    with:
+      fhir: "$fhirResource.dosage"
+      openehr: "$openEhrArchetype.medikationseintrag.dosierung2"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-CLUSTER.dosage.v2"
+
+  - name: "unstructured dosage"
+    with:
+      fhir: "$fhirResource.dosage.text"
+      openehr: "$openEhrArchetype.medikationseintrag.dosierung"
+      type: "STRING"
+
+  - name: "effective"
+    with:
+      fhir: "$fhirResource.effective.as(Period)"
+      openehr: "$openEhrArchetype.medikationseintrag"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "start effective"
+          with:
+            fhir: "start"
+            openehr: "startzeitpunkt_einnahme"
+            type: "DATETIME"
+        - name: "end effective"
+          with:
+            fhir: "end"
+            openehr: "endzeitpunkt_einnahme"
+            type: "DATETIME"
+
+  - name: "medication"
+    with:
+      fhir: "$fhirResource.medication"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Medication"
+      mappings:
+        - name: "medication request medication"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$openEhrArchetype.medikationseintrag.arzneimittel"
+            type: "NONE"
+          slotArchetype: "openEHR-EHR-CLUSTER.medication.v2"
+
+

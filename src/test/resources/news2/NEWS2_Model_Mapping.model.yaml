@@ -1,0 +1,122 @@
+format: "0.2.0"
+version: "0.0.1"
+
+fhirConfig:
+  resource: "Observation"
+  #  if you don't have conditions up here already, you won't know which "mapper" to take for an "Observation", this one or say, the acvpu one? You need a differentiating factor
+  condition:
+    - targetRoot: "$fhirResource"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.1104051000000101]"
+    - targetRoot: "$fhirResource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[final]"
+    - targetRoot: "$fhirResource"
+      targetAttribute: "category.coding.code"
+      operator: "one of"
+      criteria: "[survey]"
+openEhrConfig:
+  archetype: "openEHR-EHR-OBSERVATION.news2.v1"
+
+mappings:
+  - name: "National Early Warning Score 2 (NEWS2)"
+    with:
+      fhir: "$fhirResource.value"
+      openehr: "$openEhrArchetype.national_early_warning_score_2_news2.total_score"
+      type: "QUANTITY"
+
+  - name: "time"
+    with:
+      fhir: "$fhirResource.effective"
+      openehr: "$openEhrArchetype.national_early_warning_score_2_news2.time"
+      type: "DATETIME"
+
+  - name: "Respiration Rate Score"
+    with:
+      fhir: "$fhirResource.component.value"
+      openehr: "$openEhrArchetype.national_early_warning_score_2_news2.respiration_rate"
+      type: "QUANTITY"
+    condition:
+      targetRoot: "$fhirResource.component"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.1104301000000104]"
+
+  - name: "SPO Scale 1"
+    with:
+      fhir: "$fhirResource.component.value"
+      openehr: "$openEhrArchetype.national_early_warning_score_2_news2.spo_scale_1"
+      type: "QUANTITY"
+    condition:
+      targetRoot: "$fhirResource.component"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.1104311000000102]"
+
+  #  - name: "SPO Scale 2"
+  #    with:
+  #      fhir: "$fhirResource.component.value"
+  #      openehr: "$openEhrArchetype.national_early_warning_score_2_news2.spo_scale_2"
+  #      type: "QUANTITY"
+  #    condition:
+  #      targetRoot: "$fhirResource"
+  #      targetAttribute: "component.code.coding.code"
+  #      operator: "one of"
+  #      criteria: "[$snomed.1104331000000105]"
+
+  - name: "air or oxygen score"
+    with:
+      fhir: "$fhirResource.component.value"
+      openehr: "$openEhrArchetype.national_early_warning_score_2_news2.air_or_oxygen"
+      type: "QUANTITY"
+    condition:
+      targetRoot: "$fhirResource.component"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.1104331000000105]"
+
+  - name: "systolic"
+    with:
+      fhir: "$fhirResource.component.value"
+      openehr: "$openEhrArchetype.national_early_warning_score_2_news2.systolic_blood_pressure"
+      type: "QUANTITY"
+    condition:
+      targetRoot: "$fhirResource.component"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.1104341000000101]"
+
+  - name: "consciousness"
+    with:
+      fhir: "$fhirResource.component.value"
+      openehr: "$openEhrArchetype.national_early_warning_score_2_news2.consciousness"
+      type: "QUANTITY"
+    condition:
+      targetRoot: "$fhirResource.component"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.1104361000000100]"
+
+  - name: "temperature"
+    with:
+      fhir: "$fhirResource.component.value"
+      openehr: "$openEhrArchetype.national_early_warning_score_2_news2.temperature"
+      type: "QUANTITY"
+    condition:
+      targetRoot: "$fhirResource.component"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.1104371000000107]"
+
+  - name: "pulse"
+    with:
+      fhir: "$fhirResource.component.value"
+      openehr: "$openEhrArchetype.national_early_warning_score_2_news2.pulse"
+      type: "QUANTITY"
+    condition:
+      targetRoot: "$fhirResource.component"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.1104351000000103]"

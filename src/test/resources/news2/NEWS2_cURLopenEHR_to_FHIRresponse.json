@@ -1,0 +1,48 @@
+curl --location --globoff '{{core_server}}/combined/openehr' \
+--header 'templateId: NEWS2 Encounter Parent' \
+--header '$ehr: e57640e7-852c-473f-87b6-a43d128532bc' \
+--header 'Content-Type: application/json' \
+--data '{
+    "ctx/language": "en",
+    "ctx/territory": "SI",
+    "ctx/composer_name": "Silvia Blake",
+    "ctx/id_namespace": "HOSPITAL-NS",
+    "ctx/id_scheme": "HOSPITAL-NS",
+    "ctx/participation_name": "Dr. Marcus Johnson",
+    "ctx/participation_function": "requester",
+    "ctx/participation_mode": "face-to-face communication",
+    "ctx/participation_id": "199",
+    "ctx/participation_name:1": "Lara Markham",
+    "ctx/participation_function:1": "performer",
+    "ctx/participation_id:1": "198",
+    "ctx/health_care_facility|name": "Hospital",
+    "ctx/health_care_facility|id": "9091",
+    "news2_encounter_parent/national_early_warning_score_2_news2/respiration_rate|code": "at0021",
+    "news2_encounter_parent/national_early_warning_score_2_news2/respiration_rate|value": "≤8",
+    "news2_encounter_parent/national_early_warning_score_2_news2/respiration_rate|ordinal": 3,
+    "news2_encounter_parent/national_early_warning_score_2_news2/total_score": 13,
+    "news2_encounter_parent/national_early_warning_score_2_news2/clinical_risk_category|code": "at0059"
+}'
+
+
+{
+    "resourceType": "Observation",
+    "status": "final",
+    "code": {
+        "coding": [
+            {
+                "system": "http://snomed.info/sct",
+                "code": "1104051000000101"
+            },
+            {
+                "system": "http://snomed.info/sct",
+                "code": "1104301000000104"
+            }
+        ]
+    },
+    "valueQuantity": {
+        "value": 3,
+        "unit": "≤8",
+        "code": "at0021"
+    }
+}

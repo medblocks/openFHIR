@@ -1,0 +1,60 @@
+format: "0.2.0"
+version: "0.0.1"
+
+fhirConfig:
+  resource: "Observation"
+  condition:
+    - targetRoot: "$fhirResource"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.75367002,$loinc.85354-9]" #need to add support for adding two codes
+    - targetRoot: "$fhirResource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[final]"
+    - targetRoot: "$fhirResource"
+      targetAttribute: "category.coding.code"
+      operator: "one of"
+      criteria: "[vital-signs]"
+openEhrConfig:
+  archetype: "openEHR-EHR-OBSERVATION.blood_pressure.v2"
+
+mappings:
+  #  MUST IMPROVE IN ENGINE: if mappings are referencing both recurring elements as
+  #  well as non-recurring elements, i.e. blood_pressure.any_event:0.systolic
+  #  and blood_pressure.location_of_measurement, make sure the non-recurring ones
+  #  are at the bottom of the mappings; improvement so this wont matter needed in OpenEhrToFhir.java, 128 or 175
+
+  - name: "component systolic"
+    with:
+      fhir: "$fhirResource.component.value"
+      openehr: "$openEhrArchetype.blood_pressure.any_event.systolic"
+      type: "QUANTITY"
+    condition:
+      targetRoot: "$fhirResource.component"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.72313002,$loinc.8480-6]"
+
+  - name: "component diastolic"
+    with:
+      fhir: "$fhirResource.component.value"
+      openehr: "$openEhrArchetype.blood_pressure.any_event.diastolic"
+      type: "QUANTITY"
+    condition:
+      targetRoot: "$fhirResource.component"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.1091811000000102,$loinc.8462-4]"
+
+  - name: "body site, location of measurement"
+    with:
+      fhir: "$fhirResource.bodySite"
+      openehr: "$openEhrArchetype.blood_pressure.location_of_measurement"
+      type: "CODEABLECONCEPT"
+
+  - name: "clinical interpretation"
+    with:
+      fhir: "$fhirResource.component.interpretation.text"
+      openehr: "$openEhrArchetype.blood_pressure.any_event.clinical_interpretation"
+      type: "STRING"

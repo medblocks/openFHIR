@@ -1,0 +1,16 @@
+
+
+format: "0.0.2"
+
+openEHR:
+  templateId: "ACP_POC"
+
+  archetypes:
+    - "openEHR-EHR-EVALUATION.advance_care_directive.v2"
+    - "openEHR-EHR-EVALUATION.advance_intervention_decisions.v1"
+    - "openEHR-EHR-OBSERVATION.karnofsky_performance_status_scale.v1"
+    - "openEHR-EHR-EVALUATION.clinical_synopsis.v1"
+    - "openEHR-EHR-CLUSTER.media_file.v1"
+
+fhir:
+  resourceType: "Bundle"

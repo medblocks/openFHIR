@@ -1,0 +1,637 @@
+{
+  "resourceType": "Bundle",
+  "id": "1b36355c-ee52-4d1a-ae06-45c6f08380df",
+  "meta": {
+    "versionId": "9b2459d6-ffa8-4ecb-97e5-7bf0fac15e87",
+    "lastUpdated": "2020-12-23T14:39:37.969+00:00"
+  },
+  "type": "collection",
+  "entry":  [
+    {
+      "fullUrl": "Observation/21344a45-2660-45d1-9fb3-49e54d14b662",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "21344a45-2660-45d1-9fb3-49e54d14b662",
+        "identifier":  [
+          {
+            "system": "https://tools.ietf.org/html/rfc4122",
+            "value": "7188c7ad-7802-4d43-9775-4d9d684600d5"
+          }
+        ],
+        "status": "final",
+        "category":  [
+          {
+            "coding":  [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding":  [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "1104051000000101",
+              "display": "Royal College of Physicians NEWS2 (National Early Warning Score 2) total score"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/ad2c58ab-ffab-4366-9c76-b0322e22e881"
+        },
+        "effectiveDateTime": "2018-10-04T14:17:59+01:00",
+        "performer":  [
+          {
+            "reference": "Practitioner/7096e518-2638-4c00-ab0e-504c20cd50b6"
+          },
+          {
+            "reference": "Organization/25d5ad55-5657-4cbe-9b8b-2e993f19286e"
+          }
+        ],
+        "valueQuantity": {
+          "value": 6,
+          "unit": "ScoreOf",
+          "system": "http://unitsofmeasure.org",
+          "code": "{ScoreOf}"
+        },
+        "derivedFrom":  [
+          {
+            "reference": "Observation/fc6c6fa5-d8e8-4634-a19a-985325077cb2"
+          },
+          {
+            "reference": "Observation/638c6821-eb51-4f1b-b8c0-5269d1df9b7c"
+          },
+          {
+            "reference": "Observation/5a1625e8-938e-4c19-9d3e-a235bfb4b37d"
+          },
+          {
+            "reference": "Observation/c756fd32-f04e-45a9-b02f-2461ed53c736"
+          },
+          {
+            "reference": "Observation/1a1273f4-dd78-4bb4-bb98-ed6456caa2a2"
+          },
+          {
+            "reference": "Observation/f0d26102-3a50-4993-9203-6089b625fc2f"
+          },
+          {
+            "reference": "Observation/dbf6ec86-ebd7-4490-8586-596328519ed2"
+          }
+        ],
+        "component":  [
+          {
+            "code": {
+              "coding":  [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "1104301000000104",
+                  "display": "Royal College of Physicians NEWS2 (National Early Warning Score 2) - respiration rate score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 2,
+              "unit": "ScoreOf",
+              "system": "http://unitsofmeasure.org",
+              "code": "{ScoreOf}"
+            }
+          },
+          {
+            "code": {
+              "coding":  [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "1104351000000103",
+                  "display": "Royal College of Physicians NEWS2 (National Early Warning Score 2) - pulse score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 1,
+              "unit": "ScoreOf",
+              "system": "http://unitsofmeasure.org",
+              "code": "{ScoreOf}"
+            }
+          },
+          {
+            "code": {
+              "coding":  [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "1104311000000102",
+                  "display": "Royal College of Physicians NEWS2 (National Early Warning Score 2) - oxygen saturation scale 1 score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 2,
+              "unit": "ScoreOf",
+              "system": "http://unitsofmeasure.org",
+              "code": "{ScoreOf}"
+            }
+          },
+          {
+            "code": {
+              "coding":  [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "1104331000000105",
+                  "display": "Royal College of Physicians NEWS2 (National Early Warning Score 2) - air or oxygen score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0,
+              "unit": "ScoreOf",
+              "system": "http://unitsofmeasure.org",
+              "code": "{ScoreOf}"
+            }
+          },
+          {
+            "code": {
+              "coding":  [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "1104371000000107",
+                  "display": "Royal College of Physicians NEWS2 (National Early Warning Score 2) - temperature score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 1,
+              "unit": "ScoreOf",
+              "system": "http://unitsofmeasure.org",
+              "code": "{ScoreOf}"
+            }
+          },
+          {
+            "code": {
+              "coding":  [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "1104341000000101",
+                  "display": "Royal College of Physicians NEWS2 (National Early Warning Score 2) - systolic blood pressure score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0,
+              "unit": "ScoreOf",
+              "system": "http://unitsofmeasure.org",
+              "code": "{ScoreOf}"
+            }
+          },
+          {
+            "code": {
+              "coding":  [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "1104361000000100",
+                  "display": "Royal College of Physicians NEWS2 (National Early Warning Score 2) - consciousness score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0,
+              "unit": "ScoreOf",
+              "system": "http://unitsofmeasure.org",
+              "code": "{ScoreOf}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "Observation/dbf6ec86-ebd7-4490-8586-596328519ed2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "dbf6ec86-ebd7-4490-8586-596328519ed2",
+        "identifier":  [
+          {
+            "system": "https://tools.ietf.org/html/rfc4122",
+            "value": "2936d52c-5ae3-434b-8978-bfa7563ed31a"
+          }
+        ],
+        "status": "final",
+        "category":  [
+          {
+            "coding":  [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding":  [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "86290005",
+              "display": "Respiratory rate"
+            },
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory Rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/ad2c58ab-ffab-4366-9c76-b0322e22e881"
+        },
+        "effectiveDateTime": "2018-10-04T14:17:59+01:00",
+        "performer":  [
+          {
+            "reference": "Practitioner/7096e518-2638-4c00-ab0e-504c20cd50b6"
+          },
+          {
+            "reference": "Organization/25d5ad55-5657-4cbe-9b8b-2e993f19286e"
+          }
+        ],
+        "valueQuantity": {
+          "value": 21,
+          "unit": "Breaths / minute",
+          "system": "http://unitsofmeasure.org",
+          "code": "{Breaths}/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "Observation/f0d26102-3a50-4993-9203-6089b625fc2f",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "f0d26102-3a50-4993-9203-6089b625fc2f",
+        "identifier":  [
+          {
+            "system": "https://tools.ietf.org/html/rfc4122",
+            "value": "99a2f708-66aa-4e7f-a09c-5742600f376d"
+          }
+        ],
+        "status": "final",
+        "category":  [
+          {
+            "coding":  [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding":  [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "364075005",
+              "display": "Heart rate"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "78564009",
+              "display": "Pulse rate",
+              "userSelected": true
+            },
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/ad2c58ab-ffab-4366-9c76-b0322e22e881"
+        },
+        "effectiveDateTime": "2018-10-04T14:17:59+01:00",
+        "performer":  [
+          {
+            "reference": "Practitioner/7096e518-2638-4c00-ab0e-504c20cd50b6"
+          },
+          {
+            "reference": "Organization/25d5ad55-5657-4cbe-9b8b-2e993f19286e"
+          }
+        ],
+        "valueQuantity": {
+          "value": 95,
+          "unit": "heart beats per minute",
+          "system": "http://unitsofmeasure.org",
+          "code": "{beats}/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "Observation/1a1273f4-dd78-4bb4-bb98-ed6456caa2a2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "1a1273f4-dd78-4bb4-bb98-ed6456caa2a2",
+        "identifier":  [
+          {
+            "system": "https://tools.ietf.org/html/rfc4122",
+            "value": "de2273eb-ecb0-4205-862e-6a43b8f71ec1"
+          }
+        ],
+        "status": "final",
+        "category":  [
+          {
+            "coding":  [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding":  [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "103228002",
+              "display": "Hemoglobin saturation with oxygen"
+            },
+            {
+              "system": "http://loinc.org",
+              "code": "2708-6",
+              "display": "Oxygen saturation in Arterial blood"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/ad2c58ab-ffab-4366-9c76-b0322e22e881"
+        },
+        "effectiveDateTime": "2018-10-04T14:17:59+01:00",
+        "performer":  [
+          {
+            "reference": "Practitioner/7096e518-2638-4c00-ab0e-504c20cd50b6"
+          },
+          {
+            "reference": "Organization/25d5ad55-5657-4cbe-9b8b-2e993f19286e"
+          }
+        ],
+        "valueQuantity": {
+          "value": 93,
+          "unit": "percent",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    },
+    {
+      "fullUrl": "Observation/c756fd32-f04e-45a9-b02f-2461ed53c736",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c756fd32-f04e-45a9-b02f-2461ed53c736",
+        "identifier":  [
+          {
+            "system": "https://tools.ietf.org/html/rfc4122",
+            "value": "ce084616-c540-4032-aeb3-ef35347600c5"
+          }
+        ],
+        "status": "final",
+        "code": {
+          "coding":  [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "722742002",
+              "display": "Breathing room air"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/ad2c58ab-ffab-4366-9c76-b0322e22e881"
+        },
+        "effectiveDateTime": "2018-10-04T14:17:59+01:00",
+        "performer":  [
+          {
+            "reference": "Practitioner/7096e518-2638-4c00-ab0e-504c20cd50b6"
+          },
+          {
+            "reference": "Organization/25d5ad55-5657-4cbe-9b8b-2e993f19286e"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "Observation/5a1625e8-938e-4c19-9d3e-a235bfb4b37d",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "5a1625e8-938e-4c19-9d3e-a235bfb4b37d",
+        "identifier":  [
+          {
+            "system": "https://tools.ietf.org/html/rfc4122",
+            "value": "cff7c586-5a41-403b-a276-fc2cce24bf3b"
+          }
+        ],
+        "status": "final",
+        "category":  [
+          {
+            "coding":  [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding":  [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "276885007",
+              "display": "Core body temperature"
+            },
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/ad2c58ab-ffab-4366-9c76-b0322e22e881"
+        },
+        "effectiveDateTime": "2018-10-04T14:17:59+01:00",
+        "performer":  [
+          {
+            "reference": "Practitioner/7096e518-2638-4c00-ab0e-504c20cd50b6"
+          },
+          {
+            "reference": "Organization/25d5ad55-5657-4cbe-9b8b-2e993f19286e"
+          }
+        ],
+        "valueQuantity": {
+          "value": 37.5,
+          "unit": "degree Celsius",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "Observation/638c6821-eb51-4f1b-b8c0-5269d1df9b7c",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "638c6821-eb51-4f1b-b8c0-5269d1df9b7c",
+        "identifier":  [
+          {
+            "system": "https://tools.ietf.org/html/rfc4122",
+            "value": "8b77f37d-eb6b-427c-9cd5-b1a2166b8fdb"
+          }
+        ],
+        "status": "final",
+        "category":  [
+          {
+            "coding":  [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding":  [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "75367002",
+              "display": "Blood pressure"
+            },
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure panel with all children optional"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/ad2c58ab-ffab-4366-9c76-b0322e22e881"
+        },
+        "effectiveDateTime": "2018-10-04T14:17:59+01:00",
+        "performer":  [
+          {
+            "reference": "Practitioner/7096e518-2638-4c00-ab0e-504c20cd50b6"
+          },
+          {
+            "reference": "Organization/25d5ad55-5657-4cbe-9b8b-2e993f19286e"
+          }
+        ],
+        "bodySite": {
+          "coding":  [
+            {
+              "system": "local",
+              "code": "at0028",
+              "display": "Left thigh"
+            }
+          ]
+        },
+        "component":  [
+          {
+            "code": {
+              "coding":  [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "72313002",
+                  "display": "Systolic arterial pressure"
+                },
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic blood pressure"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 120,
+              "unit": "millimeter of mercury",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "code": {
+              "coding":  [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "1091811000000102",
+                  "display": "Diastolic arterial pressure"
+                },
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic blood pressure"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 60,
+              "unit": "millimeter of mercury",
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "Observation/fc6c6fa5-d8e8-4634-a19a-985325077cb2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "fc6c6fa5-d8e8-4634-a19a-985325077cb2",
+        "identifier":  [
+          {
+            "system": "https://tools.ietf.org/html/rfc4122",
+            "value": "2d16bf3f-4369-446c-8ceb-a0e103296208"
+          }
+        ],
+        "status": "final",
+        "category":  [
+          {
+            "coding":  [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding":  [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "1104441000000107",
+              "display": "ACVPU (Alert Confusion Voice Pain Unresponsive) scale score"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/ad2c58ab-ffab-4366-9c76-b0322e22e881"
+        },
+        "effectiveDateTime": "2018-10-04T14:17:59+01:00",
+        "performer":  [
+          {
+            "reference": "Practitioner/7096e518-2638-4c00-ab0e-504c20cd50b6"
+          },
+          {
+            "reference": "Organization/25d5ad55-5657-4cbe-9b8b-2e993f19286e"
+          }
+        ],
+        "valueCodeableConcept": {
+          "coding":  [
+            {
+              "system": "local",
+              "code": "at0007",
+              "display": "Mentally alert"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

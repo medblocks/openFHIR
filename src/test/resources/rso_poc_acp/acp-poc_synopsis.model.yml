@@ -1,0 +1,58 @@
+
+
+format: "0.0.2"
+version: "0.2.0"
+
+fhirConfig:
+  resource: "QuestionnaireResponse"
+  multiple: false
+
+openEhrConfig:
+  archetype: "openEHR-EHR-EVALUATION.clinical_synopsis.v1"
+
+mappings:
+  - name: "groupMdtConclusion"
+    with:
+      fhir: "$fhirResource.item"
+      openehr: "$openEhrArchetype"
+      type: "NONE"
+    condition:
+      targetRoot: "$fhirResource.item"
+      targetAttribute: "linkId"
+      operator: "one of"
+      criteria: "[groupMdtConclusion]"
+    followedBy:
+      mappings:
+        - name: "synopsis"
+          with:
+            fhir: "item.answer.value"
+            openehr: "$openEhrArchetype.clinical_synopsis.synopsis"
+            type: "STRING"
+          condition:
+            targetRoot: "item"
+            targetAttribute: "linkId"
+            operator: "one of"
+            criteria: "[conclusion]"
+
+  - name: "signatories"
+    with:
+      fhir: "$fhirResource.item.answer"
+      openehr: "$openEhrArchetype.context._participation[n]"
+      type: "NONE"
+    condition:
+      targetRoot: "$fhirResource.item"
+      targetAttribute: "linkId"
+      operator: "one of"
+      criteria: "[signatories]"
+    followedBy:
+      mappings:
+        - name: "name"
+          with:
+            fhir: "value"
+            openehr: "|name"
+            type: "STRING"
+        - name: "function"
+          with:
+            fhir: "value"
+            openehr: "|function"
+            type: "STRING"

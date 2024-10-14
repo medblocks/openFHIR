@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://schema.better.care/fhirconnect/model/0.2.0/model-mapping-schema",
+  "description": "Model Mapping schema for file format v0.2.0",
+  "title": "Model Mapping",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "fhirConfig": {
+      "$ref": "#/$defs/fhirConfig"
+    },
+    "openEhrConfig": {
+      "$ref": "#/$defs/openEhrConfig"
+    },
+    "mappings": {
+      "$ref": "#/$defs/mappings"
+    }
+  },
+  "required": [
+    "format",
+    "version",
+    "openEhrConfig",
+    "mappings"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "fhirConfig": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "resource": {
+          "type": "string"
+        },
+        "multiple": {
+          "type": ["boolean", "null"]
+        },
+        "alwaysBundled": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "condition": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/mapping/properties/condition"
+          }
+        }
+      },
+      "required": [
+        "resource"
+      ],
+      "title": "FHIR Config"
+    },
+    "openEhrConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "archetype": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "archetype"
+      ],
+      "title": "openEHR Config"
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mapping"
+      },
+      "additionalProperties": false,
+      "title": "Mappings"
+    },
+    "map": {
+      "type": "object",
+      "properties": {
+        "system":{
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "code":{
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "unit":{
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "with": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "fhir": {
+              "type": "string"
+            },
+            "openehr": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "fhir"
+          ]
+        },
+        "map": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/map"
+          },
+          "additionalProperties": false,
+          "title": "Map"
+        },
+        "condition": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "targetRoot": {
+              "type": "string"
+            },
+            "targetAttribute": {
+              "type": "string"
+            },
+            "operator": {
+              "type": "string"
+            },
+            "criteria": {
+              "type": "string"
+            },
+            "identifying": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "targetRoot",
+            "targetAttribute",
+            "operator",
+            "criteria"
+          ]
+        },
+        "followedBy": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "mappings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/mapping"
+              },
+              "additionalProperties": false,
+              "title": "Following Mappings"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "mappings"
+          ]
+        },
+        "reference": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "resourceType": {
+              "type": "string"
+            },
+            "mappings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/mapping"
+              },
+              "additionalProperties": false,
+              "title": "Reference Mappings"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "resourceType",
+            "mappings"
+          ]
+        },
+        "slotArchetype": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "with"
+      ],
+      "title": "Model Mapping"
+    }
+  }
+}
+  

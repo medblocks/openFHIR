@@ -1,0 +1,49 @@
+
+
+format: "0.0.2"
+version: "0.2.0"
+
+fhirConfig:
+  resource: "Consent"
+  condition:
+    - targetRoot: "$fhirResource"
+      targetAttribute: "meta.profile"
+      operator: "one of"
+      criteria: "[http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective]"
+openEhrConfig:
+  archetype: "openEHR-EHR-EVALUATION.advance_intervention_decisions.v1"
+
+mappings:
+
+  - name: "treatment"
+    with:
+      fhir: "$fhirResource.extension"
+      openehr: "$openEhrArchetype.advance_intervention_decisions.per_intervention.intervention"
+      type: "CODEABLECONCEPT"
+    condition:
+      targetRoot: "$fhirResource.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-Treatment]"
+
+  - name: "decision"
+    with:
+      fhir: "$fhirResource.modifierExtension"
+      openehr: "$openEhrArchetype.advance_intervention_decisions.per_intervention.decision"
+      type: "CODEABLECONCEPT"
+    condition:
+      targetRoot: "$fhirResource.modifierExtension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-TreatmentPermitted]"
+
+  - name: "comment"
+    with:
+      fhir: "$fhirResource.extension"
+      openehr: "$openEhrArchetype.advance_intervention_decisions.per_intervention.comment"
+      type: "TEXT"
+    condition:
+      targetRoot: "$fhirResource.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://nictiz.nl/fhir/StructureDefinition/Comment]"

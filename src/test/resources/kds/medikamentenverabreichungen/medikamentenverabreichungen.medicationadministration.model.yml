@@ -1,0 +1,105 @@
+format: "0.2.0"
+version: "0.0.1"
+
+fhirConfig:
+  resource: "MedicationAdministration"
+  multiple: false
+openEhrConfig:
+  archetype: "openEHR-EHR-ACTION.medication.v1"
+
+mappings:
+  - name: "status"
+    with:
+      fhir: "$fhirResource.status"
+      openehr: "$openEhrArchetype.context.status"
+      type: "CODING"
+
+  - name: "context"
+    with:
+      fhir: "$fhirResource.context.as(Reference).reference"
+      openehr: "$openEhrArchetype.context.fallidentifikation.fall-kennung"
+      type: "STRING"
+
+  - name: "effective"
+    with:
+      fhir: "$fhirResource.effective.as(DateTimeType)"
+      openehr: "$openEhrArchetype.arzneimittelanwendung.dosierung.zeitablauf_-_täglich.verabreichungszeitpunkt_-intervall/time_value"
+      type: "TIME"
+
+  #order for structured dosage matters; it needs to be ABOVE "unstructured dosage" because of openEhrPaths being so similar (belows openehr path is actually within aboves)
+
+  - name: "structured dosage"
+    with:
+      fhir: "$fhirResource.dosage"
+      openehr: "$openEhrArchetype.arzneimittelanwendung"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-CLUSTER.dosage.v2"
+    followedBy:
+      mappings:
+        - name: "route"
+          with:
+            fhir: "route"
+            openehr: "arzneimittel.wirkstoff.wirkstoff-code_ask_snomed_ct_unii_cas/wirkstoff-code"
+            type: "CODEABLECONCEPT"
+        - name: "site"
+          with:
+            fhir: "site"
+            openehr: "arzneimittel.wirkstoff.wirkstoff-code_ask_snomed_ct_unii_cas/wirkstoff-code"
+            type: "CODEABLECONCEPT"
+
+        - name: "rate"
+          with:
+            fhir: "rate.as(Ratio)"
+            openehr: "arzneimittel.wirkstoff.wirkstoffmenge"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "zahler"
+                with:
+                  fhir: "numerator"
+                  openehr: "zähler"
+                  type: "QUANTITY"
+              - name: "nenner"
+                with:
+                  fhir: "denominator"
+                  openehr: "nenner"
+                  type: "QUANTITY"
+
+#        - name: "rate quantity"
+#          with:
+#            fhir: "rate.as(Quantity)"
+#            openehr: "dosierung.verabreichungsrate.quantity_value"
+#            type: "QUANTITY"
+
+  - name: "note"
+    with:
+      fhir: "$fhirResource.note.text"
+      openehr: "$openEhrArchetype.arzneimittelanwendung.kommentar"
+      type: "STRING"
+
+  - name: "klinische_indikation"
+    with:
+      fhir: "$fhirResource.reasonCode.text"
+      openehr: "$openEhrArchetype.arzneimittelanwendung.klinische_indikation"
+      type: "STRING"
+
+  - name: "medication"
+    with:
+      fhir: "$fhirResource.medication"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Medication"
+      mappings:
+        - name: "medication administration medication"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$openEhrArchetype.arzneimittelanwendung.arzneimittel"
+            type: "NONE"
+          slotArchetype: "openEHR-EHR-CLUSTER.medication.v2"
+
+  - name: "medication codeable concept"
+    with:
+      fhir: "$fhirResource.medication.as(CodeableConcept).text"
+      openehr: "$openEhrArchetype.arzneimittelanwendung.arzneimittel.arzneimittelgruppe.arzneimittel-code"
+      type: "STRING"

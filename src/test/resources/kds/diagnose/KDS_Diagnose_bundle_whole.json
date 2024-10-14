@@ -1,0 +1,943 @@
+{
+  "resourceType": "Bundle",
+  "id": "example-bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:fe7dd9ae-d1a1-425f-8572-7aef16f257ff",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "example-condition",
+        "meta": {
+          "source": "Hospital-ABC",
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/condition-related",
+            "valueReference": {
+              "reference": "Condition/reference-condition",
+              "type": "Condition",
+              "identifier": {
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                      "code": "MR",
+                      "display": "Medical record number"
+                    }
+                  ],
+                  "text": "Medical record number"
+                },
+                "system": "http://hospital.smarthealthit.org/conditions",
+                "value": "CON123456",
+                "period": {
+                  "start": "1993-09-08",
+                  "end": "1993-12-13"
+                }
+              },
+              "display": "Related Condition"
+            }
+          },
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/condition-related",
+            "valueReference": {
+              "reference": "Condition/reference-condition1",
+              "type": "Condition",
+              "identifier": {
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                      "code": "MR",
+                      "display": "Medical record number"
+                    }
+                  ],
+                  "text": "Medical record number"
+                },
+                "system": "http://hospital.smarthealthit.org/conditions",
+                "value": "CON123456",
+                "period": {
+                  "start": "1993-09-08",
+                  "end": "1993-12-13"
+                }
+              },
+              "display": "Related Condition 1"
+            }
+          },
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/condition-assertedDate",
+            "valueDateTime": "2025-02-03T04:05:06Z"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/conditions",
+            "value": "1234567890",
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR",
+                  "display": "Medical record number"
+                }
+              ],
+              "text": "Medical Record Number"
+            },
+            "assigner": {
+              "display": "Example Hospital"
+            },
+            "period": {
+              "start": "2023-01-01",
+              "end": "2024-01-01"
+            }
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ],
+          "text": "active"
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ],
+          "text": "Confirmed"
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item",
+                "display": "Problem List Item"
+              }
+            ],
+            "text": "Problem List Item"
+          }
+        ],
+        "severity": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-severity",
+              "code": "24484000",
+              "display": "Severe"
+            }
+          ],
+          "text": "Severe"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "code": "C34.1",
+              "display": "Malignant neoplasm of the upper lobe of the lung",
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "local",
+                        "code": "at0002",
+                        "display": "Primary code in multiple coding"
+                      }
+                    ],
+                    "text": "Primary code in multiple coding"
+                  }
+                },
+                {
+                  "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
+                        "code": "L",
+                        "display": "Left side"
+                      }
+                    ],
+                    "text": "Left side"
+                  }
+                },
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
+                        "code": "G",
+                        "display": "Confirmed diagnosis"
+                      }
+                    ],
+                    "text": "Confirmed diagnosis"
+                  }
+                }
+              ]
+            },
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/icd-o-3",
+              "code": "C77.0",
+              "display": "Malignant neoplasm of lymph nodes"
+            },
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
+              "code": "057E3",
+              "display": "secondary malignant neoplasm of lymph nodes"
+            },
+            {
+              "system": "http://www.orpha.net",
+              "code": "1777",
+              "display": "lung cancer associated with hereditary syndromes"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "128462008",
+              "display": "Secondary malignant neoplasm of lymph node"
+            }
+          ],
+          "text": "Secondary malignant neoplasm of lymph node"
+        },
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "version": "20230131",
+                "code": "321667001",
+                "display": "Respiratory tract"
+              },
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/icd-o-3",
+                "version": "2022",
+                "code": "C34.1",
+                "display": "Upper lobe, bronchus or lung"
+              }
+            ],
+            "text": "Respiratory tract, Upper lobe, bronchus or lung"
+          }
+        ],
+        "encounter": {
+          "reference": "Encounter/encounter-12345",
+          "display": "Inpatient Encounter for Asthma",
+          "type": "Encounter",
+          "identifier": {
+            "system": "http://hospital.smarthealthit.org/encounters",
+            "value": "ENC123456",
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN",
+                  "display": "Visit Number"
+                }
+              ],
+              "text": "Visit Number"
+            },
+            "assigner": {
+              "display": "Example Hospital"
+            },
+            "period": {
+              "start": "2024-01-01T08:00:00Z",
+              "end": "2024-01-01T10:00:00Z"
+            }
+          }
+        },
+        "subject": {
+          "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49",
+          "identifier": {
+            "system": "urn:ietf:rfc:4122",
+            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
+          }
+        },
+        "onsetPeriod": {
+          "start": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/lebensphase",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "424144002",
+                      "display": "Adulthood"
+                    }
+                  ],
+                  "text": "Start of adulthood phase"
+                }
+              }
+            ]
+          },
+          "end": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/lebensphase",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "367640001",
+                      "display": "Middle age"
+                    }
+                  ],
+                  "text": "End of middle age phase"
+                }
+              }
+            ]
+          }
+        },
+        "onsetDateTime": "2024-02-08T00:00:00Z",
+        "recordedDate": "2022-02-03T00:00:00Z",
+        "note": [
+          {
+            "text": "Patient confirmed for secondary malignant neoplasm of lymph node.",
+            "time": "2024-02-09T12:00:00Z"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "reference-condition",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "reference-condition",
+        "identifier": [
+          {
+            "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/conditions",
+            "value": "COND-123456",
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR",
+                  "display": "Medical record number"
+                }
+              ],
+              "text": "Medical Record Number"
+            },
+            "assigner": {
+              "display": "Example Hospital"
+            }
+          }
+        ],"extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/condition-assertedDate",
+            "valueDateTime": "2125-02-03T04:05:06Z"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "ref_active",
+              "display": "ref_Active"
+            }
+          ],
+          "text": "ref_active"
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "ref_confirmed",
+              "display": "ref_Confirmed"
+            }
+          ],
+          "text": "ref_confirmed"
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "ref_problem-list-item",
+                "display": "ref_Problem List Item"
+              }
+            ],
+            "text": "ref_Problem List Item"
+          }
+        ],
+        "severity": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "ref_24484000",
+              "display": "ref_Severe"
+            }
+          ],
+          "text": "ref_Severe"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "code": "ref_C34.1",
+              "display": "ref_Malignant neoplasm of upper lobe, bronchus or lung",
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "local",
+                        "code": "at0002",
+                        "display": "ref_Primary code in multiple coding"
+                      }
+                    ],
+                    "text": "ref_Primary code in multiple coding"
+                  }
+                },
+                {
+                  "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
+                        "code": "ref_U",
+                        "display": "ref_Upper lobe"
+                      }
+                    ],
+                    "text": "ref_Upper lobe"
+                  }
+                },
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
+                        "code": "ref_S",
+                        "display": "ref_Suspected diagnosis"
+                      }
+                    ],
+                    "text": "ref_Suspected diagnosis"
+                  }
+                }
+              ]
+            },
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/icd-o-3",
+              "code": "ref_C34.1",
+              "display": "ref_Malignant neoplasm of upper lobe, bronchus or lung"
+            },
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
+              "code": "ref_098H5",
+              "display": "ref_Malignant neoplasm of upper lobe, bronchus or lung, unspecified"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "ref_254626006",
+              "display": "ref_Malignant neoplasm of the upper lobe of lung"
+            },
+            {
+              "system": "http://www.orpha.net",
+              "code": "ref_830",
+              "display": "ref_Malignant neoplasm of upper lobe, bronchus or lung"
+            }
+          ],
+          "text": "Malignant neoplasm of upper lobe, bronchus or lung"
+        },
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "ref_368209003",
+                "display": "ref_Entire cardiovascular system"
+              },
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/icd-o-3",
+                "version": "2022",
+                "code": "ref_C34.1",
+                "display": "ref_Upper lobe, bronchus or lung"
+              }
+            ],
+            "text": "Entire cardiovascular system"
+          }
+        ],
+        "subject": {
+          "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49",
+          "identifier": {
+            "system": "urn:ietf:rfc:4122",
+            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
+          }
+        },
+        "encounter": {
+          "reference": "Encounter/encounter-12345",
+          "display": "Inpatient Encounter for Asthma",
+          "type": "Encounter",
+          "identifier": {
+            "system": "http://hospital.smarthealthit.org/encounters",
+            "value": "encounter-id-1245",
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN",
+                  "display": "Visit Number"
+                }
+              ],
+              "text": "Visit Number"
+            },
+            "assigner": {
+              "display": "Example Hospital"
+            },
+            "period": {
+              "start": "2024-01-01T08:00:00Z",
+              "end": "2024-01-01T10:00:00Z"
+            }
+          }
+        },
+        "onsetPeriod": {
+          "start": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/lebensphase",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "ref_424144002",
+                      "display": "ref_Adulthood"
+                    }
+                  ],
+                  "text": "ref_Start of adulthood phase"
+                }
+              }
+            ]
+          },
+          "end": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/lebensphase",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "ref_367640001",
+                      "display": "ref_Middle age"
+                    }
+                  ],
+                  "text": "ref_End of middle age phase"
+                }
+              }
+            ]
+          }
+        },
+        "onsetAge": {
+          "value": 55,
+          "unit": "years",
+          "system": "http://unitsofmeasure.org",
+          "code": "a"
+        },
+        "onsetRange": {
+          "low": {
+            "value": 55,
+            "unit": "years",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          },
+          "high": {
+            "value": 60,
+            "unit": "years",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        },
+        "onsetString": "The patient reported symptoms starting around the beginning of 2023.",
+        "onsetDateTime": "2024-02-08T00:00:00Z",
+        "recordedDate": "2027-05-02T00:00:00Z",
+        "recorder": {
+          "reference": "Practitioner/example-recorder",
+          "display": "Dr. John Doe"
+        },
+        "asserter": {
+          "reference": "Practitioner/example-practitioner",
+          "display": "Dr. John Doe"
+        },
+        "stage": [
+          {
+            "summary": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "258219007",
+                  "display": "Stage 2"
+                }
+              ],
+              "text": "Stage 2"
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "164729004",
+                    "display": "Blood pressure measurement"
+                  }
+                ],
+                "text": "Blood pressure measurement"
+              }
+            ]
+          }
+        ],
+        "note": [
+          {
+            "text": "ref_The patient has a history of high blood pressure, now presenting with severe hypertension."
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "reference-condition1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "reference-condition1",
+        "identifier": [
+          {
+            "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/conditions",
+            "value": "COND-123456",
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR",
+                  "display": "Medical record number"
+                }
+              ],
+              "text": "Medical Record Number"
+            },
+            "assigner": {
+              "display": "Example Hospital"
+            }
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "ref1_active",
+              "display": "ref1_Active"
+            }
+          ],
+          "text": "ref1_active"
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "ref1_confirmed",
+              "display": "ref1_Confirmed"
+            }
+          ],
+          "text": "ref1_confirmed"
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "ref1_problem-list-item",
+                "display": "ref1_Problem List Item"
+              }
+            ],
+            "text": "ref1_Problem List Item"
+          }
+        ],
+        "severity": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "ref1_24484000",
+              "display": "ref1_Severe"
+            }
+          ],
+          "text": "ref1_Severe"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "code": "ref1_C34.1",
+              "display": "ref1_Malignant neoplasm of upper lobe, bronchus or lung",
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "local",
+                        "code": "at0002",
+                        "display": "ref1_Primary code in multiple coding"
+                      }
+                    ],
+                    "text": "ref1_Primary code in multiple coding"
+                  }
+                },
+                {
+                  "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
+                        "code": "ref1_U",
+                        "display": "ref1_Upper lobe"
+                      }
+                    ],
+                    "text": "ref1_Upper lobe"
+                  }
+                },
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
+                        "code": "ref1_S",
+                        "display": "ref1_Suspected diagnosis"
+                      }
+                    ],
+                    "text": "ref1_Suspected diagnosis"
+                  }
+                }
+              ]
+            },
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/icd-o-3",
+              "code": "ref1_C34.1",
+              "display": "ref1_Malignant neoplasm of upper lobe, bronchus or lung"
+            },
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
+              "code": "ref1_098H5",
+              "display": "ref1_Malignant neoplasm of upper lobe, bronchus or lung, unspecified"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "ref1_254626006",
+              "display": "ref1_Malignant neoplasm of the upper lobe of lung"
+            },
+            {
+              "system": "http://www.orpha.net",
+              "code": "ref1_830",
+              "display": "ref1_Malignant neoplasm of upper lobe, bronchus or lung"
+            }
+          ],
+          "text": "Malignant neoplasm of upper lobe, bronchus or lung"
+        },
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "ref1_368209003",
+                "display": "ref1_Entire cardiovascular system"
+              },
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/icd-o-3",
+                "version": "2022",
+                "code": "ref1_C34.1",
+                "display": "ref1_Upper lobe, bronchus or lung"
+              }
+            ],
+            "text": "Entire cardiovascular system"
+          }
+        ],
+        "subject": {
+          "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49",
+          "identifier": {
+            "system": "urn:ietf:rfc:4122",
+            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
+          }
+        },
+        "encounter": {
+          "reference": "Encounter/encounter-12345",
+          "display": "Inpatient Encounter for Asthma",
+          "type": "Encounter",
+          "identifier": {
+            "system": "http://hospital.smarthealthit.org/encounters",
+            "value": "encounter-id-1245",
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN",
+                  "display": "Visit Number"
+                }
+              ],
+              "text": "Visit Number"
+            },
+            "assigner": {
+              "display": "Example Hospital"
+            },
+            "period": {
+              "start": "2024-01-01T08:00:00Z",
+              "end": "2024-01-01T10:00:00Z"
+            }
+          }
+        },
+        "onsetPeriod": {
+          "start": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/lebensphase",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "ref1_424144002",
+                      "display": "ref1_Adulthood"
+                    }
+                  ],
+                  "text": "ref1_Start of adulthood phase"
+                }
+              }
+            ]
+          },
+          "end": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/lebensphase",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "ref1_367640001",
+                      "display": "ref1_Middle age"
+                    }
+                  ],
+                  "text": "ref1_End of middle age phase"
+                }
+              }
+            ]
+          }
+        },
+        "onsetAge": {
+          "value": 55,
+          "unit": "years",
+          "system": "http://unitsofmeasure.org",
+          "code": "a"
+        },
+        "onsetRange": {
+          "low": {
+            "value": 55,
+            "unit": "years",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          },
+          "high": {
+            "value": 60,
+            "unit": "years",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        },
+        "onsetString": "The patient reported symptoms starting around the beginning of 2023.",
+        "onsetDateTime": "2024-02-08T00:00:00Z",
+        "recordedDate": "2028-05-02T00:00:00Z",
+        "recorder": {
+          "reference": "Practitioner/example-recorder",
+          "display": "Dr. John Doe"
+        },
+        "asserter": {
+          "reference": "Practitioner/example-practitioner",
+          "display": "Dr. John Doe"
+        },
+        "stage": [
+          {
+            "summary": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "258219007",
+                  "display": "Stage 2"
+                }
+              ],
+              "text": "Stage 2"
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "164729004",
+                    "display": "Blood pressure measurement"
+                  }
+                ],
+                "text": "Blood pressure measurement"
+              }
+            ]
+          }
+        ],
+        "note": [
+          {
+            "text": "ref1_The patient has a history of high blood pressure, now presenting with severe hypertension."
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-53c6e5294aee",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-12345",
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://hospital.smarthealthit.org",
+            "value": "encounter-id-1245"
+          }
+        ],
+        "status": "finished",
+        "subject": {
+          "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49"
+        },
+        "period": {
+          "start": "2024-08-21T09:00:00+01:00",
+          "end": "2024-08-21T09:30:00+01:00"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Encounter"
+      }
+    }
+  ]
+}

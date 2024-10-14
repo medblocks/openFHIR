@@ -1,0 +1,5 @@
+{
+
+  "blood_pressure/blood_pressure/any_event:0/systolic|unit": "mm[Hg]",
+  "blood_pressure/blood_pressure/any_event:0/systolic|magnitude": 500.0
+}

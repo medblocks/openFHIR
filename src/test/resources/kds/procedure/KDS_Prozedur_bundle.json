@@ -1,0 +1,128 @@
+{
+  "resourceType": "Bundle",
+  "id": "example-bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:72c2e2b6-a89b-4a7c-8c1e-54268edf515b",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "example-procedure",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure"
+          ]
+        },
+        "status": "completed",
+        "category": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "103693007",
+              "display": "Diagnostic procedure"
+            }
+          ],
+          "text": "Diagnostic procedure"
+        },
+        "code": {
+          "coding": [
+            {
+              "extension": [
+                    {
+                        "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
+                        "valueCoding" : {
+                          "code": "B",
+                          "display": "beiderseits",
+                          "system":"https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION"
+                        }
+                    }
+                ],
+              "system": "http://fhir.de/CodeSystem/bfarm/ops",
+              "version": "20200131",
+              "code": "5-470",
+              "display": "Interventional neurovascular procedures,"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "version": "20200131",
+              "code": "80146002",
+              "display": "Appendectomy"
+            }
+          ],
+          "text": "Appendectomy"
+        },
+        "subject": {
+          "identifier": {
+            "system": "urn:ietf:rfc:4122",
+            "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
+          }
+        },
+        "performedDateTime": "2024-08-20T14:00:00Z",
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "818981001",
+                "display": "Cross-sectional abdomen"
+              }
+            ],
+            "text": "Abdomen"
+          }
+        ],
+        "encounter": {
+          "reference": "Encounter/encounter-12345"
+        },
+        "note": [
+          {
+            "authorReference": {
+              "reference": "Practitioner/gen1",
+              "display": "Dr. Jane Smith"
+            },
+            "time": "2024-08-21T00:00:00Z",
+            "text": "Procedure completed successfully with no complications."
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-12345",
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://hospital.smarthealthit.org",
+            "value": "encounter-id-1245"
+          }
+        ],
+        "status": "finished",
+        "subject": {
+          "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49"
+        },
+        "period": {
+          "start": "2024-08-21T09:00:00+01:00",
+          "end": "2024-08-21T09:30:00+01:00"
+        }
+      }
+    ,
+      "request": {
+        "method": "POST",
+        "url": "Encounter"
+      }
+    }
+  ]
+}

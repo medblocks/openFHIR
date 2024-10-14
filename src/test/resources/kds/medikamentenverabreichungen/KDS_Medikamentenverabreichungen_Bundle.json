@@ -1,0 +1,242 @@
+{
+    "resourceType": "Bundle",
+    "id": "example-bundle",
+    "type": "transaction",
+    "entry": [
+        {
+            "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aed",
+            "resource": {
+                "resourceType": "MedicationAdministration",
+                "id": "example-medication-administration",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/medication-administration",
+                        "value": "MA123456"
+                    }
+                ],
+                "status": "completed",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/medication-admin-category",
+                            "code": "inpatient",
+                            "display": "Inpatient"
+                        }
+                    ]
+                },
+                "medicationReference": {
+                    "reference": "Medication/example-medication"
+                },
+                "subject": {
+                    "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49",
+                    "identifier": {
+                        "system": "urn:ietf:rfc:4122",
+                        "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
+                    }
+                },
+                "context": {
+                    "reference": "Encounter/encounter-12345"
+                },
+                "effectiveDateTime": "2024-08-20T14:30:00+00:00",
+                "performer": [
+                    {
+                        "actor": {
+                            "reference": "Practitioner/example-practitioner",
+                            "display": "Dr. John Smith"
+                        }
+                    }
+                ],
+                "reasonCode": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "38341003",
+                                "display": "Hypertensive disorder, systemic arterial"
+                            }
+                        ],
+                        "text": "Hypertensive disorder, systemic arterial"
+                    }
+                ],
+                "dosage": {
+                    "text": "20 mg orally once daily",
+                    
+                    "route": {
+                        "coding": [
+                            {
+                            "system": "http://snomed.info/sct",
+                            "code": "26643006",
+                            "display": "Oral route"
+                            }
+                        ],
+                        "text": "Oral"
+                    },
+                    "dose": {
+                        "value": 250,
+                        "unit": "mg",
+                        "system": "http://unitsofmeasure.org",
+                        "code": "mg"
+                    },
+                    "rateRatio": {
+                        "numerator": {
+                            "value": 250,
+                            "unit": "mg",
+                            "system": "http://unitsofmeasure.org",
+                            "code": "mg"
+                        },
+                        "denominator": {
+                            "value": 8,
+                            "unit": "h",
+                            "system": "http://unitsofmeasure.org",
+                            "code": "h"
+                        }
+                    }
+                    
+                }
+            },
+            "request": {
+                "method": "POST",
+                "url": "MedicationAdministration"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:70ca7d00-0d8b-42bb-9508-a8fd76e5c72d",
+            "resource": {
+                "resourceType": "Medication",
+                "id": "example-medication",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication"
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://www.whocc.no/atc",
+                            "code": "N02BE01",
+                            "display": "Paracetamol"
+                        }
+                    ],
+                    "text": "Paracetamol 500mg tablet"
+                },
+                "form": {
+                    "coding": [
+                        {
+                            "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_BMP_DARREICHUNGSFORM",
+                            "code": "UTA",
+                            "display": "Tablet"
+                        }
+                    ],
+                    "text": "Tablet"
+                },
+                "ingredient": [
+                    {
+                        "itemCodeableConcept": {
+                            "coding": [
+                                {
+                                    "system": "http://www.whocc.no/atc",
+                                    "code": "N02BE01",
+                                    "display": "Paracetamol"
+                                }
+                            ],
+                            "text": "Active"
+                        },
+                        "strength": {
+                            "numerator": {
+                                "value": 500,
+                                "unit": "mg",
+                                "system": "http://unitsofmeasure.org",
+                                "code": "mg"
+                            },
+                            "denominator": {
+                                "value": 1,
+                                "unit": "tablet",
+                                "system": "http://unitsofmeasure.org",
+                                "code": "tablet"
+                            }
+                        }
+                    }
+                ]
+            },
+            "request": {
+                "method": "POST",
+                "url": "Medication"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5284ade",
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "encounter-12345",
+                "identifier": [
+                    {
+                        "use": "official",
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "VN"
+                                }
+                            ]
+                        },
+                        "system": "http://hospital.smarthealthit.org",
+                        "value": "encounter-id-1245"
+                    }
+                ],
+                "status": "finished",
+                "subject": {
+                    "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49"
+                },
+                "period": {
+                    "start": "2024-08-21T09:00:00+01:00",
+                    "end": "2024-08-21T09:30:00+01:00"
+                }
+            }
+        ,
+            "request": {
+                "method": "POST",
+                "url": "Encounter"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:70ca1d00-0d8b-42bb-9508-a8fc76e5c72d",
+            "resource": {
+                "resourceType": "MedicationStatement",
+                "id": "example-medicationstatement",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
+                    ]
+                },
+                "status": "active",
+                
+                "medicationCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                            "code": "1049630",
+                            "display": "Aspirin 81 MG Oral Tablet"
+                        }
+                    ],
+                    "text": "Aspirin 81 MG Oral Tablet"
+                },
+                "subject": {
+                    "identifier": {
+                        "system": "urn:ietf:rfc:4122",
+                        "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
+                    }
+                }
+                
+            },
+            "request": {
+                "method": "POST",
+                "url": "MedicationStatement"
+            }
+        }
+    ]
+}

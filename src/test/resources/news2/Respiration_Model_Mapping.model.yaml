@@ -1,0 +1,27 @@
+format: "0.2.0"
+version: "0.0.1"
+
+fhirConfig:
+  resource: "Observation"
+  condition:
+    - targetRoot: "$fhirResource"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$snomed.86290005,$loinc.9279-1]" #need to add support for adding two codes
+    - targetRoot: "$fhirResource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[final]"
+    - targetRoot: "$fhirResource"
+      targetAttribute: "category.coding.code"
+      operator: "one of"
+      criteria: "[vital-signs]"
+openEhrConfig:
+  archetype: "openEHR-EHR-OBSERVATION.respiration.v2"
+
+mappings:
+  - name: "value"
+    with:
+      fhir: "$fhirResource.value"
+      openehr: "$openEhrArchetype.respiration.any_event.rate"
+      type: "QUANTITY"

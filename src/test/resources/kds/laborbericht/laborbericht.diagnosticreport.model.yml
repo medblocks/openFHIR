@@ -1,0 +1,124 @@
+format: "0.2.0"
+version: "0.0.1"
+
+fhirConfig:
+  resource: "DiagnosticReport"
+  multiple: false
+openEhrConfig:
+  archetype: "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
+
+mappings:
+
+  - name: "Category"
+    with:
+      fhir: "$fhirResource.category"
+      openehr: "$openEhrArchetype.laborbefund.labortest-kategorie"
+      type: "CODEABLECONCEPT"
+
+  - name: "Status"
+    with:
+      fhir: "$fhirResource.status"
+      openehr: "$openEhrArchetype.laborbefund.pro_laboranalyt.result_status|code"
+      type: "STRING"
+
+  - name: "Conclusion"
+    with:
+      fhir: "$fhirResource.conclusion"
+      openehr: "$openEhrArchetype.laborbefund.conclusion"
+      type: "STRING"
+
+  - name: "Effective"
+    with:
+      fhir: "$fhirResource.effective.as(DateTimeType)"
+      openehr: "$openEhrArchetype.laborbefund.time"
+      type: "DATETIME"
+
+  - name: "result"
+    with:
+      fhir: "$fhirResource.result"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Observation"
+      mappings:
+        - name: "observation recurring"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$openEhrArchetype.laborbefund.pro_laboranalyt"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "value"
+                with:
+                  fhir: "value.as(Quantity)"
+                  openehr: "messwert.quantity_value"
+                  type: "QUANTITY"
+
+              - name: "code"
+                with:
+                  fhir: "code"
+                  openehr: "analyte_name"
+                  type: "CODEABLECONCEPT"
+
+  - name: "specimen"
+    with:
+      fhir: "$fhirResource.specimen"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Specimen"
+      mappings:
+        - name: "specimen recurring"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$openEhrArchetype.laborbefund.probenmaterial" # you need to do this because specimen is recurring element in openehr
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "specimen type"
+                with:
+                  fhir: "type"
+                  openehr: "specimen_type"
+                  type: "CODEABLECONCEPT"
+
+              - name: "specimen note"
+                with:
+                  fhir: "note.text"
+                  openehr: "comment"
+                  type: "STRING"
+
+              - name: "specimen identifier"
+                with:
+                  fhir: "identifier"
+                  openehr: "laboratory_specimen_identifier"
+                  type: "IDENTIFIER"
+              - name: "specimen collection"
+                with:
+                  fhir: "collection"
+                  openehr: "$openEhrArchetype"
+                  type: "NONE"
+                followedBy:
+                  mappings:
+                    - name: "specimen collection date time"
+                      with:
+                        fhir: "collected.as(DateTimeType)"
+                        openehr: "collection_date_time.date_time_value"
+                        type: "DATETIME"
+
+                    - name: "specimen collection method"
+                      with:
+                        fhir: "method.text"
+                        openehr: "collection_method"
+                        type: "STRING"
+
+                    - name: "specimen collection body site"
+                      with:
+                        fhir: "bodySite.text"
+                        openehr: "körperstelle"
+                        type: "STRING"
+
+                    - name: "specimen collector"
+                      with:
+                        fhir: "collector.as(Reference).identifier" # if you don't explicitly cast to Reference, it will try to add a Resource
+                        openehr: "specimen_collector_identifier"
+                        type: "IDENTIFIER"

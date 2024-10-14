@@ -1,0 +1,62 @@
+{
+  "kds_prozedur/category|terminology" : "openehr",
+  "kds_prozedur/category|code" : "433",
+  "kds_prozedur/category|value" : "event",
+  "kds_prozedur/context/report_id" : "Lorem ipsum",
+  "kds_prozedur/context/case_identification/case_identifier" : "encounter-id-1245",
+  "kds_prozedur/context/start_time" : "2022-02-03T04:05:06",
+  "kds_prozedur/context/setting|value" : "home",
+  "kds_prozedur/context/setting|terminology" : "openehr",
+  "kds_prozedur/context/setting|code" : "225",
+  "kds_prozedur/context/_end_time" : "2022-02-03T04:05:06",
+  "kds_prozedur/context/_health_care_facility|name" : "DOE, John",
+
+
+  "kds_prozedur/procedure/ism_transition/current_state|terminology" : "openehr",
+  "kds_prozedur/procedure/ism_transition/current_state|code" : "532",
+  "kds_prozedur/procedure/ism_transition/current_state|value" : "completed",
+
+
+  "kds_prozedur/procedure/name_der_prozedur|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/ops",
+  "kds_prozedur/procedure/name_der_prozedur|code" : "80146002",
+  "kds_prozedur/procedure/name_der_prozedur|value" : "Appendectomy",
+  "kds_prozedur/procedure/freitextbeschreibung" : "Lorem ipsum",
+  "kds_prozedur/procedure/körperstelle:0|code" : "818981001",
+  "kds_prozedur/procedure/körperstelle:0|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/body-site",
+  "kds_prozedur/procedure/körperstelle:0|value" : "Abdomen",
+  "kds_prozedur/procedure/seitenlokalisation:0|code" : "B",
+  "kds_prozedur/procedure/seitenlokalisation:0|value" : "beiderseits",
+  "kds_prozedur/procedure/seitenlokalisation:0|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION",
+  "kds_prozedur/procedure/kategorie_der_prozedur|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/ValueSet/procedures-category-sct",
+  "kds_prozedur/procedure/kategorie_der_prozedur|value" : "Diagnostic procedure",
+  "kds_prozedur/procedure/kategorie_der_prozedur|code" : "103693007",
+
+
+  "kds_prozedur/procedure/durchführungsabsicht:0|code" : "80146002",
+  "kds_prozedur/procedure/durchführungsabsicht:0|value" : "Appendectomy",
+  "kds_prozedur/procedure/durchführungsabsicht:0|terminology" : "//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/ValueSet/procedures-intend",
+
+
+  "kds_prozedur/procedure/comment" : "Procedure completed successfully with no complications.",
+  "kds_prozedur/procedure/language|code" : "en",
+  "kds_prozedur/procedure/language|terminology" : "ISO_639-1",
+  "kds_prozedur/procedure/encoding|code" : "UTF-8",
+  "kds_prozedur/procedure/encoding|terminology" : "IANA_character-sets",
+  "kds_prozedur/procedure/time" : "2022-02-03T04:05:06",
+  "kds_prozedur/procedure/_work_flow_id|id" : "827b8bf8-8d29-3cd2-893f-91aeb2fd7c69",
+  "kds_prozedur/procedure/_work_flow_id|id_scheme" : "scheme",
+  "kds_prozedur/procedure/_work_flow_id|namespace" : "unknown",
+  "kds_prozedur/procedure/_work_flow_id|type" : "ANY",
+  "kds_prozedur/procedure/_guideline_id|id" : "e19fc24a-5e19-35f2-844d-0b0a899bce1e",
+  "kds_prozedur/procedure/_guideline_id|id_scheme" : "scheme",
+  "kds_prozedur/procedure/_guideline_id|namespace" : "unknown",
+  "kds_prozedur/procedure/_guideline_id|type" : "ANY",
+  "kds_prozedur/procedure/_instruction_details|composition_uid" : "e8d44cdb-8a18-3a67-8a03-87f996af05bd",
+  "kds_prozedur/procedure/_instruction_details|path" : "",
+  "kds_prozedur/procedure/_instruction_details|activity_id" : "activities[at0001]",
+  "kds_prozedur/language|code" : "en",
+  "kds_prozedur/language|terminology" : "ISO_639-1",
+  "kds_prozedur/territory|code" : "DE",
+  "kds_prozedur/territory|terminology" : "ISO_3166-1",
+  "kds_prozedur/composer|name" : "Max Mustermann"
+}
