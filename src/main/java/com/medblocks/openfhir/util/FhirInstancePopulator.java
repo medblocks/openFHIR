@@ -22,7 +22,9 @@ import java.util.List;
 public class FhirInstancePopulator {
 
     /**
-     * data can be anything from OpenEhrToFhir.valueToDataPoint, a limited set of things
+     * data can be anything from OpenEhrToFhir.valueToDataPoint, a limited set of things.
+     *
+     * Populates an element with the data. Population logic depends on the type of toPopulate object
      */
     public void populateElement(Object toPopulate, final OpenEhrToFhirHelper.DataWithIndex dataH) {
         populateElement(toPopulate, dataH.getData());

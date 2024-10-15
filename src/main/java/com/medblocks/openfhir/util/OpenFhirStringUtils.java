@@ -23,6 +23,12 @@ public class OpenFhirStringUtils {
     private final String WHERE_EXTRACTOR = "where\\(.*?\\)";
     public static final String RESOLVE = "resolve()";
 
+    /**
+     * Adds regex pattern to the simplified flat path so that we can match all entries in a flat json
+     *
+     * @param simplifiedFlat simplified path as given in the fhir connect model mapings
+     * @return simplified path with regex pattern
+     */
     public String addRegexPatternToSimplifiedFlatFormat(final String simplifiedFlat) {
         final String[] parts = simplifiedFlat.split("/");
         final boolean lastOneHasPipe = parts[parts.length - 1].contains("|");
@@ -72,12 +78,26 @@ public class OpenFhirStringUtils {
                 string.substring(start + charToReplace.length());
     }
 
+    /**
+     * replaces dots in a simplified openEHR path with / and replaces FHIR Connect reference to openEHR archetype with
+     * the actual one
+     *
+     * @param openEhr            simplified openEHR path
+     * @param openEhrArchetypeId archetype ID of the mapping archetype
+     * @return
+     */
     public String prepareOpenEhrSyntax(final String openEhr, final String openEhrArchetypeId) {
         return openEhr
                 .replaceAll("(?<!\\\\)\\.", "/") // This is the negative lookbehind. It ensures that the dot (.) is not preceded by two backslashes (\\). The backslashes are escaped, so \\\\ means "two literal backslashes."
                 .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, openEhrArchetypeId);
     }
 
+    /**
+     * Returnes last index from the openEHR path, i.e. when passing in a:1/b:1/c/d:3, the '3' will be returned
+     *
+     * @param path path where we're extracting the index from
+     * @return index as Integer extracted from the given openEHR path
+     */
     public Integer getLastIndex(final String path) {
         final Pattern compiledPattern = Pattern.compile(RIGHT_MOST_INDEX);
         final Matcher matcher = compiledPattern.matcher(path);
@@ -108,6 +128,12 @@ public class OpenFhirStringUtils {
         return matches.get(0);
     }
 
+    /**
+     * Returnes first index from the openEHR path, i.e. when passing in a:1/b:2/c/d:3, the '1' will be returned
+     *
+     * @param path path where we're extracting the index from
+     * @return index as Integer extracted from the given openEHR path
+     */
     public Integer getFirstIndex(final String path) {
         final Pattern compiledPattern = Pattern.compile(ALL_INDEXES);
         final Matcher matcher = compiledPattern.matcher(path);
@@ -274,6 +300,17 @@ public class OpenFhirStringUtils {
         return 0;
     }
 
+    /**
+     * FHIR path amended in a way that condition becomes a part of it
+     *
+     * @param originalFhirPath original fhir path without conditions as it exists within a model mapper
+     * @param conditions       conditions defined within a model mapper
+     * @param resource         fhir resource being used as a base
+     * @return fhir path with condition elemenets included in the fhir path itself
+     * @deprecated use getFhirPathWithConditions instead! this method should be removed as soon as possible to clear up
+     * the code base and remove redundant ones
+     */
+    @Deprecated
     public String amendFhirPath(final String originalFhirPath, final List<Condition> conditions, final String resource) {
         String fhirPath = originalFhirPath.replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
         if (fhirPath.contains(FhirConnectConst.FHIR_ROOT_FC)) {
@@ -357,6 +394,16 @@ public class OpenFhirStringUtils {
 
     }
 
+    /**
+     * Return originalFhirPath amended with the actual condition .where elements. This method will construct a fhir
+     * path from Condition and add that to the original fhir path
+     *
+     * @param originalFhirPath original fhir path that will be amended with conditions
+     * @param condition        condition we'll use when constructing a .where clause
+     * @param resource         resource type
+     * @param parentPath       parent fhir path, if one exists
+     * @return fhir path amended with the .where clause as constructed from the given Condition
+     */
     public String getFhirPathWithConditions(String originalFhirPath,
                                             final Condition condition,
                                             final String resource,
@@ -394,7 +441,7 @@ public class OpenFhirStringUtils {
                 withParentsWhereInPlace = setParentsWherePathToTheCorrectPlace(actualConditionTargetRoot, parentPath);
                 final String addedWhere = parentPath == null ? "" : extractWhereCondition(parentPath, true);
                 final String remainingFromCondition = actualConditionTargetRoot.replace(withParentsWhereInPlace.replace("." + addedWhere, ""), "");
-                if(!withParentsWhereInPlace.equals(remainingFromCondition)) {
+                if (!withParentsWhereInPlace.equals(remainingFromCondition)) {
                     withParentsWhereInPlace += remainingFromCondition;
                 }
                 remainingItems = originalFhirPath.replace(actualConditionTargetRoot, "");
