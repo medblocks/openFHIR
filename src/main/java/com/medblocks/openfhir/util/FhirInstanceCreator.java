@@ -53,6 +53,13 @@ public class FhirInstanceCreator {
         String path;
     }
 
+    /**
+     * Creates a new Resource of the resourceType
+     *
+     * @param resourceType type of a FHIR Resource. If this is not a valid Resource type, exception will be logged
+     *                     and null will be returned
+     * @return instantiated FHIR Resource
+     */
     public Resource create(final String resourceType) {
         try {
             return (Resource) getFhirResourceType(resourceType).getDeclaredConstructor().newInstance();
@@ -62,6 +69,16 @@ public class FhirInstanceCreator {
         }
     }
 
+    /**
+     * Instantiates and element and sets it on a parent Resource based on the given fhirPath
+     *
+     * @param resource     could be a FHIR Resource or any FHIR Base element that you're using as a base for the fhirPath
+     * @param clazz        class of the element that is to be instantiated
+     * @param fhirPath     fhir path for the instantiation
+     * @param forcingClass when fhirPath contains a resolve() and FHIR defines multiple resources that can be referenced,
+     *                     forcingClass tells us which Resource we really want to resolve()
+     * @return all elements that were instantiated throughout the fhirPath evaluation together with corresponding fhirPaths
+     */
     public InstantiateAndSetReturn instantiateAndSetElement(final Object resource, final Class clazz, final String fhirPath, final String forcingClass) {
         return instantiateAndSetElement(resource, clazz, fhirPath, forcingClass, null);
     }
@@ -73,7 +90,7 @@ public class FhirInstanceCreator {
             clazz = resource.getClass();
         }
 
-        if(StringUtils.isBlank(fhirPath)) {
+        if (StringUtils.isBlank(fhirPath)) {
             return InstantiateAndSetReturn.builder()
                     .returning(resource)
                     .path("")
@@ -124,7 +141,7 @@ public class FhirInstanceCreator {
                 shouldHandleWhere = splitByDot[1].startsWith("where");
             }
 
-            if(fhirPath.startsWith("where")) {
+            if (fhirPath.startsWith("where")) {
                 shouldHandleWhere = true;
             }
 
