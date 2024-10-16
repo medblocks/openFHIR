@@ -90,7 +90,8 @@ public class BidirectionalTest {
                 openFhirStringUtils,
                 repo,
                 new OpenEhrCachedUtils(),
-                new OpenFhirMapperUtils());
+                new OpenFhirMapperUtils(),
+                new OpenEhrPopulator(new OpenFhirMapperUtils()));
     }
     @Test
     public void news2() throws IOException {

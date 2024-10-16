@@ -1138,7 +1138,7 @@ public class OpenEhrToFhir {
 
                     final List<FhirConnectMapper> slotArchetypeMapperss = openFhirTemplateRepo.getSlotMapperForArchetype(templateId, mapping.getSlotArchetype());
                     for (FhirConnectMapper slotArchetypeMappers : slotArchetypeMapperss) {
-                        openFhirMapperUtils.prepareForwardingSlotArchetypeMapper(slotArchetypeMappers, theMapper, fhirPath, openehr, firstFlatPath);
+                        openFhirMapperUtils.prepareForwardingSlotArchetypeMapper(slotArchetypeMappers, theMapper, fhirPath, openehr);
 
                         // recursively prepare all slot archetype mappers
                         prepareOpenEhrToFhirHelpers(slotArchetypeMappers,

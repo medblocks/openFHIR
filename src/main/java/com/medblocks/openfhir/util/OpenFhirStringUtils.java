@@ -13,6 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
+
 @Component
 public class OpenFhirStringUtils {
 
@@ -231,6 +233,17 @@ public class OpenFhirStringUtils {
             }
         }
         return sj.toString();
+    }
+
+    public String fixOpenEhrPath(final String openEhrPath,
+                                 final String mainOpenEhrPath) {
+        return openEhrPath
+                .replace(FhirConnectConst.REFERENCE + "/", "")
+                .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + "/", mainOpenEhrPath + "/");
+    }
+
+    public String fixFhirPath(final String fhirPath) {
+        return fhirPath.replace("." + FHIR_ROOT_FC, "");
     }
 
     /**
@@ -589,6 +602,60 @@ public class OpenFhirStringUtils {
         }
     }
 
+    /**
+     * Replaces parts of the original string with parts from the replacement string, based on specific patterns.
+     *
+     * The original and replacement strings are split by "/" and processed part by part. The following rules are applied:
+     * - If a replacement part contains a numeric suffix in the format "part:number", the corresponding part from the replacement is used.
+     * - If a replacement part contains a suffix in the format "part[n]", the original structure of the part is retained.
+     * - If no special pattern is found, the replacement part is used, unless it's significantly different from the original part, in which case the original part is kept.
+     * - The method returns the new string with appropriate replacements and maintains the "/" as the separator.
+     *
+     * @param original the original string to be processed (parts separated by "/")
+     * @param replacement the replacement string to be used (parts separated by "/")
+     * @return a new string where parts from the original are replaced with parts from the replacement
+     */
+    public String replacePattern(String original, String replacement) {
+        // Split the original and replacement strings into parts based on "/"
+        String[] originalParts = original.split("/");
+        String[] replacementParts = replacement.split("/");
+
+        StringBuilder result = new StringBuilder();
+
+        // Iterate through the parts and replace the parts from the original with the replacement, when needed
+        for (int i = 0; i < originalParts.length; i++) {
+            if (i < replacementParts.length && replacementParts[i].matches(".*:\\d+")) {
+                // If replacement part has a numeric suffix, use it
+                result.append(replacementParts[i]);
+            } else if (i < replacementParts.length && replacementParts[i].matches(".*\\[\\d*\\]")) {
+                // If the replacement part has a [n] suffix, use the original structure
+                result.append(originalParts[i]);
+            } else if (i < replacementParts.length) {
+                // Use the original part
+                final String orig = originalParts[i].contains("[n]") ? replaceLastIndexOf(originalParts[i], "[n]", "") : originalParts[i];
+                final String repl = replacementParts[i].contains(":") ? replacementParts[i].replace(":", "").replace(String.valueOf(getLastIndex(replacementParts[i])), "") : replacementParts[i];
+                if (!orig.startsWith(repl)) { // means it's a completely different one, need to take original
+                    result.append(originalParts[i]);
+                } else {
+                    result.append(replacementParts[i]);
+                }
+            } else {
+                // If no matching replacement, use the original part
+                result.append(originalParts[i]);
+            }
+
+            // Add the separator
+            if (i < originalParts.length - 1) {
+                result.append("/");
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Return true if child path starts with a parent path, i.e. if a parent openEHR flat path is direct
+     * variation of a parent openEHR path
+     */
     public boolean childStartsWithParent(final String child, final String parent) {
         final List<String> childSplit = Arrays.asList(child.split("/"));
         final List<String> parentSplit = Arrays.asList(parent.split("/"));
