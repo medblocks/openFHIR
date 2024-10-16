@@ -29,6 +29,9 @@ public abstract class OpenFhirMappingContext {
         this.openFhirStringUtils = openFhirStringUtils;
     }
 
+    /**
+     * Returns a fhir connect model mapper for a specific archetype within a template.
+     */
     public List<FhirConnectMapper> getMapperForArchetype(final String templateId, final String archetypeId) {
         final OpenFhirContextRepository repoForTemplate = repository.get(normalizeTemplateId(templateId));
         if (repoForTemplate == null) {
@@ -36,12 +39,16 @@ public abstract class OpenFhirMappingContext {
             return null;
         }
         final List<FhirConnectMapper> fhirConnectMapper = repoForTemplate.getMappers().get(archetypeId);
-        if(fhirConnectMapper == null) {
+        if (fhirConnectMapper == null) {
             return null;
         }
         return fhirConnectMapper.stream().map(map -> map.copy()).collect(Collectors.toList());
     }
 
+    /**
+     * Returns a fhir connect model mapper for a specific archetype within a template. It retrieves from a slotArchetype
+     * repository cache instead of from the main one.
+     */
     public List<FhirConnectMapper> getSlotMapperForArchetype(final String templateId, final String archetypeId) {
         final OpenFhirContextRepository repoForTemplate = repository.get(normalizeTemplateId(templateId));
         if (repoForTemplate == null) {
@@ -49,12 +56,28 @@ public abstract class OpenFhirMappingContext {
             return null;
         }
         final List<FhirConnectMapper> fhirConnectMapper = repoForTemplate.getSlotMappers().get(archetypeId);
-        if(fhirConnectMapper == null) {
+        if (fhirConnectMapper == null) {
             return null;
         }
         return fhirConnectMapper.stream().map(map -> map.copy()).collect(Collectors.toList());
     }
 
+    /**
+     * Finds specific mappers for a Resource then used in a FHIR to openEHR mapping, where an additional business logic
+     * needs to be used to find correct context and model mappers, whereas when mapping from openEHR to FHIR, you can simply
+     * do this based on an archetypeId/templateId.
+     * <p>
+     * In this case of a FHIR to openEHR mapping, the following business logic is applied when finding the correct mappers:
+     * <p>
+     * - iterate over all available model mappers within a context (the right context has been defined beforehand)
+     * - evaluate a fhirConfig.condition on the Resource
+     * - if fhirpath evaluation returns a result, it means this specific mapping in question is the right one
+     * - if no condition is present and the mere fhir resource type matches the incoming Resource, it also adds it to the
+     * available one
+     *
+     * @param resource incoming Resource that is to be mapped
+     * @return a list of relevant FhirConnectMappers for the incoming FHIR Resource
+     */
     public List<FhirConnectMapper> getMapperForResource(final Resource resource) {
         final List<FhirConnectMapper> relevantMappers = new ArrayList<>();
         final Set<Map.Entry<String, OpenFhirContextRepository>> repos = repository.entrySet();

@@ -96,7 +96,8 @@ public abstract class KdsBidirectionalTest {
                 openFhirStringUtils,
                 repo,
                 new OpenEhrCachedUtils(),
-                new OpenFhirMapperUtils());
+                new OpenFhirMapperUtils(),
+                new OpenEhrPopulator(new OpenFhirMapperUtils()));
 
         prepareState();
     }
