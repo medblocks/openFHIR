@@ -80,7 +80,7 @@ public class OpenEhrToFhir {
      * @param context             fhir connect context mapper
      * @param composition         incoming Composition that needs to be mapped (this is serialized immediately to a
      *                            flat json format, meaning if it already comes like this to the openFHIR engine,
-     *                            we're doing 2 de/serializations; rething if it makes sense or not - right not, this is
+     *                            we're doing 2 de/serializations; rethink if it makes sense or not - right not, this is
      *                            also how we're implicitly validating incoming request, but that could be done smarter)
      * @param operationaltemplate operational template that is related to the incoming Composition
      * @return Bundle that is a result of the mapping engine

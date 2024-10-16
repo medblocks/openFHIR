@@ -23,6 +23,7 @@ public class OpenFhirController {
      * @param templateId  is an optional parameter if composition is of canonical format; if composition is in flat format,
      *                    this parameter is required, because the engine can not determine templateId in that case (yet
      *                    requires it to find the correct state of the Engine)
+     *                    todo: remove this if the first part of the flat path is template id (has to be normalized == space=_ and upper case=lower case
      * @param reqId
      * @return FHIR Bundle with mapped Resources inside
      */

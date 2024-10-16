@@ -304,6 +304,8 @@ public class FhirToOpenEhr {
             }
         }
         if (results == null || results.isEmpty()) {
+            // todo: here within helpers we should have an info whether something is required in openEHR template or not
+            // if it is required, add nullflavors
             log.warn("No results found for FHIRPath {}, evaluating on type: {}", helper.getFhirPath(), toResolveOn.getClass());
             return;
         }
