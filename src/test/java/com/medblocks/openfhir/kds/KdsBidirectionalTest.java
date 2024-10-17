@@ -17,9 +17,11 @@ import com.nedap.archie.rm.composition.Composition;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
+import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -33,6 +35,7 @@ import org.openehr.schemas.v1.TemplateDocument;
 import org.springframework.http.ResponseEntity;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -46,7 +49,7 @@ public abstract class KdsBidirectionalTest {
      * to automatically be created against a running (by yourself) EHRBase instance. Meant for an integration
      * test and implicit validation of the mapped Composition.
      */
-    final boolean TEST_AGAINST_EHRBASE = false;
+    final boolean TEST_AGAINST_EHRBASE = true;
     final String EHRBASE_BASIC_USERNAME = "ehrbase-user";
     final String EHRBASE_BASIC_PASSWORD = "SuperSecretPassword";
     final String EHRBASE_HOST = "http://localhost:8081";
@@ -109,6 +112,14 @@ public abstract class KdsBidirectionalTest {
         final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(new Gson().toJson(flatPaths), webTemplate);
         fhirToOpenEhr.enrichComposition(compositionFromFlat);
 
+        final String filePathFlat = "/home/gandrejc/tmp/kds/" + operationaltemplate.getTemplateId().getValue() + "_flat.json";
+        final String filePathCanonical = "/home/gandrejc/tmp/kds/" + operationaltemplate.getTemplateId().getValue() + "_canonical.json";
+        try {
+            FileUtils.write(new File(filePathFlat), new Gson().toJson(flatPaths));
+            FileUtils.write(new File(filePathCanonical), new CanonicalJson().marshal(compositionFromFlat));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         if (testAgainstEhrBase()) {
             final ResponseEntity<String> result = new EhrBaseTestClient(EHRBASE_HOST,
