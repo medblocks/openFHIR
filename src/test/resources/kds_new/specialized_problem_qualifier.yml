@@ -1,0 +1,27 @@
+format: "0.2.0"
+version: "0.0.1"
+
+openEhrConfig:
+  archetype: "KDS_openEHR-EHR-CLUSTER.problem_qualifier.v2"
+  type: "profiled" # maybe add here another type, or in the generc config we are introducing 
+  id: "KDS_openEHR-EHR-CLUSTER.problem_qualifier.v2" # to reference in the context.
+
+
+mappings:
+  #this needs to be called from the specialized problem diagnose 
+  - name: "diagnosesicherheit"
+    profiling: "add"
+    with:
+      fhir: "extension"
+      openehr: "$openEhrArchetype.diagnosesicherheit"
+      type: "CODEABLECONCEPT"
+      condition:
+        targetRoot: "extension"
+        targetAttribute: "url"
+        operator: "one of"
+        criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+
+
+
+        # if referenz primaer true -> dann mach problem_qualifier RefernzPrimar =  Nebendiagnose
+        # Also slot für archetype_mapping condition reference

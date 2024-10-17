@@ -1,0 +1,192 @@
+format: "0.2.0"
+version: "0.0.1"
+
+openEhrConfig:
+  archetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+
+mappings:
+  - name: "date"
+    with:
+      fhir: "$fhirRoot.extension.value.as(DateTimeType)"
+      openehr: "feststellungsdatum"
+      type: "DATETIME"
+    condition:
+      targetRoot: "$fhirRoot.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-assertedDate]"
+
+  - name: "clinicalStatus"
+    with:
+      fhir: "$fhirRoot.clinicalStatus"
+      openehr: "klinischer_status.klinischer_status"
+      type: "CODEABLECONCEPT"
+
+  - name: "note"
+    with:
+      fhir: "$fhirRoot.note.text"
+      openehr: "diagnoseerläuterung"
+      type: "STRING"
+
+  - name: "onset"
+    with:
+      fhir: "$fhirRoot.onset.as(Period)"        #todo: onset can only be one, either DateTime or Period, can not be both
+      openehr: "$openEhrArchetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "period onset start"
+          with:
+            fhir: "start.extension.value"
+            openehr: "lebensphase.beginn"
+            type: "CODEABLECONCEPT"
+          condition:
+            targetRoot: "start.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
+
+        - name: "period onset end"
+          with:
+            fhir: "end.extension.value"
+            openehr: "lebensphase.ende"
+            type: "CODEABLECONCEPT"
+          condition:
+            targetRoot: "end.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
+
+
+  - name: "body site"
+    with:
+      fhir: "$fhirRoot.bodySite"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "body site text"
+          with:
+            fhir: "text"
+            openehr: "anatomical_location.body_site_name"
+            type: "STRING"
+
+        - name: "body site SCT code"
+          with:
+            fhir: "coding"
+            openehr: "körperstelle_-_snomed-ct"
+            type: "CODING"
+          condition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[http://snomed.info/sct]"
+
+        - name: "body site ICD 3 code"
+          with:
+            fhir: "coding"
+            openehr: "körperstelle_-_icd-o-3"
+            type: "CODING"
+          condition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[http://terminology.hl7.org/CodeSystem/icd-o-3]"
+
+  #
+  - name: "Code"
+    with:
+      fhir: "$fhirRoot.code"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "code icd 10 gm"
+          with:
+            fhir: "coding"
+            openehr: "kodierte_diagnose_-_icd-10-gm"
+            type: "CODING"
+          condition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]"
+          followedBy:
+            mappings:
+              - name: "code icd 10, mehrfachcodierungs"
+                with:
+                  fhir: "extension"
+                  openehr: "$openEhrArchetype.multiple_coding_icd-10-gm.multiple_coding_identifier"
+                  type: "CODEABLECONCEPT"
+                condition:
+                  targetRoot: "extension"
+                  targetAttribute: "url"
+                  operator: "one of"
+                  criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen]"
+
+              - name: "code icd 10, seitenlokalisation"
+                with:
+                  fhir: "extension"
+                  openehr: "$openEhrArchetype.anatomical_location.laterality"
+                  type: "CODEABLECONCEPT"
+                condition:
+                  targetRoot: "extension"
+                  targetAttribute: "url"
+                  operator: "one of"
+                  criteria: "[http://fhir.de/StructureDefinition/seitenlokalisation]"
+
+              - name: "code icd 10, diagnosesicherheit"
+                with:
+                  fhir: "extension"
+                  openehr: "$openEhrArchetype.diagnosesicherheit"
+                  type: "CODEABLECONCEPT"
+                condition:
+                  targetRoot: "extension"
+                  targetAttribute: "url"
+                  operator: "one of"
+                  criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+
+        - name: "code alpha"
+          with:
+            fhir: "coding"
+            openehr: "kodierte_diagnose_-_alpha-id"
+            type: "CODING"
+          condition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[http://fhir.de/CodeSystem/bfarm/alpha-id]"
+
+
+        - name: "code sct"
+          with:
+            fhir: "coding"
+            openehr: "kodierte_diagnose_-_sct"
+            type: "CODING"
+          condition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[http://snomed.info/sct]"
+
+
+        - name: "code orpha"
+          with:
+            fhir: "coding"
+            openehr: "kodierte_diagnose_-_orphanet"
+            type: "CODING"
+          condition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[http://www.orpha.net]"
+
+
+        - name: "code icd3"
+          with:
+            fhir: "coding"
+            openehr: "kodierte_diagnose_-_icd-o-3"
+            type: "CODING"
+          condition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[http://terminology.hl7.org/CodeSystem/icd-o-3]"

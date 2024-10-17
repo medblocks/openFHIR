@@ -1,0 +1,90 @@
+format: "0.2.0"
+version: "0.0.1"
+
+# Condition.recordedDate  RM, context, start_time How is this done ? 
+
+openEhrConfig:
+  archetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+
+mappings:
+
+  - name: "problemDiagnose"
+    with:
+      fhir: "$fhirResource.code"
+    followedBy:
+      mappings:   
+        - name: "problemDiagnoseName"
+          with:
+            fhir: "coding"
+            openehr: "/data[at0001]/items[at0002]"
+            type: "CODEABLECONCEPT"    
+        - name: "problemDiagnoseText" 
+          with:
+            fhir: "text"
+            openehr: "/data[at0001]/items[at0009]"
+            type: "STRING"    
+
+  - name: "clinicalStatus"
+    with:
+      fhir: "$fhirResource"
+      openehr: "/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
+    slotArchetype: "openEHR-EHR-CLUSTER.problem_qualifier.v2"  #see OMOCL https://github.com/SevKohler/OMOCL/blob/536e9562e5c97cd66eb6b259692b4a672568192b/medical_data/observation/Laboratory_test_result_v1.yml#L9
+
+  - name: "note"
+    with:
+      fhir: "$fhirResource.note.text"
+      openehr: "/data[at0001]/items[at0069]"
+      type: "STRING"
+
+  - name: "dateTimeOnset"
+    with:
+      fhir: "$fhirResource.onsetDateTime" 
+      openehr: "/data[at0001]/items[at0077]"
+      type: "DATETIME"
+
+  - name: "dateTime" #allows no spaces cause of paths
+    with:
+      fhir: "$fhirResource"
+    followedBy:
+      mappings:
+        #here we need an order for bidirectionality, like first try 1, then 2, ....
+        - name: "dateTimePeriod" #workaround
+          with:
+            fhir: "onsetPeriod.start" # Period will be added, but currently is not supported in problem diangose
+            #here we would like a not-exists condition if we wanted to pick between one, if both are provided (not here the case)
+            openehr: "/data[at0001]/items[at0077]"
+            type: "DATETIME" #interval, duratin etc is missing in FHIRConnect. 
+
+        - name: "dateTimeOnset"
+          with:
+            fhir: "onsetDateTime" 
+            openehr: "/data[at0001]/items[at0077]"
+            type: "DATETIME"
+
+  - name: "bodySite"
+    with:
+      fhir: "$fhirResource.bodySite"
+    followedBy:
+      mappings:
+        - name: "bodySiteCode"
+          with:
+            fhir: "coding"
+            openehr: "/data[at0001]/items[at0012]" # Body site
+            type: "CODING"
+        - name: "bodySiteText"
+          with:
+            fhir: "$fhirResource" #only forwarding the root, can this be done or does it lead to clashes with the father from above ? 
+            #I guess the $ prevents that. 
+            openehr: "/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]" # could be also just loaded at the top if its anyways just $resource....
+          slotArchetype: "openEHR-EHR-CLUSTER.anatomical_location.v1"  
+
+
+
+  - name: "severity"
+    with:
+      fhir: "$fhirResource.severity" # Period will be added, but currently is not supporte din problem diangose
+      openehr: "/data[at0005]" #SNOMED to opeNEHR table mapping required + alternatively checkout if there are snomed term_mappings attched and use them.
+      type: "CODEABLECONCEPT" 
+
+
+
