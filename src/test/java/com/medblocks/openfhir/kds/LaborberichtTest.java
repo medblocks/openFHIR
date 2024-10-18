@@ -56,12 +56,6 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         Assert.assertEquals("7.4", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/pro_laboranalyt:0/messwert:0/quantity_value|magnitude").getAsString());
         Assert.assertEquals("g/dL", jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/pro_laboranalyt:0/messwert:0/quantity_value|unit").getAsString());
 
-        /**
-         * manually adding required things for ehrbase
-         */
-        jsonObject.addProperty("laborbericht/laborbefund/pro_laboranalyt:0/result_status|value", "final");
-        jsonObject.addProperty("laborbericht/laborbefund/pro_laboranalyt:0/result_status|code", "Final");
-
         return jsonObject;
     }
 
@@ -78,7 +72,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         assertEquals("Normal blood count", diagnosticReport.getConclusion());
 
         //  - name: "Status"
-        assertEquals("final", diagnosticReport.getStatusElement().getValueAsString());
+        assertEquals("Final", diagnosticReport.getStatusElement().getValueAsString());
 
         //   - name: "Effective"
         assertEquals("2022-02-03T04:05:06+01:00", diagnosticReport.getEffectiveDateTimeType().getValueAsString());

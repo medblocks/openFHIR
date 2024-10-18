@@ -23,8 +23,14 @@ mappings:
         - name: "use"
           with:
             fhir: "use"
-            openehr: "namensart"
-            type: "CODING"
+            openehr: "namensart|code"
+            type: "STRING"
+
+        - name: "use"
+          with:
+            fhir: "use"
+            openehr: "namensart|value"
+            type: "STRING"
 
         - name: "given"
           with:

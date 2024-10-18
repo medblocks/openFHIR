@@ -11,8 +11,15 @@ mappings:
   - name: "gender"
     with:
       fhir: "$fhirResource.gender"
-      openehr: "$openEhrArchetype.geschlecht.administratives_geschlecht" #42 in the flat json should be mapped to fhir's one
-      type: "CODING"
+      openehr: "$openEhrArchetype.geschlecht.administratives_geschlecht|value"
+      type: "STRING"
+
+  - name: "gender"
+    with:
+      fhir: "$fhirResource.gender"
+      openehr: "$openEhrArchetype.geschlecht.administratives_geschlecht|code"
+      type: "STRING"
+
   - name: "comment"
     with:
       fhir: "$fhirResource.extension.value"
