@@ -142,10 +142,7 @@
             "type": {
               "type": "string"
             }
-          },
-          "required": [
-            "fhir"
-          ]
+          }
         },
         "map": {
           "type": "array",

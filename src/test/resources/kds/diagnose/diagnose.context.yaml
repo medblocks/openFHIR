@@ -15,3 +15,10 @@ fhir:
     targetAttribute: "entry.resource.meta.profile"
     operator: "one of"
     criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose]"
+
+# a post processor kind of thing evaluated on a whole bundle after everything has been mapped and done
+# it would include pre-defined set of actions, one of those can be "references" indicating that references within
+# the Bundle would need to be "done". The other can be "id" or something like that which would handle ID generation/handling (/issues/14), ..
+  references:
+    source: "fhir path pointing to a source"
+    target: "fhir path pointing to target(s)"

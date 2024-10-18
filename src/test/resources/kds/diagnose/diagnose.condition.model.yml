@@ -13,23 +13,25 @@ openEhrConfig:
   archetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
 
 mappings:
-  - name: "primar"
-    with:
-      fhir: "$fhirResource"
-      openehr: "$openEhrArchetype.primärcode"
-      type: "NONE"
-    slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
 
-  - name: "recordedTime"
+  - name: "condition type terminology"
     with:
-      fhir: "$fhirResource.recordedDate"
-      openehr: "$openEhrArchetype.context.start_time"
-      type: "DATETIME"
+      #            fhir: "" NO FHIR meaning it's not mapped from anywhere but a hardcoded thing that will show up in openEHR only
+      openehr: "$openEhrArchetype.diagnose.klinischer_status.referenzprimaerdiagnose|terminology"
+      value: "local" # value is a new thing because its a hardcoded type
+  - name: "condition type code"
+    with:
+      openehr: "$openEhrArchetype.diagnose.klinischer_status.referenzprimaerdiagnose|code"
+      value: "at0064" # value is a new thing because its a hardcoded type
+  - name: "condition type value"
+    with:
+      openehr: "$openEhrArchetype.diagnose.klinischer_status.referenzprimaerdiagnose|value"
+      value: "Hauptdiagnose" # value is a new thing because its a hardcoded type
 
   - name: "sekundärcode"
     with:
       fhir: "$fhirResource.extension"
-      openehr: "$openEhrArchetype.sekundärcode"
+      openehr: "$openEhrArchetype.diagnose"
       type: "NONE"
     condition:
       targetRoot: "$fhirResource.extension"
@@ -38,6 +40,21 @@ mappings:
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     followedBy:
       mappings:
+        - name: "condition type terminology"
+          with:
+            #            fhir: "" NO FHIR meaning it's not mapped from anywhere but a hardcoded thing that will show up in openEHR only
+            openehr: "$openEhrArchetype.diagnose.klinischer_status.referenzprimaerdiagnose|terminology"
+            value: "local" # value is a new thing because its a hardcoded type
+        - name: "condition type code"
+          with:
+            openehr: "$openEhrArchetype.diagnose.klinischer_status.referenzprimaerdiagnose|code"
+            value: "at0066" # value is a new thing because its a hardcoded type
+        - name: "condition type value"
+          with:
+            openehr: "$openEhrArchetype.diagnose.klinischer_status.referenzprimaerdiagnose|value"
+            value: "Nebendiagnose" # value is a new thing because its a hardcoded type
+
+
         - name: "referenced condition"
           with:
             fhir: "value"
