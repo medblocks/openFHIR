@@ -11,6 +11,6 @@ fhir:
   resourceType: "Bundle"
   condition:
     targetRoot: "$fhirResource"
-    targetAttribute: "meta.profile"
+    targetAttribute: "entry.resource.meta.profile"
     operator: "one of"
-    criteria: "[Studienteilnahme]"
+    criteria: "[https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung]"

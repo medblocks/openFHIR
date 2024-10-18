@@ -114,9 +114,8 @@ public class ProcedureTest extends KdsBidirectionalTest {
         /**
          * manually fixing things for ehrbase
          */
-        jsonObject.addProperty("kds_prozedur/procedure/ism_transition/current_state|terminology", "openehr");
-        jsonObject.addProperty("kds_prozedur/procedure/ism_transition/current_state|code", "532");
-        jsonObject.addProperty("kds_prozedur/procedure/ism_transition/current_state|value", "completed");
+//        jsonObject.addProperty("kds_prozedur/procedure/ism_transition/current_state|code", "532");
+//        jsonObject.addProperty("kds_prozedur/procedure/ism_transition/current_state|value", "completed");
 
         return jsonObject;
     }
