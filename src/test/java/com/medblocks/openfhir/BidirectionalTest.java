@@ -74,7 +74,7 @@ public class BidirectionalTest {
 
         openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
                 repo,
-                new OpenEhrCachedUtils(),
+                new OpenEhrCachedUtils(null),
                 new Gson(),
                 openFhirStringUtils,
                 new OpenEhrRmWorker(openFhirStringUtils),
@@ -89,7 +89,7 @@ public class BidirectionalTest {
                 new OpenEhrRmWorker(openFhirStringUtils),
                 openFhirStringUtils,
                 repo,
-                new OpenEhrCachedUtils(),
+                new OpenEhrCachedUtils(null),
                 new OpenFhirMapperUtils(),
                 new OpenEhrPopulator(new OpenFhirMapperUtils()));
     }

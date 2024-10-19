@@ -15,8 +15,12 @@ import java.util.List;
 @RestController
 public class FhirConnectController {
 
+    private final FhirConnectService service;
+
     @Autowired
-    private FhirConnectService service;
+    public FhirConnectController(FhirConnectService service) {
+        this.service = service;
+    }
 
     /**
      * creation of the model mapper

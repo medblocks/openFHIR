@@ -21,8 +21,8 @@ public abstract class OpenFhirMappingContext {
     @Getter
     Map<String, OpenFhirContextRepository> repository = new HashMap<>();
 
-    private FhirPathR4 fhirPathR4;
-    private OpenFhirStringUtils openFhirStringUtils;
+    private final FhirPathR4 fhirPathR4;
+    private final OpenFhirStringUtils openFhirStringUtils;
 
     public OpenFhirMappingContext(FhirPathR4 fhirPathR4, OpenFhirStringUtils openFhirStringUtils) {
         this.fhirPathR4 = fhirPathR4;

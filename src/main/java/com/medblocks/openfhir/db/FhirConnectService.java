@@ -23,14 +23,18 @@ import java.util.List;
 @Transactional
 public class FhirConnectService {
 
-    @Autowired
-    private FhirConnectMapperRepository mapperRepository;
+    private final FhirConnectMapperRepository mapperRepository;
+    private final FhirConnectContextRepository contextRepository;
+    private final FhirConnectValidator validator;
 
     @Autowired
-    private FhirConnectContextRepository contextRepository;
-
-    @Autowired
-    private FhirConnectValidator validator;
+    public FhirConnectService(FhirConnectMapperRepository mapperRepository,
+                              FhirConnectContextRepository contextRepository,
+                              FhirConnectValidator validator) {
+        this.mapperRepository = mapperRepository;
+        this.contextRepository = contextRepository;
+        this.validator = validator;
+    }
 
     /**
      * Creates a model mapper based on FHIR Connect specification.

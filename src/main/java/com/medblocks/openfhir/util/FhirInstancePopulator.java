@@ -110,7 +110,9 @@ public class FhirInstancePopulator {
                 ((PrimitiveType) toPopulate).setValue(((StringType) data).getValue());
             }
         } else if (data instanceof BooleanType) {
-            ((BooleanType) toPopulate).setValue(((BooleanType) data).getValue());
+            if(toPopulate instanceof BooleanType) {
+                ((BooleanType) toPopulate).setValue(((BooleanType) data).getValue());
+            }
         }
     }
 }

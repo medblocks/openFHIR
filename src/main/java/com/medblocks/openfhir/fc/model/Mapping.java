@@ -43,14 +43,14 @@ public class Mapping {
 //    @JsonProperty("map")
 //    private Map map;
 
-    public Mapping copy() {
+    public Mapping doCopy() {
         final Mapping mapping = new Mapping();
         mapping.setName(name);
         mapping.setSlotArchetype(slotArchetype);
-        mapping.setWith(with == null ? null : with.copy());
-        mapping.setCondition(condition == null ? null : condition.copy());
-        mapping.setFollowedBy(followedBy == null ? null : followedBy.copy());
-        mapping.setReference(reference == null ? null : reference.copy());
+        mapping.setWith(with == null ? null : with.doCopy());
+        mapping.setCondition(condition == null ? null : condition.doCopy());
+        mapping.setFollowedBy(followedBy == null ? null : followedBy.doCopy());
+        mapping.setReference(reference == null ? null : reference.doCopy());
 //        mapping.setMap(map == null ? null : map.copy());
         return mapping;
     }

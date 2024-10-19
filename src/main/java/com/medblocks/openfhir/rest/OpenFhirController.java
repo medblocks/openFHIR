@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class OpenFhirController {
 
+    private final OpenFhirEngine openFhirEngine;
+
     @Autowired
-    private OpenFhirEngine openFhirEngine;
+    public OpenFhirController(OpenFhirEngine openFhirEngine) {
+        this.openFhirEngine = openFhirEngine;
+    }
 
     /**
      * Accepts an openEHR Composition and maps it corresponding FHIR Resources according to the state of the openFHIR

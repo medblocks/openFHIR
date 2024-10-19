@@ -2,7 +2,6 @@ package com.medblocks.openfhir.toopenehr;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.OpenFhirMappingContext;
 import com.medblocks.openfhir.fc.FhirConnectConst;
@@ -21,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
-import org.hl7.fhir.r4.model.Enumeration;
 import org.hl7.fhir.r4.model.*;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,10 +202,10 @@ public class FhirToOpenEhr {
                     for (final Base relevantResource : relevantResources) {
                         boolean somethingWasAdded = false;
                         for (final FhirToOpenEhrHelper fhirToOpenEhrHelper : artifactHelpers) {
-                            final FhirToOpenEhrHelper cloned = fhirToOpenEhrHelper.clone();
+                            final FhirToOpenEhrHelper cloned = fhirToOpenEhrHelper.doClone();
                             if (fhirToOpenEhrHelper.getMultiple() && (mainMultiple == null || fhirToOpenEhrHelper.getOpenEhrPath().startsWith(mainMultiple))) {
-                                mainMultiple = fhirToOpenEhrHelper.getOpenEhrPath().split("\\[n\\]")[0];
-                                cloned.setOpenEhrPath(fhirToOpenEhrHelper.getOpenEhrPath().replaceFirst("\\[n\\]", ":" + i));
+                                mainMultiple = fhirToOpenEhrHelper.getOpenEhrPath().split("\\[n]")[0];
+                                cloned.setOpenEhrPath(fhirToOpenEhrHelper.getOpenEhrPath().replaceFirst("\\[n]", ":" + i));
 
                                 fixAllChildrenRecurringElements(cloned, fhirToOpenEhrHelper.getOpenEhrPath(), cloned.getOpenEhrPath());
                             }
@@ -253,7 +251,7 @@ public class FhirToOpenEhr {
             return finalFlat;
         }
         final boolean noMoreRecurringOptions = !openEhrPath.contains("[n]");
-        final String openEhrWithAllReplacedToZeroth = openEhrPath.replaceAll("\\[n\\]", ":0");
+        final String openEhrWithAllReplacedToZeroth = openEhrPath.replaceAll("\\[n]", ":0");
         if (fhirPathResults.size() == 1) {
             // it's a single find, so replace all those multiple-occurrences with zeroth index
             openEhrPopulator.setFhirPathValue(openEhrWithAllReplacedToZeroth, fhirPathResults.get(0), openEhrType, finalFlat);
@@ -321,7 +319,7 @@ public class FhirToOpenEhr {
             if (helper.getFhirToOpenEhrHelpers() != null) {
                 // iterate over inner elements
                 for (FhirToOpenEhrHelper fhirToOpenEhrHelper : helper.getFhirToOpenEhrHelpers()) {
-                    FhirToOpenEhrHelper copy = fhirToOpenEhrHelper.clone();
+                    FhirToOpenEhrHelper copy = fhirToOpenEhrHelper.doClone();
 
                     if (copy.getOpenEhrPath().startsWith(helper.getOpenEhrPath())) {
                         final String newOne = copy.getOpenEhrPath().replace(helper.getOpenEhrPath(), thePath);
@@ -598,8 +596,11 @@ public class FhirToOpenEhr {
      * Creates limiting criteria based on the FhirConnect FhirConfig Condition element.
      */
     private String getLimitingCriteria(final FhirConfig fhirConfig, final boolean bundle) {
+        if(fhirConfig == null) {
+            return null;
+        }
         final String limitingCriteria;
-        if (fhirConfig != null && fhirConfig.getCondition() != null) {
+        if (fhirConfig.getCondition() != null) {
             final String existingFhirPath = stringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC, fhirConfig.getCondition(), fhirConfig.getResource());
             if (bundle && existingFhirPath.startsWith(fhirConfig.getResource())) {
                 final String withoutResourceType = existingFhirPath.replace(fhirConfig.getResource() + ".", "");

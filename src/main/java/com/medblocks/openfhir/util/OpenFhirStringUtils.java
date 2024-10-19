@@ -18,7 +18,7 @@ import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
 @Component
 public class OpenFhirStringUtils {
 
-    private final String TYPE_PATTERN = "\\[TYPE:[^\\]]+\\]";
+    private final String TYPE_PATTERN = "\\[TYPE:[^]]+]";
     private final String RIGHT_MOST_INDEX = ":(\\d+)(?!.*:)";
     private final String CAST_TYPE = "as\\(([^()]*)\\)";
     private final String ALL_INDEXES = ":(\\d+)";
@@ -101,22 +101,29 @@ public class OpenFhirStringUtils {
      * @return index as Integer extracted from the given openEHR path
      */
     public Integer getLastIndex(final String path) {
-        final Pattern compiledPattern = Pattern.compile(RIGHT_MOST_INDEX);
-        final Matcher matcher = compiledPattern.matcher(path);
-
-        final List<String> matches = new ArrayList<>();
-
-        while (matcher.find()) {
-            matches.add(matcher.group(1));
-        }
-        if (matches.isEmpty()) {
+        final String match = getByRegex(path, RIGHT_MOST_INDEX);
+        if (match == null) {
             return -1;
         }
-        return Integer.valueOf(matches.get(0));
+        return Integer.valueOf(match);
     }
 
     public String getCastType(final String path) {
-        final Pattern compiledPattern = Pattern.compile(CAST_TYPE);
+        return getByRegex(path, CAST_TYPE);
+    }
+
+    private String getByRegex(final String path,
+                              final String regex) {
+        final List<String> byRegexAll = getByRegexAll(path, regex);
+        if (byRegexAll == null) {
+            return null;
+        }
+        return byRegexAll.get(0);
+    }
+
+    private List<String> getByRegexAll(final String path,
+                                       final String regex) {
+        final Pattern compiledPattern = Pattern.compile(regex);
         final Matcher matcher = compiledPattern.matcher(path);
 
         final List<String> matches = new ArrayList<>();
@@ -127,7 +134,7 @@ public class OpenFhirStringUtils {
         if (matches.isEmpty()) {
             return null;
         }
-        return matches.get(0);
+        return matches;
     }
 
     /**
@@ -137,33 +144,19 @@ public class OpenFhirStringUtils {
      * @return index as Integer extracted from the given openEHR path
      */
     public Integer getFirstIndex(final String path) {
-        final Pattern compiledPattern = Pattern.compile(ALL_INDEXES);
-        final Matcher matcher = compiledPattern.matcher(path);
-
-        final List<String> matches = new ArrayList<>();
-
-        while (matcher.find()) {
-            matches.add(matcher.group(1));
-        }
-        if (matches.isEmpty()) {
+        final String byRegex = getByRegex(path, ALL_INDEXES);
+        if (byRegex == null) {
             return null;
         }
-        return Integer.valueOf(matches.get(0));
+        return Integer.valueOf(byRegex);
     }
 
     public List<Integer> getAllIndexes(final String path) {
-        final Pattern compiledPattern = Pattern.compile(ALL_INDEXES);
-        final Matcher matcher = compiledPattern.matcher(path);
-
-        final List<String> matches = new ArrayList<>();
-
-        while (matcher.find()) {
-            matches.add(matcher.group(1));
+        final List<String> matches = getByRegexAll(path, ALL_INDEXES);
+        if(matches == null) {
+            return Collections.emptyList();
         }
-        if (matches.isEmpty()) {
-            return null;
-        }
-        return matches.stream().map(i -> Integer.parseInt(i)).collect(Collectors.toList());
+        return matches.stream().map(Integer::parseInt).collect(Collectors.toList());
     }
 
     public String prepareParentOpenEhrPath(String fullOpenEhrPath,
@@ -508,7 +501,7 @@ public class OpenFhirStringUtils {
                     final String firstWhereCondition = extractWhereCondition(parent.substring(parentSubstringCount - 1));
                     childPathJoiner.add(firstWhereCondition);
                     childPathJoiner.add(childPath);
-                    parentIndex += (firstWhereCondition.chars().filter(ch -> ch == '.').count() + 1);
+                    parentIndex += (int) (firstWhereCondition.chars().filter(ch -> ch == '.').count() + 1);
                 }
             }
         }
@@ -604,14 +597,14 @@ public class OpenFhirStringUtils {
 
     /**
      * Replaces parts of the original string with parts from the replacement string, based on specific patterns.
-     *
+     * <p>
      * The original and replacement strings are split by "/" and processed part by part. The following rules are applied:
      * - If a replacement part contains a numeric suffix in the format "part:number", the corresponding part from the replacement is used.
      * - If a replacement part contains a suffix in the format "part[n]", the original structure of the part is retained.
      * - If no special pattern is found, the replacement part is used, unless it's significantly different from the original part, in which case the original part is kept.
      * - The method returns the new string with appropriate replacements and maintains the "/" as the separator.
      *
-     * @param original the original string to be processed (parts separated by "/")
+     * @param original    the original string to be processed (parts separated by "/")
      * @param replacement the replacement string to be used (parts separated by "/")
      * @return a new string where parts from the original are replaced with parts from the replacement
      */
@@ -627,7 +620,7 @@ public class OpenFhirStringUtils {
             if (i < replacementParts.length && replacementParts[i].matches(".*:\\d+")) {
                 // If replacement part has a numeric suffix, use it
                 result.append(replacementParts[i]);
-            } else if (i < replacementParts.length && replacementParts[i].matches(".*\\[\\d*\\]")) {
+            } else if (i < replacementParts.length && replacementParts[i].matches(".*\\[\\d*]")) {
                 // If the replacement part has a [n] suffix, use the original structure
                 result.append(originalParts[i]);
             } else if (i < replacementParts.length) {

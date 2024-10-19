@@ -21,7 +21,7 @@ import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
 @Component
 public class OpenEhrPopulator {
 
-    private OpenFhirMapperUtils openFhirMapperUtils;
+    private final OpenFhirMapperUtils openFhirMapperUtils;
 
     @Autowired
     public OpenEhrPopulator(OpenFhirMapperUtils openFhirMapperUtils) {

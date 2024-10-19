@@ -28,7 +28,7 @@ import java.util.Map;
 @Slf4j
 public class ProdOpenFhirMappingContext extends OpenFhirMappingContext {
 
-    private FhirConnectMapperRepository connectMapperRepository;
+    private final FhirConnectMapperRepository connectMapperRepository;
 
     @Autowired
     public ProdOpenFhirMappingContext(final FhirPathR4 fhirPathR4,

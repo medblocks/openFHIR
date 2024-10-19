@@ -37,7 +37,7 @@ public class OpenEhrToFhirTest {
     final TestOpenFhirMappingContext repo = new TestOpenFhirMappingContext(fhirPath, openFhirStringUtils);
     final OpenEhrToFhir openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
             repo,
-            new OpenEhrCachedUtils(),
+            new OpenEhrCachedUtils(null),
             new Gson(),
             openFhirStringUtils,
             new OpenEhrRmWorker(openFhirStringUtils),
@@ -169,7 +169,6 @@ public class OpenEhrToFhirTest {
                 cache,
                 "",
                 "",
-                false,
                 "",
                 "");
 

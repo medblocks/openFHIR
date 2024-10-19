@@ -6,7 +6,7 @@ import java.util.List;
 
 public class RequestValidationException extends RuntimeException {
     @Getter
-    private List<String> messages;
+    private final List<String> messages;
 
     public RequestValidationException(String message, List<String> messages) {
         super(message);
