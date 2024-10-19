@@ -38,14 +38,14 @@ public class FhirConfig {
     @JsonProperty("condition")
     private List<Condition> condition;
 
-    public FhirConfig copy() {
+    public FhirConfig doCopy() {
         final FhirConfig fhirConfig = new FhirConfig();
         fhirConfig.setResource(resource);
         fhirConfig.setMultiple(multiple);
         if (condition != null) {
             List<Condition> toAdd = new ArrayList<>();
             for (Condition condition1 : condition) {
-                toAdd.add(condition1.copy());
+                toAdd.add(condition1.doCopy());
             }
             fhirConfig.setCondition(toAdd);
         }

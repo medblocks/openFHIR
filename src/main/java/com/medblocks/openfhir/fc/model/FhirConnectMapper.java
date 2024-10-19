@@ -66,14 +66,14 @@ public class FhirConnectMapper {
 
     public FhirConnectMapper copy() {
         final FhirConnectMapper fhirConnectMapper = new FhirConnectMapper();
-        fhirConnectMapper.setFhirConfig(fhirConfig == null ? null : fhirConfig.copy());
+        fhirConnectMapper.setFhirConfig(fhirConfig == null ? null : fhirConfig.doCopy());
         fhirConnectMapper.setFormat(format);
         fhirConnectMapper.setVersion(version);
         fhirConnectMapper.setOpenEhrConfig(openEhrConfig == null ? null : openEhrConfig.copy());
         if (mappings != null) {
             final List<Mapping> copiedMappings = new ArrayList<>();
             for (Mapping mapping : mappings) {
-                copiedMappings.add(mapping.copy());
+                copiedMappings.add(mapping.doCopy());
             }
             fhirConnectMapper.setMappings(copiedMappings);
         }

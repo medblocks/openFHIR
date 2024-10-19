@@ -51,7 +51,7 @@ public class FhirToOpenEhrHelper {
      */
     private List<FhirToOpenEhrHelper> fhirToOpenEhrHelpers;
 
-    public FhirToOpenEhrHelper clone() {
+    public FhirToOpenEhrHelper doClone() {
         return FhirToOpenEhrHelper.builder()
                 .fhirPath(fhirPath)
                 .limitingCriteria(limitingCriteria)
@@ -59,7 +59,7 @@ public class FhirToOpenEhrHelper {
                 .openEhrType(openEhrType)
                 .archetype(archetype)
                 .multiple(multiple)
-                .fhirToOpenEhrHelpers(fhirToOpenEhrHelpers == null ? null : fhirToOpenEhrHelpers.stream().map(en -> en.clone()).collect(Collectors.toList()))
+                .fhirToOpenEhrHelpers(fhirToOpenEhrHelpers == null ? null : fhirToOpenEhrHelpers.stream().map(FhirToOpenEhrHelper::doClone).collect(Collectors.toList()))
                 .build();
     }
 

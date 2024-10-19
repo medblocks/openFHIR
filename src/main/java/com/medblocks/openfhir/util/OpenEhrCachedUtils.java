@@ -26,8 +26,12 @@ public class OpenEhrCachedUtils {
     final Map<String, WebTemplate> webTemplates = new HashMap<>();
     final Map<String, OPERATIONALTEMPLATE> operationalTemplates = new HashMap<>();
 
+    private final OptRepository optRepository;
+
     @Autowired
-    private OptRepository optRepository;
+    public OpenEhrCachedUtils(OptRepository optRepository) {
+        this.optRepository = optRepository;
+    }
 
     public WebTemplate parseWebTemplate(final OPERATIONALTEMPLATE operationaltemplate) {
         // todo: what if it's changed in the db?

@@ -13,12 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
 
+    private final OptRepository optRepository;
+    private final FhirConnectMapperRepository fhirConnectMapperRepository;
+    private final FhirConnectContextRepository fhirConnectContextRepository;
+
     @Autowired
-    private OptRepository optRepository;
-    @Autowired
-    private FhirConnectMapperRepository fhirConnectMapperRepository;
-    @Autowired
-    private FhirConnectContextRepository fhirConnectContextRepository;
+    public TestController(OptRepository optRepository,
+                          FhirConnectMapperRepository fhirConnectMapperRepository,
+                          FhirConnectContextRepository fhirConnectContextRepository) {
+        this.optRepository = optRepository;
+        this.fhirConnectMapperRepository = fhirConnectMapperRepository;
+        this.fhirConnectContextRepository = fhirConnectContextRepository;
+    }
 
     @GetMapping("/$purge")
     ResponseEntity purge(@RequestHeader(value = "x-req-id", required = false) final String reqId) {

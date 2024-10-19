@@ -4,11 +4,11 @@ import ca.uhn.fhir.context.FhirContext;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.nedap.archie.rm.composition.Composition;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.TestOpenFhirMappingContext;
 import com.medblocks.openfhir.fc.model.FhirConnectContext;
 import com.medblocks.openfhir.util.*;
+import com.nedap.archie.rm.composition.Composition;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
@@ -37,7 +37,7 @@ public class OpenEhrToFhirTest {
     final TestOpenFhirMappingContext repo = new TestOpenFhirMappingContext(fhirPath, openFhirStringUtils);
     final OpenEhrToFhir openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
             repo,
-            new OpenEhrCachedUtils(),
+            new OpenEhrCachedUtils(null),
             new Gson(),
             openFhirStringUtils,
             new OpenEhrRmWorker(openFhirStringUtils),
@@ -169,7 +169,6 @@ public class OpenEhrToFhirTest {
                 cache,
                 "",
                 "",
-                false,
                 "",
                 "");
 

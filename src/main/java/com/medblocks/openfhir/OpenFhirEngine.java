@@ -36,16 +36,16 @@ import java.util.*;
 @Transactional
 public class OpenFhirEngine {
 
-    private FhirToOpenEhr fhirToOpenEhr;
-    private OpenEhrToFhir openEhrToFhir;
-    private FhirConnectContextRepository fhirConnectContextRepository;
-    private JsonParser jsonParser;
-    private OpenEhrCachedUtils cachedUtils;
-    private FlatJsonUnmarshaller flatJsonUnmarshaller;
-    private ProdOpenFhirMappingContext prodOpenFhirMappingContext;
-    private OpenFhirStringUtils openFhirStringUtils;
-    private FhirPathR4 fhirPathR4;
-    private Gson gson;
+    private final FhirToOpenEhr fhirToOpenEhr;
+    private final OpenEhrToFhir openEhrToFhir;
+    private final FhirConnectContextRepository fhirConnectContextRepository;
+    private final JsonParser jsonParser;
+    private final OpenEhrCachedUtils cachedUtils;
+    private final FlatJsonUnmarshaller flatJsonUnmarshaller;
+    private final ProdOpenFhirMappingContext prodOpenFhirMappingContext;
+    private final OpenFhirStringUtils openFhirStringUtils;
+    private final FhirPathR4 fhirPathR4;
+    private final Gson gson;
 
     @Autowired
     public OpenFhirEngine(final FhirToOpenEhr fhirToOpenEhr,
@@ -202,7 +202,7 @@ public class OpenFhirEngine {
         // validate prerequisites before starting any kind of mapping logic
         validatePrerequisites(fhirConnectContext, fhirConnectContext != null ? fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId() : incomingTemplateId);
 
-        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId();
+        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId(); // fhirConnectContext can not be null because prerequisites are validated above
 
 
         final OPERATIONALTEMPLATE operationalTemplate = cachedUtils.getOperationalTemplate(templateIdToUse);
