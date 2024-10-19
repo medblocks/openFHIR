@@ -93,23 +93,6 @@ public class OpenFhirMapperUtils {
         return null;
     }
 
-    public Date stringToTime(final String date) {
-        if (date == null) {
-            return null;
-        }
-        try {
-            return time.parse(date);
-        } catch (ParseException e) {
-            log.error("Couldn't parse date: {}", date, e);
-            try {
-                return time2.parse(date);
-            } catch (ParseException ex) {
-                log.error("Couldn't parse date: {}", date, e);
-            }
-        }
-        return null;
-    }
-
     /**
      * Modifies Mapping.openEhr paths, replacing $reference and $openEhrArchetype and adding resolve() to FHIR
      * path so it's evaluated by the fhir path engine

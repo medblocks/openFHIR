@@ -80,7 +80,7 @@ public abstract class KdsBidirectionalTest {
 
         openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
                 repo,
-                new OpenEhrCachedUtils(),
+                new OpenEhrCachedUtils(null),
                 new Gson(),
                 openFhirStringUtils,
                 new OpenEhrRmWorker(openFhirStringUtils),
@@ -95,7 +95,7 @@ public abstract class KdsBidirectionalTest {
                 new OpenEhrRmWorker(openFhirStringUtils),
                 openFhirStringUtils,
                 repo,
-                new OpenEhrCachedUtils(),
+                new OpenEhrCachedUtils(null),
                 new OpenFhirMapperUtils(),
                 new OpenEhrPopulator(new OpenFhirMapperUtils()));
 

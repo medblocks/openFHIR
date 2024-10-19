@@ -1,7 +1,6 @@
 package com.medblocks.openfhir.db.repository.mongodb;
 
 import com.medblocks.openfhir.db.entity.FhirConnectMapperEntity;
-import com.medblocks.openfhir.db.entity.FhirConnectMapperEntity;
 import com.medblocks.openfhir.db.repository.FhirConnectMapperRepository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;

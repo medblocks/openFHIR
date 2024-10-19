@@ -27,7 +27,7 @@ public class With {
     @JsonProperty("type")
     private String type;
 
-    public With copy() {
+    public With doCopy() {
         final With with = new With();
         with.setFhir(fhir);
         with.setOpenehr(openehr);

@@ -1,6 +1,5 @@
 package com.medblocks.openfhir.kds;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
 import lombok.SneakyThrows;

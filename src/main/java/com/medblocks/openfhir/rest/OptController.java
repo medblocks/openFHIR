@@ -12,8 +12,13 @@ import java.util.List;
 
 @RestController
 public class OptController {
+
+    private final OptService optService;
+
     @Autowired
-    private OptService optService;
+    public OptController(OptService optService) {
+        this.optService = optService;
+    }
 
     /**
      * creates an operational template as part of the state configuration of the engine

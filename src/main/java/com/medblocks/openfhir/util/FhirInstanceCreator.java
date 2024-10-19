@@ -35,7 +35,7 @@ public class FhirInstanceCreator {
 
     private final String R4_HAPI_PACKAGE = "org.hl7.fhir.r4.model.";
 
-    private OpenFhirStringUtils openFhirStringUtils;
+    private final OpenFhirStringUtils openFhirStringUtils;
 
     @Autowired
     public FhirInstanceCreator(OpenFhirStringUtils openFhirStringUtils) {
@@ -108,7 +108,7 @@ public class FhirInstanceCreator {
 
                 final List<String> list = Arrays.asList(fhirPath.split("\\."));
                 final InstantiateAndSetReturn returning = instantiateAndSetElement(nextClassInstance, nextClass,
-                        list.subList(1, list.size()).stream().collect(Collectors.joining(".")),
+                        String.join(".", list.subList(1, list.size())),
                         forcingClass,
                         resolveResourceType);
                 ((Reference) resource).setResource((IBaseResource) nextClassInstance);
@@ -167,8 +167,9 @@ public class FhirInstanceCreator {
             if (!specialThisHandling && theField == null) {
                 continue;
             }
-            final boolean resolveFollows = i != (splitFhirPaths.length - 1) ? RESOLVE.equals(splitFhirPaths[i + 1]) : false;
-            final boolean castFollows = i != (splitFhirPaths.length - 1) ? splitFhirPaths[i + 1].startsWith("as(") : false;
+            final int arrayLength = splitFhirPaths.length - 1;
+            final boolean resolveFollows = i != arrayLength && "resolve()".equals(splitFhirPaths[i + 1]);
+            final boolean castFollows = i != arrayLength && splitFhirPaths[i + 1].startsWith("as(");
 
             // second part of the condition is there to solve cases when the path ends with a cast, i.e. asNeeded.as(Boolean)
             if (preparedFhirPath.equals(splitPath)) {
@@ -198,7 +199,7 @@ public class FhirInstanceCreator {
                         .isList(specialThisHandling ? originalResource instanceof List : theField.getType() == List.class)
                         .build();
             }
-            final List<String> list = Arrays.asList(splitFhirPaths).stream()
+            final List<String> list = Arrays.stream(splitFhirPaths)
                     .filter(en -> {
                         if (resolveFollows) {
                             return StringUtils.isNotEmpty(en) && !en.equals(RESOLVE);
@@ -215,7 +216,7 @@ public class FhirInstanceCreator {
 
 
             final InstantiateAndSetReturn returning = instantiateAndSetElement(nextClassInstance, nextClass,
-                    list.subList(1, list.size()).stream().collect(Collectors.joining(".")),
+                    String.join(".", list.subList(1, list.size())),
                     forcingClass,
                     resolveResourceType);
             final Object obj = setFieldObject(theField, resource, nextClassInstance);
@@ -224,54 +225,10 @@ public class FhirInstanceCreator {
                     .returning(obj)
                     .path(path)
                     .inner(returning)
-                    .isList(theField.getType() == List.class)
+                    .isList(theField != null && theField.getType() == List.class)
                     .build();
         }
         return null;
-    }
-
-    public void setElement(final Object resource, final Class clazz, final String fhirPath, final Object toSet) {
-        final String preparedFhirPath = prepareFhirPathForInstantiation(clazz, fhirPath);
-        final String[] splitFhirPaths = preparedFhirPath.split("\\.");
-        for (int i = 0; i < splitFhirPaths.length; i++) {
-            String splitPath = splitFhirPaths[i];
-            final Field[] childElements = FieldUtils.getFieldsWithAnnotation(clazz, Child.class);
-            final Field theField = Arrays.stream(childElements).filter(child -> splitPath.equals(child.getName())).findFirst().orElse(null);
-            if (theField == null) {
-                continue;
-            }
-            final boolean resolveFollows = i != (splitFhirPaths.length - 1) ? RESOLVE.equals(splitFhirPaths[i + 1]) : false;
-            final boolean castFollows = i != (splitFhirPaths.length - 1) ? splitFhirPaths[i + 1].startsWith("as(") : false;
-            if (preparedFhirPath.equals(splitPath)) {
-                // means we've reached the end
-                theField.setAccessible(true);
-                try {
-                    theField.set(resource, toSet);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-                return;
-            }
-            final List<String> list = Arrays.asList(splitFhirPaths).stream()
-                    .filter(en -> {
-                        if (!resolveFollows && !castFollows) {
-                            return true;
-                        } else {
-                            return !en.equals(RESOLVE) && !en.startsWith("as(");
-                        }
-                    })
-                    .collect(Collectors.toList());
-            final String castingTo = castFollows ? openFhirStringUtils.getCastType(preparedFhirPath) : null;
-            final Class nextClass = castFollows ? getClassForName(R4_HAPI_PACKAGE + castingTo) : findClass(theField, null);
-            final Object nextClassInstance = newInstance(nextClass);
-
-
-            setElement(nextClassInstance,
-                    nextClass,
-                    list.subList(1, list.size()).stream().collect(Collectors.joining(".")),
-                    toSet);
-            return;
-        }
     }
 
     public String enrichFhirPathWithRecurring(final Class clazz, final String fhirPath, final StringBuilder sb) {
@@ -284,17 +241,18 @@ public class FhirInstanceCreator {
             if (theField == null) {
                 continue;
             }
-            sb.append("." + splitPath);
+            sb.append(".").append(splitPath);
             if (theField.getType() == List.class) {
                 sb.append("[n]");
             }
-            final boolean resolveFollows = i != (splitFhirPaths.length - 1) ? RESOLVE.equals(splitFhirPaths[i + 1]) : false;
-            final boolean castFollows = i != (splitFhirPaths.length - 1) ? splitFhirPaths[i + 1].startsWith("as(") : false;
+            final int arrayLength = splitFhirPaths.length - 1;
+            final boolean resolveFollows = i != arrayLength && "resolve()".equals(splitFhirPaths[i + 1]);
+            final boolean castFollows = i != arrayLength && splitFhirPaths[i + 1].startsWith("as(");
             if (preparedFhirPath.equals(splitPath)) {
                 // means we've reached the end
                 return sb.toString();
             }
-            final List<String> list = Arrays.asList(splitFhirPaths).stream()
+            final List<String> list = Arrays.stream(splitFhirPaths)
                     .filter(en -> {
                         if (!resolveFollows && !castFollows) {
                             return true;
@@ -302,17 +260,20 @@ public class FhirInstanceCreator {
                             return !en.equals(RESOLVE) && !en.startsWith("as(");
                         }
                     })
-                    .collect(Collectors.toList());
+                    .toList();
             final String castingTo = castFollows ? openFhirStringUtils.getCastType(preparedFhirPath) : null;
             final Class nextClass = castFollows ? getClassForName(R4_HAPI_PACKAGE + castingTo) : findClass(theField, null);
 
             return enrichFhirPathWithRecurring(nextClass,
-                    list.subList(1, list.size()).stream().collect(Collectors.joining(".")), sb);
+                    String.join(".", list.subList(1, list.size())), sb);
         }
         return null;
     }
 
     private Object setFieldObject(final Field theField, final Object resource, final Object settingObject) {
+        if(theField == null) {
+            return null;
+        }
         final Object value = wrapInReferenceIfNeeded(settingObject);
         try {
             theField.setAccessible(true);
@@ -331,7 +292,7 @@ public class FhirInstanceCreator {
                 theField.set(resource, value);
             }
         } catch (IllegalAccessException e) {
-
+            log.error("Error trying to set field object.", e);
         }
         return value;
     }
@@ -344,10 +305,12 @@ public class FhirInstanceCreator {
     }
 
     private Class findClass(final Field field, final String forcingClass) {
+        if(field == null) {
+            return null;
+        }
         final Child childAnnotation = field.getAnnotation(Child.class);
 
         final Class<? extends IElement>[] types = childAnnotation.type();
-
 
         if (types.length == 0) {
             // backboneelement
@@ -371,8 +334,16 @@ public class FhirInstanceCreator {
                 return Extension.class;
             }
             return Arrays.stream(types)
-                    .filter(type -> forcingClass.equals(type.getSimpleName()) || ("Coding".equals(forcingClass) && "CodeType".equals(type.getSimpleName())) || getFhirResourceType(forcingClass).isAssignableFrom(getClassForName(type.getName())))
-                    .map(type -> getClassForName(type.getName()))
+                    .filter(type -> {
+                        final Class classForName = getClassForName(type.getName());
+                        if(classForName == null) {
+                            return false;
+                        }
+                        return forcingClass.equals(type.getSimpleName())
+                                || ("Coding".equals(forcingClass) && "CodeType".equals(type.getSimpleName()))
+                                || getFhirResourceType(forcingClass).isAssignableFrom(classForName);
+                    })
+                    .map(type -> getClassForName(type.getName())) // if getClassForName was false, then element wouldn't be in the list as its filtered by that above
                     .findFirst()
                     .orElse(null);
         }

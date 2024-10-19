@@ -1,7 +1,6 @@
 package com.medblocks.openfhir.db.repository.mongodb;
 
 import com.medblocks.openfhir.db.entity.OptEntity;
-import com.medblocks.openfhir.db.entity.OptEntity;
 import com.medblocks.openfhir.db.repository.OptRepository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
