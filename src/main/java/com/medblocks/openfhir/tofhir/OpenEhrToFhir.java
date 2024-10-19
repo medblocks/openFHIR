@@ -317,52 +317,15 @@ public class OpenEhrToFhir {
                             openFhirMapperUtils.getFhirConnectTypeToFhir(helper.getOpenEhrType()),
                             helper.getTargetResource());
 
-
-//                    Needs to have full path to this item that will be added to the cache
-
-                    final String preparedFullFhirPathForCachePopulation;
-                    if (findingOuterMost.getRemovedPath().startsWith(".as(")) {
-                        // was casting
-                        final String removedPath = findingOuterMost.getRemovedPath();
-                        final String[] splitRemovedPathByDot = removedPath.split("\\.");
-                        final String castString = splitRemovedPathByDot[1];
-                        final String actualRemovedAndResolvedPartString = splitRemovedPathByDot.length > 2 ? ("." + splitRemovedPathByDot[2]) : null;
-                        preparedFullFhirPathForCachePopulation = fhirPathWithConditions
-                                .replace(generatingResource + ".", "")
-                                .replace(removedPath, "") + "." + castString + actualRemovedAndResolvedPartString;
-
-
-                    } else {
-                        if (removedPathIsOnlyWhere) {
-                            preparedFullFhirPathForCachePopulation = fhirPathWithConditions;
-                        } else {
-                            String removedPath = findingOuterMost.getRemovedPath();
-                            final boolean startsWithWhere = removedPath.startsWith(".where(");
-                            if (startsWithWhere) {
-                                removedPath = removedPath.replace("." + openFhirStringUtils.extractWhereCondition(removedPath), "");
-                            }
-                            final List<String> splitByDots = Arrays.stream(removedPath.split("\\.")).filter(e -> StringUtils.isNotBlank(e)).collect(Collectors.toList());
-                            final String suffix = splitByDots.get(0);
-                            final String where = splitByDots.size() > 1 && splitByDots.get(1).startsWith("where") ? ("." + openFhirStringUtils.extractWhereCondition(removedPath)) : "";
-                            final String cast = splitByDots.size() > 1 && splitByDots.get(1).startsWith("as") ? ("." + splitByDots.get(1)) : "";
-
-                            preparedFullFhirPathForCachePopulation = fhirPathWithConditions
-                                    .replace(generatingResource + ".", "")
-                                    .replace(removedPath, "")
-                                    + "."
-                                    + suffix + where + cast;
-                        }
-                    }
-                    hardcodedReturn.setPath(preparedFullFhirPathForCachePopulation);
-
-                    populateIntermediateCache(hardcodedReturn,
-                            instance.toString(),
-                            instantiatedIntermediateElements,
-                            instance.getResourceType().name(),
+                    cacheReturnedItems(findingOuterMost,
+                            hardcodedReturn,
+                            instance,
+                            fhirPathWithConditions,
+                            generatingResource,
+                            removedPathIsOnlyWhere,
                             fullOpenEhrPath,
-                            helper.isFollowedBy(),
-                            helper.getParentFollowedByFhirPath(),
-                            helper.getParentFollowedByOpenEhr());
+                            instantiatedIntermediateElements,
+                            helper);
 
                     // populate instantiated element with the data obtained from the flat path (now represented with 'data')
                     fhirInstancePopulator.populateElement(getLastReturn(hardcodedReturn).getReturning(), data);
@@ -394,7 +357,7 @@ public class OpenEhrToFhir {
                     createdPerIndex.put(createKey(0, conditioningFhirPath), nowInstantiated);
                     resources.add(nowInstantiated); //add at least one if none was created as part of the previous step
                 }
-                for (Resource instance : resources) {
+                for (final Resource instance : resources) {
 
 
                     if ("NONE".equals(helper.getOpenEhrType())) {
@@ -439,53 +402,16 @@ public class OpenEhrToFhir {
                                 removedPathIsOnlyWhere ? THIS : findingOuterMost.getRemovedPath(),
                                 openFhirMapperUtils.getFhirConnectTypeToFhir(helper.getOpenEhrType()));
 
-                        /**
-                         * Needs to have full path to this item that will be added to the cache
-                         */
-                        final String preparedFullFhirPathForCachePopulation;
-                        if (findingOuterMost.getRemovedPath().startsWith(".as(")) {
-                            // was casting
-                            final String removedPath = findingOuterMost.getRemovedPath();
-                            final String[] splitRemovedPathByDot = removedPath.split("\\.");
-                            final String castString = splitRemovedPathByDot[1];
-                            final String actualRemovedAndResolvedPartString = splitRemovedPathByDot.length > 2 ? ("." + splitRemovedPathByDot[2]) : null;
-                            preparedFullFhirPathForCachePopulation = fhirPathWithoutConditions
-                                    .replace(generatingResource + ".", "")
-                                    .replace(removedPath, "") + "." + castString + actualRemovedAndResolvedPartString;
-
-
-                        } else {
-                            if (removedPathIsOnlyWhere) {
-                                preparedFullFhirPathForCachePopulation = fhirPathWithoutConditions;
-                            } else {
-                                String removedPath = findingOuterMost.getRemovedPath();
-                                final boolean startsWithWhere = removedPath.startsWith(".where(");
-                                if (startsWithWhere) {
-                                    removedPath = removedPath.replace("." + openFhirStringUtils.extractWhereCondition(removedPath), "");
-                                }
-                                final List<String> splitByDots = Arrays.stream(removedPath.split("\\.")).filter(e -> StringUtils.isNotBlank(e)).collect(Collectors.toList());
-                                final String suffix = splitByDots.get(0);
-                                final String where = splitByDots.size() > 1 && splitByDots.get(1).startsWith("where") ? ("." + openFhirStringUtils.extractWhereCondition(removedPath)) : "";
-                                final String cast = splitByDots.size() > 1 && splitByDots.get(1).startsWith("as") ? ("." + splitByDots.get(1)) : "";
-
-                                preparedFullFhirPathForCachePopulation = fhirPathWithoutConditions
-                                        .replace(generatingResource + ".", "")
-                                        .replace(removedPath, "")
-                                        + "."
-                                        + suffix + where + cast;
-                            }
-                        }
-                        hardcodedReturn.setPath(preparedFullFhirPathForCachePopulation);
-
-
-                        populateIntermediateCache(hardcodedReturn,
-                                instance.toString(),
-                                instantiatedIntermediateElements,
-                                instance.getResourceType().name(),
+                        cacheReturnedItems(findingOuterMost,
+                                hardcodedReturn,
+                                instance,
+                                fhirPathWithoutConditions,
+                                generatingResource,
+                                removedPathIsOnlyWhere,
                                 fullOpenEhrPath,
-                                helper.isFollowedBy(),
-                                helper.getParentFollowedByFhirPath(),
-                                helper.getParentFollowedByOpenEhr());
+                                instantiatedIntermediateElements,
+                                helper);
+
                         fhirInstancePopulator.populateElement(getLastReturn(hardcodedReturn).getReturning(), dataForAllResources);
                     } else {
                         fhirInstancePopulator.populateElement(findingOuterMost.getLastObject(), dataForAllResources);
@@ -536,6 +462,63 @@ public class OpenEhrToFhir {
 
         createdResources.addAll(separatelyCreatedResources);
         return createdResources;
+    }
+
+    private void cacheReturnedItems(final FindingOuterMost findingOuterMost,
+                                    final FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn,
+                                    final Resource instance,
+                                    final String fhirPath,
+                                    final String generatingResource,
+                                    final boolean removedPathIsOnlyWhere,
+                                    final String fullOpenEhrPath,
+                                    final Map<String, Object> instantiatedIntermediateElements,
+                                    final OpenEhrToFhirHelper helper) {
+        /**
+         * Needs to have full path to this item that will be added to the cache
+         */
+        final String preparedFullFhirPathForCachePopulation;
+        if (findingOuterMost.getRemovedPath().startsWith(".as(")) {
+            // was casting
+            final String removedPath = findingOuterMost.getRemovedPath();
+            final String[] splitRemovedPathByDot = removedPath.split("\\.");
+            final String castString = splitRemovedPathByDot[1];
+            final String actualRemovedAndResolvedPartString = splitRemovedPathByDot.length > 2 ? ("." + splitRemovedPathByDot[2]) : null;
+            preparedFullFhirPathForCachePopulation = fhirPath
+                    .replace(generatingResource + ".", "")
+                    .replace(removedPath, "") + "." + castString + actualRemovedAndResolvedPartString;
+
+
+        } else {
+            if (removedPathIsOnlyWhere) {
+                preparedFullFhirPathForCachePopulation = fhirPath;
+            } else {
+                String removedPath = findingOuterMost.getRemovedPath();
+                final boolean startsWithWhere = removedPath.startsWith(".where(");
+                if (startsWithWhere) {
+                    removedPath = removedPath.replace("." + openFhirStringUtils.extractWhereCondition(removedPath), "");
+                }
+                final List<String> splitByDots = Arrays.stream(removedPath.split("\\.")).filter(e -> StringUtils.isNotBlank(e)).collect(Collectors.toList());
+                final String suffix = splitByDots.get(0);
+                final String where = splitByDots.size() > 1 && splitByDots.get(1).startsWith("where") ? ("." + openFhirStringUtils.extractWhereCondition(removedPath)) : "";
+                final String cast = splitByDots.size() > 1 && splitByDots.get(1).startsWith("as") ? ("." + splitByDots.get(1)) : "";
+
+                preparedFullFhirPathForCachePopulation = fhirPath
+                        .replace(generatingResource + ".", "")
+                        .replace(removedPath, "")
+                        + "."
+                        + suffix + where + cast;
+            }
+        }
+        hardcodedReturn.setPath(preparedFullFhirPathForCachePopulation);
+
+
+        populateIntermediateCache(hardcodedReturn,
+                instance.toString(),
+                instantiatedIntermediateElements,
+                instance.getResourceType().name(),
+                fullOpenEhrPath,
+                helper.getParentFollowedByFhirPath(),
+                helper.getParentFollowedByOpenEhr());
     }
 
     /**
@@ -638,7 +621,6 @@ public class OpenEhrToFhir {
                     instantiatedIntermediateElements,
                     instance.getResourceType().name(),
                     fullOpenEhrPath,
-                    isFollowedBy,
                     parentFhirEhr,
                     parentOpenEhr);
 
@@ -678,7 +660,7 @@ public class OpenEhrToFhir {
             // we need to ignore the openehr in the key because followed by means we need to find one that has already been created!
             final String preparedParentPath = openFhirStringUtils.prepareParentOpenEhrPath(parentFollowedByOpenEhr,
                     fullOpenEhrPath);
-            String keyIgnoringOpenEhrPath = null;
+            String keyIgnoringOpenEhrPath;
             if (fullOpenEhrPath.contains(preparedParentPath)) {
                 // means that child openehr path is a sub-path of the followed by parent
                 keyIgnoringOpenEhrPath = createKeyForIntermediateElements(coverInstance.toString(), fhirPath, preparedParentPath);
@@ -816,7 +798,6 @@ public class OpenEhrToFhir {
                     instantiatedIntermediateElements,
                     resType,
                     fullOpenEhrPath,
-                    isFollowedBy,
                     parentFollowedByMapping,
                     parentFollowedByOpenEhr);
         } else {
@@ -836,7 +817,6 @@ public class OpenEhrToFhir {
                 instantiatedIntermediateElements,
                 coverInstance.getResourceType().name(),
                 fullOpenEhrPath,
-                isFollowedBy,
                 parentFollowedByMapping,
                 parentFollowedByOpenEhr);
 
@@ -857,7 +837,6 @@ public class OpenEhrToFhir {
                                    final Map<String, Object> instantiatedIntermediateElements,
                                    final String path,
                                    final String fullOpenEhrPath,
-                                   final boolean followedBy,
                                    final String followedByParentFhir,
                                    final String followedByParentOpenEhr) {
 
@@ -871,12 +850,11 @@ public class OpenEhrToFhir {
                     instantiatedIntermediateElements,
                     path + "." + hardcodedReturn.getPath(),
                     fullOpenEhrPath,
-                    followedBy,
                     followedByParentFhir,
                     followedByParentOpenEhr);
             return;
         }
-        if (followedBy && hardcodedReturn.isList() && followedByParentOpenEhr != null) {
+        if (hardcodedReturn.isList() && followedByParentOpenEhr != null) {
             // store the whole list under the one without any index
             final String preparedParentOpenEhrPath = Character.isDigit(fullOpenEhrPath.charAt(fullOpenEhrPath.length() - 1)) ? fullOpenEhrPath : openFhirStringUtils.prepareParentOpenEhrPath(followedByParentOpenEhr, fullOpenEhrPath);
             final Integer lastIndex = openFhirStringUtils.getLastIndex(preparedParentOpenEhrPath);
@@ -910,7 +888,6 @@ public class OpenEhrToFhir {
                         instantiatedIntermediateElements,
                         path + "." + hardcodedReturn.getPath(),
                         fullOpenEhrPath,
-                        followedBy,
                         followedByParentFhir,
                         followedByParentOpenEhr);
             }
@@ -934,7 +911,6 @@ public class OpenEhrToFhir {
                         instantiatedIntermediateElements,
                         path + "." + hardcodedReturn.getPath(),
                         fullOpenEhrPath,
-                        followedBy,
                         null,
                         null);
             }
@@ -969,8 +945,7 @@ public class OpenEhrToFhir {
                         instantiatedIntermediateElements,
                         path + "." + hardcodedReturn.getPath(),
                         fullOpenEhrPath,
-                        followedBy,
-                        followedByParentFhir,
+                        null,
                         followedByParentOpenEhr);
             }
         }
@@ -1124,7 +1099,7 @@ public class OpenEhrToFhir {
                 if (manuallyAddingOccurrence) {
                     // for cases when you're manually adding recurring syntax to an openEHR path for whatever reason
                     // (but mostly due to context weird behavior when you have _participation)
-                    openehr = openehr.replaceAll("\\[n\\]", "");
+                    openehr = openehr.replaceAll("\\[n]", "");
                 }
                 // adds regex pattern to simplified path in a way that we can extract data from a given flat path
                 final String withRegex = openFhirStringUtils.addRegexPatternToSimplifiedFlatFormat(openehr);
@@ -1306,7 +1281,8 @@ public class OpenEhrToFhir {
                 final String numerator = proportionVal + "|numerator";
                 final String denominator = proportionVal + "|denominator";
                 final Quantity proportionQuantity = new Quantity();
-                if (getFromValueHolder(valueHolder, denominator) != null && getFromValueHolder(valueHolder, denominator).equals("100.0")) {
+                final String proportionValueHolder = getFromValueHolder(valueHolder, denominator);
+                if (proportionValueHolder != null && proportionValueHolder.equals("100.0")) {
                     proportionQuantity.setCode("%");
                     proportionQuantity.setUnit("percent");
                     proportionQuantity.setSystem("http://unitsofmeasure.org");
@@ -1328,7 +1304,9 @@ public class OpenEhrToFhir {
                 final Quantity quantity = new Quantity();
                 if (magnitude != null) {
                     final Object magVal = getDoubleOrLong(getFromValueHolder(valueHolder, magnitude));
-                    quantity.setValue(magVal == null ? null : (magVal instanceof Long ? (Long) magVal : (Double) magVal));
+                    if(magVal != null) {
+                        quantity.setValue(magVal instanceof Long ? (Long) magVal : (Double) magVal);
+                    }
                 } else if (ordinal != null) {
                     final Object ordVal = getDoubleOrLong(getFromValueHolder(valueHolder, ordinal));
                     if (ordVal instanceof Long) {
@@ -1392,7 +1370,9 @@ public class OpenEhrToFhir {
                 Attachment att = new Attachment();
                 att.setContentType(getFromValueHolder(valueHolder, path + "|mediatype"));
                 final String size = getFromValueHolder(valueHolder, path + "|size");
-                att.setSize(size == null ? null : Integer.valueOf(size));
+                if(size != null) {
+                    att.setSize(Integer.parseInt(size));
+                }
                 att.setUrl(getFromValueHolder(valueHolder, path + "|url"));
                 final String dataBytes = getFromValueHolder(valueHolder, path + "|data");
                 att.setData(dataBytes == null ? null : dataBytes.getBytes(StandardCharsets.UTF_8));

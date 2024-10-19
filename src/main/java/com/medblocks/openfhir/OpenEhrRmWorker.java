@@ -17,7 +17,7 @@ import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
 @Component
 public class OpenEhrRmWorker {
 
-    private OpenFhirStringUtils openFhirStringUtils;
+    private final OpenFhirStringUtils openFhirStringUtils;
 
     @Autowired
     public OpenEhrRmWorker(OpenFhirStringUtils openFhirStringUtils) {

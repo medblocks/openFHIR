@@ -21,13 +21,13 @@ public class FhirConnectReference {
     @JsonProperty("resourceType")
     private String resourceType;
 
-    public FhirConnectReference copy() {
+    public FhirConnectReference doCopy() {
         final FhirConnectReference fhirConnectReference = new FhirConnectReference();
         fhirConnectReference.setResourceType(resourceType);
         if(mappings != null) {
             List<Mapping> toAdd = new ArrayList<>();
             for (Mapping mapping : mappings) {
-                toAdd.add(mapping.copy());
+                toAdd.add(mapping.doCopy());
             }
             fhirConnectReference.setMappings(toAdd);
         }

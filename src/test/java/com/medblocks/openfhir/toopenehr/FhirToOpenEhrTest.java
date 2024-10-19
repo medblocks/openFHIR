@@ -54,7 +54,7 @@ public class FhirToOpenEhrTest {
                 new OpenEhrRmWorker(openFhirStringUtils),
                 openFhirStringUtils,
                 repo,
-                new OpenEhrCachedUtils(),
+                new OpenEhrCachedUtils(null),
                 new OpenFhirMapperUtils(),
                 new OpenEhrPopulator(new OpenFhirMapperUtils()));
     }
