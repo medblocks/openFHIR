@@ -49,10 +49,26 @@ mappings:
           with:
             openehr: "$openEhrArchetype.diagnose.klinischer_status.referenzprimaerdiagnose|code"
             value: "at0066" # value is a new thing because its a hardcoded type
+
         - name: "condition type value"
           with:
-            openehr: "$openEhrArchetype.diagnose.klinischer_status.referenzprimaerdiagnose|value"
-            value: "Nebendiagnose" # value is a new thing because its a hardcoded type
+            openehr: "$openEhrArchetype.procedure.ism_transition.current_state|code"
+            value: "543"
+          condition:
+            targetRoot: "$fhirRoot.status"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[active]"
+
+        - name: "condition type value"
+          with:
+            openehr: "$openEhrArchetype.procedure.ism_transition.current_state|code"
+            value: "544"
+          condition:
+            targetRoot: "$fhirRoot.status"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[inactive]"
 
 
         - name: "referenced condition"
