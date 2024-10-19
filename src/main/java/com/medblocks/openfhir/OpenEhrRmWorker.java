@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
 
@@ -88,7 +87,7 @@ public class OpenEhrRmWorker {
             // we don't bother with this, can't be multiple occurrences
             constructing.add(pathToFind);
             remainingPaths = Arrays.asList(splitOpenEhrPath).subList(1, splitOpenEhrPath.length);
-            walkThroughNodes(webTemplateNodes, remainingPaths.stream().collect(Collectors.joining("/")),
+            walkThroughNodes(webTemplateNodes, String.join("/", remainingPaths),
                     constructing, forcedTypes, fhirToOpenEhrHelper);
             return;
         }
@@ -115,7 +114,7 @@ public class OpenEhrRmWorker {
             fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne));
         }
 
-        walkThroughNodes(findingTheOne.getChildren(), remainingPaths.stream().collect(Collectors.joining("/")),
+        walkThroughNodes(findingTheOne.getChildren(), String.join("/", remainingPaths),
                 constructing, forcedTypes, fhirToOpenEhrHelper);
     }
 
@@ -132,7 +131,7 @@ public class OpenEhrRmWorker {
                     .orElse(null);
         }
         final List<String> matchedByType = forcedTypes.stream()
-                .filter(ft -> ft.equals(relevantTemplateNode.getRmType())).collect(Collectors.toList());
+                .filter(ft -> ft.equals(relevantTemplateNode.getRmType())).toList();
         return matchedByType.isEmpty() ? new ArrayList<>(forcedTypes).get(0) : matchedByType.get(0); // is this ok??
     }
 }

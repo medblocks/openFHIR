@@ -35,7 +35,7 @@ public class OpenFhirStringUtils {
         final String[] parts = simplifiedFlat.split("/");
         final boolean lastOneHasPipe = parts[parts.length - 1].contains("|");
         if (lastOneHasPipe) {
-            final String[] partsWithoutLast = Arrays.asList(parts).subList(0, parts.length - 1).toArray(new String[0]);
+            final String[] partsWithoutLast = Arrays.copyOf(parts, parts.length - 1);
             final String[] lastPart = parts[parts.length - 1].split("\\|");
             return String.join("(:\\d+)?/", partsWithoutLast) + "(:\\d+)?/" + lastPart[0] + "(:\\d+)?\\|" + lastPart[1];
         } else {
