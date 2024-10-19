@@ -108,7 +108,7 @@ public class FhirInstanceCreator {
 
                 final List<String> list = Arrays.asList(fhirPath.split("\\."));
                 final InstantiateAndSetReturn returning = instantiateAndSetElement(nextClassInstance, nextClass,
-                        list.subList(1, list.size()).stream().collect(Collectors.joining(".")),
+                        String.join(".", list.subList(1, list.size())),
                         forcingClass,
                         resolveResourceType);
                 ((Reference) resource).setResource((IBaseResource) nextClassInstance);
@@ -199,7 +199,7 @@ public class FhirInstanceCreator {
                         .isList(specialThisHandling ? originalResource instanceof List : theField.getType() == List.class)
                         .build();
             }
-            final List<String> list = Arrays.asList(splitFhirPaths).stream()
+            final List<String> list = Arrays.stream(splitFhirPaths)
                     .filter(en -> {
                         if (resolveFollows) {
                             return StringUtils.isNotEmpty(en) && !en.equals(RESOLVE);
@@ -216,7 +216,7 @@ public class FhirInstanceCreator {
 
 
             final InstantiateAndSetReturn returning = instantiateAndSetElement(nextClassInstance, nextClass,
-                    list.subList(1, list.size()).stream().collect(Collectors.joining(".")),
+                    String.join(".", list.subList(1, list.size())),
                     forcingClass,
                     resolveResourceType);
             final Object obj = setFieldObject(theField, resource, nextClassInstance);
@@ -252,7 +252,7 @@ public class FhirInstanceCreator {
                 // means we've reached the end
                 return sb.toString();
             }
-            final List<String> list = Arrays.asList(splitFhirPaths).stream()
+            final List<String> list = Arrays.stream(splitFhirPaths)
                     .filter(en -> {
                         if (!resolveFollows && !castFollows) {
                             return true;
@@ -260,12 +260,12 @@ public class FhirInstanceCreator {
                             return !en.equals(RESOLVE) && !en.startsWith("as(");
                         }
                     })
-                    .collect(Collectors.toList());
+                    .toList();
             final String castingTo = castFollows ? openFhirStringUtils.getCastType(preparedFhirPath) : null;
             final Class nextClass = castFollows ? getClassForName(R4_HAPI_PACKAGE + castingTo) : findClass(theField, null);
 
             return enrichFhirPathWithRecurring(nextClass,
-                    list.subList(1, list.size()).stream().collect(Collectors.joining(".")), sb);
+                    String.join(".", list.subList(1, list.size())), sb);
         }
         return null;
     }

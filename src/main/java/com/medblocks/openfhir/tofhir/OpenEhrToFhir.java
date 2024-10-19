@@ -349,7 +349,7 @@ public class OpenEhrToFhir {
                 createdPerIndex.put(mapKey, instance);
             }
 
-            for (OpenEhrToFhirHelper.DataWithIndex dataForAllResources : datas.stream().filter(data -> data.getIndex() == -1).collect(Collectors.toList())) {
+            for (OpenEhrToFhirHelper.DataWithIndex dataForAllResources : datas.stream().filter(data -> data.getIndex() == -1).toList()) {
                 final String fullOpenEhrPath = dataForAllResources.getFullOpenEhrPath();
                 final ArrayList<Resource> resources = new ArrayList<>(createdPerIndex.values());
                 if (resources.isEmpty()) {
@@ -497,7 +497,7 @@ public class OpenEhrToFhir {
                 if (startsWithWhere) {
                     removedPath = removedPath.replace("." + openFhirStringUtils.extractWhereCondition(removedPath), "");
                 }
-                final List<String> splitByDots = Arrays.stream(removedPath.split("\\.")).filter(e -> StringUtils.isNotBlank(e)).collect(Collectors.toList());
+                final List<String> splitByDots = Arrays.stream(removedPath.split("\\.")).filter(StringUtils::isNotBlank).toList();
                 final String suffix = splitByDots.get(0);
                 final String where = splitByDots.size() > 1 && splitByDots.get(1).startsWith("where") ? ("." + openFhirStringUtils.extractWhereCondition(removedPath)) : "";
                 final String cast = splitByDots.size() > 1 && splitByDots.get(1).startsWith("as") ? ("." + splitByDots.get(1)) : "";
@@ -1154,14 +1154,14 @@ public class OpenEhrToFhir {
                     String openEhrPath = null;
                     List<OpenEhrToFhirHelper.DataWithIndex> values = null;
                     if (!OPENEHR_TYPE_NONE.equals(mapping.getWith().getType())) {
-                        values = joinedEntries.entrySet().stream()
-                                .map((entry) -> valueToDataPoint(entry.getValue(), rmType, flatJsonObject, true))
+                        values = joinedEntries.values().stream()
+                                .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList());
                         openEhrPath = openehr;
                     } else if (mapping.getCondition() != null) {
-                        values = joinedEntries.entrySet().stream()
-                                .map((entry) -> valueToDataPoint(entry.getValue(), rmType, flatJsonObject, false))
+                        values = joinedEntries.values().stream()
+                                .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, false))
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList());
                         openEhrPath = openFhirStringUtils.prepareOpenEhrSyntax(definedMappingWithOpenEhr, firstFlatPath);
