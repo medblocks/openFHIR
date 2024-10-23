@@ -29,7 +29,7 @@ mappings:
       fhir: "$fhirResource.encounter"
       openehr: "$openEhrArchetype.fall_kennung" # when mapping to openEHR, this will be expected to be Composition UUID
       type: "AQL"
-      aql: "write the actual aql with 'fhir' in there in the aql" #with a caching logic so we don't do redundant AQLs every time someone sends the same thing
+      aql: "SELECT c/uid/value FROM COMPOSITION c CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.problem_diagnosis.v1] WHERE c/archetype_details/archetype_id/value = 'openEHR-EHR-COMPOSITION.encounter.v1' AND c/context/start_time/value >= '2023-01-01T00:00:00' AND c/context/start_time/value <= '2024-01-01T00:00:00' AND o/data[at0001]/items[at0002]/value/value = 'Diabetes mellitus'" #with a caching logic so we don't do redundant AQLs every time someone sends the same thing
 
 
 

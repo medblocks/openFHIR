@@ -16,30 +16,20 @@ fhir:
     operator: "one of"
     criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose]"
 
-# a post processor kind of thing evaluated on a whole bundle after everything has been mapped and done
-# it would include pre-defined set of actions, one of those can be "references" indicating that references within
-# the Bundle would need to be "done". The other can be "id" or something like that which would handle ID generation/handling (/issues/14), ..
-#  only for openEHR to FHIR !
-#  references:
-##    fhir path pointing to primary secondary diagnosis
-#    source: "Bundle.where(Resource.extension.[http://hl7.org/fhir/StructureDefinition/condition-related]).extensions.url"
-#    target: "Bundle.where(Resource.extension.not in t[http://hl7.org/fhir/StructureDefinition/condition-related]"
-
-  mappings:
-    name: "reference_primary"
-    type: "Reference"
-    main: #refine name
-      referenceEndpoint: "$fhirResourse.extension(url=sadsadads).value"
+  reference:
+    name: "referencing primary and secondary diagnosis"
+    parent:
+      referenceEndpoint: "$fhirResourse.extension(url=http://hl7.org/fhir/StructureDefinition/condition-related).value"
       condition:
           targetRoot: "$fhirResource"
           targetAttribute: "extension.url"
-          operator: "one of" #not in as an operator
+          operator: "not in"
           criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     referencedResource:
       condition:
         targetRoot: "$fhirResource"
         targetAttribute: "extension.url"
-        operator: "not in" #not in as an operator
+        operator: "one of"
         criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
 
 
