@@ -1020,6 +1020,12 @@ public class OpenEhrToFhir {
                                      final String parentFollowedByOpenEhr,
                                      final String slotContext) {
         for (Mapping mapping : mappings) {
+            if(mapping.getWith().getFhir() == null) {
+                // it means it's hardcoding to openEHR, we can therefore skip it when mapping to FHIR
+                continue;
+            }
+
+
             String openehr;
 
             // openEHR path for a specific mapping; if a certain model mapper has no openEHR path defined, take parent's one
