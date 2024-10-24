@@ -16,6 +16,23 @@ fhir:
     operator: "one of"
     criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose]"
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   reference:
     name: "referencing primary and secondary diagnosis"
     parent:

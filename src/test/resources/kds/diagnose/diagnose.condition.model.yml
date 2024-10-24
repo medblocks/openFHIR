@@ -9,6 +9,10 @@ fhirConfig:
       targetAttribute: "extension.url"
       operator: "one of"
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+    - targetRoot: "$fhirResource"
+      targetAttribute: "meta.profile"
+      operator: "one of"
+      criteria: "[KDS]"
 openEhrConfig:
   archetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
 
@@ -88,3 +92,7 @@ mappings:
                   openehr: "$openEhrArchetype"
                   type: "NONE"
                 slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+
+
+                # when there is a reference, it has to check the referenced Resource.meta.url and find the correct mapping instead
+                # of being explicitly defined here
