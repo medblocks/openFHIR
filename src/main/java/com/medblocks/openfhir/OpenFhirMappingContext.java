@@ -86,26 +86,7 @@ public abstract class OpenFhirMappingContext {
             final Map<String, List<FhirConnectMapper>> mappers = specificRepo.getMappers();
             for (Map.Entry<String, List<FhirConnectMapper>> mapperEntry : mappers.entrySet()) {
                 final List<FhirConnectMapper> connectMappers = mapperEntry.getValue();
-                for (FhirConnectMapper connectMapper : connectMappers) {
-                    if (connectMapper.getFhirConfig() == null) {
-                        continue;
-                    }
-                    final List<Condition> conditions = connectMapper.getFhirConfig().getCondition();
-                    final String fhirPathWithCondition = openFhirStringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,
-                            conditions, connectMapper.getFhirConfig().getResource());
-                    if (StringUtils.isEmpty(fhirPathWithCondition) || fhirPathWithCondition.equals(connectMapper.getFhirConfig().getResource())) {
-                        log.warn("No fhirpath defined for resource type, mapper relevant for all Resources of this type?");
-                        relevantMappers.add(connectMapper.copy()); // IMPORTANT! as a mapper is being edited as part of the mapping process, this needs to be copied!
-                    } else {
-                        final Optional<Base> evaluated = fhirPathR4.evaluateFirst(resource, fhirPathWithCondition, Base.class);
-                        // if is present and is of type boolean, it also needs to be true
-                        // if is present and is not of type boolean, then the mere presence means the mapper is for this resource
-                        if (evaluated.isPresent() && ((!(evaluated.get() instanceof BooleanType) || ((BooleanType) evaluated.get()).getValue()))) {
-                            // mapper matches this Resource, it can handle it
-                            relevantMappers.add(connectMapper.copy()); // IMPORTANT! as a mapper is being edited as part of the mapping process, this needs to be copied!
-                        }
-                    }
-                }
+                getMappers(connectMappers, relevantMappers, resource);
             }
         }
         if (relevantMappers.isEmpty()) {
@@ -116,6 +97,30 @@ public abstract class OpenFhirMappingContext {
             log.info("More than one mapper found for Resource: {}, id: {}", resource.getResourceType().name(), resource.getId());
         }
         return relevantMappers;
+    }
+
+    private void getMappers(final List<FhirConnectMapper> connectMappers, final List<FhirConnectMapper> relevantMappers,
+                            final Resource resource) {
+        for (FhirConnectMapper connectMapper : connectMappers) {
+            if (connectMapper.getFhirConfig() == null) {
+                continue;
+            }
+            final List<Condition> conditions = connectMapper.getFhirConfig().getCondition();
+            final String fhirPathWithCondition = openFhirStringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,
+                    conditions, connectMapper.getFhirConfig().getResource());
+            if (StringUtils.isEmpty(fhirPathWithCondition) || fhirPathWithCondition.equals(connectMapper.getFhirConfig().getResource())) {
+                log.warn("No fhirpath defined for resource type, mapper relevant for all Resources of this type?");
+                relevantMappers.add(connectMapper.copy()); // IMPORTANT! as a mapper is being edited as part of the mapping process, this needs to be copied!
+            } else {
+                final Optional<Base> evaluated = fhirPathR4.evaluateFirst(resource, fhirPathWithCondition, Base.class);
+                // if is present and is of type boolean, it also needs to be true
+                // if is present and is not of type boolean, then the mere presence means the mapper is for this resource
+                if (evaluated.isPresent() && ((!(evaluated.get() instanceof BooleanType) || ((BooleanType) evaluated.get()).getValue()))) {
+                    // mapper matches this Resource, it can handle it
+                    relevantMappers.add(connectMapper.copy()); // IMPORTANT! as a mapper is being edited as part of the mapping process, this needs to be copied!
+                }
+            }
+        }
     }
 
     public static String normalizeTemplateId(final String templateId) {

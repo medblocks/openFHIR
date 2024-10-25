@@ -76,6 +76,6 @@ public class OptService {
      * @throws XmlException if content is invalid XML after removing the white characters
      */
     private OPERATIONALTEMPLATE parseOptFromString(final String content) throws XmlException {
-        return TemplateDocument.Factory.parse(content.trim().replaceFirst("^([\\W]+)<", "<")).getTemplate();
+        return TemplateDocument.Factory.parse(content.trim().replaceFirst("^(\\W+)<", "<")).getTemplate();
     }
 }

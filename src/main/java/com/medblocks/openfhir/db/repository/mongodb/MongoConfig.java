@@ -3,6 +3,7 @@ package com.medblocks.openfhir.db.repository.mongodb;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.lang.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,6 +20,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     private String mongoUri;
 
     @Override
+    @NonNull
     protected String getDatabaseName() {
         // Parse the MongoDB URI and extract the database name
         ConnectionString connectionString = new ConnectionString(mongoUri);
@@ -27,6 +29,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     }
 
     @Bean
+    @NonNull
     @Override
     public MongoClient mongoClient() {
         return MongoClients.create(mongoUri); // Creates a MongoClient with the specified URI
