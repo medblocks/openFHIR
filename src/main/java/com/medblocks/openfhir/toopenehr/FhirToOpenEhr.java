@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.*;
 
 @Slf4j
 @Component
@@ -187,40 +187,9 @@ public class FhirToOpenEhr {
 
             // distinct by limiting criteria to avoid duplicated mappings
             artifactHelpers.stream().map(FhirToOpenEhrHelper::getLimitingCriteria).distinct().forEach(lim -> {
-                String mainMultiple = null;
+
                 if (resource instanceof Bundle) {
-                    // apply limiting factor
-                    final List<Base> relevantResources = fhirPathR4.evaluate(resource, lim, Base.class);
-
-                    if (relevantResources.isEmpty()) {
-                        log.warn("No relevant resources found for {}", lim);
-                    } else {
-                        log.info("Evaluation of {} returned {} entries that will be used for mapping.", lim, relevantResources.size());
-                    }
-
-                    int i = 0;
-                    for (final Base relevantResource : relevantResources) {
-                        boolean somethingWasAdded = false;
-                        for (final FhirToOpenEhrHelper fhirToOpenEhrHelper : artifactHelpers) {
-                            final FhirToOpenEhrHelper cloned = fhirToOpenEhrHelper.doClone();
-                            if (fhirToOpenEhrHelper.getMultiple() && (mainMultiple == null || fhirToOpenEhrHelper.getOpenEhrPath().startsWith(mainMultiple))) {
-                                mainMultiple = fhirToOpenEhrHelper.getOpenEhrPath().split("\\[n]")[0];
-                                cloned.setOpenEhrPath(fhirToOpenEhrHelper.getOpenEhrPath().replaceFirst("\\[n]", ":" + i));
-
-                                fixAllChildrenRecurringElements(cloned, fhirToOpenEhrHelper.getOpenEhrPath(), cloned.getOpenEhrPath());
-                            }
-                            int previousFinalFlatSize = finalFlat.size();
-                            addDataPoints(cloned, finalFlat, relevantResource);
-
-                            somethingWasAdded = somethingWasAdded || previousFinalFlatSize < finalFlat.size();
-                        }
-                        if (somethingWasAdded) {
-                            i++;
-                        } else {
-                            log.warn("Even though a Resource matched criteria, nothing was added to the openEHR composition from it: {}", relevantResource.getIdBase());
-                        }
-                    }
-
+                    handleBundleExtraction((Bundle) resource, lim, artifactHelpers, finalFlat);
                 } else {
                     for (FhirToOpenEhrHelper fhirToOpenEhrHelper : artifactHelpers) {
                         final List<Base> result = fhirPathR4.evaluate(resource, fhirToOpenEhrHelper.getFhirPath(), Base.class);
@@ -233,8 +202,47 @@ public class FhirToOpenEhr {
 
         }
 
-
         return finalFlat;
+    }
+
+    /**
+     * Resolve fhir paths from a Bundle
+     */
+    private void handleBundleExtraction(final Bundle resource, final String lim,
+                                        final List<FhirToOpenEhrHelper> artifactHelpers, final JsonObject finalFlat) {
+        // apply limiting factor
+        final List<Base> relevantResources = fhirPathR4.evaluate(resource, lim, Base.class);
+
+        if (relevantResources.isEmpty()) {
+            log.warn("No relevant resources found for {}", lim);
+        } else {
+            log.info("Evaluation of {} returned {} entries that will be used for mapping.", lim, relevantResources.size());
+        }
+
+        String mainMultiple = null;
+
+        int i = 0;
+        for (final Base relevantResource : relevantResources) {
+            boolean somethingWasAdded = false;
+            for (final FhirToOpenEhrHelper fhirToOpenEhrHelper : artifactHelpers) {
+                final FhirToOpenEhrHelper cloned = fhirToOpenEhrHelper.doClone();
+                if (fhirToOpenEhrHelper.getMultiple() && (mainMultiple == null || fhirToOpenEhrHelper.getOpenEhrPath().startsWith(mainMultiple))) {
+                    mainMultiple = fhirToOpenEhrHelper.getOpenEhrPath().split(RECURRING_SYNTAX_ESCAPED)[0];
+                    cloned.setOpenEhrPath(fhirToOpenEhrHelper.getOpenEhrPath().replaceFirst(RECURRING_SYNTAX_ESCAPED, ":" + i));
+
+                    fixAllChildrenRecurringElements(cloned, fhirToOpenEhrHelper.getOpenEhrPath(), cloned.getOpenEhrPath());
+                }
+                int previousFinalFlatSize = finalFlat.size();
+                addDataPoints(cloned, finalFlat, relevantResource);
+
+                somethingWasAdded = somethingWasAdded || previousFinalFlatSize < finalFlat.size();
+            }
+            if (somethingWasAdded) {
+                i++;
+            } else {
+                log.warn("Even though a Resource matched criteria, nothing was added to the openEHR composition from it: {}", relevantResource.getIdBase());
+            }
+        }
     }
 
     /**
@@ -250,8 +258,8 @@ public class FhirToOpenEhr {
         if (fhirPathResults == null || fhirPathResults.isEmpty()) {
             return finalFlat;
         }
-        final boolean noMoreRecurringOptions = !openEhrPath.contains("[n]");
-        final String openEhrWithAllReplacedToZeroth = openEhrPath.replaceAll("\\[n]", ":0");
+        final boolean noMoreRecurringOptions = !openEhrPath.contains(RECURRING_SYNTAX);
+        final String openEhrWithAllReplacedToZeroth = openEhrPath.replaceAll(RECURRING_SYNTAX_ESCAPED, ":0");
         if (fhirPathResults.size() == 1) {
             // it's a single find, so replace all those multiple-occurrences with zeroth index
             openEhrPopulator.setFhirPathValue(openEhrWithAllReplacedToZeroth, fhirPathResults.get(0), openEhrType, finalFlat);
@@ -310,8 +318,8 @@ public class FhirToOpenEhr {
 
         for (int i = 0; i < results.size(); i++) {
             Base result = results.get(i);
-            final boolean noMoreRecurringOptions = !helper.getOpenEhrPath().contains("[n]");
-            final String thePath = noMoreRecurringOptions ? helper.getOpenEhrPath() : openFhirStringUtils.replaceLastIndexOf(helper.getOpenEhrPath(), "[n]", ":" + i);
+            final boolean noMoreRecurringOptions = !helper.getOpenEhrPath().contains(RECURRING_SYNTAX);
+            final String thePath = noMoreRecurringOptions ? helper.getOpenEhrPath() : openFhirStringUtils.replaceLastIndexOf(helper.getOpenEhrPath(), RECURRING_SYNTAX, ":" + i);
             log.debug("Setting value taken with fhirPath {} from object type {}", helper.getFhirPath(), toResolveOn.getClass());
 
             if (StringUtils.isNotEmpty(helper.getHardcodingValue())) {
@@ -400,7 +408,7 @@ public class FhirToOpenEhr {
      * @param multiple          if a specific model mapper should create multiple Resources instead of a single one
      * @return a list of created helpers then used for the actual mapping
      */
-    List<FhirToOpenEhrHelper> createHelpers(final String mainArtifact,
+    void createHelpers(final String mainArtifact,
                                             final FhirConnectMapper fhirConnectMapper,
                                             final String templateId,
                                             final String mainOpenEhrPath,
@@ -541,7 +549,6 @@ public class FhirToOpenEhr {
                 }
             }
         }
-        return helpers;
     }
 
     private void createFollowedByMappings(final Mapping mapping, final String openehr, final String openEhrPath) {

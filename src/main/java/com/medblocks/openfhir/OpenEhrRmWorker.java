@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
 
 @Component
 public class OpenEhrRmWorker {
@@ -107,7 +108,7 @@ public class OpenEhrRmWorker {
         remainingPaths = Arrays.asList(splitOpenEhrPath).subList(1, splitOpenEhrPath.length);
         if (findingTheOne.isMulti()) {
             // is multiple occurrences
-            constructing.add(pathToFind + "[n]");
+            constructing.add(pathToFind + RECURRING_SYNTAX);
             fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne));
         } else {
             constructing.add(pathToFind);
