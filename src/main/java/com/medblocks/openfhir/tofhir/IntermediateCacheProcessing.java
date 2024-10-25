@@ -127,98 +127,131 @@ public class IntermediateCacheProcessing {
         final boolean lastOpenEhrIsDigit = !fullOpenEhrPath.isEmpty() && Character.isDigit(fullOpenEhrPath.charAt(fullOpenEhrPath.length() - 1));
         if (hardcodedReturn.isList() && followedByParentOpenEhr != null) {
             // store the whole list under the one without any index
-            final String preparedParentOpenEhrPath = lastOpenEhrIsDigit ? fullOpenEhrPath : openFhirStringUtils.prepareParentOpenEhrPath(followedByParentOpenEhr, fullOpenEhrPath);
-            final Integer lastIndex = openFhirStringUtils.getLastIndex(preparedParentOpenEhrPath);
-            if (lastIndex != -1) {
-                boolean lastIsDigit = Character.isDigit(preparedParentOpenEhrPath.charAt(preparedParentOpenEhrPath.length() - 1));
-                final String openEhrPath = lastIsDigit ? preparedParentOpenEhrPath.substring(0, preparedParentOpenEhrPath.lastIndexOf(":")) : preparedParentOpenEhrPath;
-                // because its a list, we don't want where's (the last one) in there
-                final String originalPath = path + "." + hardcodedReturn.getPath();
-                final String lastWhere = openFhirStringUtils.extractWhereCondition(originalPath, true);
-                final String fhirPath = lastWhere != null ? originalPath.replace("." + lastWhere, "") : originalPath;
-                instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, fhirPath,
-                                openEhrPath),
-                        hardcodedReturn.getReturning());
-
-                final List returningList = (List) hardcodedReturn.getReturning();
-                final Object toAddToCache = returningList.get(returningList.size() - 1); // take last one
-                instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(),
-                                preparedParentOpenEhrPath),
-                        toAddToCache);
-
-            } else {
-                // parent is apparently non-repeating; still add the list to parent path just in case
-                instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(),
-                                openFhirStringUtils.prepareParentOpenEhrPath(followedByParentOpenEhr, fullOpenEhrPath)),
-                        hardcodedReturn.getReturning());
-            }
-
-            if (hardcodedReturn.getInner() != null) {
-                populateIntermediateCache(hardcodedReturn.getInner(),
-                        objectRef,
-                        instantiatedIntermediateElements,
-                        path + "." + hardcodedReturn.getPath(),
-                        fullOpenEhrPath,
-                        followedByParentFhir,
-                        followedByParentOpenEhr);
-            }
+            handlePopulationWhereParentAndList(hardcodedReturn, objectRef, instantiatedIntermediateElements, path,
+                    fullOpenEhrPath, followedByParentFhir, followedByParentOpenEhr, lastOpenEhrIsDigit);
 
         } else if (followedByParentFhir != null) {
-            final String preparedParentOpenEhrPath = openFhirStringUtils.prepareParentOpenEhrPath(followedByParentOpenEhr, fullOpenEhrPath);
-            Object returning = hardcodedReturn.getReturning();
-            if (returning instanceof Reference) {
-                returning = ((Reference) returning).getResource();
-            }
-
-            final String fhirPath = path.equals(hardcodedReturn.getPath()) ? path : (path + "." + hardcodedReturn.getPath());
-
-            instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, fhirPath,
-                            preparedParentOpenEhrPath),
-                    returning);
-
-            if (hardcodedReturn.getInner() != null) {
-                populateIntermediateCache(hardcodedReturn.getInner(),
-                        objectRef,
-                        instantiatedIntermediateElements,
-                        path + "." + hardcodedReturn.getPath(),
-                        fullOpenEhrPath,
-                        null,
-                        null);
-            }
+            handlePopulationWhereParent(hardcodedReturn, objectRef, instantiatedIntermediateElements, path,
+                    fullOpenEhrPath, followedByParentOpenEhr);
 
         } else {
-            if (hardcodedReturn.isList()) {
-                final String openEhrPath = lastOpenEhrIsDigit ? fullOpenEhrPath.substring(0, fullOpenEhrPath.lastIndexOf(":")) : fullOpenEhrPath;
-
-                // puts in the list
-                instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(), openEhrPath),
-                        hardcodedReturn.getReturning());
-
-                final Integer lastIndex = openFhirStringUtils.getLastIndex(fullOpenEhrPath);
-                final List returningList = (List) hardcodedReturn.getReturning();
-                if (lastOpenEhrIsDigit && lastIndex < returningList.size()) {
-                    final Object toAddToCache = returningList.get(returningList.size() - 1); // todo: always takes the last one, is this ok?
-                    instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(),
-                                    fullOpenEhrPath),
-                            toAddToCache);
-                }
-            } else {
-                instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(), fullOpenEhrPath),
-                        hardcodedReturn.getReturning());
-            }
-
-
-            if (hardcodedReturn.getInner() != null) {
-                populateIntermediateCache(hardcodedReturn.getInner(),
-                        objectRef,
-                        instantiatedIntermediateElements,
-                        path + "." + hardcodedReturn.getPath(),
-                        fullOpenEhrPath,
-                        null,
-                        followedByParentOpenEhr);
-            }
+            handlePopulationNoParent(hardcodedReturn, objectRef, instantiatedIntermediateElements, path,
+                    fullOpenEhrPath, followedByParentFhir, lastOpenEhrIsDigit);
         }
 
+    }
+
+    private void handlePopulationWhereParentAndList(final FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn,
+                                                    final String objectRef,
+                                                    final Map<String, Object> instantiatedIntermediateElements,
+                                                    final String path,
+                                                    final String fullOpenEhrPath,
+                                                    final String followedByParentFhir,
+                                                    final String followedByParentOpenEhr,
+                                                    final boolean lastOpenEhrIsDigit) {
+        final String preparedParentOpenEhrPath = lastOpenEhrIsDigit ? fullOpenEhrPath : openFhirStringUtils.prepareParentOpenEhrPath(followedByParentOpenEhr, fullOpenEhrPath);
+        final Integer lastIndex = openFhirStringUtils.getLastIndex(preparedParentOpenEhrPath);
+        if (lastIndex != -1) {
+            boolean lastIsDigit = Character.isDigit(preparedParentOpenEhrPath.charAt(preparedParentOpenEhrPath.length() - 1));
+            final String openEhrPath = lastIsDigit ? preparedParentOpenEhrPath.substring(0, preparedParentOpenEhrPath.lastIndexOf(":")) : preparedParentOpenEhrPath;
+            // because its a list, we don't want where's (the last one) in there
+            final String originalPath = path + "." + hardcodedReturn.getPath();
+            final String lastWhere = openFhirStringUtils.extractWhereCondition(originalPath, true);
+            final String fhirPath = lastWhere != null ? originalPath.replace("." + lastWhere, "") : originalPath;
+            instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, fhirPath,
+                            openEhrPath),
+                    hardcodedReturn.getReturning());
+
+            final List returningList = (List) hardcodedReturn.getReturning();
+            final Object toAddToCache = returningList.get(returningList.size() - 1); // take last one
+            instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(),
+                            preparedParentOpenEhrPath),
+                    toAddToCache);
+
+        } else {
+            // parent is apparently non-repeating; still add the list to parent path just in case
+            instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(),
+                            openFhirStringUtils.prepareParentOpenEhrPath(followedByParentOpenEhr, fullOpenEhrPath)),
+                    hardcodedReturn.getReturning());
+        }
+
+        if (hardcodedReturn.getInner() != null) {
+            populateIntermediateCache(hardcodedReturn.getInner(),
+                    objectRef,
+                    instantiatedIntermediateElements,
+                    path + "." + hardcodedReturn.getPath(),
+                    fullOpenEhrPath,
+                    followedByParentFhir,
+                    followedByParentOpenEhr);
+        }
+    }
+
+    private void handlePopulationWhereParent(final FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn,
+                                             final String objectRef,
+                                             final Map<String, Object> instantiatedIntermediateElements,
+                                             final String path,
+                                             final String fullOpenEhrPath,
+                                             final String followedByParentOpenEhr) {
+        final String preparedParentOpenEhrPath = openFhirStringUtils.prepareParentOpenEhrPath(followedByParentOpenEhr, fullOpenEhrPath);
+        Object returning = hardcodedReturn.getReturning();
+        if (returning instanceof Reference) {
+            returning = ((Reference) returning).getResource();
+        }
+
+        final String fhirPath = path.equals(hardcodedReturn.getPath()) ? path : (path + "." + hardcodedReturn.getPath());
+
+        instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, fhirPath,
+                        preparedParentOpenEhrPath),
+                returning);
+
+        if (hardcodedReturn.getInner() != null) {
+            populateIntermediateCache(hardcodedReturn.getInner(),
+                    objectRef,
+                    instantiatedIntermediateElements,
+                    path + "." + hardcodedReturn.getPath(),
+                    fullOpenEhrPath,
+                    null,
+                    null);
+        }
+    }
+
+    private void handlePopulationNoParent(final FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn,
+                                          final String objectRef,
+                                          final Map<String, Object> instantiatedIntermediateElements,
+                                          final String path,
+                                          final String fullOpenEhrPath,
+                                          final String followedByParentOpenEhr,
+                                          final boolean lastOpenEhrIsDigit) {
+        if (hardcodedReturn.isList()) {
+            final String openEhrPath = lastOpenEhrIsDigit ? fullOpenEhrPath.substring(0, fullOpenEhrPath.lastIndexOf(":")) : fullOpenEhrPath;
+
+            // puts in the list
+            instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(), openEhrPath),
+                    hardcodedReturn.getReturning());
+
+            final Integer lastIndex = openFhirStringUtils.getLastIndex(fullOpenEhrPath);
+            final List returningList = (List) hardcodedReturn.getReturning();
+            if (lastOpenEhrIsDigit && lastIndex < returningList.size()) {
+                final Object toAddToCache = returningList.get(returningList.size() - 1); // todo: always takes the last one, is this ok?
+                instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(),
+                                fullOpenEhrPath),
+                        toAddToCache);
+            }
+        } else {
+            instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(), fullOpenEhrPath),
+                    hardcodedReturn.getReturning());
+        }
+
+
+        if (hardcodedReturn.getInner() != null) {
+            populateIntermediateCache(hardcodedReturn.getInner(),
+                    objectRef,
+                    instantiatedIntermediateElements,
+                    path + "." + hardcodedReturn.getPath(),
+                    fullOpenEhrPath,
+                    null,
+                    followedByParentOpenEhr);
+        }
     }
 
 

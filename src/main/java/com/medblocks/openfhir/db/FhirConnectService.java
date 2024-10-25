@@ -127,8 +127,4 @@ public class FhirConnectService {
         return mapperRepository.findAll();
     }
 
-    public List<FhirConnectMapperEntity> findByUserAndArchetypes(final List<String> archetypes, final String reqId) {
-        return mapperRepository.findByArchetype(archetypes);
-    }
-
 }

@@ -149,7 +149,7 @@ public class FhirInstanceCreator {
             fhirPath = fhirPath.substring(1);
         }
 
-        String followingWhereCondition = fhirInstanceCreatorUtility.getWhereForInstantiation(fhirPath, clazz);
+        final String followingWhereCondition = fhirInstanceCreatorUtility.getWhereForInstantiation(fhirPath, clazz);
 
         if (followingWhereCondition != null) {
             fhirPath = fhirPath
@@ -159,6 +159,15 @@ public class FhirInstanceCreator {
 
         final String preparedFhirPath = fhirInstanceCreatorUtility.prepareFhirPathForInstantiation(clazz, fhirPath);
         final String[] splitFhirPaths = preparedFhirPath.split("\\.");
+
+        return handleSplitPaths(splitFhirPaths, clazz, preparedFhirPath, resource, resolveResourceType, forcingClass,
+                originalResource, followingWhereCondition);
+    }
+
+    private InstantiateAndSetReturn handleSplitPaths(final String[] splitFhirPaths, final Class clazz,
+                                                     final String preparedFhirPath, final Object resource,
+                                                     final String resolveResourceType, final String forcingClass,
+                                                     final Object originalResource, final String followingWhereCondition) {
         for (int i = 0; i < splitFhirPaths.length; i++) {
             String splitPath = splitFhirPaths[i].equals("class") ? "class_" : splitFhirPaths[i];
 
@@ -184,11 +193,11 @@ public class FhirInstanceCreator {
             final Class nextClass = castFollows ? fhirInstanceCreatorUtility.getClassForName(R4_HAPI_PACKAGE + castingTo) : fhirInstanceCreatorUtility.findClass(theField, resolveFollows ? resolveResourceType : null);
             final Object nextClassInstance = fhirInstanceCreatorUtility.newInstance(nextClass);
 
-
             final InstantiateAndSetReturn returning = instantiateAndSetElement(nextClassInstance, nextClass,
                     String.join(".", list.subList(1, list.size())),
                     forcingClass,
                     resolveResourceType);
+
             final Object obj = fhirInstanceCreatorUtility.setFieldObject(theField, resource, nextClassInstance);
             final String path = splitPath + (castFollows ? ("." + splitFhirPaths[i + 1]) : "") + (StringUtils.isBlank(followingWhereCondition) ? "" : ("." + followingWhereCondition));
             return InstantiateAndSetReturn.builder()
