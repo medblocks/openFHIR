@@ -155,7 +155,7 @@ public class FhirToOpenEhr {
      * Method that adds all required metadata to a Composition, but only if this was not already set as part
      * of the mapping logic itself.
      *
-     * @param composition
+     * @param composition enriched with metadata that wasn't mapped
      */
     public void enrichComposition(final Composition composition) {
         // default values; set if not already set by mappings
@@ -295,7 +295,7 @@ public class FhirToOpenEhr {
         if (StringUtils.isEmpty(helper.getFhirPath()) || FHIR_ROOT_FC.equals(helper.getFhirPath())) {
             // just take the one roResolveOn
             log.debug("Taking Base itself as fhirPath is {}", helper.getFhirPath());
-            results = Arrays.asList(toResolveOn);
+            results = Collections.singletonList(toResolveOn);
         } else {
             results = fhirPathR4.evaluate(toResolveOn, openFhirStringUtils.fixFhirPathCasting(helper.getFhirPath()), Base.class);
             if (helper.getFhirPath().endsWith(RESOLVE) && results.isEmpty()) {
@@ -406,18 +406,17 @@ public class FhirToOpenEhr {
      * @param coverHelpers      a list of cover helpers being created
      * @param bundle            whether a fhir context mapper is expecting a Bundle
      * @param multiple          if a specific model mapper should create multiple Resources instead of a single one
-     * @return a list of created helpers then used for the actual mapping
      */
     void createHelpers(final String mainArtifact,
-                                            final FhirConnectMapper fhirConnectMapper,
-                                            final String templateId,
-                                            final String mainOpenEhrPath,
-                                            final List<Mapping> mappings,
-                                            final Condition parentCondition,
-                                            final List<FhirToOpenEhrHelper> helpers,
-                                            final List<FhirToOpenEhrHelper> coverHelpers,
-                                            final boolean bundle,
-                                            final boolean multiple) {
+                       final FhirConnectMapper fhirConnectMapper,
+                       final String templateId,
+                       final String mainOpenEhrPath,
+                       final List<Mapping> mappings,
+                       final Condition parentCondition,
+                       final List<FhirToOpenEhrHelper> helpers,
+                       final List<FhirToOpenEhrHelper> coverHelpers,
+                       final boolean bundle,
+                       final boolean multiple) {
         for (final Mapping mapping : mappings) {
             if (mapping.getWith().getOpenehr() == null && StringUtils.isNotEmpty(mapping.getWith().getValue())) {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR

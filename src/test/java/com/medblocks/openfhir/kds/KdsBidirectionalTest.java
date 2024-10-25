@@ -79,6 +79,7 @@ public abstract class KdsBidirectionalTest {
             }
         });
 
+        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(openFhirStringUtils);
         openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
                 repo,
                 new OpenEhrCachedUtils(null),
@@ -87,7 +88,8 @@ public abstract class KdsBidirectionalTest {
                 new OpenEhrRmWorker(openFhirStringUtils),
                 new OpenFhirMapperUtils(),
                 new FhirInstancePopulator(),
-                new FhirInstanceCreator(openFhirStringUtils),
+                new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
+                fhirInstanceCreatorUtility,
                 fhirPath,
                 new IntermediateCacheProcessing(openFhirStringUtils));
         fhirToOpenEhr = new FhirToOpenEhr(fhirPath,

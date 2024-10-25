@@ -40,8 +40,6 @@ public class Mapping {
     private FollowedBy followedBy;
     @JsonProperty("reference")
     private FhirConnectReference reference;
-//    @JsonProperty("map")
-//    private Map map;
 
     public Mapping doCopy() {
         final Mapping mapping = new Mapping();
@@ -51,7 +49,6 @@ public class Mapping {
         mapping.setCondition(condition == null ? null : condition.doCopy());
         mapping.setFollowedBy(followedBy == null ? null : followedBy.doCopy());
         mapping.setReference(reference == null ? null : reference.doCopy());
-//        mapping.setMap(map == null ? null : map.copy());
         return mapping;
     }
 
@@ -92,23 +89,6 @@ public class Mapping {
         this.reference = reference;
         return this;
     }
-
-
-//    @JsonProperty("map")
-//    public Map getMap() {
-//        return map;
-//    }
-//
-//
-//    @JsonProperty("map")
-//    public void setMap(Map map) {
-//        this.map = map;
-//    }
-//
-//    public Mapping withMap(Map map) {
-//        this.map = map;
-//        return this;
-//    }
 
     /**
      * (Required)

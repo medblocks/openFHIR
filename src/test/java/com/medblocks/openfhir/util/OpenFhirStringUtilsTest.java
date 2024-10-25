@@ -9,36 +9,6 @@ public class OpenFhirStringUtilsTest {
 
     @Test
     @Ignore
-    public void testGetSmartIndex() {
-        // person/personendaten/person/pid:0|id
-        // person/personendaten/person/pid:1|id
-        // Patient.identifier.value
-        // RESULT: should return index 0, because 0 and 1 need to be on the identifier
-
-        // person/personendaten/person/geburtsname:0/vollständiger_name
-        // person/personendaten/person/geburtsname:1/vollständiger_name
-        // Patient.name.given
-        // RESULT: should return index 0, because 0 and 1 need to be on the name
-        final int result = new OpenFhirStringUtils().getFirstRelevantIndex("person/personendaten/person/pid:0|id",
-                "Patient.identifier.value",
-                "Patient");
-        Assert.assertEquals(0, result);
-
-        Assert.assertEquals(1, (int) new OpenFhirStringUtils().getFirstRelevantIndex("medication_order/medication_order/order:1/additional_instruction:2",
-                "MedicationRequest.note.text",
-                "MedicationRequest"));
-
-        Assert.assertEquals(1, (int) new OpenFhirStringUtils().getFirstRelevantIndex("growth_chart/body_weight/any_event:1/weight|magnitude",
-                "Observation.value",
-                "Observation"));
-
-        Assert.assertEquals(2, (int) new OpenFhirStringUtils().getFirstRelevantIndex("growth_chart/body_weight/any_event:2/comment",
-                "Observation.note.text",
-                "Observation"));
-    }
-
-    @Test
-    @Ignore
     public void prepareParentPath() {
         // person/personendaten/person/pid:0|id
         // person/personendaten/person/pid:1|id

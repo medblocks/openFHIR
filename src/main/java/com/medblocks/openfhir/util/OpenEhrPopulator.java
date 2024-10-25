@@ -28,6 +28,8 @@ public class OpenEhrPopulator {
         this.openFhirMapperUtils = openFhirMapperUtils;
     }
 
+
+
     /**
      * Adds extracted value to the openEHR flat path composition represented with the 'constructingFlat' variable
      *
@@ -49,249 +51,291 @@ public class OpenEhrPopulator {
             log.warn("Extracted value is null");
             return;
         }
+
         switch (openEhrType) {
             case FhirConnectConst.DV_MULTIMEDIA:
-                if (extractedValue instanceof Attachment) {
-                    final Attachment extractedAtt = (Attachment) extractedValue;
-                    int size = extractedAtt.getSize();
-                    if (size == 0 && extractedAtt.getData() != null) {
-                        size = extractedAtt.getData().length;
-                    }
-                    addToConstructingFlat(openEhrPath + "|size", String.valueOf(size), constructingFlat);
-                    addToConstructingFlat(openEhrPath + "|mediatype", extractedAtt.getContentType(), constructingFlat);
-                    if (StringUtils.isNotEmpty(extractedAtt.getUrl())) {
-                        addToConstructingFlat(openEhrPath + "|url", extractedAtt.getUrl(), constructingFlat); // todo? what if url?
-                    } else {
-                        addToConstructingFlat(openEhrPath + "|data", Base64.getEncoder().encodeToString(extractedAtt.getData()), constructingFlat); // todo? what if url?
-                    }
-                    return;
-                } else {
-                    log.warn("openEhrType is MULTIMEDIA but extracted value is not Attachment; is {}", extractedValue.getClass());
-                }
+                handleDvMultimedia(openEhrPath, extractedValue, constructingFlat);
             case FhirConnectConst.DV_QUANTITY:
-                if (extractedValue instanceof Quantity) {
-                    final Quantity extractedQuantity = (Quantity) extractedValue;
-                    if (extractedQuantity.getValue() != null) {
-                        addToConstructingFlatDouble(openEhrPath + "|magnitude", extractedQuantity.getValue().doubleValue(), constructingFlat);
-                    }
-                    addToConstructingFlat(openEhrPath + "|unit", extractedQuantity.getUnit(), constructingFlat);
+                final boolean addedQuantity = handleDvQuantity(openEhrPath, extractedValue, constructingFlat);
+                if (addedQuantity) {
                     return;
-                } else if (extractedValue instanceof Ratio) {
-                    final Ratio extractedRatio = (Ratio) extractedValue;
-                    setFhirPathValue(openEhrPath, extractedRatio.getNumerator(), openEhrType, constructingFlat);
-                    return;
-                } else {
-                    log.warn("openEhrType is DV_QUANTITY but extracted value is not Quantity and not Ratio; is {}", extractedValue.getClass());
                 }
             case FhirConnectConst.DV_ORDINAL:
-                if (extractedValue instanceof Quantity) {
-                    final Quantity extractedQuantity = (Quantity) extractedValue;
-                    if (extractedQuantity.getValue() != null) {
-                        addToConstructingFlat(openEhrPath + "|ordinal", extractedQuantity.getValue().toPlainString(), constructingFlat);
-                    }
-                    addToConstructingFlat(openEhrPath + "|value", extractedQuantity.getUnit(), constructingFlat);
-                    addToConstructingFlat(openEhrPath + "|code", extractedQuantity.getCode(), constructingFlat);
+                boolean addedOrdinal = handleDvOrdinal(openEhrPath, extractedValue, constructingFlat);
+                if (addedOrdinal) {
                     return;
-                } else {
-                    log.warn("openEhrType is DV_ORDINAL but extracted value is not Quantity; is {}", extractedValue.getClass());
                 }
             case FhirConnectConst.DV_PROPORTION:
-                if (extractedValue instanceof Quantity) {
-                    final Quantity extractedQuantity = (Quantity) extractedValue;
-                    if ("%".equals(extractedQuantity.getCode())) {
-                        // then denominator is 100 and value is as it is
-                        addToConstructingFlatDouble(openEhrPath + "|denominator", 100.0, constructingFlat);
-                    }
-                    if (extractedQuantity.getValue() != null) {
-                        addToConstructingFlatDouble(openEhrPath + "|numerator", extractedQuantity.getValue().doubleValue(), constructingFlat);
-                    }
-                    // todo: denominator? and type? hardcoded?
-                    addToConstructingFlat(openEhrPath + "|type", "2", constructingFlat); // hardcoded???
-
+                boolean addedProportion = handleDvProportion(openEhrPath, extractedValue, constructingFlat);
+                if (addedProportion) {
                     return;
-                } else {
-                    log.warn("openEhrType is DV_PROPORTION but extracted value is not Quantity; is {}", extractedValue.getClass());
                 }
             case FhirConnectConst.DV_COUNT:
-                if (extractedValue instanceof Quantity) {
-                    final Quantity extractedQuantity = (Quantity) extractedValue;
-                    if (extractedQuantity.getValue() != null) {
-                        addToConstructingFlatInteger(openEhrPath, extractedQuantity.getValue().intValueExact(), constructingFlat);
-                    }
+                final boolean addedCount = handleDvCount(openEhrPath, extractedValue, constructingFlat);
+                if (addedCount) {
                     return;
-                } else if (extractedValue instanceof IntegerType) {
-                    final IntegerType extractedInteger = (IntegerType) extractedValue;
-                    if (extractedInteger.getValue() != null) {
-                        addToConstructingFlatInteger(openEhrPath, extractedInteger.getValue(), constructingFlat);
-                    }
-                    return;
-                } else {
-                    log.warn("openEhrType is DV_PROPORTION but extracted value is not Quantity and not IntegerType; is {}", extractedValue.getClass());
                 }
             case FhirConnectConst.DV_DATE_TIME:
-                if (extractedValue instanceof DateTimeType) {
-                    log.info("openEhrType is DATE_TIME and extracted value is DateTimeType");
-                    final DateTimeType extractedDateTime = (DateTimeType) extractedValue;
-                    if (extractedDateTime.getValue() != null) {
-                        final String formattedDate = openFhirMapperUtils.dateTimeToString(extractedDateTime.getValue());
-                        addToConstructingFlat(openEhrPath, formattedDate, constructingFlat);
-                    }
-                    return;
-                }
-                if (extractedValue instanceof DateType) {
-                    log.info("openEhrType is DATE_TIME and extracted value is DateType");
-                    final DateType extractedDate = (DateType) extractedValue;
-                    if (extractedDate.getValue() != null) {
-                        final String formattedDate = openFhirMapperUtils.dateToString(extractedDate.getValue());
-                        addToConstructingFlat(openEhrPath, formattedDate, constructingFlat);
-                    }
-                    return;
-                }
-                if (extractedValue instanceof TimeType) {
-                    log.info("openEhrType is DATE_TIME and extracted value is TimeType");
-                    final TimeType extractedTime = (TimeType) extractedValue;
-                    if (extractedTime.getValue() != null) {
-                        addToConstructingFlat(openEhrPath, extractedTime.getValue(), constructingFlat);
-                    }
+                final boolean addedDateTime = handleDvDateTime(openEhrPath, extractedValue, constructingFlat);
+                if (addedDateTime) {
                     return;
                 }
             case FhirConnectConst.DV_DATE:
-                if (extractedValue instanceof DateTimeType) {
-                    log.info("openEhrType is DV_DATE and extracted value is DateTimeType");
-                    final DateTimeType extractedDateTime = (DateTimeType) extractedValue;
-                    if (extractedDateTime.getValue() != null) {
-                        final String formattedDate = openFhirMapperUtils.dateToString(extractedDateTime.getValue());
-                        addToConstructingFlat(openEhrPath, formattedDate, constructingFlat);
-                    }
-                    return;
-                }
-                if (extractedValue instanceof DateType) {
-                    log.info("openEhrType is DV_DATE and extracted value is DateType");
-                    final DateType extractedDate = (DateType) extractedValue;
-                    if (extractedDate.getValue() != null) {
-                        final String formattedDate = openFhirMapperUtils.dateToString(extractedDate.getValue());
-                        addToConstructingFlat(openEhrPath, formattedDate, constructingFlat);
-                    }
+                final boolean addedDate = handleDvDate(openEhrPath, extractedValue, constructingFlat);
+                if(addedDate) {
                     return;
                 }
             case FhirConnectConst.DV_TIME:
-                if (extractedValue instanceof DateTimeType) {
-                    log.info("openEhrType is DV_TIME and extracted value is DateTimeType");
-                    final DateTimeType extractedDateTime = (DateTimeType) extractedValue;
-                    if (extractedDateTime.getValue() != null) {
-                        final String formattedDate = openFhirMapperUtils.timeToString(extractedDateTime.getValue());
-                        addToConstructingFlat(openEhrPath, formattedDate, constructingFlat);
-                    }
-                    return;
-                }
-                if (extractedValue instanceof DateType) {
-                    log.info("openEhrType is DV_TIME and extracted value is DateType");
-                    final DateType extractedDate = (DateType) extractedValue;
-                    if (extractedDate.getValue() != null) {
-                        final String formattedDate = openFhirMapperUtils.timeToString(extractedDate.getValue());
-                        addToConstructingFlat(openEhrPath, formattedDate, constructingFlat);
-                    }
-                    return;
-                }
-                if (extractedValue instanceof TimeType) {
-                    log.info("openEhrType is DV_TIME and extracted value is TimeType");
-                    final TimeType extractedTime = (TimeType) extractedValue;
-                    if (extractedTime.getValue() != null) {
-                        addToConstructingFlat(openEhrPath, extractedTime.getValue(), constructingFlat);
-                    }
+                final boolean addedTime = handleDvTime(openEhrPath, extractedValue, constructingFlat);
+                if(addedTime) {
                     return;
                 }
             case FhirConnectConst.DV_CODED_TEXT:
-                if (extractedValue instanceof CodeableConcept) {
-                    final CodeableConcept extractedCodebleConcept = (CodeableConcept) extractedValue;
-                    final List<Coding> codings = extractedCodebleConcept.getCoding();
-                    if (!codings.isEmpty()) {
-                        final Coding coding = codings.get(0);
-                        addToConstructingFlat(openEhrPath + "|code", coding.getCode(), constructingFlat);
-                        addToConstructingFlat(openEhrPath + "|terminology", coding.getSystem(), constructingFlat);
-                    }
-                    addToConstructingFlat(openEhrPath + "|value", extractedCodebleConcept.getText(), constructingFlat);
+                final boolean addedCodeText = handleDvCodedText(openEhrPath, extractedValue, constructingFlat);
+                if(addedCodeText) {
                     return;
-                } else {
-                    log.warn("openEhrType is DV_CODED_TEXT but extracted value is not CodeableConcept; is {}", extractedValue.getClass());
                 }
             case FhirConnectConst.IDENTIFIER:
-                if (extractedValue instanceof Identifier) {
-                    final Identifier extractedIdentifier = (Identifier) extractedValue;
-                    addToConstructingFlat(openEhrPath + "|id", extractedIdentifier.getValue(), constructingFlat);
+                final boolean addedIdentifier = handleIdentifier(openEhrPath, extractedValue, constructingFlat);
+                if(addedIdentifier) {
                     return;
-                } else {
-                    log.warn("openEhrType is IDENTIFIER but extracted value is not Identifier; is {}", extractedValue.getClass());
                 }
             case FhirConnectConst.CODE_PHRASE:
-
-                if (extractedValue instanceof Coding) {
-                    final Coding extractedCoding = (Coding) extractedValue;
-                    addToConstructingFlat(openEhrPath + "|code", extractedCoding.getCode(), constructingFlat);
-                    addToConstructingFlat(openEhrPath + "|value", extractedCoding.getCode(), constructingFlat); // todo? why?? not per fhir connect spec, but what if some require it?
-                    addToConstructingFlat(openEhrPath + "|terminology", extractedCoding.getSystem(), constructingFlat);
+                final boolean addedCode = handleCodePhrase(openEhrPath, extractedValue, constructingFlat, openEhrType);
+                if(addedCode) {
                     return;
-                } else if (extractedValue instanceof Extension extractedExtension) {
-                    setFhirPathValue(openEhrPath, extractedExtension.getValue(), openEhrType, constructingFlat);
-                    return;
-                } else if (extractedValue instanceof CodeableConcept extractedCodeable) {
-                    setFhirPathValue(openEhrPath, extractedCodeable.getCodingFirstRep(), openEhrType, constructingFlat);
-                    return;
-                } else if (extractedValue instanceof Enumeration extractedEnum) {
-                    addToConstructingFlat(openEhrPath + "|code", extractedEnum.getValueAsString(), constructingFlat);
-                    return;
-                } else {
-                    log.warn("openEhrType is CODE_PHRASE but extracted value is not Coding, not CodeableConcept and not Enumeration; is {}", extractedValue.getClass());
                 }
             case FhirConnectConst.DV_TEXT:
                 addValuePerFhirType(extractedValue, openEhrPath, constructingFlat);
                 return;
             case FhirConnectConst.DV_BOOL:
-                final Base extractedValue1 = extractedValue;
-                if (extractedValue1 instanceof StringType && ((StringType) extractedValue1).getValue() != null) {
-                    addToConstructingBoolean(openEhrPath, Boolean.valueOf(((StringType) extractedValue1).getValue()), constructingFlat);
+                final boolean addedBool = handleDvBool(openEhrPath, extractedValue, constructingFlat);
+                if(addedBool) {
                     return;
-                } else if (extractedValue1 instanceof BooleanType && ((BooleanType) extractedValue1).getValue() != null) {
-                    addToConstructingBoolean(openEhrPath, ((BooleanType) extractedValue1).getValue(), constructingFlat);
-                    return;
-                } else {
-                    log.warn("openEhrType is DV_BOOL but extracted value is not StringType and not BooleanType; is {}", extractedValue1.getClass());
                 }
-                return;
             default:
                 addValuePerFhirType(extractedValue, openEhrPath, constructingFlat);
 
         }
     }
 
+    private void handleDvMultimedia(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof Attachment attachment) {
+            int size = (attachment.getSize() == 0 && attachment.getData() != null) ? attachment.getData().length : attachment.getSize();
+            addToConstructingFlat(path + "|size", String.valueOf(size), flat);
+            addToConstructingFlat(path + "|mediatype", attachment.getContentType(), flat);
+            if (StringUtils.isNotEmpty(attachment.getUrl())) {
+                addToConstructingFlat(path + "|url", attachment.getUrl(), flat);
+            } else {
+                addToConstructingFlat(path + "|data", Base64.getEncoder().encodeToString(attachment.getData()), flat);
+            }
+        } else {
+            log.warn("openEhrType is MULTIMEDIA but extracted value is not Attachment; is {}", value.getClass());
+        }
+    }
+
+    private boolean handleDvQuantity(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof Quantity quantity) {
+            if (quantity.getValue() != null) {
+                addToConstructingFlatDouble(path + "|magnitude", quantity.getValue().doubleValue(), flat);
+            }
+            addToConstructingFlat(path + "|unit", quantity.getUnit(), flat);
+            return true;
+        } else if (value instanceof Ratio ratio) {
+            setFhirPathValue(path, ratio.getNumerator(), FhirConnectConst.DV_QUANTITY, flat);
+            return true;
+        } else {
+            log.warn("openEhrType is DV_QUANTITY but extracted value is not Quantity and not Ratio; is {}", value.getClass());
+        }
+        return false;
+    }
+
+    private boolean handleDvOrdinal(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof Quantity quantity) {
+            if (quantity.getValue() != null) {
+                addToConstructingFlat(path + "|ordinal", quantity.getValue().toPlainString(), flat);
+            }
+            addToConstructingFlat(path + "|value", quantity.getUnit(), flat);
+            addToConstructingFlat(path + "|code", quantity.getCode(), flat);
+            return true;
+        } else {
+            log.warn("openEhrType is DV_ORDINAL but extracted value is not Quantity; is {}", value.getClass());
+        }
+        return false;
+    }
+
+    private boolean handleDvProportion(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof Quantity quantity) {
+            if ("%".equals(quantity.getCode())) {
+                addToConstructingFlatDouble(path + "|denominator", 100.0, flat);
+            }
+            if (quantity.getValue() != null) {
+                addToConstructingFlatDouble(path + "|numerator", quantity.getValue().doubleValue(), flat);
+            }
+            addToConstructingFlat(path + "|type", "2", flat); // hardcoded?
+            return true;
+        } else {
+            log.warn("openEhrType is DV_PROPORTION but extracted value is not Quantity; is {}", value.getClass());
+        }
+        return false;
+    }
+
+    private boolean handleDvCount(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof Quantity quantity) {
+            if (quantity.getValue() != null) {
+                addToConstructingFlatInteger(path, quantity.getValue().intValueExact(), flat);
+            }
+            return true;
+        } else if (value instanceof IntegerType integerType) {
+            if (integerType.getValue() != null) {
+                addToConstructingFlatInteger(path, integerType.getValue(), flat);
+            }
+            return true;
+        } else {
+            log.warn("openEhrType is DV_COUNT but extracted value is not Quantity and not IntegerType; is {}", value.getClass());
+        }
+        return false;
+    }
+
+    private boolean handleDvDateTime(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof DateTimeType dateTime) {
+            if (dateTime.getValue() != null) {
+                final String formattedDate = openFhirMapperUtils.dateTimeToString(dateTime.getValue());
+                addToConstructingFlat(path, formattedDate, flat);
+            }
+            return true;
+        } else if (value instanceof DateType date) {
+            if (date.getValue() != null) {
+                final String formattedDate = openFhirMapperUtils.dateToString(date.getValue());
+                addToConstructingFlat(path, formattedDate, flat);
+            }
+            return true;
+        } else if (value instanceof TimeType time) {
+            if (time.getValue() != null) {
+                addToConstructingFlat(path, time.getValue(), flat);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleDvDate(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof DateTimeType dateTime) {
+            if (dateTime.getValue() != null) {
+                final String formattedDate = openFhirMapperUtils.dateToString(dateTime.getValue());
+                addToConstructingFlat(path, formattedDate, flat);
+            }
+            return true;
+        } else if (value instanceof DateType date) {
+            if (date.getValue() != null) {
+                final String formattedDate = openFhirMapperUtils.dateToString(date.getValue());
+                addToConstructingFlat(path, formattedDate, flat);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleDvTime(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof DateTimeType dateTime) {
+            if (dateTime.getValue() != null) {
+                final String formattedDate = openFhirMapperUtils.timeToString(dateTime.getValue());
+                addToConstructingFlat(path, formattedDate, flat);
+            }
+            return true;
+        } else if (value instanceof DateType date) {
+            if (date.getValue() != null) {
+                final String formattedDate = openFhirMapperUtils.timeToString(date.getValue());
+                addToConstructingFlat(path, formattedDate, flat);
+            }
+            return true;
+        } else if (value instanceof TimeType time) {
+            if (time.getValue() != null) {
+                addToConstructingFlat(path, time.getValue(), flat);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleDvCodedText(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof CodeableConcept codeableConcept) {
+            List<Coding> codings = codeableConcept.getCoding();
+            if (!codings.isEmpty()) {
+                Coding coding = codings.get(0);
+                addToConstructingFlat(path + "|code", coding.getCode(), flat);
+                addToConstructingFlat(path + "|terminology", coding.getSystem(), flat);
+            }
+            addToConstructingFlat(path + "|value", codeableConcept.getText(), flat);
+            return true;
+        } else {
+            log.warn("openEhrType is DV_CODED_TEXT but extracted value is not CodeableConcept; is {}", value.getClass());
+        }
+        return false;
+    }
+
+    private boolean handleIdentifier(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof Identifier identifier) {
+            addToConstructingFlat(path + "|id", identifier.getValue(), flat);
+            return true;
+        } else {
+            log.warn("openEhrType is IDENTIFIER but extracted value is not Identifier; is {}", value.getClass());
+        }
+        return false;
+    }
+
+    private boolean handleCodePhrase(final String path, final Base value, final JsonObject flat, final String openEhrType) {
+        if (value instanceof Coding coding) {
+            addToConstructingFlat(path + "|code", coding.getCode(), flat);
+            addToConstructingFlat(path + "|value", coding.getCode(), flat);
+            addToConstructingFlat(path + "|terminology", coding.getSystem(), flat);
+            return true;
+        } else if (value instanceof Extension extension) {
+            setFhirPathValue(path, extension.getValue(), openEhrType, flat);
+            return true;
+        } else if (value instanceof CodeableConcept concept) {
+            setFhirPathValue(path, concept.getCodingFirstRep(), openEhrType, flat);
+            return true;
+        } else if (value instanceof Enumeration<?> enumeration) {
+            addToConstructingFlat(path + "|code", enumeration.getValueAsString(), flat);
+            return true;
+        } else {
+            log.warn("openEhrType is CODE_PHRASE but extracted value is not Coding, Extension, CodeableConcept or Enumeration; is {}", value.getClass());
+        }
+        return false;
+    }
+
+    private boolean handleDvBool(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof BooleanType booleanType) {
+            addToConstructingBoolean(path, booleanType.getValue(), flat);
+            return true;
+        } else {
+            log.warn("openEhrType is DV_BOOL but extracted value is not BooleanType; is {}", value.getClass());
+        }
+        return false;
+    }
+
     private void addValuePerFhirType(final Base fhirValue, final String openEhrPath, final JsonObject constructingFlat) {
-        if (fhirValue instanceof Quantity) {
-            final Quantity extractedQuantity = (Quantity) fhirValue;
+        if (fhirValue instanceof Quantity extractedQuantity) {
             if (extractedQuantity.getValue() != null) {
                 addToConstructingFlat(openEhrPath, extractedQuantity.getValue().toPlainString(), constructingFlat);
             }
-        } else if (fhirValue instanceof Coding) {
-            final Coding extractedQuantity = (Coding) fhirValue;
+        } else if (fhirValue instanceof Coding extractedQuantity) {
             addToConstructingFlat(openEhrPath, extractedQuantity.getCode(), constructingFlat);
-        } else if (fhirValue instanceof DateTimeType) {
-            final DateTimeType extractedQuantity = (DateTimeType) fhirValue;
+        } else if (fhirValue instanceof DateTimeType extractedQuantity) {
             addToConstructingFlat(openEhrPath, extractedQuantity.getValueAsString(), constructingFlat);
-        } else if (fhirValue instanceof Annotation) {
-            final Annotation extracted = (Annotation) fhirValue;
+        } else if (fhirValue instanceof Annotation extracted) {
             addToConstructingFlat(openEhrPath, extracted.getText(), constructingFlat);
-        } else if (fhirValue instanceof Address) {
-            final Address extracted = (Address) fhirValue;
+        } else if (fhirValue instanceof Address extracted) {
             addToConstructingFlat(openEhrPath, extracted.getText(), constructingFlat);
-        } else if (fhirValue instanceof HumanName) {
-            final HumanName extracted = (HumanName) fhirValue;
+        } else if (fhirValue instanceof HumanName extracted) {
             addToConstructingFlat(openEhrPath, extracted.getNameAsSingleString(), constructingFlat);
-        } else if (fhirValue instanceof Extension) {
-            final Extension extracted = (Extension) fhirValue;
+        } else if (fhirValue instanceof Extension extracted) {
             addToConstructingFlat(openEhrPath, extracted.getValue().hasPrimitiveValue() ? extracted.getValue().primitiveValue() : null, constructingFlat);
         } else if (fhirValue.hasPrimitiveValue()) {
             addToConstructingFlat(openEhrPath, fhirValue.primitiveValue(), constructingFlat);
         } else {
-            log.error("Unsupported fhir value toString!: {}", fhirValue.toString());
+            log.error("Unsupported fhir value toString!: {}", fhirValue);
         }
     }
 
@@ -307,7 +351,7 @@ public class OpenEhrPopulator {
         if (value == null) {
             return;
         }
-        constructingFlat.addProperty(key, (Boolean) value);
+        constructingFlat.addProperty(key, value);
     }
 
     final void addToConstructingFlatDouble(final String key, final Double value, final JsonObject constructingFlat) {

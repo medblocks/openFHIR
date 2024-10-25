@@ -72,6 +72,7 @@ public class BidirectionalTest {
             }
         });
 
+        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(openFhirStringUtils);
         openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
                 repo,
                 new OpenEhrCachedUtils(null),
@@ -80,7 +81,8 @@ public class BidirectionalTest {
                 new OpenEhrRmWorker(openFhirStringUtils),
                 new OpenFhirMapperUtils(),
                 new FhirInstancePopulator(),
-                new FhirInstanceCreator(openFhirStringUtils),
+                new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
+                fhirInstanceCreatorUtility,
                 fhirPath,
                 new IntermediateCacheProcessing(openFhirStringUtils));
         fhirToOpenEhr = new FhirToOpenEhr(fhirPath,
