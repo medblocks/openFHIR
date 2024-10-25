@@ -41,6 +41,8 @@ public class FhirToOpenEhrHelper {
      */
     private String archetype;
 
+    private String hardcodingValue;
+
     /**
      * if a specific model mapper returns multiple resources or a single one; default is TRUE
      */
@@ -58,6 +60,7 @@ public class FhirToOpenEhrHelper {
                 .openEhrPath(openEhrPath)
                 .openEhrType(openEhrType)
                 .archetype(archetype)
+                .hardcodingValue(hardcodingValue)
                 .multiple(multiple)
                 .fhirToOpenEhrHelpers(fhirToOpenEhrHelpers == null ? null : fhirToOpenEhrHelpers.stream().map(FhirToOpenEhrHelper::doClone).collect(Collectors.toList()))
                 .build();

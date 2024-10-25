@@ -314,7 +314,14 @@ public class FhirToOpenEhr {
             final String thePath = noMoreRecurringOptions ? helper.getOpenEhrPath() : openFhirStringUtils.replaceLastIndexOf(helper.getOpenEhrPath(), "[n]", ":" + i);
             log.debug("Setting value taken with fhirPath {} from object type {}", helper.getFhirPath(), toResolveOn.getClass());
 
-            openEhrPopulator.setFhirPathValue(thePath, result, helper.getOpenEhrType(), flatComposition);
+            if (StringUtils.isNotEmpty(helper.getHardcodingValue())) {
+                log.debug("Hardcoding value {} to path: {}", helper.getHardcodingValue(), thePath);
+                // is it ok we use string type here? could it be something else? probably it could be..
+                openEhrPopulator.setFhirPathValue(thePath, new StringType(helper.getHardcodingValue()), helper.getOpenEhrType(), flatComposition);
+            } else {
+                openEhrPopulator.setFhirPathValue(thePath, result, helper.getOpenEhrType(), flatComposition);
+            }
+
 
             if (helper.getFhirToOpenEhrHelpers() != null) {
                 // iterate over inner elements
@@ -355,7 +362,6 @@ public class FhirToOpenEhr {
             fixAllChildrenRecurringElements(fhirToOpenEhrHelper, parent, newOne);
         }
     }
-
 
 
     /**
@@ -405,10 +411,21 @@ public class FhirToOpenEhr {
                                             final boolean bundle,
                                             final boolean multiple) {
         for (final Mapping mapping : mappings) {
+            if (mapping.getWith().getOpenehr() == null && StringUtils.isNotEmpty(mapping.getWith().getValue())) {
+                // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
+                continue;
+            }
             final FhirToOpenEhrHelper initialHelper = createHelper(mainArtifact, fhirConnectMapper, bundle);
             if (mapping.getWith().getOpenehr() != null && mapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_CONTEXT_FC)) {
                 continue;
             }
+
+            if (mapping.getWith().getFhir() == null) {
+                // is hardcoding
+                mapping.getWith().setFhir(fhirConnectMapper.getFhirConfig().getResource());
+                initialHelper.setHardcodingValue(mapping.getWith().getValue());
+            }
+
             final Condition condition = parentCondition != null ? parentCondition : mapping.getCondition();
 
             final String fhirPath = openFhirStringUtils.getFhirPathWithConditions(mapping.getWith().getFhir(),
@@ -596,7 +613,7 @@ public class FhirToOpenEhr {
      * Creates limiting criteria based on the FhirConnect FhirConfig Condition element.
      */
     private String getLimitingCriteria(final FhirConfig fhirConfig, final boolean bundle) {
-        if(fhirConfig == null) {
+        if (fhirConfig == null) {
             return null;
         }
         final String limitingCriteria;

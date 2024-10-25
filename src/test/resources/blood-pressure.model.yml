@@ -83,6 +83,24 @@ mappings:
       openehr: "$openEhrArchetype.blood_pressure.any_event.comment"
       type: "STRING"
 
+  - name: "position hardcoded to openehr"
+    with:
+      openehr: "$openEhrArchetype.blood_pressure.a24_hour_average.position|code"
+      value: "at1000"
+      type: "STRING"
+
+  - name: "confounding_factors hardcoded to openehr"
+    with:
+      openehr: "$openEhrArchetype.blood_pressure.a24_hour_average.confounding_factors"
+      value: "confounding factor"
+      type: "STRING"
+
+  - name: "performer hardcoded in fhir"
+    with:
+      fhir: "$fhirResource.performer.as(Reference).display"
+      value: "John Doe"
+      type: "STRING"
+
   - name: "location"
     with:
       fhir: "$fhirResource.bodySite.coding"

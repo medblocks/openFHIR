@@ -24,6 +24,7 @@ public class OpenFhirStringUtils {
     private final String ALL_INDEXES = ":(\\d+)";
     private final String WHERE_EXTRACTOR = "where\\(.*?\\)";
     public static final String RESOLVE = "resolve()";
+    public static final String WHERE = "where";
 
     /**
      * Adds regex pattern to the simplified flat path so that we can match all entries in a flat json

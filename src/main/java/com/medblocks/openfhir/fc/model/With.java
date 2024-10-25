@@ -9,29 +9,27 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
         "fhir",
         "openehr",
+        "value",
         "type"
 })
 
 public class With {
 
-    /**
-     * (Required)
-     */
     @JsonProperty("fhir")
     private String fhir;
-    /**
-     * (Required)
-     */
     @JsonProperty("openehr")
     private String openehr;
     @JsonProperty("type")
     private String type;
+    @JsonProperty("value")
+    private String value;
 
     public With doCopy() {
         final With with = new With();
         with.setFhir(fhir);
         with.setOpenehr(openehr);
         with.setType(type);
+        with.setValue(value);
         return with;
     }
 
@@ -95,6 +93,20 @@ public class With {
 
     public With withOpenehr(String openehr) {
         this.openehr = openehr;
+        return this;
+    }
+
+    @JsonProperty("value")
+    public String getValue() {
+        return value;
+    }
+    @JsonProperty("value")
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public With withValue(String value) {
+        this.value = value;
         return this;
     }
 
