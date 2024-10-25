@@ -24,8 +24,7 @@ import java.util.stream.Collectors;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
 import static com.medblocks.openfhir.fc.FhirConnectConst.THIS;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.WHERE;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.*;
 
 /**
  * Creates and instantiates HAPI FHIR Resources based on FHIR Path expressions
@@ -68,6 +67,94 @@ public class FhirInstanceCreator {
             log.error("Couldn't create a new instance of {}", resourceType, e);
             return null;
         }
+    }
+
+    private String getWhereForInstantiation(final String fhirPath,
+                                            final Class clazz) {
+        final String[] splitByDot = fhirPath.split("\\.");
+        if (splitByDot.length > 1) {
+            boolean shouldHandleWhere;
+            if (splitByDot[0].equals(clazz.getSimpleName()) && splitByDot.length > 2) {
+                shouldHandleWhere = splitByDot[1].startsWith(WHERE) || splitByDot[2].startsWith(WHERE);
+            } else {
+                shouldHandleWhere = splitByDot[1].startsWith(WHERE);
+            }
+
+            if (fhirPath.startsWith(WHERE)) {
+                shouldHandleWhere = true;
+            }
+
+            if (shouldHandleWhere) {
+                return openFhirStringUtils.extractWhereCondition(fhirPath);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Creates a list from split paths, removing resolve elements and cast elements if what follows
+     * is resolving or casting
+     *
+     * @param splitFhirPaths all split paths up unitl now
+     * @param resolveFollows whether resolve follows next
+     * @param castFollows    whether cast follows next
+     * @return a List of all split elements without cast or resolve segments (as(), resolve())
+     */
+    private List<String> listFromSplitPath(final String[] splitFhirPaths,
+                                           final boolean resolveFollows,
+                                           final boolean castFollows) {
+        return Arrays.stream(splitFhirPaths)
+                .filter(en -> {
+                    if (resolveFollows) {
+                        return StringUtils.isNotEmpty(en) && !en.equals(RESOLVE);
+                    } else if (castFollows) {
+                        return StringUtils.isNotEmpty(en) && !en.startsWith("as(");
+                    } else {
+                        return StringUtils.isNotEmpty(en);
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * After reaching the last segment of the path, instantiation is ended with the InstantiateAndSetReturn object
+     * holding all information of instantiated elements with corresponding paths
+     */
+    private InstantiateAndSetReturn endInstantiation(final boolean resolveFollows,
+                                                     final String resolveResourceType,
+                                                     final String forcingClass,
+                                                     final boolean specialThisHandling,
+                                                     final Class clazz,
+                                                     final Field theField,
+                                                     final Object resource,
+                                                     final Object originalResource,
+                                                     final String splitPath,
+                                                     final String followingWhereCondition) {
+        // means we've reached the end
+        final String forcingClassToUse = resolveFollows ? resolveResourceType : forcingClass;
+        Class aClass = specialThisHandling ? clazz : findClass(theField, forcingClassToUse);
+        if (aClass == null) {
+            // fallback if we cant find the one we want...
+            aClass = findClass(theField, null);
+        }
+        final Object generatedInstance = newInstance(aClass);
+        Object objectToReturn = (generatedInstance instanceof DomainResource && !resolveFollows) ? new Reference() : generatedInstance;
+
+        Object setObj = null;
+        if (!specialThisHandling) {
+            objectToReturn = theField.getType().equals(Enumeration.class) && objectToReturn instanceof CodeType ? new Enumeration<>() : generatedInstance;
+            setObj = setFieldObject(theField, resource, objectToReturn);
+        } else {
+            if (originalResource instanceof List) {
+                ((List) originalResource).add(generatedInstance);
+            }
+        }
+        final String path = splitPath + (StringUtils.isBlank(followingWhereCondition) ? "" : ("." + followingWhereCondition));
+        return InstantiateAndSetReturn.builder()
+                .returning(specialThisHandling ? originalResource : setObj)
+                .path(path.replace(THIS, ""))
+                .isList(specialThisHandling ? originalResource instanceof List : theField.getType() == List.class)
+                .build();
     }
 
     /**
@@ -115,12 +202,7 @@ public class FhirInstanceCreator {
                 ((Reference) resource).setResource((IBaseResource) nextClassInstance);
                 final Object obj = nextClassInstance;
                 final String path = RESOLVE;
-                return InstantiateAndSetReturn.builder()
-                        .returning(obj)
-                        .path(path)
-                        .inner(returning)
-                        .isList(false)
-                        .build();
+                return InstantiateAndSetReturn.builder().returning(obj).path(path).inner(returning).isList(false).build();
             }
 
             fhirPath = fhirPath
@@ -132,24 +214,7 @@ public class FhirInstanceCreator {
             fhirPath = fhirPath.substring(1);
         }
 
-        String followingWhereCondition = null;
-        final String[] splitByDot = fhirPath.split("\\.");
-        if (splitByDot.length > 1) {
-            boolean shouldHandleWhere;
-            if (splitByDot[0].equals(clazz.getSimpleName()) && splitByDot.length > 2) {
-                shouldHandleWhere = splitByDot[1].startsWith(WHERE) || splitByDot[2].startsWith(WHERE);
-            } else {
-                shouldHandleWhere = splitByDot[1].startsWith(WHERE);
-            }
-
-            if (fhirPath.startsWith(WHERE)) {
-                shouldHandleWhere = true;
-            }
-
-            if (shouldHandleWhere) {
-                followingWhereCondition = openFhirStringUtils.extractWhereCondition(fhirPath);
-            }
-        }
+        String followingWhereCondition = getWhereForInstantiation(fhirPath, clazz);
 
         if (followingWhereCondition != null) {
             fhirPath = fhirPath
@@ -175,42 +240,11 @@ public class FhirInstanceCreator {
             // second part of the condition is there to solve cases when the path ends with a cast, i.e. asNeeded.as(Boolean)
             if (preparedFhirPath.equals(splitPath)) {
                 // means we've reached the end
-                final String forcingClassToUse = resolveFollows ? resolveResourceType : forcingClass;
-                Class aClass = specialThisHandling ? clazz : findClass(theField, forcingClassToUse);
-                if (aClass == null) {
-                    // fallback if we cant find the one we want...
-                    aClass = findClass(theField, null);
-                }
-                final Object generatedInstance = newInstance(aClass);
-                Object objectToReturn = (generatedInstance instanceof DomainResource && !resolveFollows) ? new Reference() : generatedInstance;
-
-                Object setObj = null;
-                if (!specialThisHandling) {
-                    objectToReturn = theField.getType().equals(Enumeration.class) && objectToReturn instanceof CodeType ? new Enumeration<>() : generatedInstance;
-                    setObj = setFieldObject(theField, resource, objectToReturn);
-                } else {
-                    if (originalResource instanceof List) {
-                        ((List) originalResource).add(generatedInstance);
-                    }
-                }
-                final String path = splitPath + (StringUtils.isBlank(followingWhereCondition) ? "" : ("." + followingWhereCondition));
-                return InstantiateAndSetReturn.builder()
-                        .returning(specialThisHandling ? originalResource : setObj)
-                        .path(path.replace(THIS, ""))
-                        .isList(specialThisHandling ? originalResource instanceof List : theField.getType() == List.class)
-                        .build();
+                return endInstantiation(resolveFollows, resolveResourceType, forcingClass, specialThisHandling, clazz,
+                        theField, resource, originalResource, splitPath, followingWhereCondition);
             }
-            final List<String> list = Arrays.stream(splitFhirPaths)
-                    .filter(en -> {
-                        if (resolveFollows) {
-                            return StringUtils.isNotEmpty(en) && !en.equals(RESOLVE);
-                        } else if (castFollows) {
-                            return StringUtils.isNotEmpty(en) && !en.startsWith("as(");
-                        } else {
-                            return StringUtils.isNotEmpty(en);
-                        }
-                    })
-                    .collect(Collectors.toList());
+            final List<String> list = listFromSplitPath(splitFhirPaths, resolveFollows, castFollows);
+
             final String castingTo = castFollows ? openFhirStringUtils.getCastType(preparedFhirPath) : null;
             final Class nextClass = castFollows ? getClassForName(R4_HAPI_PACKAGE + castingTo) : findClass(theField, resolveFollows ? resolveResourceType : null);
             final Object nextClassInstance = newInstance(nextClass);
@@ -244,24 +278,16 @@ public class FhirInstanceCreator {
             }
             sb.append(".").append(splitPath);
             if (theField.getType() == List.class) {
-                sb.append("[n]");
+                sb.append(RECURRING_SYNTAX);
             }
             final int arrayLength = splitFhirPaths.length - 1;
-            final boolean resolveFollows = i != arrayLength && "resolve()".equals(splitFhirPaths[i + 1]);
+            final boolean resolveFollows = i != arrayLength && RESOLVE.equals(splitFhirPaths[i + 1]);
             final boolean castFollows = i != arrayLength && splitFhirPaths[i + 1].startsWith("as(");
             if (preparedFhirPath.equals(splitPath)) {
                 // means we've reached the end
                 return sb.toString();
             }
-            final List<String> list = Arrays.stream(splitFhirPaths)
-                    .filter(en -> {
-                        if (!resolveFollows && !castFollows) {
-                            return true;
-                        } else {
-                            return !en.equals(RESOLVE) && !en.startsWith("as(");
-                        }
-                    })
-                    .toList();
+            final List<String> list = listFromSplitPath(splitFhirPaths, resolveFollows, castFollows);
             final String castingTo = castFollows ? openFhirStringUtils.getCastType(preparedFhirPath) : null;
             final Class nextClass = castFollows ? getClassForName(R4_HAPI_PACKAGE + castingTo) : findClass(theField, null);
 

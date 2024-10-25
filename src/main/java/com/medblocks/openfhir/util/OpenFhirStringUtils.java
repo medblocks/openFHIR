@@ -22,9 +22,10 @@ public class OpenFhirStringUtils {
     private final String RIGHT_MOST_INDEX = ":(\\d+)(?!.*:)";
     private final String CAST_TYPE = "as\\(([^()]*)\\)";
     private final String ALL_INDEXES = ":(\\d+)";
-    private final String WHERE_EXTRACTOR = "where\\(.*?\\)";
     public static final String RESOLVE = "resolve()";
     public static final String WHERE = "where";
+    public static final String RECURRING_SYNTAX = "[n]";
+    public static final String RECURRING_SYNTAX_ESCAPED = "\\[n]";
 
     /**
      * Adds regex pattern to the simplified flat path so that we can match all entries in a flat json
@@ -154,7 +155,7 @@ public class OpenFhirStringUtils {
 
     public List<Integer> getAllIndexes(final String path) {
         final List<String> matches = getByRegexAll(path, ALL_INDEXES);
-        if(matches == null) {
+        if (matches == null) {
             return Collections.emptyList();
         }
         return matches.stream().map(Integer::parseInt).collect(Collectors.toList());
@@ -176,8 +177,8 @@ public class OpenFhirStringUtils {
 
         for (int i = 0; i < withoutIndexesParts.length; i++) {
             String part = withoutIndexesParts[i];
-            if (part.endsWith("[n]")) {
-                part = part.replace("[n]", "");
+            if (part.endsWith(RECURRING_SYNTAX)) {
+                part = part.replace(RECURRING_SYNTAX, "");
             }
             if (j < withIndexesParts.length && withIndexesParts[j].startsWith(part)) {
                 result.append(withIndexesParts[j]);
@@ -291,7 +292,7 @@ public class OpenFhirStringUtils {
 
         int countOfFhirArrays = 0;
         int index = 0;
-        while ((index = enrichedFhirPath.indexOf("[n]", index)) != -1) {
+        while ((index = enrichedFhirPath.indexOf(RECURRING_SYNTAX, index)) != -1) {
             countOfFhirArrays++;
             index += enrichedFhirPath.length();
         }
@@ -401,6 +402,31 @@ public class OpenFhirStringUtils {
 
     }
 
+    public String constructFhirPathNoConditions(final String originalFhirPath,
+                                                final String parentPath) {
+        // only make sure parent's where path is added to the child
+        if (StringUtils.isEmpty(parentPath)) {
+            return originalFhirPath;
+        }
+        final String parentsWhereCondition = extractWhereCondition(parentPath);
+        if (StringUtils.isEmpty(parentsWhereCondition)) {
+            return originalFhirPath;
+        } else {
+            // find the correct place within children's path to add parent's where
+            if (originalFhirPath.contains(parentPath)) {
+                // all is done already
+                return originalFhirPath;
+            } else {
+                if (originalFhirPath.startsWith(parentPath.replace(parentsWhereCondition, ""))) {
+                    return setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath);
+                } else {
+                    final String remainingItemsFromParent = originalFhirPath.replace(setParentsWherePathToTheCorrectPlace(parentPath, originalFhirPath), "");
+                    return setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath) + remainingItemsFromParent;
+                }
+            }
+        }
+    }
+
     /**
      * Return originalFhirPath amended with the actual condition .where elements. This method will construct a fhir
      * path from Condition and add that to the original fhir path
@@ -418,26 +444,7 @@ public class OpenFhirStringUtils {
         originalFhirPath = originalFhirPath.replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
         if (condition == null || condition.getTargetAttribute() == null) {
             // only make sure parent's where path is added to the child
-            if (StringUtils.isEmpty(parentPath)) {
-                return originalFhirPath;
-            }
-            final String parentsWhereCondition = extractWhereCondition(parentPath);
-            if (StringUtils.isEmpty(parentsWhereCondition)) {
-                return originalFhirPath;
-            } else {
-                // find the correct place within children's path to add parent's where
-                if (originalFhirPath.contains(parentPath)) {
-                    // all is done already
-                    return originalFhirPath;
-                } else {
-                    if (originalFhirPath.startsWith(parentPath.replace(parentsWhereCondition, ""))) {
-                        return setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath);
-                    } else {
-                        final String remainingItemsFromParent = originalFhirPath.replace(setParentsWherePathToTheCorrectPlace(parentPath, originalFhirPath), "");
-                        return setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath) + remainingItemsFromParent;
-                    }
-                }
-            }
+            return constructFhirPathNoConditions(originalFhirPath, parentPath);
         } else {
             // append parent's where path first
             String withParentsWhereInPlace;
@@ -497,7 +504,7 @@ public class OpenFhirStringUtils {
                 }
             } else {
                 final String string = parents[parentIndex];
-                if (string.startsWith("where")) {
+                if (string.startsWith(WHERE)) {
                     // a where follows
                     final String firstWhereCondition = extractWhereCondition(parent.substring(parentSubstringCount - 1));
                     childPathJoiner.add(firstWhereCondition);
@@ -626,7 +633,7 @@ public class OpenFhirStringUtils {
                 result.append(originalParts[i]);
             } else if (i < replacementParts.length) {
                 // Use the original part
-                final String orig = originalParts[i].contains("[n]") ? replaceLastIndexOf(originalParts[i], "[n]", "") : originalParts[i];
+                final String orig = originalParts[i].contains(RECURRING_SYNTAX) ? replaceLastIndexOf(originalParts[i], RECURRING_SYNTAX, "") : originalParts[i];
                 final String repl = replacementParts[i].contains(":") ? replacementParts[i].replace(":", "").replace(String.valueOf(getLastIndex(replacementParts[i])), "") : replacementParts[i];
                 if (!orig.startsWith(repl)) { // means it's a completely different one, need to take original
                     result.append(originalParts[i]);

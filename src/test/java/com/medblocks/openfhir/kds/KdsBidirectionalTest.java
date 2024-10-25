@@ -10,6 +10,7 @@ import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.TestOpenFhirMappingContext;
 import com.medblocks.openfhir.fc.model.FhirConnectContext;
 import com.medblocks.openfhir.kds.ehrbase.EhrBaseTestClient;
+import com.medblocks.openfhir.tofhir.IntermediateCacheProcessing;
 import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
 import com.medblocks.openfhir.util.*;
@@ -87,7 +88,8 @@ public abstract class KdsBidirectionalTest {
                 new OpenFhirMapperUtils(),
                 new FhirInstancePopulator(),
                 new FhirInstanceCreator(openFhirStringUtils),
-                fhirPath);
+                fhirPath,
+                new IntermediateCacheProcessing(openFhirStringUtils));
         fhirToOpenEhr = new FhirToOpenEhr(fhirPath,
                 new OpenFhirStringUtils(),
                 new FlatJsonUnmarshaller(),
