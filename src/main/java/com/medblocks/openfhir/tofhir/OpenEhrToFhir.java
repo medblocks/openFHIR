@@ -85,7 +85,9 @@ public class OpenEhrToFhir {
      * @param operationaltemplate operational template that is related to the incoming Composition
      * @return Bundle that is a result of the mapping engine
      */
-    public Bundle compositionToFhir(final FhirConnectContext context, final Composition composition, final OPERATIONALTEMPLATE operationaltemplate) {
+    public Bundle compositionToFhir(final FhirConnectContext context,
+                                    final Composition composition,
+                                    final OPERATIONALTEMPLATE operationaltemplate) {
         // create flat from composition
         final WebTemplate webTemplate = openEhrApplicationScopedUtils.parseWebTemplate(operationaltemplate);
         final String flatJson = flatJsonMarshaller.toFlatJson(composition, webTemplate);
@@ -98,7 +100,7 @@ public class OpenEhrToFhir {
         final Set<String> archetypesAlreadyProcessed = new HashSet<>();
 
         // loop through top level content/archetypes within the Composition
-        for (ContentItem archetypesWithinContent : composition.getContent()) {
+        for (final ContentItem archetypesWithinContent : composition.getContent()) {
 
             // elements instantiated throughout the mapping (FHIR dataelements instantiated, key'd by created object + fhir path + openehr path)
             // instanced here so multiple archetypes can share them
@@ -111,59 +113,100 @@ public class OpenEhrToFhir {
 
             // get mapper by templateid (context) + archetype id (model)
             final List<FhirConnectMapper> theMappers = openFhirTemplateRepo.getMapperForArchetype(templateId, archetypeNodeId);
-            if (theMappers == null || theMappers.isEmpty()) {
+            if (theMappers == null) {
                 log.error("No mappers defined for archetype within this composition: {}. No mapping possible.", archetypeNodeId);
                 continue;
             }
-            for (FhirConnectMapper theMapper : theMappers) {
-                if (theMapper.getFhirConfig() == null) {
-                    // if fhir config is null, it means it's a slot mapper and it can't be a first-level Composition.content one
-                    continue;
-                }
-                final Boolean existingEntry = isMultipleByResourceType.getOrDefault(theMapper.getFhirConfig().getResource(), true);
-
-                // fhirConfig.multiple signals if model mapper should return in multiple base FHIR Resources or a single one
-                // if not multiple, then we need to get an existing already created FHIR Resource and use that one for the
-                // following mappings
-                final boolean shouldUseExisting = existingEntry && !theMapper.getFhirConfig().getMultiple();
-                isMultipleByResourceType.put(theMapper.getFhirConfig().getResource(), shouldUseExisting);
-                intermediateCaches.put(theMapper.getFhirConfig().getResource(), intermediateCaches.getOrDefault(theMapper.getFhirConfig().getResource(), instantiatedIntermediateElements));
-
-                // helper POJOs that help for openEHR to FHIR mappings
-                final List<OpenEhrToFhirHelper> helpers = new ArrayList<>();
-
-                prepareOpenEhrToFhirHelpers(theMapper,
-                        theMapper.getFhirConfig().getResource(),
-                        webTemplate.getTree().getId(),
-                        theMapper.getMappings(),
-                        helpers,
-                        webTemplate,
-                        flatJsonObject,
-                        false,
-                        null,
-                        null,
-                        webTemplate.getTree().getId());
-
-                // within helpers, you should have everything you need to create a FHIR Resource now
-                final List<Resource> created = createResourceFromOpenEhrToFhirHelper(helpers,
-                        theMapper.getFhirConfig(),
-                        shouldUseExisting ? creatingBundle.getEntry()
-                                .stream()
-                                .map(Bundle.BundleEntryComponent::getResource)
-                                .filter(en -> en.getResourceType().name().equals(theMapper.getFhirConfig().getResource()))
-                                .findAny()
-                                .orElse(null) : null,
-                        shouldUseExisting ? intermediateCaches.getOrDefault(theMapper.getFhirConfig().getResource(), instantiatedIntermediateElements) : instantiatedIntermediateElements);
-
-                log.info("Constructed {} resources for archetype {}.", created.size(), archetypesWithinContent.getArchetypeNodeId());
-
-                addEntriesToBundle(creatingBundle, created, createdAndAdded);
-                archetypesAlreadyProcessed.add(archetypeNodeId);
-            }
+            handleMappings(theMappers,
+                    createdAndAdded,
+                    intermediateCaches,
+                    isMultipleByResourceType,
+                    flatJsonObject,
+                    webTemplate,
+                    instantiatedIntermediateElements,
+                    creatingBundle,
+                    archetypesAlreadyProcessed,
+                    archetypesWithinContent,
+                    archetypeNodeId);
 
         }
 
         return creatingBundle;
+    }
+
+    /**
+     * Loops over available mappings, creates helpers for mappings and then corresponding FHIR Resources
+     * to given openEHR Compositions
+     *
+     * @param theMappers                       fhir connect mappers available for mapping
+     * @param createdAndAdded                  set of string of already created Resources, so we don't do duplicates
+     * @param isMultipleByResourceType         if certain mapping produces multiple resources
+     * @param flatJsonObject                   Composition in a flat json format that needs to be mapped
+     * @param webTemplate                      web template of the inbound Composition
+     * @param instantiatedIntermediateElements elements instantiated throughout the mapping (FHIR dataelements instantiated,
+     * @param intermediateCaches               cached intermediate caches per Resource type
+     *                                         key'd by created object + fhir path + openehr path)
+     * @param creatingBundle                   Bundle that is being created as part of the mappings
+     * @param archetypesAlreadyProcessed       set of archetypes already processed
+     * @param archetypesWithinContent          archetype within a Composition that is currently being mapped
+     * @param archetypeNodeId                  archetype id within a Composition that is currently being mapped
+     */
+    private void handleMappings(final List<FhirConnectMapper> theMappers,
+                                final Set<String> createdAndAdded,
+                                final Map<String, Map<String, Object>> intermediateCaches,
+                                final Map<String, Boolean> isMultipleByResourceType,
+                                final JsonObject flatJsonObject,
+                                final WebTemplate webTemplate,
+                                final Map<String, Object> instantiatedIntermediateElements,
+                                final Bundle creatingBundle,
+                                final Set<String> archetypesAlreadyProcessed,
+                                final ContentItem archetypesWithinContent,
+                                final String archetypeNodeId) {
+        for (final FhirConnectMapper theMapper : theMappers) {
+            if (theMapper.getFhirConfig() == null) {
+                // if fhir config is null, it means it's a slot mapper and it can't be a first-level Composition.content one
+                continue;
+            }
+            final Boolean existingEntry = isMultipleByResourceType.getOrDefault(theMapper.getFhirConfig().getResource(), true);
+
+            // fhirConfig.multiple signals if model mapper should return in multiple base FHIR Resources or a single one
+            // if not multiple, then we need to get an existing already created FHIR Resource and use that one for the
+            // following mappings
+            final boolean shouldUseExisting = existingEntry && !theMapper.getFhirConfig().getMultiple();
+            isMultipleByResourceType.put(theMapper.getFhirConfig().getResource(), shouldUseExisting);
+            intermediateCaches.put(theMapper.getFhirConfig().getResource(), intermediateCaches.getOrDefault(theMapper.getFhirConfig().getResource(), instantiatedIntermediateElements));
+
+            // helper POJOs that help for openEHR to FHIR mappings
+            final List<OpenEhrToFhirHelper> helpers = new ArrayList<>();
+
+            prepareOpenEhrToFhirHelpers(theMapper,
+                    theMapper.getFhirConfig().getResource(),
+                    webTemplate.getTree().getId(),
+                    theMapper.getMappings(),
+                    helpers,
+                    webTemplate,
+                    flatJsonObject,
+                    false,
+                    null,
+                    null,
+                    webTemplate.getTree().getId());
+
+            // within helpers, you should have everything you need to create a FHIR Resource now
+            final List<Resource> created = createResourceFromOpenEhrToFhirHelper(helpers,
+                    theMapper.getFhirConfig(),
+                    shouldUseExisting ? creatingBundle.getEntry()
+                            .stream()
+                            .map(Bundle.BundleEntryComponent::getResource)
+                            .filter(en -> en.getResourceType().name().equals(theMapper.getFhirConfig().getResource()))
+                            .findAny()
+                            .orElse(null) : null,
+                    shouldUseExisting ? intermediateCaches.getOrDefault(theMapper.getFhirConfig().getResource(), instantiatedIntermediateElements) : instantiatedIntermediateElements);
+
+            log.info("Constructed {} resources for archetype {}.", created.size(), archetypesWithinContent.getArchetypeNodeId());
+
+            addEntriesToBundle(creatingBundle, created, createdAndAdded);
+            archetypesAlreadyProcessed.add(archetypeNodeId);
+        }
     }
 
     /**
@@ -360,7 +403,7 @@ public class OpenEhrToFhir {
                 for (final Resource instance : resources) {
 
 
-                    if ("NONE".equals(helper.getOpenEhrType())) {
+                    if (OPENEHR_TYPE_NONE.equals(helper.getOpenEhrType())) {
                         handleConditionMapping(helper.getCondition(),
                                 instance,
                                 fullOpenEhrPath,
@@ -1019,10 +1062,15 @@ public class OpenEhrToFhir {
                                      final String parentFollowedByFhir,
                                      final String parentFollowedByOpenEhr,
                                      final String slotContext) {
-        for (Mapping mapping : mappings) {
-            if(mapping.getWith().getFhir() == null) {
+        for (final Mapping mapping : mappings) {
+            final String hardcodedValue = mapping.getWith().getValue();
+            if (mapping.getWith().getFhir() == null) {
                 // it means it's hardcoding to openEHR, we can therefore skip it when mapping to FHIR
                 continue;
+            }
+            if (mapping.getWith().getOpenehr() == null && hardcodedValue != null) {
+                // hardcoding to FHIR
+                mapping.getWith().setOpenehr(OPENEHR_ARCHETYPE_FC);
             }
 
 
@@ -1036,17 +1084,7 @@ public class OpenEhrToFhir {
                 openehr = openFhirStringUtils.prepareOpenEhrSyntax(definedMappingWithOpenEhr, firstFlatPath);
             }
 
-            final String rmType;
-            if (mapping.getWith().getType() == null) {
-                // if type is not explicitly defined in a fhir connect model mapper, it is taken from the template definition
-                final FhirToOpenEhrHelper getTypeHelper = FhirToOpenEhrHelper.builder()
-                        .openEhrPath(openehr)
-                        .build();
-                openEhrRmWorker.fixFlatWithOccurrences(Arrays.asList(getTypeHelper), webTemplate);
-                rmType = getTypeHelper.getOpenEhrType();
-            } else {
-                rmType = mapping.getWith().getType();
-            }
+            final String rmType = getRmType(openehr, mapping, webTemplate);
 
             // get fhir path with conditions included in the fhir path itself
             final String fhirPath = openFhirStringUtils.amendFhirPath(mapping.getWith().getFhir(),
@@ -1158,20 +1196,11 @@ public class OpenEhrToFhir {
                     }
                 } else {
                     String openEhrPath = null;
-                    List<OpenEhrToFhirHelper.DataWithIndex> values = null;
+                    List<OpenEhrToFhirHelper.DataWithIndex> values = extractValues(mapping, joinedEntries, rmType, flatJsonObject, hardcodedValue);
                     if (!OPENEHR_TYPE_NONE.equals(mapping.getWith().getType())) {
-                        values = joinedEntries.values().stream()
-                                .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
-                                .filter(Objects::nonNull)
-                                .collect(Collectors.toList());
                         openEhrPath = openehr;
                     } else if (mapping.getCondition() != null) {
-                        values = joinedEntries.values().stream()
-                                .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, false))
-                                .filter(Objects::nonNull)
-                                .collect(Collectors.toList());
                         openEhrPath = openFhirStringUtils.prepareOpenEhrSyntax(definedMappingWithOpenEhr, firstFlatPath);
-
                     }
 
                     if (openEhrPath != null) {
@@ -1214,6 +1243,57 @@ public class OpenEhrToFhir {
                 }
             }
 
+        }
+    }
+
+    /**
+     * Extracts values from joinedEntries and creates data points from that together with an index according
+     * to flat path
+     *
+     * @param mapping        mapping currently being evaluated
+     * @param joinedEntries  flat paths joined together
+     * @param rmType         type of the data point
+     * @param flatJsonObject json object representing flat path format of a Composition
+     * @param hardcodedValue if there is no mapping but rather a hardcoding, this will hold a value that needs to be
+     *                       hardcoded
+     */
+    private List<OpenEhrToFhirHelper.DataWithIndex> extractValues(final Mapping mapping,
+                                                                  final Map<String, List<String>> joinedEntries,
+                                                                  final String rmType,
+                                                                  final JsonObject flatJsonObject,
+                                                                  final String hardcodedValue) {
+        List<OpenEhrToFhirHelper.DataWithIndex> values = null;
+        if (!OPENEHR_TYPE_NONE.equals(mapping.getWith().getType())) {
+            if (StringUtils.isNotEmpty(hardcodedValue)) {
+                values = new ArrayList<>();
+                values.add(new OpenEhrToFhirHelper.DataWithIndex(new StringType(hardcodedValue), -1, OPENEHR_ARCHETYPE_FC));
+            } else {
+                values = joinedEntries.values().stream()
+                        .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+            }
+        } else if (mapping.getCondition() != null) {
+            values = joinedEntries.values().stream()
+                    .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, false))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        }
+        return values;
+    }
+
+    private String getRmType(final String openEhrPath,
+                             final Mapping mapping,
+                             final WebTemplate webTemplate) {
+        if (mapping.getWith().getType() == null) {
+            // if type is not explicitly defined in a fhir connect model mapper, it is taken from the template definition
+            final FhirToOpenEhrHelper getTypeHelper = FhirToOpenEhrHelper.builder()
+                    .openEhrPath(openEhrPath)
+                    .build();
+            openEhrRmWorker.fixFlatWithOccurrences(Arrays.asList(getTypeHelper), webTemplate);
+            return getTypeHelper.getOpenEhrType();
+        } else {
+            return mapping.getWith().getType();
         }
     }
 
@@ -1310,7 +1390,7 @@ public class OpenEhrToFhir {
                 final Quantity quantity = new Quantity();
                 if (magnitude != null) {
                     final Object magVal = getDoubleOrLong(getFromValueHolder(valueHolder, magnitude));
-                    if(magVal != null) {
+                    if (magVal != null) {
                         quantity.setValue(magVal instanceof Long ? (Long) magVal : (Double) magVal);
                     }
                 } else if (ordinal != null) {
@@ -1376,7 +1456,7 @@ public class OpenEhrToFhir {
                 Attachment att = new Attachment();
                 att.setContentType(getFromValueHolder(valueHolder, path + "|mediatype"));
                 final String size = getFromValueHolder(valueHolder, path + "|size");
-                if(size != null) {
+                if (size != null) {
                     att.setSize(Integer.parseInt(size));
                 }
                 att.setUrl(getFromValueHolder(valueHolder, path + "|url"));

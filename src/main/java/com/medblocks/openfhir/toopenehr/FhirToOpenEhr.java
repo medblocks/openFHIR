@@ -314,7 +314,7 @@ public class FhirToOpenEhr {
             final String thePath = noMoreRecurringOptions ? helper.getOpenEhrPath() : openFhirStringUtils.replaceLastIndexOf(helper.getOpenEhrPath(), "[n]", ":" + i);
             log.debug("Setting value taken with fhirPath {} from object type {}", helper.getFhirPath(), toResolveOn.getClass());
 
-            if(StringUtils.isNotEmpty(helper.getHardcodingValue())) {
+            if (StringUtils.isNotEmpty(helper.getHardcodingValue())) {
                 log.debug("Hardcoding value {} to path: {}", helper.getHardcodingValue(), thePath);
                 // is it ok we use string type here? could it be something else? probably it could be..
                 openEhrPopulator.setFhirPathValue(thePath, new StringType(helper.getHardcodingValue()), helper.getOpenEhrType(), flatComposition);
@@ -411,12 +411,16 @@ public class FhirToOpenEhr {
                                             final boolean bundle,
                                             final boolean multiple) {
         for (final Mapping mapping : mappings) {
+            if (mapping.getWith().getOpenehr() == null && StringUtils.isNotEmpty(mapping.getWith().getValue())) {
+                // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
+                continue;
+            }
             final FhirToOpenEhrHelper initialHelper = createHelper(mainArtifact, fhirConnectMapper, bundle);
             if (mapping.getWith().getOpenehr() != null && mapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_CONTEXT_FC)) {
                 continue;
             }
 
-            if(mapping.getWith().getFhir() == null) {
+            if (mapping.getWith().getFhir() == null) {
                 // is hardcoding
                 mapping.getWith().setFhir(fhirConnectMapper.getFhirConfig().getResource());
                 initialHelper.setHardcodingValue(mapping.getWith().getValue());

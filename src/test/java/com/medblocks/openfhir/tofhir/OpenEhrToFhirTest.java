@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class OpenEhrToFhirTest {
     final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
@@ -46,7 +47,7 @@ public class OpenEhrToFhirTest {
             new FhirInstanceCreator(openFhirStringUtils),
             fhirPath);
 
-    public static void assertBloodPressureFhir(final Bundle bundle ) {
+    public static void assertBloodPressureFhir(final Bundle bundle) {
         Assert.assertEquals(3, bundle.getEntry().size());
         final Observation obs1 = bundle.getEntry().stream()
                 .map(en -> ((Observation) en.getResource()))
@@ -83,7 +84,7 @@ public class OpenEhrToFhirTest {
 
         Assert.assertTrue(Arrays.asList(obs1, obs3).stream()
                 .allMatch(o -> o.getComponent().stream()
-                        .allMatch(com -> !com.getInterpretationFirstRep().isEmpty() ||  (com.getCode() != null
+                        .allMatch(com -> !com.getInterpretationFirstRep().isEmpty() || (com.getCode() != null
                                 && com.getCode().getCoding().size() == 1
                                 && (com.getCode().getCodingFirstRep().getCode().equals("8480-6") || com.getCode().getCodingFirstRep().getCode().equals("8462-4"))))));
 
@@ -131,6 +132,9 @@ public class OpenEhrToFhirTest {
                 .findFirst()
                 .orElse(null);
         Assert.assertEquals("700.0", thirdSystolic.getValue().toPlainString());
+
+        // assert hardcoded
+        Assert.assertTrue(Stream.of(obs1, obs2, obs3).allMatch(obs -> obs.getPerformerFirstRep().getDisplay().equals("John Doe")));
     }
 
     @Test
