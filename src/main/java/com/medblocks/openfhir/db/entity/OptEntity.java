@@ -26,7 +26,6 @@ public class OptEntity {
     String displayTemplateId;
 
     public OptEntity copy() {
-        final OptEntity optEntity = new OptEntity(id, content, templateId, originalTemplateId, displayTemplateId);
-        return optEntity;
+        return new OptEntity(id, content, templateId, originalTemplateId, displayTemplateId);
     }
 }

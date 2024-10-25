@@ -36,17 +36,23 @@ public class OpenEhrToFhirTest {
     final FhirPathR4 fhirPath = new FhirPathR4(FhirContext.forR4());
     final OpenFhirMapperUtils openFhirMapperUtils = new OpenFhirMapperUtils();
     final TestOpenFhirMappingContext repo = new TestOpenFhirMappingContext(fhirPath, openFhirStringUtils);
-    final OpenEhrToFhir openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
-            repo,
-            new OpenEhrCachedUtils(null),
-            new Gson(),
-            openFhirStringUtils,
-            new OpenEhrRmWorker(openFhirStringUtils),
-            new OpenFhirMapperUtils(),
-            new FhirInstancePopulator(),
-            new FhirInstanceCreator(openFhirStringUtils),
-            fhirPath,
-            new IntermediateCacheProcessing(openFhirStringUtils));
+    final OpenEhrToFhir openEhrToFhir;
+
+    {
+        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(openFhirStringUtils);
+        openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
+                repo,
+                new OpenEhrCachedUtils(null),
+                new Gson(),
+                openFhirStringUtils,
+                new OpenEhrRmWorker(openFhirStringUtils),
+                new OpenFhirMapperUtils(),
+                new FhirInstancePopulator(),
+                new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
+                fhirInstanceCreatorUtility,
+                fhirPath,
+                new IntermediateCacheProcessing(openFhirStringUtils));
+    }
 
     public static void assertBloodPressureFhir(final Bundle bundle) {
         Assert.assertEquals(3, bundle.getEntry().size());

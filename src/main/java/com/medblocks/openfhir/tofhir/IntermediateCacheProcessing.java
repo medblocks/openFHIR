@@ -12,7 +12,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.*;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
 
 @Component
 public class IntermediateCacheProcessing {
@@ -123,9 +124,10 @@ public class IntermediateCacheProcessing {
                     followedByParentOpenEhr);
             return;
         }
+        final boolean lastOpenEhrIsDigit = !fullOpenEhrPath.isEmpty() && Character.isDigit(fullOpenEhrPath.charAt(fullOpenEhrPath.length() - 1));
         if (hardcodedReturn.isList() && followedByParentOpenEhr != null) {
             // store the whole list under the one without any index
-            final String preparedParentOpenEhrPath = Character.isDigit(fullOpenEhrPath.charAt(fullOpenEhrPath.length() - 1)) ? fullOpenEhrPath : openFhirStringUtils.prepareParentOpenEhrPath(followedByParentOpenEhr, fullOpenEhrPath);
+            final String preparedParentOpenEhrPath = lastOpenEhrIsDigit ? fullOpenEhrPath : openFhirStringUtils.prepareParentOpenEhrPath(followedByParentOpenEhr, fullOpenEhrPath);
             final Integer lastIndex = openFhirStringUtils.getLastIndex(preparedParentOpenEhrPath);
             if (lastIndex != -1) {
                 boolean lastIsDigit = Character.isDigit(preparedParentOpenEhrPath.charAt(preparedParentOpenEhrPath.length() - 1));
@@ -186,20 +188,18 @@ public class IntermediateCacheProcessing {
 
         } else {
             if (hardcodedReturn.isList()) {
-                boolean lastIsDigit = Character.isDigit(fullOpenEhrPath.charAt(fullOpenEhrPath.length() - 1));
-                final String openEhrPath = lastIsDigit ? fullOpenEhrPath.substring(0, fullOpenEhrPath.lastIndexOf(":")) : fullOpenEhrPath;
+                final String openEhrPath = lastOpenEhrIsDigit ? fullOpenEhrPath.substring(0, fullOpenEhrPath.lastIndexOf(":")) : fullOpenEhrPath;
 
                 // puts in the list
                 instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(), openEhrPath),
                         hardcodedReturn.getReturning());
 
-                final String preparedParentOpenEhrPath = fullOpenEhrPath;
-                final Integer lastIndex = openFhirStringUtils.getLastIndex(preparedParentOpenEhrPath);
+                final Integer lastIndex = openFhirStringUtils.getLastIndex(fullOpenEhrPath);
                 final List returningList = (List) hardcodedReturn.getReturning();
-                if (lastIsDigit && lastIndex < returningList.size()) {
+                if (lastOpenEhrIsDigit && lastIndex < returningList.size()) {
                     final Object toAddToCache = returningList.get(returningList.size() - 1); // todo: always takes the last one, is this ok?
                     instantiatedIntermediateElements.put(createKeyForIntermediateElements(objectRef, path + "." + hardcodedReturn.getPath(),
-                                    preparedParentOpenEhrPath),
+                                    fullOpenEhrPath),
                             toAddToCache);
                 }
             } else {

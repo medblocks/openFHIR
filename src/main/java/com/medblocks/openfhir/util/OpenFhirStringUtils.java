@@ -4,7 +4,6 @@ import com.medblocks.openfhir.fc.FhirConnectConst;
 import com.medblocks.openfhir.fc.model.Condition;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhrHelper;
 import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Coding;
 import org.springframework.stereotype.Component;
 
@@ -19,8 +18,6 @@ import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
 public class OpenFhirStringUtils {
 
     private final String TYPE_PATTERN = "\\[TYPE:[^]]+]";
-    private final String RIGHT_MOST_INDEX = ":(\\d+)(?!.*:)";
-    private final String CAST_TYPE = "as\\(([^()]*)\\)";
     private final String ALL_INDEXES = ":(\\d+)";
     public static final String RESOLVE = "resolve()";
     public static final String WHERE = "where";
@@ -88,9 +85,12 @@ public class OpenFhirStringUtils {
      *
      * @param openEhr            simplified openEHR path
      * @param openEhrArchetypeId archetype ID of the mapping archetype
-     * @return
+     * @return prepared openehr path
      */
     public String prepareOpenEhrSyntax(final String openEhr, final String openEhrArchetypeId) {
+        if (openEhr == null) {
+            return null;
+        }
         return openEhr
                 .replaceAll("(?<!\\\\)\\.", "/") // This is the negative lookbehind. It ensures that the dot (.) is not preceded by two backslashes (\\). The backslashes are escaped, so \\\\ means "two literal backslashes."
                 .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, openEhrArchetypeId);
@@ -103,6 +103,7 @@ public class OpenFhirStringUtils {
      * @return index as Integer extracted from the given openEHR path
      */
     public Integer getLastIndex(final String path) {
+        String RIGHT_MOST_INDEX = ":(\\d+)(?!.*:)";
         final String match = getByRegex(path, RIGHT_MOST_INDEX);
         if (match == null) {
             return -1;
@@ -111,6 +112,7 @@ public class OpenFhirStringUtils {
     }
 
     public String getCastType(final String path) {
+        String CAST_TYPE = "as\\(([^()]*)\\)";
         return getByRegex(path, CAST_TYPE);
     }
 
@@ -212,24 +214,6 @@ public class OpenFhirStringUtils {
         return sj.toString();
     }
 
-    public String getCommonPaths(final String parent, final String toReplace) {
-        final List<String> splitParent = List.of(parent.split("\\."));
-        final List<String> childSplit = List.of(toReplace.split("\\."));
-
-        final StringJoiner sj = new StringJoiner(".");
-        for (int i = 0; i < childSplit.size(); i++) {
-            if (i >= splitParent.size()) {
-                sj.add(childSplit.get(i));
-                continue;
-            }
-            String parentPath = splitParent.get(i);
-            if (parentPath.equals(childSplit.get(i))) {
-                sj.add(childSplit.get(i));
-            }
-        }
-        return sj.toString();
-    }
-
     public String fixOpenEhrPath(final String openEhrPath,
                                  final String mainOpenEhrPath) {
         return openEhrPath
@@ -244,14 +228,11 @@ public class OpenFhirStringUtils {
     /**
      * fixes fhirPath casting, as BooleanType is not a valid FHIR path, but boolean is.. similar to StringType > String, ..
      *
-     * @param originalFhirPath
-     * @return
+     * @param originalFhirPath path as it exists up until now
+     * @return fhir path with casting
      */
     public String fixFhirPathCasting(final String originalFhirPath) {
-        final String replacedCasting = originalFhirPath.replace("as(BooleanType)", "as(Boolean)")
-                .replace("as(DateTimeType)", "as(DateTime)")
-                .replace("as(TimeType)", "as(Time)")
-                .replace("as(StringType)", "as(String)");
+        final String replacedCasting = replaceCasting(originalFhirPath);
         // now check if resolve() was preceeded with a case to a specific Resource; if that has happened, it needs to be
         // removed because it's not handled properly by fhirPath evaluation engine
         final String[] splitPath = replacedCasting.split("\\.");
@@ -273,39 +254,11 @@ public class OpenFhirStringUtils {
         return building.toString();
     }
 
-    public Integer getFirstRelevantIndex(final String path, final String fhirPath, final String clazz) {
-        if (fhirPath.equals(clazz)) {
-            return 0;
-        }
-        // Patient.name.given
-        // $openEhrArchetype.personendaten.person.geburtsname:0.vollständiger_name
-
-        final FhirInstanceCreator fhirInstanceCreator = new FhirInstanceCreator(new OpenFhirStringUtils());
-        final Class<? extends IBaseResource> fhirResourceType = fhirInstanceCreator.getFhirResourceType(clazz);
-        final String enrichedFhirPath = fhirInstanceCreator.enrichFhirPathWithRecurring(
-                fhirResourceType,
-                fhirPath,
-                fhirPath.startsWith(clazz) ? new StringBuilder() : new StringBuilder().append(clazz));
-
-        // Patient.name[n].given
-        // $openEhrArchetype.personendaten.person.geburtsname:0.vollständiger_name
-
-        int countOfFhirArrays = 0;
-        int index = 0;
-        while ((index = enrichedFhirPath.indexOf(RECURRING_SYNTAX, index)) != -1) {
-            countOfFhirArrays++;
-            index += enrichedFhirPath.length();
-        }
-
-        final List<Integer> allIndexes = getAllIndexes(path);
-        Collections.reverse(allIndexes);
-        for (Integer allIndex : allIndexes) {
-            if (countOfFhirArrays == 0) {
-                return allIndex;
-            }
-            countOfFhirArrays--;
-        }
-        return 0;
+    private String replaceCasting(final String originalFhirPath) {
+        return originalFhirPath.replace("as(BooleanType)", "as(Boolean)")
+                .replace("as(DateTimeType)", "as(DateTime)")
+                .replace("as(TimeType)", "as(Time)")
+                .replace("as(StringType)", "as(String)");
     }
 
     /**
@@ -315,10 +268,9 @@ public class OpenFhirStringUtils {
      * @param conditions       conditions defined within a model mapper
      * @param resource         fhir resource being used as a base
      * @return fhir path with condition elemenets included in the fhir path itself
-     * @deprecated use getFhirPathWithConditions instead! this method should be removed as soon as possible to clear up
+     * deprecated: use getFhirPathWithConditions instead! this method should be removed as soon as possible to clear up
      * the code base and remove redundant ones
      */
-    @Deprecated
     public String amendFhirPath(final String originalFhirPath, final List<Condition> conditions, final String resource) {
         String fhirPath = originalFhirPath.replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
         if (fhirPath.contains(FhirConnectConst.FHIR_ROOT_FC)) {

@@ -29,3 +29,5 @@ include:
   - name: RegExpRedundantEscape
   - name: SimplifyStreamApiCallChains
   - name: UNUSED_IMPORT
+  - name: CyclomaticComplexity
+  - name: ClassComplexity
