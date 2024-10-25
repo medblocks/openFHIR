@@ -379,6 +379,46 @@ public class OpenFhirStringUtils {
         }
     }
 
+    public String constructFhirPathWithConditions(final String originalFhirPath,
+                                                  final String parentPath,
+                                                  final Condition condition,
+                                                  final String resource) {
+        // append parent's where path first
+        String withParentsWhereInPlace;
+        final String remainingItems;
+        final String actualConditionTargetRoot = condition.getTargetRoot().replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
+        if (originalFhirPath.startsWith(actualConditionTargetRoot)) {
+            // then we use target root as the base path
+            withParentsWhereInPlace = setParentsWherePathToTheCorrectPlace(actualConditionTargetRoot, parentPath);
+            final String addedWhere = parentPath == null ? "" : extractWhereCondition(parentPath, true);
+            final String remainingFromCondition = actualConditionTargetRoot.replace(withParentsWhereInPlace.replace("." + addedWhere, ""), "");
+            if (!withParentsWhereInPlace.equals(remainingFromCondition)) {
+                withParentsWhereInPlace += remainingFromCondition;
+            }
+            remainingItems = originalFhirPath.replace(actualConditionTargetRoot, "");
+        } else {
+            withParentsWhereInPlace = setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath);
+            remainingItems = "";
+        }
+
+        if (actualConditionTargetRoot.startsWith(resource) && withParentsWhereInPlace.equals(originalFhirPath)) {
+            // find the right place first
+            final String commonPath = setParentsWherePathToTheCorrectPlace(originalFhirPath, actualConditionTargetRoot); // path right before the condition should start
+            final String remainingToEndUpInWhere = actualConditionTargetRoot
+                    .replace(commonPath + ".", "")
+                    .replace(commonPath, "");
+            final String remainingToAdd = StringUtils.isBlank(remainingToEndUpInWhere) ? "" : (remainingToEndUpInWhere + ".");
+            final String whereClause = ".where(" + remainingToAdd + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
+            final String remainingItemsFromParent = originalFhirPath.replace(commonPath, "");
+            return commonPath + whereClause + remainingItemsFromParent;
+        } else {
+            // then do your own where path
+            final String whereClause = ".where(" + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
+            // then suffix with whatever is left from the children's path
+            return withParentsWhereInPlace + whereClause + (StringUtils.isBlank(remainingItems) ? "" : (remainingItems.startsWith(".") ? remainingItems : ("." + remainingItems)));
+        }
+    }
+
     /**
      * Return originalFhirPath amended with the actual condition .where elements. This method will construct a fhir
      * path from Condition and add that to the original fhir path
@@ -398,40 +438,7 @@ public class OpenFhirStringUtils {
             // only make sure parent's where path is added to the child
             return constructFhirPathNoConditions(originalFhirPath, parentPath);
         } else {
-            // append parent's where path first
-            String withParentsWhereInPlace;
-            final String remainingItems;
-            final String actualConditionTargetRoot = condition.getTargetRoot().replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
-            if (originalFhirPath.startsWith(actualConditionTargetRoot)) {
-                // then we use target root as the base path
-                withParentsWhereInPlace = setParentsWherePathToTheCorrectPlace(actualConditionTargetRoot, parentPath);
-                final String addedWhere = parentPath == null ? "" : extractWhereCondition(parentPath, true);
-                final String remainingFromCondition = actualConditionTargetRoot.replace(withParentsWhereInPlace.replace("." + addedWhere, ""), "");
-                if (!withParentsWhereInPlace.equals(remainingFromCondition)) {
-                    withParentsWhereInPlace += remainingFromCondition;
-                }
-                remainingItems = originalFhirPath.replace(actualConditionTargetRoot, "");
-            } else {
-                withParentsWhereInPlace = setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath);
-                remainingItems = "";
-            }
-
-            if (actualConditionTargetRoot.startsWith(resource) && withParentsWhereInPlace.equals(originalFhirPath)) {
-                // find the right place first
-                final String commonPath = setParentsWherePathToTheCorrectPlace(originalFhirPath, actualConditionTargetRoot); // path right before the condition should start
-                final String remainingToEndUpInWhere = actualConditionTargetRoot
-                        .replace(commonPath + ".", "")
-                        .replace(commonPath, "");
-                final String remainingToAdd = StringUtils.isBlank(remainingToEndUpInWhere) ? "" : (remainingToEndUpInWhere + ".");
-                final String whereClause = ".where(" + remainingToAdd + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
-                final String remainingItemsFromParent = originalFhirPath.replace(commonPath, "");
-                return commonPath + whereClause + remainingItemsFromParent;
-            } else {
-                // then do your own where path
-                final String whereClause = ".where(" + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
-                // then suffix with whatever is left from the children's path
-                return withParentsWhereInPlace + whereClause + (StringUtils.isBlank(remainingItems) ? "" : (remainingItems.startsWith(".") ? remainingItems : ("." + remainingItems)));
-            }
+            return constructFhirPathWithConditions(originalFhirPath, parentPath, condition, resource);
         }
     }
 
@@ -527,32 +534,21 @@ public class OpenFhirStringUtils {
         if (val == null) {
             return null;
         }
-        switch (val) {
-            case "QUANTITY":
-                return new HashSet<>(Arrays.asList(FhirConnectConst.DV_QUANTITY, FhirConnectConst.DV_COUNT, FhirConnectConst.DV_ORDINAL, FhirConnectConst.DV_PROPORTION));
-            case "DATETIME":
-                return Collections.singleton(FhirConnectConst.DV_DATE_TIME);
-            case "TIME":
-                return Collections.singleton(FhirConnectConst.DV_TIME);
-            case "DATE":
-                return Collections.singleton(FhirConnectConst.DV_DATE);
-            case "CODEABLECONCEPT":
-                return Collections.singleton(FhirConnectConst.DV_CODED_TEXT);
-            case "CODING":
-                return Collections.singleton(FhirConnectConst.CODE_PHRASE);
-            case "STRING":
-                return Collections.singleton(FhirConnectConst.DV_TEXT);
-            case "BOOL":
-                return Collections.singleton(FhirConnectConst.DV_BOOL);
-            case "IDENTIFIER":
-                return Collections.singleton(FhirConnectConst.IDENTIFIER);
-            case "MEDIA":
-                return Collections.singleton(FhirConnectConst.DV_MULTIMEDIA);
-            case "PROPORTION":
-                return Collections.singleton(FhirConnectConst.DV_PROPORTION);
-            default:
-                return Collections.singleton(val);
-        }
+        return switch (val) {
+            case "QUANTITY" ->
+                    new HashSet<>(Arrays.asList(FhirConnectConst.DV_QUANTITY, FhirConnectConst.DV_COUNT, FhirConnectConst.DV_ORDINAL, FhirConnectConst.DV_PROPORTION));
+            case "DATETIME" -> Collections.singleton(FhirConnectConst.DV_DATE_TIME);
+            case "TIME" -> Collections.singleton(FhirConnectConst.DV_TIME);
+            case "DATE" -> Collections.singleton(FhirConnectConst.DV_DATE);
+            case "CODEABLECONCEPT" -> Collections.singleton(FhirConnectConst.DV_CODED_TEXT);
+            case "CODING" -> Collections.singleton(FhirConnectConst.CODE_PHRASE);
+            case "STRING" -> Collections.singleton(FhirConnectConst.DV_TEXT);
+            case "BOOL" -> Collections.singleton(FhirConnectConst.DV_BOOL);
+            case "IDENTIFIER" -> Collections.singleton(FhirConnectConst.IDENTIFIER);
+            case "MEDIA" -> Collections.singleton(FhirConnectConst.DV_MULTIMEDIA);
+            case "PROPORTION" -> Collections.singleton(FhirConnectConst.DV_PROPORTION);
+            default -> Collections.singleton(val);
+        };
     }
 
     /**

@@ -1109,31 +1109,19 @@ public class OpenEhrToFhir {
         final String terminology = fetchValue(joinedValues, "terminology");
         final String id = fetchValue(joinedValues, "id");
 
-        switch (targetType) {
-            case "PROPORTION":
-                return handleProportion(joinedValues, valueHolder, lastIndex, path);
-            case "QUANTITY":
-                return handleQuantity(joinedValues, valueHolder, lastIndex, path, value, code);
-            case "DATETIME":
-                return handleDateTime(valueHolder, lastIndex, path);
-            case "TIME":
-                return handleTime(valueHolder, lastIndex, path);
-            case "BOOL":
-                return handleBoolean(valueHolder, lastIndex, path);
-            case "DATE":
-                return handleDate(valueHolder, lastIndex, path);
-            case "CODEABLECONCEPT":
-                return handleCodeableConcept(valueHolder, lastIndex, path, value, terminology, code);
-            case "CODING":
-                return handleCoding(valueHolder, lastIndex, path, terminology, code, value);
-            case "MEDIA":
-                return handleMedia(valueHolder, lastIndex, path);
-            case "IDENTIFIER":
-                return handleIdentifier(valueHolder, lastIndex, path, id);
-            default:
-            case "STRING":
-                return handleString(valueHolder, lastIndex, path, canBeNull);
-        }
+        return switch (targetType) {
+            case "PROPORTION" -> handleProportion(joinedValues, valueHolder, lastIndex, path);
+            case "QUANTITY" -> handleQuantity(joinedValues, valueHolder, lastIndex, path, value, code);
+            case "DATETIME" -> handleDateTime(valueHolder, lastIndex, path);
+            case "TIME" -> handleTime(valueHolder, lastIndex, path);
+            case "BOOL" -> handleBoolean(valueHolder, lastIndex, path);
+            case "DATE" -> handleDate(valueHolder, lastIndex, path);
+            case "CODEABLECONCEPT" -> handleCodeableConcept(valueHolder, lastIndex, path, value, terminology, code);
+            case "CODING" -> handleCoding(valueHolder, lastIndex, path, terminology, code, value);
+            case "MEDIA" -> handleMedia(valueHolder, lastIndex, path);
+            case "IDENTIFIER" -> handleIdentifier(valueHolder, lastIndex, path, id);
+            default -> handleString(valueHolder, lastIndex, path, canBeNull);
+        };
     }
 
     private String fetchValue(final List<String> joinedValues, final String suffix) {

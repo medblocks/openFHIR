@@ -65,7 +65,7 @@ public class FhirInstancePopulator {
         }
     }
 
-    private void handleSpecificTypePopulation(Object toPopulate, Base data) {
+    private void handleSpecificTypePopulation(final Object toPopulate, final Base data) {
         if (data instanceof Quantity) {
             populateQuantity(toPopulate, (Quantity) data);
         } else if (data instanceof DateTimeType) {

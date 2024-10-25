@@ -253,6 +253,18 @@ public class OpenFhirMapperUtils {
                                                        boolean fhirPrefixing) {
 
         // fix fhir forwarding params
+        fixFhirForwardingPaths(forwardMappers, fhirPath, fhirPrefixing);
+
+        // fix openehr forwarding params
+        fixOpenEhrForwardingPaths(forwardMappers, openEhrPath);
+
+        // now conditions
+        prepareForwardingSlotArchetypeMappingsConditions(forwardMappers, fhirPath, fhirPrefixing);
+    }
+
+    private void fixFhirForwardingPaths(final List<Mapping> forwardMappers,
+                                        final String fhirPath,
+                                        boolean fhirPrefixing) {
         for (Mapping slotArchetypeMappersMapping : forwardMappers) {
             if (slotArchetypeMappersMapping.getWith().getFhir() == null) {
                 continue;
@@ -272,8 +284,10 @@ public class OpenFhirMapperUtils {
                 }
             }
         }
+    }
 
-        // fix openehr forwarding params
+    private void fixOpenEhrForwardingPaths(final List<Mapping> forwardMappers,
+                                           final String openEhrPath) {
         for (Mapping slotArchetypeMappersMapping : forwardMappers) {
             if (slotArchetypeMappersMapping.getWith().getOpenehr() == null) {
                 continue;
@@ -291,8 +305,11 @@ public class OpenFhirMapperUtils {
                 slotArchetypeMappersMapping.getWith().setOpenehr(openEhrPath.replaceAll("/", ".") + suff);
             }
         }
+    }
 
-        // now conditions
+    private void prepareForwardingSlotArchetypeMappingsConditions(final List<Mapping> forwardMappers,
+                                                                  final String fhirPath,
+                                                                  final boolean fhirPrefixing) {
         for (Mapping slotArchetypeMappersMapping : forwardMappers) {
             if (slotArchetypeMappersMapping.getCondition() == null) {
                 continue;
