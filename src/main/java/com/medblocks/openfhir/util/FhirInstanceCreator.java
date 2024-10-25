@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
 import static com.medblocks.openfhir.fc.FhirConnectConst.THIS;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.WHERE;
 
 /**
  * Creates and instantiates HAPI FHIR Resources based on FHIR Path expressions
@@ -136,12 +137,12 @@ public class FhirInstanceCreator {
         if (splitByDot.length > 1) {
             boolean shouldHandleWhere;
             if (splitByDot[0].equals(clazz.getSimpleName()) && splitByDot.length > 2) {
-                shouldHandleWhere = splitByDot[1].startsWith("where") || splitByDot[2].startsWith("where");
+                shouldHandleWhere = splitByDot[1].startsWith(WHERE) || splitByDot[2].startsWith(WHERE);
             } else {
-                shouldHandleWhere = splitByDot[1].startsWith("where");
+                shouldHandleWhere = splitByDot[1].startsWith(WHERE);
             }
 
-            if (fhirPath.startsWith("where")) {
+            if (fhirPath.startsWith(WHERE)) {
                 shouldHandleWhere = true;
             }
 
@@ -168,7 +169,7 @@ public class FhirInstanceCreator {
                 continue;
             }
             final int arrayLength = splitFhirPaths.length - 1;
-            final boolean resolveFollows = i != arrayLength && "resolve()".equals(splitFhirPaths[i + 1]);
+            final boolean resolveFollows = i != arrayLength && RESOLVE.equals(splitFhirPaths[i + 1]);
             final boolean castFollows = i != arrayLength && splitFhirPaths[i + 1].startsWith("as(");
 
             // second part of the condition is there to solve cases when the path ends with a cast, i.e. asNeeded.as(Boolean)
@@ -271,7 +272,7 @@ public class FhirInstanceCreator {
     }
 
     private Object setFieldObject(final Field theField, final Object resource, final Object settingObject) {
-        if(theField == null) {
+        if (theField == null) {
             return null;
         }
         final Object value = wrapInReferenceIfNeeded(settingObject);
@@ -305,7 +306,7 @@ public class FhirInstanceCreator {
     }
 
     private Class findClass(final Field field, final String forcingClass) {
-        if(field == null) {
+        if (field == null) {
             return null;
         }
         final Child childAnnotation = field.getAnnotation(Child.class);
@@ -336,7 +337,7 @@ public class FhirInstanceCreator {
             return Arrays.stream(types)
                     .filter(type -> {
                         final Class classForName = getClassForName(type.getName());
-                        if(classForName == null) {
+                        if (classForName == null) {
                             return false;
                         }
                         return forcingClass.equals(type.getSimpleName())

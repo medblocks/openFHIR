@@ -17,8 +17,66 @@ mappings:
   - name: "ISM Transition"
     with:
       fhir: "$fhirResource.status"
-      openehr: "$openEhrArchetype.procedure.ism_transition.current_state"
-      type: "CODING" # add mapping
+      openehr: "$openEhrArchetype.procedure.ism_transition.current_state|value"
+      type: "STRING"
+
+# below is transition code hardcoded depending on the value of a Procedure.status
+# alternative way of doing this nicer can be achieved once we add inline-mappings/terminology resolutions
+# something along these lines https://open-fhir.com/documentation/terminology.html#simplified-inline-translations
+  - name: "Hardcoded_ism_transition_code_planned_requestsent"
+    with:
+      openehr: "$openEhrArchetype.procedure.ism_transition.current_state|code"
+      type: "STRING"
+      value: "526"
+    condition:
+      targetRoot: "$fhirResource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[preparation]"
+
+  - name: "Hardcoded_ism_transition_code_postponed"
+    with:
+      openehr: "$openEhrArchetype.procedure.ism_transition.current_state|code"
+      type: "STRING"
+      value: "527"
+    condition:
+      targetRoot: "$fhirResource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[on-hold]"
+
+  - name: "Hardcoded_ism_transition_code_cancelled"
+    with:
+      openehr: "$openEhrArchetype.procedure.ism_transition.current_state|code"
+      type: "STRING"
+      value: "528"
+    condition:
+      targetRoot: "$fhirResource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[stopped]"
+
+  - name: "Hardcoded_ism_transition_code_in_progress"
+    with:
+      openehr: "$openEhrArchetype.procedure.ism_transition.current_state|code"
+      type: "STRING"
+      value: "245"
+    condition:
+      targetRoot: "$fhirResource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[in-progress]"
+
+  - name: "Hardcoded_ism_transition_code_completed"
+    with:
+      openehr: "$openEhrArchetype.procedure.ism_transition.current_state|code"
+      type: "STRING"
+      value: "532"
+    condition:
+      targetRoot: "$fhirResource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[completed]"
 
   - name: "Name"
     with:

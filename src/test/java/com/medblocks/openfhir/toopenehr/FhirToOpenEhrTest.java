@@ -67,7 +67,7 @@ public class FhirToOpenEhrTest {
 
         final JsonObject flat = fhirToOpenEhr.fhirToFlatJsonObject(context, testBloodPressureObservation(), getOperationalTemplate("/Blood Pressure.opt"));
 
-        Assert.assertEquals(9, flat.size());
+        Assert.assertEquals(11, flat.size());
         Assert.assertEquals("456.0", flat.get("blood_pressure/blood_pressure/any_event:0/systolic|magnitude").getAsString());
         Assert.assertEquals("mm[Hg]", flat.get("blood_pressure/blood_pressure/any_event:0/systolic|unit").getAsString());
         Assert.assertEquals("789.0", flat.get("blood_pressure/blood_pressure/any_event:0/diastolic|magnitude").getAsString());
@@ -77,6 +77,9 @@ public class FhirToOpenEhrTest {
         Assert.assertEquals("description", flat.get("blood_pressure/blood_pressure/any_event:0/comment").getAsString());
         Assert.assertEquals("interpretation text", flat.get("blood_pressure/blood_pressure/any_event:0/clinical_interpretation").getAsString());
 
+        // assert hardcoded paths
+        Assert.assertEquals("at1000", flat.get("blood_pressure/blood_pressure/a24_hour_average/position|code").getAsString());
+        Assert.assertEquals("confounding factor", flat.get("blood_pressure/blood_pressure/a24_hour_average/confounding_factors").getAsString());
     }
 
     @Test
