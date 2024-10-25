@@ -5,7 +5,7 @@
 version: "1.0"
 #Specify inspection profile for code analysis
 profile:
-  name: qodana.starter
+  name: qodana.recommended
 #Enable inspections
 #include:
 #  - name: <SomeEnabledInspectionId>
@@ -29,3 +29,5 @@ include:
   - name: RegExpRedundantEscape
   - name: SimplifyStreamApiCallChains
   - name: UNUSED_IMPORT
+  - name: CyclomaticComplexity
+  - name: ClassComplexity

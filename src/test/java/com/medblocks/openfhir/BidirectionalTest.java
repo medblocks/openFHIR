@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.medblocks.openfhir.fc.model.FhirConnectContext;
+import com.medblocks.openfhir.tofhir.IntermediateCacheProcessing;
 import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
 import com.medblocks.openfhir.tofhir.OpenEhrToFhirTest;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
@@ -71,6 +72,7 @@ public class BidirectionalTest {
             }
         });
 
+        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(openFhirStringUtils);
         openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
                 repo,
                 new OpenEhrCachedUtils(null),
@@ -79,8 +81,10 @@ public class BidirectionalTest {
                 new OpenEhrRmWorker(openFhirStringUtils),
                 new OpenFhirMapperUtils(),
                 new FhirInstancePopulator(),
-                new FhirInstanceCreator(openFhirStringUtils),
-                fhirPath);
+                new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
+                fhirInstanceCreatorUtility,
+                fhirPath,
+                new IntermediateCacheProcessing(openFhirStringUtils));
         fhirToOpenEhr = new FhirToOpenEhr(fhirPath,
                 new OpenFhirStringUtils(),
                 new FlatJsonUnmarshaller(),

@@ -11,7 +11,9 @@ import java.util.Optional;
 
 public class FhirInstanceCreatorTest {
 
-    private FhirInstanceCreator fhirInstanceCreator = new FhirInstanceCreator(new OpenFhirStringUtils());
+    final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
+    private FhirInstanceCreator fhirInstanceCreator = new FhirInstanceCreator(openFhirStringUtils, new FhirInstanceCreatorUtility(openFhirStringUtils));
+
     private FhirPathR4 fhirPathR4 = new FhirPathR4(FhirContext.forR4());
 
     @Test

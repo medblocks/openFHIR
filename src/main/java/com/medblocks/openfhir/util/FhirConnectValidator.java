@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -100,7 +100,7 @@ public class FhirConnectValidator {
                 continue;
             }
             final String path = openFhirStringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,
-                    Arrays.asList(mapping.getCondition()), toValidateOn.getFhirConfig().getResource());
+                    Collections.singletonList(mapping.getCondition()), toValidateOn.getFhirConfig().getResource());
             try {
                 fhirPathR4.evaluate(new Bundle(), path, Base.class); // we don't care about the result, only if it passes the validation
             } catch (final Exception e) {

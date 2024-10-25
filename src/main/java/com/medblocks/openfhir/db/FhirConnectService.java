@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.yaml.snakeyaml.Yaml;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -111,7 +110,7 @@ public class FhirConnectService {
             // only if the same one for that template id doesn't already exist!!
             if (StringUtils.isBlank(id) && contextRepository.findByTemplateId(fhirContext.getOpenEHR().getTemplateId()) != null) {
                 log.error("[{}] A context mapper for this templateId {} already exists.", reqId, fhirContext.getOpenEHR().getTemplateId());
-                throw new RequestValidationException("Couldn't create a FhirConnectContext. Invalid one.", Arrays.asList("A context mapper for this template already exists."));
+                throw new RequestValidationException("Couldn't create a FhirConnectContext. Invalid one.", List.of("A context mapper for this template already exists."));
             }
             final FhirConnectContextEntity saved = contextRepository.save(build);
             saved.setFhirConnectContext(fhirContext); // unless we do this, when postgres is used, this will be empty in response
@@ -126,10 +125,6 @@ public class FhirConnectService {
 
     public List<FhirConnectMapperEntity> all(final String reqId) {
         return mapperRepository.findAll();
-    }
-
-    public List<FhirConnectMapperEntity> findByUserAndArchetypes(final List<String> archetypes, final String reqId) {
-        return mapperRepository.findByArchetype(archetypes);
     }
 
 }

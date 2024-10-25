@@ -27,8 +27,8 @@ public class OpenFhirController {
      * @param templateId  is an optional parameter if composition is of canonical format; if composition is in flat format,
      *                    this parameter is required, because the engine can not determine templateId in that case (yet
      *                    requires it to find the correct state of the Engine)
-     *                    todo: remove this if the first part of the flat path is template id (has to be normalized == space=_ and upper case=lower case
-     * @param reqId
+     *                                       todo: remove this if the first part of the flat path is template id (has to be normalized == space=_ and upper case=lower case
+     * @param reqId       request id that will be logged
      * @return FHIR Bundle with mapped Resources inside
      */
     @PostMapping("/openfhir/tofhir")
@@ -46,7 +46,7 @@ public class OpenFhirController {
      *                     matches the given incoming FHIR Resource (based on context mapper resourceType or conditions)
      * @param flat         if you want the mapped Composition to be provided in a flat format, default is false meaning it will
      *                     be returned in a canonical format
-     * @param reqId
+     * @param reqId        request id that will be logged
      * @return openEHR Composition in either flat or canonical format, depending on "flat" argument (default is canonical)
      */
     @PostMapping("/openfhir/toopenehr")

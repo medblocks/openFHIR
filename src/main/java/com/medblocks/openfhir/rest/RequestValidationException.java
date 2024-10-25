@@ -4,8 +4,8 @@ import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class RequestValidationException extends RuntimeException {
-    @Getter
     private final List<String> messages;
 
     public RequestValidationException(String message, List<String> messages) {

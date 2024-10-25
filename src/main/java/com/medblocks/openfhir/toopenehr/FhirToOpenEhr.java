@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.*;
 
 @Slf4j
 @Component
@@ -155,7 +155,7 @@ public class FhirToOpenEhr {
      * Method that adds all required metadata to a Composition, but only if this was not already set as part
      * of the mapping logic itself.
      *
-     * @param composition
+     * @param composition enriched with metadata that wasn't mapped
      */
     public void enrichComposition(final Composition composition) {
         // default values; set if not already set by mappings
@@ -187,40 +187,9 @@ public class FhirToOpenEhr {
 
             // distinct by limiting criteria to avoid duplicated mappings
             artifactHelpers.stream().map(FhirToOpenEhrHelper::getLimitingCriteria).distinct().forEach(lim -> {
-                String mainMultiple = null;
+
                 if (resource instanceof Bundle) {
-                    // apply limiting factor
-                    final List<Base> relevantResources = fhirPathR4.evaluate(resource, lim, Base.class);
-
-                    if (relevantResources.isEmpty()) {
-                        log.warn("No relevant resources found for {}", lim);
-                    } else {
-                        log.info("Evaluation of {} returned {} entries that will be used for mapping.", lim, relevantResources.size());
-                    }
-
-                    int i = 0;
-                    for (final Base relevantResource : relevantResources) {
-                        boolean somethingWasAdded = false;
-                        for (final FhirToOpenEhrHelper fhirToOpenEhrHelper : artifactHelpers) {
-                            final FhirToOpenEhrHelper cloned = fhirToOpenEhrHelper.doClone();
-                            if (fhirToOpenEhrHelper.getMultiple() && (mainMultiple == null || fhirToOpenEhrHelper.getOpenEhrPath().startsWith(mainMultiple))) {
-                                mainMultiple = fhirToOpenEhrHelper.getOpenEhrPath().split("\\[n]")[0];
-                                cloned.setOpenEhrPath(fhirToOpenEhrHelper.getOpenEhrPath().replaceFirst("\\[n]", ":" + i));
-
-                                fixAllChildrenRecurringElements(cloned, fhirToOpenEhrHelper.getOpenEhrPath(), cloned.getOpenEhrPath());
-                            }
-                            int previousFinalFlatSize = finalFlat.size();
-                            addDataPoints(cloned, finalFlat, relevantResource);
-
-                            somethingWasAdded = somethingWasAdded || previousFinalFlatSize < finalFlat.size();
-                        }
-                        if (somethingWasAdded) {
-                            i++;
-                        } else {
-                            log.warn("Even though a Resource matched criteria, nothing was added to the openEHR composition from it: {}", relevantResource.getIdBase());
-                        }
-                    }
-
+                    handleBundleExtraction((Bundle) resource, lim, artifactHelpers, finalFlat);
                 } else {
                     for (FhirToOpenEhrHelper fhirToOpenEhrHelper : artifactHelpers) {
                         final List<Base> result = fhirPathR4.evaluate(resource, fhirToOpenEhrHelper.getFhirPath(), Base.class);
@@ -233,8 +202,47 @@ public class FhirToOpenEhr {
 
         }
 
-
         return finalFlat;
+    }
+
+    /**
+     * Resolve fhir paths from a Bundle
+     */
+    private void handleBundleExtraction(final Bundle resource, final String lim,
+                                        final List<FhirToOpenEhrHelper> artifactHelpers, final JsonObject finalFlat) {
+        // apply limiting factor
+        final List<Base> relevantResources = fhirPathR4.evaluate(resource, lim, Base.class);
+
+        if (relevantResources.isEmpty()) {
+            log.warn("No relevant resources found for {}", lim);
+        } else {
+            log.info("Evaluation of {} returned {} entries that will be used for mapping.", lim, relevantResources.size());
+        }
+
+        String mainMultiple = null;
+
+        int i = 0;
+        for (final Base relevantResource : relevantResources) {
+            boolean somethingWasAdded = false;
+            for (final FhirToOpenEhrHelper fhirToOpenEhrHelper : artifactHelpers) {
+                final FhirToOpenEhrHelper cloned = fhirToOpenEhrHelper.doClone();
+                if (fhirToOpenEhrHelper.getMultiple() && (mainMultiple == null || fhirToOpenEhrHelper.getOpenEhrPath().startsWith(mainMultiple))) {
+                    mainMultiple = fhirToOpenEhrHelper.getOpenEhrPath().split(RECURRING_SYNTAX_ESCAPED)[0];
+                    cloned.setOpenEhrPath(fhirToOpenEhrHelper.getOpenEhrPath().replaceFirst(RECURRING_SYNTAX_ESCAPED, ":" + i));
+
+                    fixAllChildrenRecurringElements(cloned, fhirToOpenEhrHelper.getOpenEhrPath(), cloned.getOpenEhrPath());
+                }
+                int previousFinalFlatSize = finalFlat.size();
+                addDataPoints(cloned, finalFlat, relevantResource);
+
+                somethingWasAdded = somethingWasAdded || previousFinalFlatSize < finalFlat.size();
+            }
+            if (somethingWasAdded) {
+                i++;
+            } else {
+                log.warn("Even though a Resource matched criteria, nothing was added to the openEHR composition from it: {}", relevantResource.getIdBase());
+            }
+        }
     }
 
     /**
@@ -250,8 +258,8 @@ public class FhirToOpenEhr {
         if (fhirPathResults == null || fhirPathResults.isEmpty()) {
             return finalFlat;
         }
-        final boolean noMoreRecurringOptions = !openEhrPath.contains("[n]");
-        final String openEhrWithAllReplacedToZeroth = openEhrPath.replaceAll("\\[n]", ":0");
+        final boolean noMoreRecurringOptions = !openEhrPath.contains(RECURRING_SYNTAX);
+        final String openEhrWithAllReplacedToZeroth = openEhrPath.replaceAll(RECURRING_SYNTAX_ESCAPED, ":0");
         if (fhirPathResults.size() == 1) {
             // it's a single find, so replace all those multiple-occurrences with zeroth index
             openEhrPopulator.setFhirPathValue(openEhrWithAllReplacedToZeroth, fhirPathResults.get(0), openEhrType, finalFlat);
@@ -287,7 +295,7 @@ public class FhirToOpenEhr {
         if (StringUtils.isEmpty(helper.getFhirPath()) || FHIR_ROOT_FC.equals(helper.getFhirPath())) {
             // just take the one roResolveOn
             log.debug("Taking Base itself as fhirPath is {}", helper.getFhirPath());
-            results = Arrays.asList(toResolveOn);
+            results = Collections.singletonList(toResolveOn);
         } else {
             results = fhirPathR4.evaluate(toResolveOn, openFhirStringUtils.fixFhirPathCasting(helper.getFhirPath()), Base.class);
             if (helper.getFhirPath().endsWith(RESOLVE) && results.isEmpty()) {
@@ -310,8 +318,8 @@ public class FhirToOpenEhr {
 
         for (int i = 0; i < results.size(); i++) {
             Base result = results.get(i);
-            final boolean noMoreRecurringOptions = !helper.getOpenEhrPath().contains("[n]");
-            final String thePath = noMoreRecurringOptions ? helper.getOpenEhrPath() : openFhirStringUtils.replaceLastIndexOf(helper.getOpenEhrPath(), "[n]", ":" + i);
+            final boolean noMoreRecurringOptions = !helper.getOpenEhrPath().contains(RECURRING_SYNTAX);
+            final String thePath = noMoreRecurringOptions ? helper.getOpenEhrPath() : openFhirStringUtils.replaceLastIndexOf(helper.getOpenEhrPath(), RECURRING_SYNTAX, ":" + i);
             log.debug("Setting value taken with fhirPath {} from object type {}", helper.getFhirPath(), toResolveOn.getClass());
 
             if (StringUtils.isNotEmpty(helper.getHardcodingValue())) {
@@ -398,18 +406,17 @@ public class FhirToOpenEhr {
      * @param coverHelpers      a list of cover helpers being created
      * @param bundle            whether a fhir context mapper is expecting a Bundle
      * @param multiple          if a specific model mapper should create multiple Resources instead of a single one
-     * @return a list of created helpers then used for the actual mapping
      */
-    List<FhirToOpenEhrHelper> createHelpers(final String mainArtifact,
-                                            final FhirConnectMapper fhirConnectMapper,
-                                            final String templateId,
-                                            final String mainOpenEhrPath,
-                                            final List<Mapping> mappings,
-                                            final Condition parentCondition,
-                                            final List<FhirToOpenEhrHelper> helpers,
-                                            final List<FhirToOpenEhrHelper> coverHelpers,
-                                            final boolean bundle,
-                                            final boolean multiple) {
+    void createHelpers(final String mainArtifact,
+                       final FhirConnectMapper fhirConnectMapper,
+                       final String templateId,
+                       final String mainOpenEhrPath,
+                       final List<Mapping> mappings,
+                       final Condition parentCondition,
+                       final List<FhirToOpenEhrHelper> helpers,
+                       final List<FhirToOpenEhrHelper> coverHelpers,
+                       final boolean bundle,
+                       final boolean multiple) {
         for (final Mapping mapping : mappings) {
             if (mapping.getWith().getOpenehr() == null && StringUtils.isNotEmpty(mapping.getWith().getValue())) {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
@@ -420,11 +427,7 @@ public class FhirToOpenEhr {
                 continue;
             }
 
-            if (mapping.getWith().getFhir() == null) {
-                // is hardcoding
-                mapping.getWith().setFhir(fhirConnectMapper.getFhirConfig().getResource());
-                initialHelper.setHardcodingValue(mapping.getWith().getValue());
-            }
+            hardcodingToFhir(mapping, fhirConnectMapper, initialHelper);
 
             final Condition condition = parentCondition != null ? parentCondition : mapping.getCondition();
 
@@ -440,108 +443,26 @@ public class FhirToOpenEhr {
 
 
             if (mapping.getWith().getOpenehr().contains(FhirConnectConst.REFERENCE) && mapping.getReference() != null) {
-                // a reference mapping; prepare 'reference' mappings
-                final List<Mapping> referencedMapping = mapping.getReference().getMappings();
-                openFhirMapperUtils.prepareReferencedMappings(fhirPath, mapping.getWith().getOpenehr(), referencedMapping);
-
-                // recursively call createHelpers after reference mappings have been prepared
-                createHelpers(mainArtifact, fhirConnectMapper, templateId, mainOpenEhrPath, referencedMapping, parentCondition, helpers, coverHelpers, bundle, multiple);
+                createReferenceMapping(mapping, fhirPath, mainArtifact, fhirConnectMapper, templateId, mainOpenEhrPath,
+                        parentCondition, helpers, coverHelpers, bundle, multiple);
             } else {
-                String openehr = stringUtils.prepareOpenEhrSyntax(mapping.getWith().getOpenehr(), mainOpenEhrPath);
-                if (mapping.getWith().getType() == null) {
-                    // when type is not explicitly defined in the fhir connect model mapper, we assume a string
-                    if (openFhirStringUtils.endsWithOpenEhrType(openehr) != null) {
-                        openehr = stringUtils.replaceLastIndexOf(openehr, "/", "|");
-                    }
-                } else {
-                    initialHelper.setOpenEhrType(mapping.getWith().getType());
-                }
-                if (!OPENEHR_TYPE_NONE.equals(mapping.getWith().getType())) {
-                    initialHelper.setOpenEhrPath(openehr.replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + "/", mainOpenEhrPath + "/"));
-                    initialHelper.setFhirPath(fhirPath.replace("." + FHIR_ROOT_FC, ""));
-                    initialHelper.setMultiple(multiple);
-                    fixLimitingCriteriaForInnerCreatedResources(fhirConnectMapper.getFhirConfig().getResource(), initialHelper);
-                    if (needsToBeAddedToParentHelpers) {
-                        coverHelpers.add(initialHelper);
-                    } else {
-                        helpers.add(initialHelper);
-                    }
-                }
+                final String openehr = createMainMapping(mapping, fhirConnectMapper, initialHelper, mainOpenEhrPath, fhirPath, multiple,
+                        needsToBeAddedToParentHelpers, helpers, coverHelpers);
 
                 // inner helpers are those that follow a parent one (when mapping is followedBy or slot archetype)
                 final List<FhirToOpenEhrHelper> innerHelpers = new ArrayList<>();
                 if (mapping.getFollowedBy() != null) {
-                    final List<Mapping> followedByMappings = mapping.getFollowedBy().getMappings();
-
-                    createFollowedByMappings(mapping, openehr, mainOpenEhrPath);
-
-                    initialHelper.setOpenEhrPath(openFhirStringUtils.fixOpenEhrPath(openehr, mainOpenEhrPath));
-                    initialHelper.setFhirPath(openFhirStringUtils.fixFhirPath(fhirPath));
-
-                    initialHelper.setMultiple(multiple);
-
-                    initialHelper.setFhirToOpenEhrHelpers(innerHelpers);
-
-                    fixLimitingCriteriaForInnerCreatedResources(fhirConnectMapper.getFhirConfig().getResource(), initialHelper);
-
-                    // recursive call to create helpers for the followedByMappings
-                    createHelpers(mainArtifact,
-                            fhirConnectMapper,
-                            templateId,
-                            mainOpenEhrPath,
-                            followedByMappings,
-                            null,
-                            innerHelpers,
-                            coverHelpers,
-                            bundle,
-                            multiple);
-
-                    if (needsToBeAddedToParentHelpers) {
-                        coverHelpers.add(initialHelper);
-                    } else {
-                        if (!helpers.contains(initialHelper)) {
-                            helpers.add(initialHelper);
-                        }
-                    }
+                    createFollowedByMappings(initialHelper, mapping, openehr, mainOpenEhrPath, fhirPath, multiple, innerHelpers,
+                            fhirConnectMapper, mainArtifact, templateId, coverHelpers, bundle, needsToBeAddedToParentHelpers,
+                            helpers);
                 }
                 if (mapping.getSlotArchetype() != null) {
-                    final List<FhirConnectMapper> slotArchetypeMapperss = openFhirTemplateRepo.getSlotMapperForArchetype(templateId, mapping.getSlotArchetype());
-
-                    for (FhirConnectMapper slotArchetypeMappers : slotArchetypeMapperss) {
-                        final String openEhrFixed = openehr.replace("/" + FhirConnectConst.REFERENCE, "");
-
-                        openFhirMapperUtils.prepareForwardingSlotArchetypeMapperNoFhirPrefix(slotArchetypeMappers, fhirConnectMapper, fhirPath, openEhrFixed);
-
-                        initialHelper.setFhirToOpenEhrHelpers(innerHelpers);
-
-                        initialHelper.setOpenEhrPath(openFhirStringUtils.fixOpenEhrPath(openehr, mainOpenEhrPath));
-                        initialHelper.setFhirPath(openFhirStringUtils.fixFhirPath(fhirPath));
-
-                        fixLimitingCriteriaForInnerCreatedResources(fhirConnectMapper.getFhirConfig().getResource(), initialHelper);
-
-                        // recursive call to create helpers for the slot archetype mappings
-                        createHelpers(mainArtifact,
-                                slotArchetypeMappers,
-                                templateId, // templateId
-                                openEhrFixed, // templateId
-                                slotArchetypeMappers.getMappings(),
-                                null,
-                                innerHelpers,
-                                coverHelpers,
-                                bundle,
-                                multiple);
-                        if (needsToBeAddedToParentHelpers) {
-                            coverHelpers.add(initialHelper);
-                        } else {
-                            if (!helpers.contains(initialHelper)) {
-                                helpers.add(initialHelper);
-                            }
-                        }
-                    }
+                    createSlotMappings(initialHelper, mapping, openehr, mainOpenEhrPath, fhirPath, multiple, innerHelpers,
+                            fhirConnectMapper, mainArtifact, templateId, coverHelpers, bundle, needsToBeAddedToParentHelpers,
+                            helpers);
                 }
             }
         }
-        return helpers;
     }
 
     private void createFollowedByMappings(final Mapping mapping, final String openehr, final String openEhrPath) {
@@ -566,6 +487,135 @@ public class FhirToOpenEhr {
             }
 
         }
+    }
+
+    private void createFollowedByMappings(final FhirToOpenEhrHelper initialHelper, final Mapping mapping,
+                                          final String openehr, final String mainOpenEhrPath, final String fhirPath,
+                                          final boolean multiple, final List<FhirToOpenEhrHelper> innerHelpers,
+                                          final FhirConnectMapper fhirConnectMapper, final String mainArtifact, final String templateId,
+                                          final List<FhirToOpenEhrHelper> coverHelpers, final boolean bundle, final boolean needsToBeAddedToParentHelpers,
+                                          final List<FhirToOpenEhrHelper> helpers) {
+        final List<Mapping> followedByMappings = mapping.getFollowedBy().getMappings();
+
+        createFollowedByMappings(mapping, openehr, mainOpenEhrPath);
+
+        initialHelper.setOpenEhrPath(openFhirStringUtils.fixOpenEhrPath(openehr, mainOpenEhrPath));
+        initialHelper.setFhirPath(openFhirStringUtils.fixFhirPath(fhirPath));
+
+        initialHelper.setMultiple(multiple);
+
+        initialHelper.setFhirToOpenEhrHelpers(innerHelpers);
+
+        fixLimitingCriteriaForInnerCreatedResources(fhirConnectMapper.getFhirConfig().getResource(), initialHelper);
+
+        // recursive call to create helpers for the followedByMappings
+        createHelpers(mainArtifact,
+                fhirConnectMapper,
+                templateId,
+                mainOpenEhrPath,
+                followedByMappings,
+                null,
+                innerHelpers,
+                coverHelpers,
+                bundle,
+                multiple);
+
+        if (needsToBeAddedToParentHelpers) {
+            coverHelpers.add(initialHelper);
+        } else {
+            if (!helpers.contains(initialHelper)) {
+                helpers.add(initialHelper);
+            }
+        }
+    }
+
+    private void createSlotMappings(final FhirToOpenEhrHelper initialHelper, final Mapping mapping,
+                                    final String openehr, final String mainOpenEhrPath, final String fhirPath,
+                                    final boolean multiple, final List<FhirToOpenEhrHelper> innerHelpers,
+                                    final FhirConnectMapper fhirConnectMapper, final String mainArtifact, final String templateId,
+                                    final List<FhirToOpenEhrHelper> coverHelpers, final boolean bundle, final boolean needsToBeAddedToParentHelpers,
+                                    final List<FhirToOpenEhrHelper> helpers) {
+        final List<FhirConnectMapper> slotArchetypeMapperss = openFhirTemplateRepo.getSlotMapperForArchetype(templateId, mapping.getSlotArchetype());
+
+        for (FhirConnectMapper slotArchetypeMappers : slotArchetypeMapperss) {
+            final String openEhrFixed = openehr.replace("/" + FhirConnectConst.REFERENCE, "");
+
+            openFhirMapperUtils.prepareForwardingSlotArchetypeMapperNoFhirPrefix(slotArchetypeMappers, fhirConnectMapper, fhirPath, openEhrFixed);
+
+            initialHelper.setFhirToOpenEhrHelpers(innerHelpers);
+
+            initialHelper.setOpenEhrPath(openFhirStringUtils.fixOpenEhrPath(openehr, mainOpenEhrPath));
+            initialHelper.setFhirPath(openFhirStringUtils.fixFhirPath(fhirPath));
+
+            fixLimitingCriteriaForInnerCreatedResources(fhirConnectMapper.getFhirConfig().getResource(), initialHelper);
+
+            // recursive call to create helpers for the slot archetype mappings
+            createHelpers(mainArtifact,
+                    slotArchetypeMappers,
+                    templateId, // templateId
+                    openEhrFixed, // templateId
+                    slotArchetypeMappers.getMappings(),
+                    null,
+                    innerHelpers,
+                    coverHelpers,
+                    bundle,
+                    multiple);
+            if (needsToBeAddedToParentHelpers) {
+                coverHelpers.add(initialHelper);
+            } else {
+                if (!helpers.contains(initialHelper)) {
+                    helpers.add(initialHelper);
+                }
+            }
+        }
+    }
+
+    private void hardcodingToFhir(final Mapping mapping, final FhirConnectMapper fhirConnectMapper, final FhirToOpenEhrHelper initialHelper) {
+        if (mapping.getWith().getFhir() == null) {
+            // is hardcoding
+            mapping.getWith().setFhir(fhirConnectMapper.getFhirConfig().getResource());
+            initialHelper.setHardcodingValue(mapping.getWith().getValue());
+        }
+    }
+
+    private String createMainMapping(final Mapping mapping, final FhirConnectMapper fhirConnectMapper, final FhirToOpenEhrHelper initialHelper,
+                                     final String mainOpenEhrPath, final String fhirPath, final boolean multiple,
+                                     final boolean needsToBeAddedToParentHelpers,
+                                     final List<FhirToOpenEhrHelper> helpers, final List<FhirToOpenEhrHelper> coverHelpers) {
+        String openehr = stringUtils.prepareOpenEhrSyntax(mapping.getWith().getOpenehr(), mainOpenEhrPath);
+        if (mapping.getWith().getType() == null) {
+            // when type is not explicitly defined in the fhir connect model mapper, we assume a string
+            if (openFhirStringUtils.endsWithOpenEhrType(openehr) != null) {
+                openehr = stringUtils.replaceLastIndexOf(openehr, "/", "|");
+            }
+        } else {
+            initialHelper.setOpenEhrType(mapping.getWith().getType());
+        }
+
+        if (!OPENEHR_TYPE_NONE.equals(mapping.getWith().getType())) {
+            initialHelper.setOpenEhrPath(openehr.replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + "/", mainOpenEhrPath + "/"));
+            initialHelper.setFhirPath(fhirPath.replace("." + FHIR_ROOT_FC, ""));
+            initialHelper.setMultiple(multiple);
+            fixLimitingCriteriaForInnerCreatedResources(fhirConnectMapper.getFhirConfig().getResource(), initialHelper);
+            if (needsToBeAddedToParentHelpers) {
+                coverHelpers.add(initialHelper);
+            } else {
+                helpers.add(initialHelper);
+            }
+        }
+        return openehr;
+    }
+
+    private void createReferenceMapping(final Mapping mapping, final String fhirPath, final String mainArtifact, final FhirConnectMapper fhirConnectMapper,
+                                        final String templateId, final String mainOpenEhrPath, final Condition parentCondition,
+                                        final List<FhirToOpenEhrHelper> helpers, final List<FhirToOpenEhrHelper> coverHelpers,
+                                        final boolean bundle, final boolean multiple) {
+        // a reference mapping; prepare 'reference' mappings
+        final List<Mapping> referencedMapping = mapping.getReference().getMappings();
+        openFhirMapperUtils.prepareReferencedMappings(fhirPath, mapping.getWith().getOpenehr(), referencedMapping);
+
+        // recursively call createHelpers after reference mappings have been prepared
+        createHelpers(mainArtifact, fhirConnectMapper, templateId, mainOpenEhrPath, referencedMapping, parentCondition, helpers, coverHelpers, bundle, multiple);
     }
 
     /**
