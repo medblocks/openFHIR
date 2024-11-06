@@ -36,16 +36,16 @@ import java.util.*;
 @Transactional
 public class OpenFhirEngine {
 
-    private FhirToOpenEhr fhirToOpenEhr;
-    private OpenEhrToFhir openEhrToFhir;
-    private FhirConnectContextRepository fhirConnectContextRepository;
-    private JsonParser jsonParser;
-    private OpenEhrCachedUtils cachedUtils;
-    private FlatJsonUnmarshaller flatJsonUnmarshaller;
-    private ProdOpenFhirMappingContext prodOpenFhirMappingContext;
-    private OpenFhirStringUtils openFhirStringUtils;
-    private FhirPathR4 fhirPathR4;
-    private Gson gson;
+    private final FhirToOpenEhr fhirToOpenEhr;
+    private final OpenEhrToFhir openEhrToFhir;
+    private final FhirConnectContextRepository fhirConnectContextRepository;
+    private final JsonParser jsonParser;
+    private final OpenEhrCachedUtils cachedUtils;
+    private final FlatJsonUnmarshaller flatJsonUnmarshaller;
+    private final ProdOpenFhirMappingContext prodOpenFhirMappingContext;
+    private final OpenFhirStringUtils openFhirStringUtils;
+    private final FhirPathR4 fhirPathR4;
+    private final Gson gson;
 
     @Autowired
     public OpenFhirEngine(final FhirToOpenEhr fhirToOpenEhr,
@@ -74,10 +74,6 @@ public class OpenFhirEngine {
      * Returns context for when mapping from FHIR to openEHR, where context is either gotten from the provided
      * templateId, or if none is provided, it will loop through all user's contexts and try to apply
      * fhir condition on them.
-     *
-     * @param templateId
-     * @param incomingFhirResource
-     * @return
      */
     private FhirConnectContextEntity getContextForFhir(final String templateId,
                                                        final String incomingFhirResource) {
@@ -94,7 +90,7 @@ public class OpenFhirEngine {
             final Condition condition = context.getFhirConnectContext().getFhir().getCondition();
             final String resourceType = context.getFhirConnectContext().getFhir().getResourceType();
             final String fhirPathWithCondition = openFhirStringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,
-                    Arrays.asList(condition),
+                    Collections.singletonList(condition),
                     resourceType);
             if (StringUtils.isEmpty(fhirPathWithCondition) || fhirPathWithCondition.equals(resourceType)) {
                 log.warn("No fhirpath defined for resource type, context relevant for all?");
@@ -120,8 +116,6 @@ public class OpenFhirEngine {
     /**
      * Returns context for when mapping from openEHR to FHIR. It will first take the templateId from the incoming
      * payload (flatJson or Composition JSON) and then find it by user and templateId
-     *
-     * @return
      */
     private FhirConnectContextEntity getContextForOpenEhr(final String incomingOpenEhr,
                                                           final String incomingTemplateId) {
@@ -202,7 +196,7 @@ public class OpenFhirEngine {
         // validate prerequisites before starting any kind of mapping logic
         validatePrerequisites(fhirConnectContext, fhirConnectContext != null ? fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId() : incomingTemplateId);
 
-        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId();
+        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId(); // fhirConnectContext can not be null because prerequisites are validated above
 
 
         final OPERATIONALTEMPLATE operationalTemplate = cachedUtils.getOperationalTemplate(templateIdToUse);

@@ -4,18 +4,19 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.fhirpath.IFhirPathEvaluationContext;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.datastructures.Element;
-import com.nedap.archie.rm.datavalues.DvCodedText;
-import com.nedap.archie.rm.datavalues.DvText;
-import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.TestOpenFhirMappingContext;
 import com.medblocks.openfhir.fc.model.FhirConnectContext;
 import com.medblocks.openfhir.fc.model.FhirConnectMapper;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
+import com.medblocks.openfhir.util.OpenEhrPopulator;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
+import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +27,6 @@ import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
 import org.hl7.fhir.r4.model.*;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -54,8 +54,9 @@ public class FhirToOpenEhrTest {
                 new OpenEhrRmWorker(openFhirStringUtils),
                 openFhirStringUtils,
                 repo,
-                new OpenEhrCachedUtils(),
-                new OpenFhirMapperUtils());
+                new OpenEhrCachedUtils(null),
+                new OpenFhirMapperUtils(),
+                new OpenEhrPopulator(new OpenFhirMapperUtils()));
     }
 
 
@@ -66,7 +67,7 @@ public class FhirToOpenEhrTest {
 
         final JsonObject flat = fhirToOpenEhr.fhirToFlatJsonObject(context, testBloodPressureObservation(), getOperationalTemplate("/Blood Pressure.opt"));
 
-        Assert.assertEquals(9, flat.size());
+        Assert.assertEquals(11, flat.size());
         Assert.assertEquals("456.0", flat.get("blood_pressure/blood_pressure/any_event:0/systolic|magnitude").getAsString());
         Assert.assertEquals("mm[Hg]", flat.get("blood_pressure/blood_pressure/any_event:0/systolic|unit").getAsString());
         Assert.assertEquals("789.0", flat.get("blood_pressure/blood_pressure/any_event:0/diastolic|magnitude").getAsString());
@@ -76,6 +77,9 @@ public class FhirToOpenEhrTest {
         Assert.assertEquals("description", flat.get("blood_pressure/blood_pressure/any_event:0/comment").getAsString());
         Assert.assertEquals("interpretation text", flat.get("blood_pressure/blood_pressure/any_event:0/clinical_interpretation").getAsString());
 
+        // assert hardcoded paths
+        Assert.assertEquals("at1000", flat.get("blood_pressure/blood_pressure/a24_hour_average/position|code").getAsString());
+        Assert.assertEquals("confounding factor", flat.get("blood_pressure/blood_pressure/a24_hour_average/confounding_factors").getAsString());
     }
 
     @Test
@@ -109,7 +113,7 @@ public class FhirToOpenEhrTest {
         final List<FhirToOpenEhrHelper> helpers = new ArrayList<>();
         final String templateId = context.getOpenEHR().getTemplateId().toLowerCase().replace(" ", "_");
         final ArrayList<FhirToOpenEhrHelper> coverHelpers = new ArrayList<>();
-        fhirToOpenEhr.createFlat(mapper.getOpenEhrConfig().getArchetype(), mapper, templateId, templateId, mapper.getMappings(), null, helpers, coverHelpers, "Bundle".equals(context.getFhir().getResourceType()), false);
+        fhirToOpenEhr.createHelpers(mapper.getOpenEhrConfig().getArchetype(), mapper, templateId, templateId, mapper.getMappings(), null, helpers, coverHelpers, "Bundle".equals(context.getFhir().getResourceType()), false);
         Assert.assertEquals("medication_order/medication_order/order/medication_item", findOpenEhrPathByFhirPath(new ArrayList<>(helpers), "MedicationRequest.medication.resolve().code.text"));
         Assert.assertEquals("medication_order/medication_order/order/therapeutic_direction/dosage/dose_amount/quantity_value", findOpenEhrPathByFhirPath(new ArrayList<>(helpers), "MedicationRequest.dosageInstruction.doseAndRate.dose"));
     }
@@ -193,7 +197,7 @@ public class FhirToOpenEhrTest {
                 "}";
         final FhirToOpenEhrHelper helper = new Gson().fromJson(fhirToOpenEhrHelperS, FhirToOpenEhrHelper.class);
         final JsonObject flattenning = new JsonObject();
-        fhirToOpenEhr.flatten(helper, flattenning, patient);
+        fhirToOpenEhr.addDataPoints(helper, flattenning, patient);
         Assert.assertEquals("given0_0", flattenning.getAsJsonPrimitive("person/personendaten/person/geburtsname:0/vollständiger_name").getAsString());
         Assert.assertEquals("given1_0", flattenning.getAsJsonPrimitive("person/personendaten/person/geburtsname:1/vollständiger_name").getAsString());
         Assert.assertEquals("family1", flattenning.getAsJsonPrimitive("person/personendaten/person/geburtsname:1/familienname-nachname").getAsString());
@@ -286,8 +290,13 @@ public class FhirToOpenEhrTest {
     public void testReplacePattern() {
         final String original = "kds_prozedur/procedure/seitenlokalisation[n]";
         final String newParent = "kds_prozedur/procedure/name_der_prozedur";
-        final String s = fhirToOpenEhr.replacePattern(original, newParent);
+        final String s = openFhirStringUtils.replacePattern(original, newParent);
         Assert.assertEquals("kds_prozedur/procedure/seitenlokalisation[n]", s);
+
+        final String original1 = "kds_prozedur/procedure[n]/seitenlokalisation[n]";
+        final String newParent1 = "kds_prozedur/procedure[n]/name_der_prozedur/abc";
+        final String s1 = openFhirStringUtils.replacePattern(original1, newParent1);
+        Assert.assertEquals("kds_prozedur/procedure[n]/seitenlokalisation[n]", s1);
     }
 
     @Test

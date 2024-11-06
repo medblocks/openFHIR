@@ -19,11 +19,15 @@ import java.util.List;
 @Slf4j
 @Transactional
 public class OptService {
-    @Autowired
-    private OptRepository optRepository;
+    private final OptRepository optRepository;
+
+    private final OpenEhrCachedUtils openEhrApplicationScopedUtils;
 
     @Autowired
-    private OpenEhrCachedUtils openEhrApplicationScopedUtils;
+    public OptService(OptRepository optRepository, OpenEhrCachedUtils openEhrApplicationScopedUtils) {
+        this.optRepository = optRepository;
+        this.openEhrApplicationScopedUtils = openEhrApplicationScopedUtils;
+    }
 
     /**
      * Creates an operational template in the database.
@@ -72,6 +76,6 @@ public class OptService {
      * @throws XmlException if content is invalid XML after removing the white characters
      */
     private OPERATIONALTEMPLATE parseOptFromString(final String content) throws XmlException {
-        return TemplateDocument.Factory.parse(content.trim().replaceFirst("^([\\W]+)<", "<")).getTemplate();
+        return TemplateDocument.Factory.parse(content.trim().replaceFirst("^(\\W+)<", "<")).getTemplate();
     }
 }

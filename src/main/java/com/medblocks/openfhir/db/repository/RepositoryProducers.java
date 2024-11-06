@@ -15,12 +15,12 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class RepositoryProducers {
 
-    private OptMongoRepository optMongoRepository;
-    private OptPgRepository optPgRepository;
-    private FhirConnectContextPgRepository fhirConnectContextPgRepository;
-    private FhirConnectContextMongoRepository fhirConnectContextMongoRepository;
-    private FhirConnectMapperPgRepository fhirConnectMapperPgRepository;
-    private FhirConnectMapperMongoRepository fhirConnectMapperMongoRepository;
+    final private OptMongoRepository optMongoRepository;
+    final private OptPgRepository optPgRepository;
+    final private FhirConnectContextPgRepository fhirConnectContextPgRepository;
+    final private FhirConnectContextMongoRepository fhirConnectContextMongoRepository;
+    final private FhirConnectMapperPgRepository fhirConnectMapperPgRepository;
+    final private FhirConnectMapperMongoRepository fhirConnectMapperMongoRepository;
 
     @Autowired
     public RepositoryProducers(@Autowired(required = false) final OptMongoRepository optMongoRepository,

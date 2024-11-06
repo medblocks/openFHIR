@@ -24,12 +24,12 @@ public class FollowedBy {
     @JsonProperty("mappings")
     private List<Mapping> mappings;
 
-    public FollowedBy copy() {
+    public FollowedBy doCopy() {
         final FollowedBy followedBy = new FollowedBy();
         if (mappings != null) {
             final List<Mapping> mappings = new ArrayList<>();
             for (Mapping mapping : this.mappings) {
-                mappings.add(mapping.copy());
+                mappings.add(mapping.doCopy());
             }
             followedBy.setMappings(mappings);
         }

@@ -32,6 +32,9 @@ public class FhirProducer {
             // todo!!
             @Override
             public IBase resolveReference(@Nonnull IIdType theReference, @Nullable IBase theContext) {
+                if(theContext == null) {
+                    return null;
+                }
                 return ((Reference) theContext).getResource();
             }
         });

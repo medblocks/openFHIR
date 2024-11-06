@@ -47,7 +47,7 @@ public class ProcedureTest extends KdsBidirectionalTest {
         Assert.assertEquals("encounter-id-1245", theProcedure.getId());
 
 //        - name: "ISM Transition"
-        Assert.assertEquals("532", theProcedure.getStatusElement().getValueAsString());
+        Assert.assertEquals("completed", theProcedure.getStatusElement().getValueAsString());
 
 //        - name: "Name"
         Assert.assertEquals("80146002", theProcedure.getCode().getCodingFirstRep().getCode());
@@ -88,7 +88,7 @@ public class ProcedureTest extends KdsBidirectionalTest {
         Assert.assertEquals("example-procedure", jsonObject.getAsJsonPrimitive("kds_prozedur/context/case_identification/case_identifier").getAsString());
 
 //        - name: "ISM Transition"
-        Assert.assertEquals("completed", jsonObject.getAsJsonPrimitive("kds_prozedur/procedure/ism_transition/current_state|code").getAsString());
+        Assert.assertEquals("532", jsonObject.getAsJsonPrimitive("kds_prozedur/procedure/ism_transition/current_state|code").getAsString());
 
 //        - name: "Name"
         Assert.assertEquals("5-470", jsonObject.getAsJsonPrimitive("kds_prozedur/procedure/name_der_prozedur|code").getAsString());
@@ -110,13 +110,6 @@ public class ProcedureTest extends KdsBidirectionalTest {
 
 //        - name: "time"
         Assert.assertEquals("2024-08-20T16:00:00", jsonObject.getAsJsonPrimitive("kds_prozedur/procedure/time").getAsString());
-
-        /**
-         * manually fixing things for ehrbase
-         */
-        jsonObject.addProperty("kds_prozedur/procedure/ism_transition/current_state|terminology", "openehr");
-        jsonObject.addProperty("kds_prozedur/procedure/ism_transition/current_state|code", "532");
-        jsonObject.addProperty("kds_prozedur/procedure/ism_transition/current_state|value", "completed");
 
         return jsonObject;
     }

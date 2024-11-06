@@ -93,76 +93,55 @@ public class OpenFhirMapperUtils {
         return null;
     }
 
-    public Date stringToTime(final String date) {
-        if (date == null) {
-            return null;
-        }
-        try {
-            return time.parse(date);
-        } catch (ParseException e) {
-            log.error("Couldn't parse date: {}", date, e);
-            try {
-                return time2.parse(date);
-            } catch (ParseException ex) {
-                log.error("Couldn't parse date: {}", date, e);
-            }
-        }
-        return null;
-    }
-
+    /**
+     * Modifies Mapping.openEhr paths, replacing $reference and $openEhrArchetype and adding resolve() to FHIR
+     * path so it's evaluated by the fhir path engine
+     */
     public void prepareReferencedMappings(final String parentFhirPath,
                                           final String openEhrPath,
                                           final List<Mapping> referencedMapping) {
         for (Mapping mapping : referencedMapping) {
             mapping.getWith().setFhir(parentFhirPath + "." + RESOLVE + "." + mapping.getWith().getFhir());
-            if (!FhirConnectConst.REFERENCE.equals(openEhrPath) && mapping.getWith().getOpenehr() != null) {
-                if(openEhrPath.startsWith(FhirConnectConst.REFERENCE)) {
-                    mapping.getWith().setOpenehr(openEhrPath
-                            .replace(FhirConnectConst.REFERENCE + "/", "")
-                            .replace(FhirConnectConst.REFERENCE+ ".", "")
-                            .replaceAll("/", ".")
-                            + mapping.getWith().getOpenehr()
-                            .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
-                } else if(openEhrPath.endsWith(FhirConnectConst.REFERENCE)) {
-                    final String followingOpenEhr = mapping.getWith().getOpenehr().replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, "");
-                    final String openEhrSuffix = StringUtils.isBlank(followingOpenEhr) ? "" : ("."+followingOpenEhr);
-                    mapping.getWith().setOpenehr(openEhrPath
-                            .replace("/"+FhirConnectConst.REFERENCE, "")
-                            .replace("."+FhirConnectConst.REFERENCE, "")
-                            .replaceAll("/", ".")
-                            + openEhrSuffix);
-                } else {
-                    mapping.getWith().setOpenehr(openEhrPath
-                            .replace(FhirConnectConst.REFERENCE + "/", ".")
-                            .replace("/"+FhirConnectConst.REFERENCE, ".")
-                            .replace("."+FhirConnectConst.REFERENCE, ".")
-                            .replace(FhirConnectConst.REFERENCE+ ".", ".")
-                            .replaceAll("/", ".")
-                            + mapping.getWith().getOpenehr()
-                            .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
-                }
-
+            if (FhirConnectConst.REFERENCE.equals(openEhrPath) || mapping.getWith().getOpenehr() == null) {
+                continue;
+            }
+            if (openEhrPath.startsWith(FhirConnectConst.REFERENCE)) {
+                mapping.getWith().setOpenehr(openEhrPath
+                        .replace(FhirConnectConst.REFERENCE + "/", "")
+                        .replace(FhirConnectConst.REFERENCE + ".", "")
+                        .replaceAll("/", ".")
+                        + mapping.getWith().getOpenehr()
+                        .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
+            } else if (openEhrPath.endsWith(FhirConnectConst.REFERENCE)) {
+                final String followingOpenEhr = mapping.getWith().getOpenehr().replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, "");
+                final String openEhrSuffix = StringUtils.isBlank(followingOpenEhr) ? "" : ("." + followingOpenEhr);
+                mapping.getWith().setOpenehr(openEhrPath
+                        .replace("/" + FhirConnectConst.REFERENCE, "")
+                        .replace("." + FhirConnectConst.REFERENCE, "")
+                        .replaceAll("/", ".")
+                        + openEhrSuffix);
+            } else {
+                mapping.getWith().setOpenehr(openEhrPath
+                        .replace(FhirConnectConst.REFERENCE + "/", ".")
+                        .replace("/" + FhirConnectConst.REFERENCE, ".")
+                        .replace("." + FhirConnectConst.REFERENCE, ".")
+                        .replace(FhirConnectConst.REFERENCE + ".", ".")
+                        .replaceAll("/", ".")
+                        + mapping.getWith().getOpenehr()
+                        .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
             }
 
         }
     }
 
-    public void prepareForwardingSlotArchetypeMapper(final FhirConnectMapper slotArchetypeMappers,
-                                                     final FhirConnectMapper parentMapper,
-                                                     final String fhirPath,
-                                                     final String openEhrPath,
-                                                     final String firstFlatPath) {
-        slotArchetypeMappers.setFhirConfig(new FhirConfig());
-        slotArchetypeMappers.getFhirConfig().setResource(parentMapper.getFhirConfig().getResource());
-        slotArchetypeMappers.getFhirConfig().setCondition(parentMapper.getFhirConfig().getCondition());
-
-        prepareForwardingSlotArchetypeMapper(slotArchetypeMappers.getMappings(),
-                fhirPath,
-                openEhrPath,
-                true,
-                firstFlatPath);
-    }
-
+    /**
+     * Followed by mappers needs to inherit parent's properties. This method makes sure parent's paths are inherited
+     * in followed by mappings
+     *
+     * @param followedByMappings followed by mappings that need to inherit parent's properties
+     * @param fhirPath           parent's fhir path as constructed up until now
+     * @param openehr            parent's openehr path as constructed up until now
+     */
     public void prepareFollowedByMappings(final List<Mapping> followedByMappings,
                                           final String fhirPath,
                                           final String openehr,
@@ -201,6 +180,42 @@ public class OpenFhirMapperUtils {
         }
     }
 
+
+    /**
+     * Slot archetype mappers need to inherit parent's openEhr and FHIR path as well as Condition. This method
+     * makes sure this is inherited in slot mappers
+     *
+     * @param slotArchetypeMappers slot mappers that need to inherit parents properties
+     * @param parentMapper         parent mapper
+     * @param fhirPath             parent's fhir path as constructed up until now
+     * @param openEhrPath          parent's openehr path as constructed up until now
+     */
+    public void prepareForwardingSlotArchetypeMapper(final FhirConnectMapper slotArchetypeMappers,
+                                                     final FhirConnectMapper parentMapper,
+                                                     final String fhirPath,
+                                                     final String openEhrPath) {
+        slotArchetypeMappers.setFhirConfig(new FhirConfig());
+        slotArchetypeMappers.getFhirConfig().setResource(parentMapper.getFhirConfig().getResource());
+        slotArchetypeMappers.getFhirConfig().setCondition(parentMapper.getFhirConfig().getCondition());
+
+        prepareForwardingSlotArchetypeMappings(slotArchetypeMappers.getMappings(),
+                fhirPath,
+                openEhrPath,
+                true);
+    }
+
+    /**
+     * Slot archetype mappers need to inherit parent's openEhr and FHIR path as well as Condition. This method
+     * makes sure this is inherited in slot mappers.
+     * <p>
+     * Used in a FHIR to openEHR mappings where you do not want FHIR to be prefixed in the paths, because we have inner
+     * helpers with fhir paths defined as relative to the parent and not absolute ones
+     *
+     * @param slotArchetypeMappers slot mappers that need to inherit parents properties
+     * @param parentMapper         parent mapper
+     * @param fhirPath             parent's fhir path as constructed up until now
+     * @param openEhrPath          parent's openehr path as constructed up until now
+     */
     public void prepareForwardingSlotArchetypeMapperNoFhirPrefix(final FhirConnectMapper slotArchetypeMappers,
                                                                  final FhirConnectMapper parentMapper,
                                                                  final String fhirPath,
@@ -209,11 +224,10 @@ public class OpenFhirMapperUtils {
         slotArchetypeMappers.getFhirConfig().setResource(parentMapper.getFhirConfig().getResource());
         slotArchetypeMappers.getFhirConfig().setCondition(parentMapper.getFhirConfig().getCondition());
 
-        prepareForwardingSlotArchetypeMapper(slotArchetypeMappers.getMappings(),
+        prepareForwardingSlotArchetypeMappings(slotArchetypeMappers.getMappings(),
                 fhirPath,
                 openEhrPath,
-                false,
-                null);
+                false);
 
         for (Mapping slotArchetypeMappersMapping : slotArchetypeMappers.getMappings()) {
             if (slotArchetypeMappersMapping.getWith().getOpenehr() == null) {
@@ -222,13 +236,35 @@ public class OpenFhirMapperUtils {
         }
     }
 
-    public void prepareForwardingSlotArchetypeMapper(final List<Mapping> forwardMappers,
-                                                     final String fhirPath,
-                                                     final String openEhrPath,
-                                                     boolean fhirPrefixing,
-                                                     final String firstFlatPath) {
+    /**
+     * Forwarding slot archetype mappings are adjusted in fhir and openehr paths as well as conditions that are being
+     * passed down the line to "child" mappings.
+     *
+     * @param forwardMappers Mappings directly referenced by the slot archetype (slotArchetypeMappers.getMappings)
+     * @param fhirPath       fhir path as constructed up until now for the slot archetype
+     * @param openEhrPath    openehr path as constructed up until now for the slot archetype
+     * @param fhirPrefixing  whether FHIR path needs to be prefixed as well in the child mappings. False when mapping
+     *                       from FHIR to openEHR where we have inner helpers and paths are always defined as relative
+     *                       to the parent and not absolute
+     */
+    public void prepareForwardingSlotArchetypeMappings(final List<Mapping> forwardMappers,
+                                                       final String fhirPath,
+                                                       final String openEhrPath,
+                                                       boolean fhirPrefixing) {
 
         // fix fhir forwarding params
+        fixFhirForwardingPaths(forwardMappers, fhirPath, fhirPrefixing);
+
+        // fix openehr forwarding params
+        fixOpenEhrForwardingPaths(forwardMappers, openEhrPath);
+
+        // now conditions
+        prepareForwardingSlotArchetypeMappingsConditions(forwardMappers, fhirPath, fhirPrefixing);
+    }
+
+    private void fixFhirForwardingPaths(final List<Mapping> forwardMappers,
+                                        final String fhirPath,
+                                        boolean fhirPrefixing) {
         for (Mapping slotArchetypeMappersMapping : forwardMappers) {
             if (slotArchetypeMappersMapping.getWith().getFhir() == null) {
                 continue;
@@ -248,8 +284,10 @@ public class OpenFhirMapperUtils {
                 }
             }
         }
+    }
 
-        // fix openehr forwarding params
+    private void fixOpenEhrForwardingPaths(final List<Mapping> forwardMappers,
+                                           final String openEhrPath) {
         for (Mapping slotArchetypeMappersMapping : forwardMappers) {
             if (slotArchetypeMappersMapping.getWith().getOpenehr() == null) {
                 continue;
@@ -267,8 +305,11 @@ public class OpenFhirMapperUtils {
                 slotArchetypeMappersMapping.getWith().setOpenehr(openEhrPath.replaceAll("/", ".") + suff);
             }
         }
+    }
 
-        // now conditions
+    private void prepareForwardingSlotArchetypeMappingsConditions(final List<Mapping> forwardMappers,
+                                                                  final String fhirPath,
+                                                                  final boolean fhirPrefixing) {
         for (Mapping slotArchetypeMappersMapping : forwardMappers) {
             if (slotArchetypeMappersMapping.getCondition() == null) {
                 continue;

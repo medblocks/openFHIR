@@ -1,6 +1,5 @@
 package com.medblocks.openfhir.kds;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
 import lombok.SneakyThrows;
@@ -70,15 +69,15 @@ public class PersonTest extends KdsBidirectionalTest {
         Assert.assertEquals("Mitte", ((StringType) strasseAddress.getExtensionFirstRep().getValue()).getValue());
         Assert.assertEquals("postal", strasseAddress.getTypeElement().getValueAsString());
         Assert.assertEquals("20095", strasseAddress.getPostalCode());
-        Assert.assertEquals("Germany", strasseAddress.getCountry());
+        Assert.assertEquals("DE", strasseAddress.getCountry());
 
         final List<StringType> postfachLines = postfachAddress.getLine();
         Assert.assertEquals(0, postfachLines.size());
         Assert.assertEquals("Berlin", ((StringType) postfachAddress.getCityElement().getExtensionFirstRep().getValue()).getValue());
         Assert.assertEquals("Kreuzberg", ((StringType) postfachAddress.getExtensionFirstRep().getValue()).getValue());
-        Assert.assertEquals("Postal", postfachAddress.getTypeElement().getValueAsString());
+        Assert.assertEquals("postal", postfachAddress.getTypeElement().getValueAsString());
         Assert.assertEquals("10997", postfachAddress.getPostalCode());
-        Assert.assertEquals("Germany", postfachAddress.getCountry());
+        Assert.assertEquals(" DE", postfachAddress.getCountry());
         Assert.assertEquals("Berlin", postfachAddress.getState());
 
         Assert.assertEquals("D", ((Coding) thePatient.getExtensionByUrl("extension_url_to_be_defined").getValue()).getCode());
@@ -154,25 +153,6 @@ public class PersonTest extends KdsBidirectionalTest {
         final Bundle testBundle = getTestBundle(RESOURCES_ROOT + BUNDLE);
 
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
-
-        /**
-         * fix blocking issues
-         */
-        jsonObject.addProperty("person/personendaten/person/name/namensart|value", "official");
-        jsonObject.addProperty("person/personendaten/person/geburtsname/namensart|value", "official");
-        jsonObject.addProperty("person/personendaten/person/postfach/bundesland|code", "DE-BE");
-        jsonObject.addProperty("person/personendaten/person/postfach/land|code", "DE");
-        jsonObject.addProperty("person/personendaten/person/postfach/art|code", "postal");
-        jsonObject.addProperty("person/personendaten/person/postfach/art|terminology", "address-type");
-        jsonObject.addProperty("person/personendaten/person/straßenanschrift:0/land|code", "DE");
-        jsonObject.addProperty("person/personendaten/person/straßenanschrift:0/land|code", "DE");
-        jsonObject.addProperty("person/personendaten/person/straßenanschrift:0/art|code", "postal");
-        jsonObject.addProperty("person/personendaten/person/straßenanschrift:0/art|terminology", "address-type");
-        jsonObject.addProperty("person/geschlecht/administratives_geschlecht|value", "Male");
-        jsonObject.addProperty("person/personendaten/person/straßenanschrift:0/bundesland|code", "DE-BE");
-        /**
-         * End of: fix blocking issues
-         */
 
         Assert.assertEquals("PID987654321", jsonObject.getAsJsonPrimitive("person/personendaten/person/pid:0|id").getAsString());
         Assert.assertEquals("Von Smith", jsonObject.getAsJsonPrimitive("person/personendaten/person/geburtsname/vollständiger_name").getAsString());

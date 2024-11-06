@@ -4,11 +4,11 @@ import ca.uhn.fhir.context.FhirContext;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.nedap.archie.rm.composition.Composition;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.TestOpenFhirMappingContext;
 import com.medblocks.openfhir.fc.model.FhirConnectContext;
 import com.medblocks.openfhir.util.*;
+import com.nedap.archie.rm.composition.Composition;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
@@ -29,24 +29,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class OpenEhrToFhirTest {
     final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
     final FhirPathR4 fhirPath = new FhirPathR4(FhirContext.forR4());
     final OpenFhirMapperUtils openFhirMapperUtils = new OpenFhirMapperUtils();
     final TestOpenFhirMappingContext repo = new TestOpenFhirMappingContext(fhirPath, openFhirStringUtils);
-    final OpenEhrToFhir openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
-            repo,
-            new OpenEhrCachedUtils(),
-            new Gson(),
-            openFhirStringUtils,
-            new OpenEhrRmWorker(openFhirStringUtils),
-            new OpenFhirMapperUtils(),
-            new FhirInstancePopulator(),
-            new FhirInstanceCreator(openFhirStringUtils),
-            fhirPath);
+    final OpenEhrToFhir openEhrToFhir;
 
-    public static void assertBloodPressureFhir(final Bundle bundle ) {
+    {
+        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(openFhirStringUtils);
+        openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
+                repo,
+                new OpenEhrCachedUtils(null),
+                new Gson(),
+                openFhirStringUtils,
+                new OpenEhrRmWorker(openFhirStringUtils),
+                new OpenFhirMapperUtils(),
+                new FhirInstancePopulator(),
+                new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
+                fhirInstanceCreatorUtility,
+                fhirPath,
+                new IntermediateCacheProcessing(openFhirStringUtils));
+    }
+
+    public static void assertBloodPressureFhir(final Bundle bundle) {
         Assert.assertEquals(3, bundle.getEntry().size());
         final Observation obs1 = bundle.getEntry().stream()
                 .map(en -> ((Observation) en.getResource()))
@@ -83,7 +91,7 @@ public class OpenEhrToFhirTest {
 
         Assert.assertTrue(Arrays.asList(obs1, obs3).stream()
                 .allMatch(o -> o.getComponent().stream()
-                        .allMatch(com -> !com.getInterpretationFirstRep().isEmpty() ||  (com.getCode() != null
+                        .allMatch(com -> !com.getInterpretationFirstRep().isEmpty() || (com.getCode() != null
                                 && com.getCode().getCoding().size() == 1
                                 && (com.getCode().getCodingFirstRep().getCode().equals("8480-6") || com.getCode().getCodingFirstRep().getCode().equals("8462-4"))))));
 
@@ -131,6 +139,9 @@ public class OpenEhrToFhirTest {
                 .findFirst()
                 .orElse(null);
         Assert.assertEquals("700.0", thirdSystolic.getValue().toPlainString());
+
+        // assert hardcoded
+        Assert.assertTrue(Stream.of(obs1, obs2, obs3).allMatch(obs -> obs.getPerformerFirstRep().getDisplay().equals("John Doe")));
     }
 
     @Test
@@ -143,39 +154,6 @@ public class OpenEhrToFhirTest {
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationalTemplate);
 
         assertBloodPressureFhir(bundle);
-    }
-
-    @Test
-    public void testIntermediateCachePopulation() {
-        final FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn = new FhirInstanceCreator.InstantiateAndSetReturn();
-        final HashMap<String, Object> cache = new HashMap<>();
-
-        final CodeableConcept codeableConcept = new CodeableConcept();
-        final Coding coding = new Coding();
-        final StringType code = new StringType();
-        hardcodedReturn.setReturning(codeableConcept);
-        hardcodedReturn.setPath("category");
-        hardcodedReturn.setInner(FhirInstanceCreator.InstantiateAndSetReturn.builder()
-                .returning(coding)
-                .path("coding")
-                .inner(FhirInstanceCreator.InstantiateAndSetReturn.builder()
-                        .returning(code)
-                        .path("code")
-                        .build())
-                .build());
-
-        openEhrToFhir.populateIntermediateCache(hardcodedReturn,
-                "123",
-                cache,
-                "",
-                "",
-                false,
-                "",
-                "");
-
-        Assert.assertEquals(code.toString(), cache.get("123_.category.coding.code_").toString());
-        Assert.assertEquals(coding.toString(), cache.get("123_.category.coding_").toString());
-        Assert.assertEquals(codeableConcept.toString(), cache.get("123_.category_").toString());
     }
 
     @Test

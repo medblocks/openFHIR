@@ -12,14 +12,19 @@ import java.util.List;
 
 @RestController
 public class OptController {
+
+    private final OptService optService;
+
     @Autowired
-    private OptService optService;
+    public OptController(OptService optService) {
+        this.optService = optService;
+    }
 
     /**
      * creates an operational template as part of the state configuration of the engine
      *
      * @param opt   payload that is the operational template
-     * @param reqId
+     * @param reqId request id that will be logged
      * @return OptEntity without the actual context of the template, just the metadata and the assigned database ID
      */
     @PostMapping("/opt")
@@ -41,7 +46,7 @@ public class OptController {
      * huge payloads being returned). If you want to get a specific template and it's content, trigger a GET on a specific
      * operational template id.
      *
-     * @param reqId
+     * @param reqId request id that will be logged
      * @return returns all existing operational templates without the content
      */
     @GetMapping("/opt")
@@ -53,7 +58,7 @@ public class OptController {
      * reads a specific operational template with content
      *
      * @param templateId id of the template as it was assigned to the OptEntity at the time of the creation
-     * @param reqId
+     * @param reqId request id that will be logged
      * @return a specific operational template with content
      */
     @GetMapping("/opt/{templateId}")

@@ -5,6 +5,13 @@ import ca.uhn.fhir.fhirpath.IFhirPathEvaluationContext;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.medblocks.openfhir.fc.model.FhirConnectContext;
+import com.medblocks.openfhir.tofhir.IntermediateCacheProcessing;
+import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
+import com.medblocks.openfhir.tofhir.OpenEhrToFhirTest;
+import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
+import com.medblocks.openfhir.toopenehr.FhirToOpenEhrTest;
+import com.medblocks.openfhir.util.*;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datastructures.Element;
@@ -17,12 +24,6 @@ import com.nedap.archie.rm.datavalues.quantity.DvProportion;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
-import com.medblocks.openfhir.fc.model.FhirConnectContext;
-import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
-import com.medblocks.openfhir.tofhir.OpenEhrToFhirTest;
-import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
-import com.medblocks.openfhir.toopenehr.FhirToOpenEhrTest;
-import com.medblocks.openfhir.util.*;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.apache.commons.io.IOUtils;
@@ -36,7 +37,6 @@ import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
 import org.hl7.fhir.r4.model.*;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
@@ -72,16 +72,19 @@ public class BidirectionalTest {
             }
         });
 
+        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(openFhirStringUtils);
         openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
                 repo,
-                new OpenEhrCachedUtils(),
+                new OpenEhrCachedUtils(null),
                 new Gson(),
                 openFhirStringUtils,
                 new OpenEhrRmWorker(openFhirStringUtils),
                 new OpenFhirMapperUtils(),
                 new FhirInstancePopulator(),
-                new FhirInstanceCreator(openFhirStringUtils),
-                fhirPath);
+                new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
+                fhirInstanceCreatorUtility,
+                fhirPath,
+                new IntermediateCacheProcessing(openFhirStringUtils));
         fhirToOpenEhr = new FhirToOpenEhr(fhirPath,
                 new OpenFhirStringUtils(),
                 new FlatJsonUnmarshaller(),
@@ -89,8 +92,9 @@ public class BidirectionalTest {
                 new OpenEhrRmWorker(openFhirStringUtils),
                 openFhirStringUtils,
                 repo,
-                new OpenEhrCachedUtils(),
-                new OpenFhirMapperUtils());
+                new OpenEhrCachedUtils(null),
+                new OpenFhirMapperUtils(),
+                new OpenEhrPopulator(new OpenFhirMapperUtils()));
     }
     @Test
     public void news2() throws IOException {

@@ -40,13 +40,13 @@ public class Condition {
     @JsonProperty("identifying")
     private Boolean identifying;
 
-    public Condition copy() {
+    public Condition doCopy() {
         final Condition condition = new Condition();
         condition.setTargetRoot(targetRoot);
         condition.setTargetAttribute(targetAttribute);
         condition.setOperator(operator);
         condition.setCriteria(criteria);
-        condition.setIdentifying(identifying == null ? null : new Boolean(identifying.booleanValue()));
+        condition.setIdentifying(identifying == null ? null : identifying.booleanValue());
         return condition;
     }
 

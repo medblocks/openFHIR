@@ -18,20 +18,24 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Component
 @Slf4j
 public class FhirConnectValidator {
 
-    @Autowired
-    private FhirPathR4 fhirPathR4;
+    private final FhirPathR4 fhirPathR4;
+    private final OpenFhirStringUtils openFhirStringUtils;
 
     @Autowired
-    private OpenFhirStringUtils openFhirStringUtils;
+    public FhirConnectValidator(FhirPathR4 fhirPathR4, OpenFhirStringUtils openFhirStringUtils) {
+        this.fhirPathR4 = fhirPathR4;
+        this.openFhirStringUtils = openFhirStringUtils;
+    }
 
     public List<String> validateAgainstContextSchema(final FhirConnectContext parsed) {
         return validateAgainstSchema(parsed, "/contextual-mapping.schema.json");
@@ -45,14 +49,18 @@ public class FhirConnectValidator {
         final ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            String schemaString = IOUtils.toString(getClass().getResourceAsStream(schemaName),
-                    StandardCharsets.UTF_8);
+            final InputStream resourceAsStream = getClass().getResourceAsStream(schemaName);
+            if(resourceAsStream == null) {
+                log.error("No such schema found {}", schemaName);
+                return null;
+            }
+            final String schemaString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
 
-            JsonNode schemaNode = objectMapper.readTree(schemaString);
-            JsonNode jsonNode = objectMapper.convertValue(parsed, JsonNode.class);
-            JsonSchemaFactory schemaFactory = JsonSchemaFactory.byDefault();
-            JsonSchema schema = schemaFactory.getJsonSchema(schemaNode);
-            ProcessingReport report = schema.validate(jsonNode);
+            final JsonNode schemaNode = objectMapper.readTree(schemaString);
+            final JsonNode jsonNode = objectMapper.convertValue(parsed, JsonNode.class);
+            final JsonSchemaFactory schemaFactory = JsonSchemaFactory.byDefault();
+            final JsonSchema schema = schemaFactory.getJsonSchema(schemaNode);
+            final ProcessingReport report = schema.validate(jsonNode);
             if (!report.isSuccess()) {
                 final List<String> errors = new ArrayList<>();
                 report.iterator().forEachRemaining(err -> {
@@ -92,7 +100,7 @@ public class FhirConnectValidator {
                 continue;
             }
             final String path = openFhirStringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,
-                    Arrays.asList(mapping.getCondition()), toValidateOn.getFhirConfig().getResource());
+                    Collections.singletonList(mapping.getCondition()), toValidateOn.getFhirConfig().getResource());
             try {
                 fhirPathR4.evaluate(new Bundle(), path, Base.class); // we don't care about the result, only if it passes the validation
             } catch (final Exception e) {

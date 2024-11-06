@@ -17,6 +17,6 @@ fhir:
   resourceType: "Bundle"
   condition:
     targetRoot: "$fhirResource"
-    targetAttribute: "meta.profile"
+    targetAttribute: "entry.resource.meta.profile"
     operator: "one of"
-    criteria: "[KDS_Medikationseintrag_v1]"
+    criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/medikationsliste]"

@@ -10,6 +10,7 @@ import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.TestOpenFhirMappingContext;
 import com.medblocks.openfhir.fc.model.FhirConnectContext;
 import com.medblocks.openfhir.kds.ehrbase.EhrBaseTestClient;
+import com.medblocks.openfhir.tofhir.IntermediateCacheProcessing;
 import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
 import com.medblocks.openfhir.util.*;
@@ -78,16 +79,19 @@ public abstract class KdsBidirectionalTest {
             }
         });
 
+        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(openFhirStringUtils);
         openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
                 repo,
-                new OpenEhrCachedUtils(),
+                new OpenEhrCachedUtils(null),
                 new Gson(),
                 openFhirStringUtils,
                 new OpenEhrRmWorker(openFhirStringUtils),
                 new OpenFhirMapperUtils(),
                 new FhirInstancePopulator(),
-                new FhirInstanceCreator(openFhirStringUtils),
-                fhirPath);
+                new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
+                fhirInstanceCreatorUtility,
+                fhirPath,
+                new IntermediateCacheProcessing(openFhirStringUtils));
         fhirToOpenEhr = new FhirToOpenEhr(fhirPath,
                 new OpenFhirStringUtils(),
                 new FlatJsonUnmarshaller(),
@@ -95,8 +99,9 @@ public abstract class KdsBidirectionalTest {
                 new OpenEhrRmWorker(openFhirStringUtils),
                 openFhirStringUtils,
                 repo,
-                new OpenEhrCachedUtils(),
-                new OpenFhirMapperUtils());
+                new OpenEhrCachedUtils(null),
+                new OpenFhirMapperUtils(),
+                new OpenEhrPopulator(new OpenFhirMapperUtils()));
 
         prepareState();
     }
