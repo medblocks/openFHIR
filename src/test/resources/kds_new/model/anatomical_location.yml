@@ -13,5 +13,5 @@ mappings:
   - name: "body site"
     with:
       fhir: "$fhirResource.bodysite.code.text"  
-      openehr: "/items[at0001]" #Name of body site
-      type: "STRING"
+      openehr: "$openEhrArchetype/items[at0001]" #Name of body site
+      type: "STRING" #TODO change to Coded text in the Template

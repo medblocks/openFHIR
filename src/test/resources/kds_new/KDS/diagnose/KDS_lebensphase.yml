@@ -1,0 +1,35 @@
+engine: FHIRConnect/v0.0.1
+type: profile
+metadata:
+  name:  KDS_lebensphase
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: "openEHR-EHR-CLUSTER.lebensphase.v0"
+
+mappings:
+  - name: "periodOnsetStart"  # if append name needs to be the same we are appending to
+    profiling: "add"
+    with:
+      fhir: "$fhirResource.start.extension.value"
+      openehr: "$openEhrArchetype/items[at0001]"
+      type: "CODEABLECONCEPT"
+    condition:
+      targetRoot: "start.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
+
+  - name: "periodOnsetEnd"
+    profiling: "add"
+    with:
+      fhir: "$fhirResource.end.extension.value"
+      openehr: "lebensphase.ende"
+      type: "CODEABLECONCEPT"
+    condition:
+      targetRoot: "$fhirResource.end.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://fhir.de/StructureDefinition/lebensphase]"

@@ -14,8 +14,8 @@ mappings:
   - name: "diagnosesicherheit"
     profiling: "add"
     with:
-      fhir: "extension"
-      openehr: "/at0003"
+      fhir: "$fhirResource.extension"
+      openehr: "$openEhrArchetype/at0003"
       type: "CODEABLECONCEPT"
       condition:
         targetRoot: "extension"
@@ -23,36 +23,51 @@ mappings:
         operator: "one of"
         criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
 
-  - name: "ReferenzPrimaerdiagnose"
+  - name: "referenzPrimaerdiagnose"
     profiling: "add"
     with:
-      fhir: "extension"
-      openehr: "/at0063"
-      type: "CODEABLECONCEPT"
-      condition:
-        targetRoot: "extension"
-        targetAttribute: "url"
-        operator: "one of"
-        criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+      fhir: "$fhirResource.extension"
+      openehr: "$openEhrArchetype/at0063"
+      type: "MANUAL"
+      manual:
+        openEHR:
+          path: "/at0063" # the terminology should be set automatically
+          type: "DV_CODED_TEXT"
+          value:
+            code_string: "at0064"
+            terminology_id: "local"
+            value: "Hauptdiagnose"
+          condition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "not of"
+            criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
 
 
-  - name: "ReferenzPrimaerdiagnose"
+  - name: "referenzNebendiagnose" #should maybe be contained under the referenzPrimaer
+    profiling: "add"
     with:
-      fhir: "$fhirResource.extension.value.as(Condition)"
-      openehr: "/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]"
-      type: "MANUAL" # The manual mapping
-      openEHR:
-        code: "at0064"
-        system: "local"
-        display: "local"
-      FHIR:
-        condition:
-          targetRoot: "/items[at0066]"
-          targetAttribute:
-          operator: "one of"
-          criteria: "at0064"
-    condition:
-      targetRoot: "$fhirRoot.extension"
-      targetAttribute: "url"
-      operator: "one of"
-      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+      fhir: "$fhirResource"
+      openehr: "$openEhrArchetype"
+      type: "MANUAL"
+      manual:
+        openehr:
+          path: "/at0063"
+          type: "DV_CODED_TEXT"
+          value:
+            code_string: "at0066"
+            terminology_id: "local"
+            value: "Nebendiagnose"
+          condition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+        fhir:
+          path: "$fhirResource.extension.url"
+          value: "http://hl7.org/fhir/StructureDefinition/condition-related" #linkage happens in the postprocessor
+          condition:
+            targetRoot: "/at0063"
+            targetAttribute: "/defining_code/code_string"
+            operator: "one of"
+            criteria: "at0066"

@@ -13,8 +13,8 @@ mappings:
   -name: "seitenlokalisation"
   profiling: "add" # add, overwrite, append/ Profiling is the wrong word
   with:
-    fhir:  "extension" #path from where the mapping was called (profiled_specialized_problem_diagnose, icd-10gm)
-    openehr: "$openEhrArchetype.anatomical_location.laterality"
+    fhir:  "$fhirResource" #path from where the mapping was called (profiled_specialized_problem_diagnose, icd-10gm)
+    openehr: "$openEhrArchetype/items[at0002]"
     type: "CODEABLECONCEPT"
     condition:
       targetRoot: "extension"

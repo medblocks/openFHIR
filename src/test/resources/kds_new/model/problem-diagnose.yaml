@@ -13,6 +13,7 @@ mappings:
   - name: "problemDiagnose"
     with:
       fhir: "$fhirResource.code"
+      openEHR: "$openEhrArchetype"
     followedBy:
       mappings:   
         - name: "problemDiagnoseName"
@@ -29,29 +30,23 @@ mappings:
   - name: "clinicalStatus"
     with:
       fhir: "$fhirResource"
-      openehr: "/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
+      openehr: "$openEhrArchetype/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
     slotArchetype: "openEHR-EHR-CLUSTER.problem_qualifier.v2"  #see OMOCL https://github.com/SevKohler/OMOCL/blob/536e9562e5c97cd66eb6b259692b4a672568192b/medical_data/observation/Laboratory_test_result_v1.yml#L9
 
   - name: "note"
     with:
       fhir: "$fhirResource.note.text"
-      openehr: "/data[at0001]/items[at0069]"
+      openehr: "$openEhrArchetype/data[at0001]/items[at0069]"
       type: "STRING"
-
-  - name: "dateTimeOnset"
-    with:
-      fhir: "$fhirResource.onsetDateTime" 
-      openehr: "/data[at0001]/items[at0077]"
-      type: "DATETIME"
 
   - name: "dateTime" #allows no spaces cause of paths
     with:
       fhir: "$fhirResource"
+      openehr: "$openEhrArchetype"
     followedBy:
       mappings:
-        
         #here we need an order for bidirectionality, like first try 1, then 2, ....
-        - name: "dateTimeOnset"
+        - name: "dateTime"
           with:
             fhir: "onsetDateTime" 
             openehr: "/data[at0001]/items[at0077]"
@@ -63,11 +58,10 @@ mappings:
             openehr: "/data[at0001]/items[at0077]"
             type: "DATETIME" #interval, duratin etc is missing in FHIRConnect. 
 
-
-
   - name: "bodySite"
     with:
       fhir: "$fhirResource.bodySite"
+      openehr: "$openEhrArchetype"
     followedBy:
       mappings:
         - name: "bodySiteCode"
@@ -85,7 +79,7 @@ mappings:
   - name: "severity"
     with:
       fhir: "$fhirResource.severity" # Period will be added, but currently is not supporte din problem diangose
-      openehr: "/data[at0005]" #SNOMED to opeNEHR table mapping required + alternatively checkout if there are snomed term_mappings attched and use them.
+      openehr: "$openEhrArchetype/data[at0005]" #SNOMED to opeNEHR table mapping required + alternatively checkout if there are snomed term_mappings attched and use them.
       type: "CODEABLECONCEPT" 
 
 
