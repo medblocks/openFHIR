@@ -1,13 +1,15 @@
-format: "0.2.0"
-version: "0.0.1"
-
-# Condition.recordedDate  RM, context, start_time How is this done ? 
-
-openEhrConfig:
-  archetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: problem_diagnosis
+  version: 0.0.1a
+spec: 
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
 
 mappings:
-
   - name: "problemDiagnose"
     with:
       fhir: "$fhirResource.code"
@@ -47,7 +49,13 @@ mappings:
       fhir: "$fhirResource"
     followedBy:
       mappings:
+        
         #here we need an order for bidirectionality, like first try 1, then 2, ....
+        - name: "dateTimeOnset"
+          with:
+            fhir: "onsetDateTime" 
+            openehr: "/data[at0001]/items[at0077]"
+            type: "DATETIME"
         - name: "dateTimePeriod" #workaround
           with:
             fhir: "onsetPeriod.start" # Period will be added, but currently is not supported in problem diangose
@@ -55,11 +63,7 @@ mappings:
             openehr: "/data[at0001]/items[at0077]"
             type: "DATETIME" #interval, duratin etc is missing in FHIRConnect. 
 
-        - name: "dateTimeOnset"
-          with:
-            fhir: "onsetDateTime" 
-            openehr: "/data[at0001]/items[at0077]"
-            type: "DATETIME"
+
 
   - name: "bodySite"
     with:
@@ -77,8 +81,6 @@ mappings:
             #I guess the $ prevents that. 
             openehr: "/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]" # could be also just loaded at the top if its anyways just $resource....
           slotArchetype: "openEHR-EHR-CLUSTER.anatomical_location.v1"  
-
-
 
   - name: "severity"
     with:

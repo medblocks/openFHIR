@@ -1,0 +1,58 @@
+engine: FHIRConnect/v0.0.1
+type: profile
+metadata:
+  name:  KDS_problem_qualifier
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.problem_qualifier.v2
+
+mappings:
+  #this needs to be called from the specialized problem diagnose 
+  - name: "diagnosesicherheit"
+    profiling: "add"
+    with:
+      fhir: "extension"
+      openehr: "/at0003"
+      type: "CODEABLECONCEPT"
+      condition:
+        targetRoot: "extension"
+        targetAttribute: "url"
+        operator: "one of"
+        criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+
+  - name: "ReferenzPrimaerdiagnose"
+    profiling: "add"
+    with:
+      fhir: "extension"
+      openehr: "/at0063"
+      type: "CODEABLECONCEPT"
+      condition:
+        targetRoot: "extension"
+        targetAttribute: "url"
+        operator: "one of"
+        criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+
+
+  - name: "ReferenzPrimaerdiagnose"
+    with:
+      fhir: "$fhirResource.extension.value.as(Condition)"
+      openehr: "/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]"
+      type: "MANUAL" # The manual mapping
+      openEHR:
+        code: "at0064"
+        system: "local"
+        display: "local"
+      FHIR:
+        condition:
+          targetRoot: "/items[at0066]"
+          targetAttribute:
+          operator: "one of"
+          criteria: "at0064"
+    condition:
+      targetRoot: "$fhirRoot.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"

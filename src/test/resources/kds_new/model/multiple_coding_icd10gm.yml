@@ -1,0 +1,24 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  multiple_coding_icd10gm
+  version: 0.0.1a #
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1
+
+mappings:
+  - name: "mehrfachcodierung"
+    with:
+      fhir: "extension"
+      openehr: "$openEhrArchetype.multiple_coding_icd-10-gm.multiple_coding_identifier"
+      type: "CODEABLECONCEPT"
+    condition:
+      targetRoot: "extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen]"
+
+            

@@ -1,0 +1,97 @@
+engine: FHIRConnect/v0.0.1
+type: profile
+metadata:
+  name: KDS_problem_diagnosis
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
+
+mappings:
+  - name: "date"
+    profiling: "add" # add, overwrite, append/ Profiling is the wrong word
+    with:
+      fhir: "$fhirResource.extension.value.as(DateTimeType)"
+      openehr: "data[at0001]/items[at0003]"
+      type: "DATETIME"
+    condition:
+      targetRoot: "$fhirRoot.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-assertedDate]"
+
+  - name: "icd10ProblemDiagnose"
+    profiling: "append" # add, overwrite, append/ Profiling is the wrong word
+    appendTo: "$problemDiagnoseName"
+    condition:
+      targetRoot: "coding"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]"
+    followedBy:
+      mappings:
+        - name: "codeIcd10Diagnosesicherheit"
+          with:
+            fhir: "extension"
+            openehr: "$openEhrArchetype.diagnosesicherheit"
+            type: "CODEABLECONCEPT"
+          condition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+        - name: "multipleCoding"
+          with:
+            fhir: "extension"
+            openehr: "$openEhrArchetype"
+            slotArchetype: "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
+        - name: "anatomicalLocation"
+          with:
+            fhir: "extension"
+            openehr: "$openEhrArchetype"
+            slotArchetype: "openEHR-EHR-CLUSTER.anatomical_location.v1"
+
+  - name: "lebensphase" # if append name needs to be the same we are appending to
+    profiling: "append"
+    appendTo: "DateTimePeriod" # name of the mapping it is appended to
+    followedBy:
+      mappings:
+        - name: "periodOnsetStart"
+          with:
+            fhir: "start.extension.value"
+            openehr: "lebensphase.beginn"
+            type: "CODEABLECONCEPT"
+          condition:
+            targetRoot: "start.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
+        - name: "periodOnsetEnd"
+          with:
+            fhir: "end.extension.value"
+            openehr: "lebensphase.ende"
+            type: "CODEABLECONCEPT"
+          condition:
+            targetRoot: "end.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
+
+  - name: "snomedBodySite"
+    profiling: "append"
+    path: "$bodySiteCode" # if wanted to add to the where it would be bodySiteCode.where, see YAML paths.
+    condition:
+      targetRoot: "coding"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria: "[http://snomed.info/sct]"
+
+  - name: "clinicalStatus"
+    with:
+      fhir: "$fhirResource"
+      openehr: "/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
+    slotArchetype: "openEHR-EHR-CLUSTER.problem_qualifier.v2"  # see OMOCL
+
+

@@ -1,0 +1,17 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  anatomical_location
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.anatomical_location.v1
+    
+mappings:
+  - name: "body site"
+    with:
+      fhir: "$fhirResource.bodysite.code.text"  
+      openehr: "/items[at0001]" #Name of body site
+      type: "STRING"
