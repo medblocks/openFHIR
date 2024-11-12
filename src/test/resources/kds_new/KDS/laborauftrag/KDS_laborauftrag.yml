@@ -1,0 +1,39 @@
+engine: FHIRConnect/v0.0.1
+type: profile
+metadata:
+  name: service_request.v1
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-INSTRUCTION.service_request.v1
+
+mappings:
+  - name: "specimen"
+    profile: "add"
+    with:
+      fhir: "$fhirResource.specimen"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Specimen"
+      mappings:
+        - name: "specimen recurring"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]" # you need to do this because specimen is recurring element in openehr
+            type: "NONE"
+          reference:
+            resourceType: "Organization"
+            mappings:
+              - name: "organization"
+                with:
+                  fhir: "fhirParentPath.extension"
+                  openehr: "$openEhrArchetyp/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
+                slotArchetype: "openEHR-EHR-CLUSTER.organisation.v1"
+
+
+
+
+

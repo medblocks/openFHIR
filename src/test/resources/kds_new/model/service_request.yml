@@ -1,0 +1,68 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: service_request.v1
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-INSTRUCTION.service_request.v1
+
+mappings:
+  - name: "identifier"
+    with:
+      fhir: "$fhirResource.identifier"
+      openehr: "$openEhrArchetype/protocol[at0008]/items[at0010]"
+      type: "IDENTIFIER" # maps DV_identifier to identifier in FHIR this includes assigner, identifier etc.
+      #-> identifier value to DV_ID value
+      # -> type to type
+      #assigner -> Organization name /code -> DV_IDENTIFIER assigner
+
+  - name: "status"
+    with:
+      fhir: "$fhirResource.status"
+      openehr: "$openEhrArchetype/protocol[at0008]/items[at0127]"
+      type: "CODING"
+
+  - name: "code"
+    with:
+      fhir: "$fhirResource.code"
+      openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0121]"
+      type: "CODEABLECONCEPT"
+
+  - name: "category"
+    with:
+      fhir: "$fhirResource.category"
+      openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0148]"
+      type: "CODEABLECONCEPT"
+
+  - name: "intent"
+    with:
+      fhir: "$fhirResource.intent"
+      openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0065]"
+      type: "CODING"
+
+  - name: "note"
+    with:
+      fhir: "$fhirResource.note.text"
+      openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0150]"
+      type: "STRING"
+
+
+  - name: "organisation"
+    with:
+      fhir: "$fhirResource.requester.as(Organization)"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Organization"
+      mappings:
+        - name: "organization"
+          with:
+            fhir: "fhirParentPath.extension"
+            openehr: "$openEhrArchetyp/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
+          slotArchetype: "openEHR-EHR-CLUSTER.organisation.v1"
+
+
+

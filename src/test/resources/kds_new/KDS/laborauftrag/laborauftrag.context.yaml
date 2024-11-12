@@ -1,0 +1,16 @@
+format: "0.2.0"
+
+openEHR:
+  templateId: "KDS_Laborauftrag"
+  archetypes:
+    - "openEHR-EHR-INSTRUCTION.service_request.v1"
+    - "openEHR-EHR-CLUSTER.specimen.v1"
+    - "openEHR-EHR-CLUSTER.organisation.v1"
+
+fhir:
+  resourceType: "Bundle"
+  condition:
+    targetRoot: "$fhirResource"
+    targetAttribute: "entry.resource.meta.profile"
+    operator: "one of"
+    criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab]"

@@ -10,8 +10,23 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     archetype: openEHR-EHR-CLUSTER.anatomical_location.v1
     
 mappings:
-  - name: "body site"
+  - name: "bodySiteText"
     with:
-      fhir: "$fhirResource.bodysite.code.text"  
+      fhir: "$fhirResource.bodysite.text"
       openehr: "$openEhrArchetype/items[at0001]" #Name of body site
-      type: "STRING" #TODO change to Coded text in the Template
+      type: "STRING"
+    condition:
+      targetRoot: "$fhirResource.bodysite"
+      targetAttribute: "coding"
+      operator: "empty"
+
+  - name: "bodySiteCoded"
+    with:
+      fhir: "$fhirResource.bodysite"
+      openehr: "$openEhrArchetype/items[at0001]" #Name of body site
+      type: "CODEABLECONCEPT"
+    condition:
+      targetRoot: "$openEhrArchetype"
+      targetAttribute: "/items[at0001]"
+      operator: "type"
+      criteria: ["DV_CODED_TEXT"]

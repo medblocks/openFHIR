@@ -24,7 +24,7 @@ mappings:
 
   - name: "icd10ProblemDiagnose"
     profiling: "append" # add, overwrite, append/ Profiling is the wrong word
-    appendTo: "$problemDiagnoseName"
+    appendTo: "problemDiagnoseName"
     condition:
       targetRoot: "$fhirParentPath" # path where the append mapping stopped
       targetAttribute: "system"
@@ -62,7 +62,7 @@ mappings:
 
   - name: "snomedBodySite"
     profiling: "append"
-    appendTo: "$bodySiteCode" # if wanted to add to the where it would be bodySiteCode.where, see YAML paths.
+    appendTo: "bodySiteCode" # if wanted to add to the where it would be bodySiteCode.where, see YAML paths.
     condition:
       targetRoot: "$fhirParentPath.coding"
       targetAttribute: "system"
