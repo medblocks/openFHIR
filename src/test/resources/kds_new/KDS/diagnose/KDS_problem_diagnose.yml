@@ -1,5 +1,5 @@
 engine: FHIRConnect/v0.0.1
-type: profile
+type: extension
 metadata:
   name: KDS_problem_diagnosis
   version: 0.0.1a
@@ -8,6 +8,8 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
+  fhirConfig:
+    fhirProfile: https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose
 
 mappings:
   - name: "date"
@@ -38,7 +40,7 @@ mappings:
             openehr: "$openEHRArchetype/data[at0001]/items[at0073]"
             type: "CODEABLECONCEPT"
           condition:
-            targetRoot: "fhirParentPath.extension"
+            targetRoot: "$fhirParentPath.extension"
             targetAttribute: "url"
             operator: "one of"
             criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
@@ -47,11 +49,16 @@ mappings:
             fhir: "fhirParentPath.extension"
             openehr: "$openEhrArchetype/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]"
           slotArchetype: "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
-        - name: "anatomicalLocation"
+        - name: "anatomicalLocation" #cannot be a profile of the Cluster since the cluster is mapped from two different points in FHIR
           with:
-            fhir: "fhirParentPath.extension"
-            openehr: "$openEhrArchetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
-          slotArchetype: "openEHR-EHR-CLUSTER.anatomical_location.v1"
+            fhir: "$fhirParentPath.extension"
+            openehr: "$openEhrArchetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]"
+            type: "CODEABLECONCEPT"
+          condition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/seitenlokalisation]"
 
   - name: "lebensphase"
     profiling: "add"
@@ -75,5 +82,3 @@ mappings:
       fhir: "$fhirResource"
       openehr: "$openEhrArchetype/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
     slotArchetype: "openEHR-EHR-CLUSTER.problem_qualifier.v2"
-
-

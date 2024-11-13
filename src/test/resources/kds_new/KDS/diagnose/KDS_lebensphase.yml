@@ -1,5 +1,5 @@
 engine: FHIRConnect/v0.0.1
-type: profile
+type: extension
 metadata:
   name:  KDS_lebensphase
   version: 0.0.1a # version of this particular mapping

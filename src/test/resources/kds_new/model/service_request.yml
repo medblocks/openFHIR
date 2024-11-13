@@ -60,7 +60,7 @@ mappings:
       mappings:
         - name: "organization"
           with:
-            fhir: "fhirParentPath.extension"
+            fhir: "extension"
             openehr: "$openEhrArchetyp/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
           slotArchetype: "openEHR-EHR-CLUSTER.organisation.v1"
 

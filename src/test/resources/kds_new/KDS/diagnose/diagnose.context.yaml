@@ -10,20 +10,16 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 openEHR:
   templateId: "KDS_Diagnose"
   archetypes:
-    - "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1" # i dont think we need to list clusters here ? 
-  profiles:
+    - "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1" # i dont think we need to list clusters here ?
+    - "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+    - "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+    - "openEHR-EHR-CLUSTER.lebensphase.v0"
+  extensions:
     - "KDS_problem_diagnosis" #they overload the vanilla mappings, no version = take the latest
-    - "KDS_anatomical_location" 
     - "KDS_problem_qualifier"
     - "KDS_lebensphase"
 
 fhir:
-  resourceType: "Bundle"
-  condition:
-    target: "$fhirResource.entry.resource.meta.profile"
-    operator: "one of"
-    criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose]"
-
   post-processors:
     name: "primary-reference"
     type: "references"

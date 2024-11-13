@@ -8,6 +8,8 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
+  fhirConfig:
+    fhirProfile: http://hl7.org/fhir/StructureDefinition/Condition
 
 mappings:
   - name: "problemDiagnose"
@@ -27,12 +29,6 @@ mappings:
             openehr: "/data[at0001]/items[at0009]"
             type: "STRING"    
 
-  - name: "clinicalStatus"
-    with:
-      fhir: "$fhirResource"
-      openehr: "$openEhrArchetype/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
-    slotArchetype: "openEHR-EHR-CLUSTER.problem_qualifier.v2"  #see OMOCL https://github.com/SevKohler/OMOCL/blob/536e9562e5c97cd66eb6b259692b4a672568192b/medical_data/observation/Laboratory_test_result_v1.yml#L9
-
   - name: "note"
     with:
       fhir: "$fhirResource.note.text"
@@ -45,18 +41,17 @@ mappings:
       openehr: "$openEhrArchetype"
     followedBy:
       mappings:
-        #here we need an order for bidirectionality, like first try 1, then 2, ....
         - name: "dateTime"
           with:
-            fhir: "onsetDateTime" 
+            fhir: "onset" # if period map period.start if DateTime map DateTime
             openehr: "/data[at0001]/items[at0077]"
             type: "DATETIME"
-        - name: "dateTimePeriod" #workaround
-          with:
-            fhir: "onsetPeriod.start" # Period will be added, but currently is not supported in problem diangose
-            #here we would like a not-exists condition if we wanted to pick between one, if both are provided (not here the case)
-            openehr: "/data[at0001]/items[at0077]"
-            type: "DATETIME" #interval, duratin etc is missing in FHIRConnect. 
+     #   - name: "dateTimePeriod" #workaround
+     #     with:
+     #       fhir: "onsetPeriod.start" # Period will be added, but currently is not supported in problem diangose
+     #       #here we would like a not-exists condition if we wanted to pick between one, if both are provided (not here the case)
+     #       openehr: "/data[at0001]/items[at0077]"
+     #       type: "DATETIME" #interval, duratin etc is missing in FHIRConnect.
 
   - name: "bodySite"
     with:
