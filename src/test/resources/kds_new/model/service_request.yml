@@ -21,11 +21,17 @@ mappings:
       # -> type to type
       #assigner -> Organization name /code -> DV_IDENTIFIER assigner
 
-  - name: "status"
+  - name: "authoredOn"
+    with:
+      fhir: "$fhirResource.authoredOn"
+      openehr: "$composition/context/start_time"
+      type: "DATETIME"
+
+  - name: "status" #TODO this is in openEHR a DV_CODED_TEXT and in FHIR an coding whic then has only a value .
     with:
       fhir: "$fhirResource.status"
       openehr: "$openEhrArchetype/protocol[at0008]/items[at0127]"
-      type: "CODING"
+      type: "STRING"
 
   - name: "code"
     with:
@@ -50,7 +56,6 @@ mappings:
       fhir: "$fhirResource.note.text"
       openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0150]"
       type: "STRING"
-
 
   - name: "organisation"
     with:

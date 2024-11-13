@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name: KDS_problem_diagnosis
+  name: KDSProblemDiagnosis
   version: 0.0.1a
 spec:
   system: FHIR
@@ -12,6 +12,8 @@ spec:
     profile: https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose
 
 mappings:
+  - name: "encounter"
+
   - name: "date"
     extension: "add"
     with:

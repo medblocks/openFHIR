@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name: KDS_laborauftrag
+  name: KDSLaborauftrag
   version: 0.0.1a
 spec:
   system: FHIR

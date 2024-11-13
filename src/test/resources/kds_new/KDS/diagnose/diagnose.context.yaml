@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: context
 metadata:
-  name:  KDS_Diagnose
+  name:  KDSDiagnoseContext
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
@@ -15,9 +15,9 @@ openEHR:
     - "openEHR-EHR-CLUSTER.problem_qualifier.v2"
     - "openEHR-EHR-CLUSTER.lebensphase.v0"
   extensions:
-    - "KDS_problem_diagnosis" #they overload the vanilla mappings, no version = take the latest
-    - "KDS_problem_qualifier"
-    - "KDS_lebensphase"
+    - "KDSProblemDiagnosis" #they overload the vanilla mappings, no version = take the latest
+    - "KDSProblemQualifier"
+    - "KDSLebensphase"
 
 fhir:
 # could be deleted

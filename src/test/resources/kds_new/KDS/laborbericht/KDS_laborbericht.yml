@@ -1,0 +1,85 @@
+forengine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDSLaborbericht
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
+  fhirConifg:
+    profile: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/DiagnosticReportLab"
+
+
+mappings:
+  - name: "status"
+    with:
+      fhir: "$fhirResource.status"
+      openehr: "$composition/context/other_context[at0001]/items[at0005]" #
+      type: "STRING" # again map date time period to interval etc. if
+
+
+
+  - name: "specimen"
+    with:
+      fhir: "$fhirResource.specimen"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Specimen"
+      mappings:
+        - name: "specimen recurring"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$openEhrArchetype.laborbefund.probenmaterial" # you need to do this because specimen is recurring element in openehr
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "specimen type"
+                with:
+                  fhir: "type"
+                  openehr: "specimen_type"
+                  type: "CODEABLECONCEPT"
+
+              - name: "specimen note"
+                with:
+                  fhir: "note.text"
+                  openehr: "comment"
+                  type: "STRING"
+
+              - name: "specimen identifier"
+                with:
+                  fhir: "identifier"
+                  openehr: "laboratory_specimen_identifier"
+                  type: "IDENTIFIER"
+              - name: "specimen collection"
+                with:
+                  fhir: "collection"
+                  openehr: "$openEhrArchetype"
+                  type: "NONE"
+                followedBy:
+                  mappings:
+                    - name: "specimen collection date time"
+                      with:
+                        fhir: "collected.as(DateTimeType)"
+                        openehr: "collection_date_time.date_time_value"
+                        type: "DATETIME"
+
+                    - name: "specimen collection method"
+                      with:
+                        fhir: "method.text"
+                        openehr: "collection_method"
+                        type: "STRING"
+
+                    - name: "specimen collection body site"
+                      with:
+                        fhir: "bodySite.text"
+                        openehr: "körperstelle"
+                        type: "STRING"
+
+                    - name: "specimen collector"
+                      with:
+                        fhir: "collector.as(Reference).identifier" # if you don't explicitly cast to Reference, it will try to add a Resource
+                        openehr: "specimen_collector_identifier"
+                        type: "IDENTIFIER"

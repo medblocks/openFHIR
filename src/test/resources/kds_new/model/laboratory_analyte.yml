@@ -1,0 +1,44 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  laboratoryAnalyte
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.laboratory_test_analyte.v1
+
+mappings:
+  - name: "status"
+    with:
+      fhir: "$fhirResource.status"
+      openehr: "$openEhrArchetype/items[at0005]"
+      type: "STRING"
+
+  - name: "result"
+    with:
+      fhir: "$fhirResource.result"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Observation"
+      mappings:
+        - name: "observation recurring"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$openEhrArchetype.laborbefund.pro_laboranalyt"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "value"
+                with:
+                  fhir: "value.as(Quantity)"
+                  openehr: "messwert.quantity_value"
+                  type: "QUANTITY"
+
+              - name: "code"
+                with:
+                  fhir: "code"
+                  openehr: "analyte_name"
+                  type: "CODEABLECONCEPT"

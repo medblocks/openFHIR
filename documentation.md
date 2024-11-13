@@ -115,6 +115,7 @@ Modeling variables/references are required to create reusable paths:
 | `$fhirRoot`         | FHIR object at root, if no Resource                                                      |
 | `$fhirParentPath`   | The path from where the slotArchetype or the profile append is called                    |
 | `$openEhrArchetype` | openEHR placeholder marking the beginning of the context's Archetype                     |
+| `$composition`      | path of the composition                                                                  |
 | `$reference`        | Helper to indicate a skipped path, due to a [Reference Mapping](#fhir-reference-mapping) |
 
 It is also possible to ask the implementation to provide further information from the execution context.
