@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name: service_request.v1
+  name: KDS_laborauftrag
   version: 0.0.1a
 spec:
   system: FHIR
@@ -9,11 +9,11 @@ spec:
   openEhrConfig:
     archetype: openEHR-EHR-INSTRUCTION.service_request.v1
   fhirConifg:
-    profile: https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab
+    profile: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab"
 
 mappings:
   - name: "specimen"
-    extension: "add"
+    profile: "add"
     with:
       fhir: "$fhirResource.specimen"
       openehr: "$reference"
@@ -21,19 +21,16 @@ mappings:
     reference:
       resourceType: "Specimen"
       mappings:
-        - name: "specimen recurring"
+        - name: "specimenReference"
           with:
             fhir: "$fhirRoot"
-            openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]" # you need to do this because specimen is recurring element in openehr
-            type: "NONE"
-          reference:
-            resourceType: "Organization"
-            mappings:
-              - name: "organization"
-                with:
-                  fhir: "fhirParentPath.extension"
-                  openehr: "$openEhrArchetyp/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
-                slotArchetype: "openEHR-EHR-CLUSTER.organisation.v1"
+            openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]"
+          slotArchetype: "openEHR-EHR-CLUSTER.specimen.v1"
+     #   - name: "specimen recurring" TODO i dont get that is this necessary ?
+     #     with:
+     #       fhir: "$fhirRoot"
+     #       openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]" # you need to do this because specimen is recurring element in openehr
+     #       type: "NONE"
 
 
 

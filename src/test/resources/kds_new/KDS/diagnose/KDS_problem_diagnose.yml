@@ -9,7 +9,7 @@ spec:
   openEhrConfig:
     archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
   fhirConfig:
-    fhirProfile: https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose
+    profile: https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose
 
 mappings:
   - name: "date"
@@ -82,3 +82,32 @@ mappings:
       fhir: "$fhirResource"
       openehr: "$openEhrArchetype/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
     slotArchetype: "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+
+  - name: "primärdiagnose"
+    extension: "add"
+    with:
+      fhir: "$fhirResource"
+      openehr: "$openEhrArchetype"
+      type: "NONE"
+    condition:
+      targetRoot: "extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+    followedBy:
+      mappings:
+        - name: "referenced condition"
+          with:
+            fhir: "extension"
+            openehr: "$reference"
+            type: "NONE"
+          reference:
+            resourceType: "Condition"
+            mappings:
+              - name: "primary"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "$openEhrArchetype"
+                  type: "NONE"
+                slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+                #Is this really correct what if we call the KDS_problem .. here and its not that profile

@@ -8,7 +8,8 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.organisation.v1
-
+  fhirConfig:
+    profile: http://hl7.org/fhir/StructureDefinition/Organization
 
 mappings:
   - name: "org"

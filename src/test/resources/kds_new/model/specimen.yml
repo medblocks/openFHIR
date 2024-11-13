@@ -7,29 +7,31 @@ spec:
   system: FHIR
   version: R4
   openEhrConfig:
-    archetype: openEHR-EHR-INSTRUCTION.service_request.v1
+    archetype: openEHR-EHR-CLUSTER.specimen.v1
+  fhirConfig:
+    profile: http://hl7.org/fhir/StructureDefinition/Specimen
 
-followedBy:
-  mappings:
-    - name: "specimen identifier"
-      with:
-        fhir: "identifier"
-        openehr: "laboratory_specimen_identifier"
-        type: "IDENTIFIER"
-    - name: "specimen collection"
-      with:
-        fhir: "collection"
-        openehr: "$openEhrArchetype"
-        type: "NONE"
-      followedBy:
-        mappings:
-          - name: "specimen collection date time"
-            with:
-              fhir: "collected.as(DateTimeType)"
-              openehr: "collection_date_time.date_time_value"
-              type: "DATETIME"
-          - name: "specimen collector"
-            with:
-              fhir: "collector.as(Reference).identifier" # if you don't explicitly cast to Reference, it will try to add a Resource
-              openehr: "specimen_collector_identifier"
-              type: "IDENTIFIER"
+mappings:
+  - name: "specimenIdentifier"
+    with:
+      fhir: "$fhirResource.identifier"
+      openehr: "$openehrArchetype/items[at0001]"
+      type: "IDENTIFIER"
+
+  - name: "specimenCollection"
+    with:
+      fhir: "$fhirResource.collection"
+      openehr: "$openEhrArchetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "specimenCollectionDateTime"
+          with:
+            fhir: "collected" # same as onset; try to provide both and use the one that's present
+            openehr: "/items[at0015]"
+            type: "DATETIME"
+        - name: "specimenCollector"
+          with:
+            fhir: "collector.as(Reference).identifier" # explicitly cast to Reference to avoid adding a Resource
+            openehr: "/items[at0070]"
+            type: "IDENTIFIER"

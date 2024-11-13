@@ -8,6 +8,8 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
+  fhirConfig:
+    profile: http://hl7.org/fhir/StructureDefinition/Condition
 
 mappings:
   - name: "problemDiagnose"

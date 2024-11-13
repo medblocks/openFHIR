@@ -6,6 +6,8 @@ openEHR:
     - "openEHR-EHR-INSTRUCTION.service_request.v1"
     - "openEHR-EHR-CLUSTER.specimen.v1"
     - "openEHR-EHR-CLUSTER.organisation.v1"
+  extensions:
+    - "KDS_laborauftrag"
 
 fhir:
   resourceType: "Bundle"

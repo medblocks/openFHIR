@@ -146,18 +146,18 @@ Data types, such as `DV_QUANTITY`, `DV_TEXT` and so on, and their FHIR counterpa
 
 The internal mapping of data types:
 
-| Type ID / FHIR  | openEHR       | Primitive | "FLAT / FHIR" Attributes Pairs                       |
-|-----------------|---------------|-----------|------------------------------------------------------|
-| NONE            | NONE          | false     | /                                                    |
-| QUANTITY        | DV_QUANTITY   | true      | magnitude / value <br/> unit / unit                  |
-| QUANTITY        | DV_ORDINAL    | true      | ordinal / value <br/> value / unit <br/> code / code |
-| QUANTITY        | DV_COUNT      | true      | (direct)                                             |
-| DATETIME        | DV_DATE_TIME  | true      | (direct)                                             |
-| CODEABLECONCEPT | DV_CODED_TEXT | false     | **_nested_** / coding <br/> value / text             |
-| CODING          | CODE_PHRASE   | true      | code / code <br/> terminology / system               |
-| STRING          | DV_TEXT       | true      | (direct)                                             |
-| DOSAGE          | NONE          | false     | (special)                                            |
-| IDENTIFIER      | DV_IDENTIFIER | false     | identifier value to DV_ID value, type to type,  Organization name /code -> DV_IDENTIFIER assigner   |
+| Type ID / FHIR  | openEHR       | Primitive | "FLAT / FHIR" Attributes Pairs                                                                    |
+|-----------------|---------------|-----------|---------------------------------------------------------------------------------------------------|
+| NONE            | NONE          | false     | /                                                                                                 |
+| QUANTITY        | DV_QUANTITY   | true      | magnitude / value <br/> unit / unit                                                               |
+| QUANTITY        | DV_ORDINAL    | true      | ordinal / value <br/> value / unit <br/> code / code                                              |
+| QUANTITY        | DV_COUNT      | true      | (direct)                                                                                          |
+| CODEABLECONCEPT | DV_CODED_TEXT | false     | **_nested_** / coding <br/> value / text                                                          |
+| DATETIME        | DV_DATE_TIME  | true      | (direct) will also map onSet times into DateTime                                                  |
+| CODING          | CODE_PHRASE   | true      | code / code <br/> terminology / system                                                            |
+| STRING          | DV_TEXT       | true      | (direct)                                                                                          |
+| DOSAGE          | NONE          | false     | (special)                                                                                         |
+| IDENTIFIER      | DV_IDENTIFIER | false     | identifier value to DV_ID value, type to type,  Organization name /code -> DV_IDENTIFIER assigner |
                                
 The `nested` keyword indicates a non-primitive case, where the final resulting structure is a nested structure, composed of multiple types.
 
