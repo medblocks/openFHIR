@@ -11,7 +11,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 
 mappings:
   - name: "periodOnsetStart"  # if append name needs to be the same we are appending to
-    profiling: "add"
+    extension: "add"
     with:
       fhir: "$fhirResource.start.extension.value"
       openehr: "$openEhrArchetype/items[at0001]"
@@ -23,7 +23,7 @@ mappings:
       criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
 
   - name: "periodOnsetEnd"
-    profiling: "add"
+    extension: "add"
     with:
       fhir: "$fhirResource.end.extension.value"
       openehr: "lebensphase.ende"

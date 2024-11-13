@@ -8,8 +8,6 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
-  fhirConfig:
-    fhirProfile: http://hl7.org/fhir/StructureDefinition/Condition
 
 mappings:
   - name: "problemDiagnose"
@@ -43,7 +41,8 @@ mappings:
       mappings:
         - name: "dateTime"
           with:
-            fhir: "onset" # if period map period.start if DateTime map DateTime
+            fhir: "onset" # if period map period.start if DateTime map DateTime, we cant implement this another way currently :(
+            # or we just leave period out, otherwise it will map from openEHR to FHIR period over dateTime
             openehr: "/data[at0001]/items[at0077]"
             type: "DATETIME"
      #   - name: "dateTimePeriod" #workaround
@@ -51,7 +50,7 @@ mappings:
      #       fhir: "onsetPeriod.start" # Period will be added, but currently is not supported in problem diangose
      #       #here we would like a not-exists condition if we wanted to pick between one, if both are provided (not here the case)
      #       openehr: "/data[at0001]/items[at0077]"
-     #       type: "DATETIME" #interval, duratin etc is missing in FHIRConnect.
+     #       type: "DATETIME" #interval, duration etc is currently missing in FHIRConnect.
 
   - name: "bodySite"
     with:

@@ -8,6 +8,8 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-INSTRUCTION.service_request.v1
+  fhirConifg:
+    profile: http://hl7.org/fhir/StructureDefinition/ServiceRequest
 
 mappings:
   - name: "identifier"

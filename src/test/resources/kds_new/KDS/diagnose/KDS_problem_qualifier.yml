@@ -12,7 +12,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 mappings:
   #this needs to be called from the specialized problem diagnose 
   - name: "diagnosesicherheit"
-    profiling: "add"
+    extension: "add"
     with:
       fhir: "$fhirResource.extension"
       openehr: "$openEhrArchetype/at0003"
@@ -24,7 +24,7 @@ mappings:
         criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
 
   - name: "referenzPrimaerdiagnose"
-    profiling: "add"
+    extension: "add"
     with:
       fhir: "$fhirResource.extension"
       openehr: "$openEhrArchetype/at0063"
@@ -45,7 +45,7 @@ mappings:
 
 
   - name: "referenzNebendiagnose" #should maybe be contained under the referenzPrimaer
-    profiling: "add"
+    extension: "add"
     with:
       fhir: "$fhirResource"
       openehr: "$openEhrArchetype"

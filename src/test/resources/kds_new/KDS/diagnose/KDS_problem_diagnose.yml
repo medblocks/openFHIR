@@ -13,7 +13,7 @@ spec:
 
 mappings:
   - name: "date"
-    profiling: "add" # add, overwrite, append/ Profiling is the wrong word
+    extension: "add"
     with:
       fhir: "$fhirResource.extension.value.as(DateTimeType)"
       openehr: "$openEhrArchetype/data[at0001]/items[at0003]"
@@ -25,7 +25,7 @@ mappings:
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-assertedDate]"
 
   - name: "icd10ProblemDiagnose"
-    profiling: "append" # add, overwrite, append/ Profiling is the wrong word
+    extension: "append"
     appendTo: "problemDiagnoseName"
     condition:
       targetRoot: "$fhirParentPath" # path where the append mapping stopped
@@ -61,14 +61,14 @@ mappings:
             criteria: "[http://fhir.de/StructureDefinition/seitenlokalisation]"
 
   - name: "lebensphase"
-    profiling: "add"
+    extension: "add"
     with:
       fhir: "$fhirResource"
       openehr: "$openEHRArchetype/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
     slotArchetype: "openEHR-EHR-CLUSTER.lebensphase.v0"
 
   - name: "snomedBodySite"
-    profiling: "append"
+    extension: "append"
     appendTo: "bodySiteCode" # if wanted to add to the where it would be bodySiteCode.where, see YAML paths.
     condition:
       targetRoot: "$fhirParentPath.coding"
@@ -77,7 +77,7 @@ mappings:
       criteria: "[http://snomed.info/sct]"
 
   - name: "clinicalStatus"
-    profiling: "add"
+    extension: "add"
     with:
       fhir: "$fhirResource"
       openehr: "$openEhrArchetype/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
