@@ -16,7 +16,6 @@ mappings:
     with:
       fhir: "$fhirResource.extension"
       openehr: "$openEhrArchetype/at0003"
-      type: "CODEABLECONCEPT"
       condition:
         targetRoot: "extension"
         targetAttribute: "url"
@@ -28,7 +27,6 @@ mappings:
     with:
       fhir: "$fhirResource.extension"
       openehr: "$openEhrArchetype/at0063"
-      type: "MANUAL"
       manual:
         openEHR:
           path: "/at0063" # the terminology should be set automatically
@@ -49,7 +47,6 @@ mappings:
     with:
       fhir: "$fhirResource"
       openehr: "$openEhrArchetype"
-      type: "MANUAL"
       manual:
         openehr:
           path: "/at0063"

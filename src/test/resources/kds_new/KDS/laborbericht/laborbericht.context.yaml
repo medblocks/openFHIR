@@ -7,18 +7,12 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
 
-openEHR:
+context:
+  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/DiagnosticReportLab"
   templateId: "KDS_Laborbericht"
   archetypes:
     - "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
     - "openEHR-EHR-CLUSTER.case_identification.v0"
     - "openEHR-EHR-CLUSTER.specimen.v1"
     - "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
-
-fhir:
-  resourceType: "Bundle"
-  condition:
-    targetRoot: "$fhirResource"
-    targetAttribute: "meta.profile"
-    operator: "one of"
-    criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/DiagnosticReportLab]"
+    - "openEHR-EHR-CLUSTER.case_identification.v0"

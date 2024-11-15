@@ -12,16 +12,36 @@ spec:
     profile: https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose
 
 mappings:
-  - name: "encounter"
+  - name: "fallIdentifikation"
+    extension: "add"
+    with:
+      fhir: "$fhirResource.encounter"
+      openehr: "$reference"
+    reference: #type None
+      resourceType: "Encounter"
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+          slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
+
+        - name: "cascadeMapping"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+            openehr_link:
+              meaning: "der Fall zu dem diese Composition gehört"
+              type: "Fall link"
 
   - name: "date"
     extension: "add"
     with:
       fhir: "$fhirResource.extension.value.as(DateTimeType)"
       openehr: "$openEhrArchetype/data[at0001]/items[at0003]"
-      type: "DATETIME"
     condition:
-      targetRoot: "$fhirRoot.extension"
+      targetRoot: "$fhirRoot"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-assertedDate]"
@@ -40,7 +60,6 @@ mappings:
           with:
             fhir: "$fhirParentPath.extension"
             openehr: "$openEHRArchetype/data[at0001]/items[at0073]"
-            type: "CODEABLECONCEPT"
           condition:
             targetRoot: "$fhirParentPath.extension"
             targetAttribute: "url"
@@ -55,7 +74,6 @@ mappings:
           with:
             fhir: "$fhirParentPath.extension"
             openehr: "$openEhrArchetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]"
-            type: "CODEABLECONCEPT"
           condition:
             targetRoot: "extension"
             targetAttribute: "url"
@@ -90,7 +108,6 @@ mappings:
     with:
       fhir: "$fhirResource"
       openehr: "$openEhrArchetype"
-      type: "NONE"
     condition:
       targetRoot: "extension"
       targetAttribute: "url"
@@ -98,11 +115,10 @@ mappings:
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     followedBy:
       mappings:
-        - name: "referenced condition"
+        - name: "referencedCondition"
           with:
             fhir: "extension"
             openehr: "$reference"
-            type: "NONE"
           reference:
             resourceType: "Condition"
             mappings:
@@ -110,6 +126,5 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "$openEhrArchetype"
-                  type: "NONE"
-                slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+                slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1" #type none
                 #Is this really correct what if we call the KDS_problem .. here and its not that profile

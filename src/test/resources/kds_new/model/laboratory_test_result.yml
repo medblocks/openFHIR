@@ -26,10 +26,33 @@ mappings:
     with:
       fhir: "$fhirResource.effective"
       openehr: "$composition/context/start_time" #
-      type: "DATETIME" # again map date time period to interval etc. if
+      type: "DATETIME" # again map date time period to interval etc.
 
   - name: "effectiveEnd"
     with:
       fhir: "$fhirResource.effectivePeriod.end"
       openehr: "$composition/context/end_time" #
-      type: "DATETIME" # again map date time period to interval etc. if
+      type: "DATETIME"
+
+  - name: "basedOn"
+    extension: "add"
+    with:
+      fhir: "$fhirResource.basedOn"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.identifier.value"
+            openehr: "$openehrArchetype/protocol[at0004]/items[at0094]/items[at0063]"
+            type: "IDENTIFIER"
+        - name: "cascadeMapping"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$openehrArchetype/protocol[at0004]/items[at0094]/items[at0063]" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+            openehr_link:
+              meaning: "the identifier which it derived from"
+              type: "based on"
+

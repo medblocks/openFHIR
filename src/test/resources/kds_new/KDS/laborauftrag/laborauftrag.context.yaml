@@ -7,19 +7,13 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
 
-openEHR:
+context:
+  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab"
   templateId: "KDS_Laborauftrag"
   archetypes:
     - "openEHR-EHR-INSTRUCTION.service_request.v1"
     - "openEHR-EHR-CLUSTER.specimen.v1"
     - "openEHR-EHR-CLUSTER.organisation.v1"
+    - "openEHR-EHR-CLUSTER.case_identification.v0"
   extensions:
     - "KDSLaborauftrag"
-
-fhir:
-  resourceType: "Bundle"
-  condition:
-    targetRoot: "$fhirResource"
-    targetAttribute: "entry.resource.meta.profile"
-    operator: "one of"
-    criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab]"

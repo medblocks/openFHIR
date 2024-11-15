@@ -12,20 +12,14 @@ spec:
     profile: http://hl7.org/fhir/StructureDefinition/Organization
 
 mappings:
-  - name: "org"
+  - name: "orgName"
     with:
-      fhir: "$fhirParentPath"
-      openehr: "$openEhrArchetype"
-      type: "NONE"
-    followedBy:
-      mappings:
-        - name: "orgName"
-          with:
-            fhir: "name"
-            openehr: "/items[at0001]"
-            type: "TEXT"
-        - name: "orgId"
-          with:
-            fhir: "identifier"
-            openehr: "/items[at0003]"
-            type: "IDENTIFIER"
+      fhir: "$fhirParentPath.name"
+      openehr: "$openehrArchetype/items[at0001]"
+      type: "TEXT"
+
+  - name: "orgId"
+    with:
+      fhir: "$fhirParentPath.identifier"
+      openehr: "$openehrArchetype/items[at0003]"
+      type: "IDENTIFIER"

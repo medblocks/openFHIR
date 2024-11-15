@@ -12,12 +12,26 @@ spec:
     profile: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab"
 
 mappings:
+  - name: "fallIdentifikation"
+    extension: "add"
+    with:
+      fhir: "$fhirResource.encounter"
+      openehr: "$reference"
+    reference:
+      resourceType: "Encounter"
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+          slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
+
+
   - name: "specimen"
-    profile: "add"
+    extension: "add"
     with:
       fhir: "$fhirResource.specimen"
       openehr: "$reference"
-      type: "NONE"
     reference:
       resourceType: "Specimen"
       mappings:
@@ -26,11 +40,25 @@ mappings:
             fhir: "$fhirRoot"
             openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]"
           slotArchetype: "openEHR-EHR-CLUSTER.specimen.v1"
-     #   - name: "specimen recurring" TODO i dont get that is this necessary ?
-     #     with:
-     #       fhir: "$fhirRoot"
-     #       openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]" # you need to do this because specimen is recurring element in openehr
-     #       type: "NONE"
+      #   - name: "specimen recurring" TODO i dont get that is this necessary ?
+      #     with:
+      #       fhir: "$fhirRoot"
+      #       openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]" # you need to do this because specimen is recurring element in openehr
+      #       type: "NONE"
+
+  - name: "organisation"
+    extension: "add"
+    with:
+      fhir: "$fhirResource.requester.as(Organization)"
+      openehr: "$reference"
+    reference:
+      resourceType: "Organization"
+      mappings:
+        - name: "organizationReference"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$openEhrArchetype/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
+          slotArchetype: "openEHR-EHR-CLUSTER.organisation.v1"
 
 
 

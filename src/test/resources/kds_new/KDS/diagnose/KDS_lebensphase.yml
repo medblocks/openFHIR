@@ -15,7 +15,6 @@ mappings:
     with:
       fhir: "$fhirResource.start.extension.value"
       openehr: "$openEhrArchetype/items[at0001]"
-      type: "CODEABLECONCEPT"
     condition:
       targetRoot: "start.extension"
       targetAttribute: "url"
@@ -27,7 +26,6 @@ mappings:
     with:
       fhir: "$fhirResource.end.extension.value"
       openehr: "lebensphase.ende"
-      type: "CODEABLECONCEPT"
     condition:
       targetRoot: "$fhirResource.end.extension"
       targetAttribute: "url"
