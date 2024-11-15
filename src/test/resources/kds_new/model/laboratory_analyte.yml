@@ -14,7 +14,6 @@ mappings:
     with:
       fhir: "$fhirResource.status"
       openehr: "$openEhrArchetype/items[at0005]"
-      type: "STRING"
 
   - name: "result"
     with:
@@ -35,10 +34,8 @@ mappings:
                 with:
                   fhir: "value.as(Quantity)"
                   openehr: "messwert.quantity_value"
-                  type: "QUANTITY"
 
               - name: "code"
                 with:
                   fhir: "code"
                   openehr: "analyte_name"
-                  type: "CODEABLECONCEPT"

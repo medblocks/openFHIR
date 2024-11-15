@@ -16,10 +16,8 @@ mappings:
     with:
       fhir: "$fhirParentPath.name"
       openehr: "$openehrArchetype/items[at0001]"
-      type: "TEXT"
 
   - name: "orgId"
     with:
       fhir: "$fhirParentPath.identifier"
       openehr: "$openehrArchetype/items[at0003]"
-      type: "IDENTIFIER"

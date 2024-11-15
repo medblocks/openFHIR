@@ -14,7 +14,6 @@ mappings:
     with:
       fhir: "$fhirResource"
       openehr: "$openEhrArchetype/items[at0001]"
-      type: "CODEABLECONCEPT" # tries to map code if no code -> write to text
     condition:
       targetRoot: "extension"
       targetAttribute: "url"

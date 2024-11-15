@@ -16,7 +16,6 @@ mappings:
     with:
       fhir: "$fhirResource.identifier"
       openehr: "$openehrArchetype/items[at0001]"
-      type: "IDENTIFIER"
 
   - name: "specimenCollection"
     with:
@@ -27,56 +26,28 @@ mappings:
       mappings:
         - name: "specimenCollectionDateTime"
           with:
-            fhir: "collected" # same as onset; try to provide both and use the one that's present
+            fhir: "specimenCollectionDateTime" # same as onset; try to provide both and use the one that's present
             openehr: "/items[at0015]"
-            type: "DATETIME"
         - name: "specimenCollector"
           with:
             fhir: "collector.as(Reference).identifier" # explicitly cast to Reference to avoid adding a Resource
             openehr: "/items[at0070]"
-            type: "IDENTIFIER"
+        - name: "specimenCollectionMethod"
+          with:
+            fhir: "method"
+            openehr: "/items[at0007]"
+        - name: "specimenCollectionBodySite"
+          with:
+            fhir: "bodySite.text"
+            openehr: "/items[at0087]"
 
   - name: "specimenType"
     with:
       fhir: "$fhirResource.type"
       openehr: "$openehrArchetype/items[at0029]"
-      type: "CODEABLECONCEPT"
 
   - name: "specimenNote"
     with:
       fhir: "note.text"
-      openehr: "comment"
-      type: "STRING"
-
-
-  - name: "specimenCollection"
-    with:
-      fhir: "collection"
-      openehr: "$openEhrArchetype"
-      type: "NONE"
-    followedBy:
-      mappings:
-        - name: "specimenCollectionDateTime"
-          with:
-            fhir: "collected.as(DateTimeType)"
-            openehr: "collection_date_time.date_time_value"
-            type: "DATETIME"
-
-        - name: "specimenCollectionMethod"
-          with:
-            fhir: "method.text"
-            openehr: "collection_method"
-            type: "STRING"
-
-        - name: "specimenCollectionBodySite"
-          with:
-            fhir: "bodySite.text"
-            openehr: "körperstelle"
-            type: "STRING"
-
-        - name: "specimenCollector"
-          with:
-            fhir: "collector.as(Reference).identifier" # if you don't explicitly cast to Reference, it will try to add a Resource
-            openehr: "specimen_collector_identifier"
-            type: "IDENTIFIER"
+      openehr: "$archetype/items[at0045]"
 

@@ -22,18 +22,15 @@ mappings:
           with:
             fhir: "coding"
             openehr: "/data[at0001]/items[at0002]"
-            type: "CODEABLECONCEPT"    
-        - name: "problemDiagnoseText" 
+        - name: "problemDiagnoseText"
           with:
             fhir: "text"
             openehr: "/data[at0001]/items[at0009]"
-            type: "STRING"    
 
   - name: "note"
     with:
       fhir: "$fhirResource.note.text"
       openehr: "$openEhrArchetype/data[at0001]/items[at0069]"
-      type: "STRING"
 
   - name: "dateTime" #allows no spaces cause of paths
     with:
@@ -46,7 +43,6 @@ mappings:
             fhir: "onset" # if period map period.start if DateTime map DateTime, we cant implement this another way currently :(
             # or we just leave period out, otherwise it will map from openEHR to FHIR period over dateTime
             openehr: "/data[at0001]/items[at0077]"
-            type: "DATETIME"
      #   - name: "dateTimePeriod" #workaround
      #     with:
      #       fhir: "onsetPeriod.start" # Period will be added, but currently is not supported in problem diangose
@@ -64,7 +60,6 @@ mappings:
           with:
             fhir: "coding"
             openehr: "/data[at0001]/items[at0012]" # Body site
-            type: "CODING"
         - name: "bodySiteText"
           with:
             fhir: "$fhirResource" #only forwarding the root, can this be done or does it lead to clashes with the father from above ? 
@@ -76,7 +71,6 @@ mappings:
     with:
       fhir: "$fhirResource.severity" # Period will be added, but currently is not supporte din problem diangose
       openehr: "$openEhrArchetype/data[at0005]" #SNOMED to opeNEHR table mapping required + alternatively checkout if there are snomed term_mappings attched and use them.
-      type: "CODEABLECONCEPT" 
 
 
 

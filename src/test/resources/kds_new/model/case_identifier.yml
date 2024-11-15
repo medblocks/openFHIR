@@ -14,7 +14,6 @@ mappings:
     with:
       fhir: "$fhirResource.identifier.value"
       openehr: "$openEhrArchetype/items[at0001]"
-      type: "IDENTIFIER"
     condition:
       targetRoot: "$fhirResource.identifier.type"
       targetAttribute: "code"

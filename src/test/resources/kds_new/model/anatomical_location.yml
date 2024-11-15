@@ -14,7 +14,6 @@ mappings:
     with:
       fhir: "$fhirResource.bodysite.text"
       openehr: "$openEhrArchetype/items[at0001]" #Name of body site
-      type: "STRING"
     condition:
       targetRoot: "$fhirResource.bodysite"
       targetAttribute: "coding"
@@ -24,7 +23,6 @@ mappings:
     with:
       fhir: "$fhirResource.bodysite"
       openehr: "$openEhrArchetype/items[at0001]" #Name of body site
-      type: "CODEABLECONCEPT"
     condition:
       targetRoot: "$openEhrArchetype"
       targetAttribute: "/items[at0001]"

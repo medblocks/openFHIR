@@ -8,22 +8,19 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
-  fhirConifg:
-    profile: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/DiagnosticReportLab"
-
 
 mappings:
   - name: "status"
     extension: "add"
     with:
-      fhir: "$fhirResource.status"
-      openehr: "$composition/context/other_context[at0001]/items[at0005]"
+      fhir: "$resourcePath.status"
+      openehr: "$compositionPath/context/other_context[at0001]/items[at0005]"
 
   - name: "berichtId"
     extension: "add"
     with:
-      fhir: "$fhirResource.identifier"
-      openEHR: "$composition/context/other_context[at0001]/items[at0002]"
+      fhir: "$resourcePath.identifier"
+      openEHR: "$compositionPath/context/other_context[at0001]/items[at0002]"
     condition:
       targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
       targetAttribute: "code"
@@ -33,7 +30,7 @@ mappings:
   - name: "fallIdentifikation"
     extension: "add"
     with:
-      fhir: "$fhirResource.encounter"
+      fhir: "$resourcePath.encounter"
       openehr: "$reference"
     reference:
       resourceType: "Encounter"
@@ -41,6 +38,13 @@ mappings:
         - name: "identifierInReference"
           with:
             fhir: "$fhirRoot"
-            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
           slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
-
+        - name: "cascadeMapping"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+            openehrLink:
+              meaning: "the case this composition relates to"
+              type: "case link"

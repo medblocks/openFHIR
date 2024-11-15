@@ -16,7 +16,6 @@ mappings:
     with:
       fhir: "$fhirResource.identifier"
       openehr: "$openEhrArchetype/protocol[at0008]/items[at0010]"
-      type: "IDENTIFIER" # maps DV_identifier to identifier in FHIR this includes assigner, identifier etc.
       #-> identifier value to DV_ID value
       # -> type to type
       #assigner -> Organization name /code -> DV_IDENTIFIER assigner
@@ -25,43 +24,36 @@ mappings:
     with:
       fhir: "$fhirResource.authoredOn"
       openehr: "$composition/context/start_time"
-      type: "DATETIME"
 
   - name: "status" #TODO this is in openEHR a DV_CODED_TEXT and in FHIR an coding whic then has only a value .
     with:
       fhir: "$fhirResource.status"
       openehr: "$openEhrArchetype/protocol[at0008]/items[at0127]"
-      type: "STRING"
 
   - name: "code"
     with:
       fhir: "$fhirResource.code"
       openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0121]"
-      type: "CODEABLECONCEPT"
 
   - name: "category"
     with:
       fhir: "$fhirResource.category"
       openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0148]"
-      type: "CODEABLECONCEPT"
 
   - name: "intent"
     with:
       fhir: "$fhirResource.intent"
       openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0065]"
-      type: "CODING"
 
   - name: "note"
     with:
       fhir: "$fhirResource.note.text"
       openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0150]"
-      type: "STRING"
 
   - name: "organisation"
     with:
       fhir: "$fhirResource.requester.as(Organization)"
       openehr: "$reference"
-      type: "NONE"
     reference:
       resourceType: "Organization"
       mappings:

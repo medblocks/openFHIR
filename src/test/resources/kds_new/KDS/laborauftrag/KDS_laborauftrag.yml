@@ -8,14 +8,12 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-INSTRUCTION.service_request.v1
-  fhirConifg:
-    profile: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab"
 
 mappings:
   - name: "fallIdentifikation"
     extension: "add"
     with:
-      fhir: "$fhirResource.encounter"
+      fhir: "$resourcePath.encounter"
       openehr: "$reference"
     reference:
       resourceType: "Encounter"
@@ -23,14 +21,22 @@ mappings:
         - name: "identifierInReference"
           with:
             fhir: "$fhirRoot"
-            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
           slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
+        - name: "cascadeMapping"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+            openehrLink:
+              meaning: "the case this composition relates to"
+              type: "case link"
 
 
   - name: "specimen"
     extension: "add"
     with:
-      fhir: "$fhirResource.specimen"
+      fhir: "$resourcePath.specimen"
       openehr: "$reference"
     reference:
       resourceType: "Specimen"
@@ -38,18 +44,18 @@ mappings:
         - name: "specimenReference"
           with:
             fhir: "$fhirRoot"
-            openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]"
+            openehr: "$archetypePath/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]"
           slotArchetype: "openEHR-EHR-CLUSTER.specimen.v1"
       #   - name: "specimen recurring" TODO i dont get that is this necessary ?
       #     with:
       #       fhir: "$fhirRoot"
-      #       openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]" # you need to do this because specimen is recurring element in openehr
+      #       openehr: "$archetypePath/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]" # you need to do this because specimen is recurring element in openehr
       #       type: "NONE"
 
   - name: "organisation"
     extension: "add"
     with:
-      fhir: "$fhirResource.requester.as(Organization)"
+      fhir: "$resourcePath.requester.as(Organization)"
       openehr: "$reference"
     reference:
       resourceType: "Organization"
@@ -57,7 +63,7 @@ mappings:
         - name: "organizationReference"
           with:
             fhir: "$fhirRoot"
-            openehr: "$openEhrArchetype/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
+            openehr: "$archetypePath/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
           slotArchetype: "openEHR-EHR-CLUSTER.organisation.v1"
 
 

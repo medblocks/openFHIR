@@ -14,25 +14,21 @@ mappings:
     with:
       fhir: "$fhirResource.category"
       openehr: "$openEhrArchetype/data[at0001]/events[at0002]/data[at0003]/items[at0005]"
-      type: "CODEABLECONCEPT"
 
   - name: "conclusion"
     with:
       fhir: "$fhirResource.conclusion"
       openehr: "$openEhrArchetype/data[at0001]/events[at0002]/data[at0003]/items[at0057]"
-      type: "STRING"
 
   - name: "effectiveStart"
     with:
       fhir: "$fhirResource.effective"
       openehr: "$composition/context/start_time" #
-      type: "DATETIME" # again map date time period to interval etc.
 
   - name: "effectiveEnd"
     with:
       fhir: "$fhirResource.effectivePeriod.end"
       openehr: "$composition/context/end_time" #
-      type: "DATETIME"
 
   - name: "basedOn"
     extension: "add"
@@ -46,7 +42,6 @@ mappings:
           with:
             fhir: "$fhirRoot.identifier.value"
             openehr: "$openehrArchetype/protocol[at0004]/items[at0094]/items[at0063]"
-            type: "IDENTIFIER"
         - name: "cascadeMapping"
           with:
             fhir: "$fhirRoot"
