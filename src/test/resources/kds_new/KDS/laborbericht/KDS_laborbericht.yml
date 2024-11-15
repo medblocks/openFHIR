@@ -10,23 +10,6 @@ spec:
     archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
 
 mappings:
-  - name: "status"
-    extension: "add"
-    with:
-      fhir: "$resourcePath.status"
-      openehr: "$compositionPath/context/other_context[at0001]/items[at0005]"
-
-  - name: "berichtId"
-    extension: "add"
-    with:
-      fhir: "$resourcePath.identifier"
-      openEHR: "$compositionPath/context/other_context[at0001]/items[at0002]"
-    condition:
-      targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
-      targetAttribute: "code"
-      operator: "one of"
-      criteria: "[FILL]"
-
   - name: "fallIdentifikation"
     extension: "add"
     with:
@@ -48,3 +31,34 @@ mappings:
             openehrLink:
               meaning: "the case this composition relates to"
               type: "case link"
+
+  - name: "status"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.status"
+      openehr: "$compositionPath/context/other_context[at0001]/items[at0005]"
+
+  - name: "berichtId"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.identifier"
+      openEHR: "$compositionPath/context/other_context[at0001]/items[at0002]"
+    condition:
+      targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
+      targetAttribute: "code"
+      operator: "one of"
+      criteria: "[FILL]"
+
+  - name: "result"
+    with:
+      fhir: "$resourcePath.result"
+      openehr: "$reference"
+    reference:
+      resourceType: "Observation"
+      mappings:
+        - name: "observationRecurring"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]"
+            type: "NONE"
+          slotArchetype: "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"

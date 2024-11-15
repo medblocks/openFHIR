@@ -14,13 +14,13 @@ spec:
 mappings:
   - name: "specimenIdentifier"
     with:
-      fhir: "$fhirResource.identifier"
-      openehr: "$openehrArchetype/items[at0001]"
+      fhir: "$resourcePath.identifier"
+      openehr: "$archetypePath/items[at0001]"
 
   - name: "specimenCollection"
     with:
-      fhir: "$fhirResource.collection"
-      openehr: "$openEhrArchetype"
+      fhir: "$resourcePath.collection"
+      openehr: "$archetypePath"
       type: "NONE"
     followedBy:
       mappings:
@@ -43,8 +43,8 @@ mappings:
 
   - name: "specimenType"
     with:
-      fhir: "$fhirResource.type"
-      openehr: "$openehrArchetype/items[at0029]"
+      fhir: "$resourcePath.type"
+      openehr: "$archetypePath/items[at0029]"
 
   - name: "specimenNote"
     with:

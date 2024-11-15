@@ -14,8 +14,8 @@ spec:
 mappings:
   - name: "problemDiagnose"
     with:
-      fhir: "$fhirResource.code"
-      openEHR: "$openEhrArchetype"
+      fhir: "$resourcePath.code"
+      openEHR: "$archetypePath"
     followedBy:
       mappings:   
         - name: "problemDiagnoseName"
@@ -29,13 +29,13 @@ mappings:
 
   - name: "note"
     with:
-      fhir: "$fhirResource.note.text"
-      openehr: "$openEhrArchetype/data[at0001]/items[at0069]"
+      fhir: "$resourcePath.note.text"
+      openehr: "$archetypePath/data[at0001]/items[at0069]"
 
   - name: "dateTime" #allows no spaces cause of paths
     with:
-      fhir: "$fhirResource"
-      openehr: "$openEhrArchetype"
+      fhir: "$resourcePath"
+      openehr: "$archetypePath"
     followedBy:
       mappings:
         - name: "dateTime"
@@ -52,8 +52,8 @@ mappings:
 
   - name: "bodySite"
     with:
-      fhir: "$fhirResource.bodySite"
-      openehr: "$openEhrArchetype"
+      fhir: "$resourcePath.bodySite"
+      openehr: "$archetypePath"
     followedBy:
       mappings:
         - name: "bodySiteCode"
@@ -62,15 +62,15 @@ mappings:
             openehr: "/data[at0001]/items[at0012]" # Body site
         - name: "bodySiteText"
           with:
-            fhir: "$fhirResource" #only forwarding the root, can this be done or does it lead to clashes with the father from above ? 
+            fhir: "$resourcePath" #only forwarding the root, can this be done or does it lead to clashes with the father from above ? 
             #I guess the $ prevents that. 
             openehr: "/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]" # could be also just loaded at the top if its anyways just $resource....
           slotArchetype: "openEHR-EHR-CLUSTER.anatomical_location.v1"  
 
   - name: "severity"
     with:
-      fhir: "$fhirResource.severity" # Period will be added, but currently is not supporte din problem diangose
-      openehr: "$openEhrArchetype/data[at0005]" #SNOMED to opeNEHR table mapping required + alternatively checkout if there are snomed term_mappings attched and use them.
+      fhir: "$resourcePath.severity" # Period will be added, but currently is not supporte din problem diangose
+      openehr: "$archetypePath/data[at0005]" #SNOMED to opeNEHR table mapping required + alternatively checkout if there are snomed term_mappings attched and use them.
 
 
 

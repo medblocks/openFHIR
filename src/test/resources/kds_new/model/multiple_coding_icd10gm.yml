@@ -12,8 +12,8 @@ spec:
 mappings:
   - name: "mehrfachcodierung"
     with:
-      fhir: "$fhirResource"
-      openehr: "$openEhrArchetype/items[at0001]"
+      fhir: "$resourcePath"
+      openehr: "$archetypePath/items[at0001]"
     condition:
       targetRoot: "extension"
       targetAttribute: "url"

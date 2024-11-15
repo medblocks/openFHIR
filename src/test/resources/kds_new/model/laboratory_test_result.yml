@@ -10,30 +10,35 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
 
 mappings:
-  - name: "Category"
+  - name: "category"
     with:
-      fhir: "$fhirResource.category"
-      openehr: "$openEhrArchetype/data[at0001]/events[at0002]/data[at0003]/items[at0005]"
+      fhir: "$resourcePath.category"
+      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0005]"
 
   - name: "conclusion"
     with:
-      fhir: "$fhirResource.conclusion"
-      openehr: "$openEhrArchetype/data[at0001]/events[at0002]/data[at0003]/items[at0057]"
+      fhir: "$resourcePath.conclusion"
+      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0057]"
 
   - name: "effectiveStart"
     with:
-      fhir: "$fhirResource.effective"
+      fhir: "$resourcePath.effective"
       openehr: "$composition/context/start_time" #
 
   - name: "effectiveEnd"
     with:
-      fhir: "$fhirResource.effectivePeriod.end"
+      fhir: "$resourcePath.effectivePeriod.end"
       openehr: "$composition/context/end_time" #
+
+  #DiagnosticReport.specimen	Laborbefund.Probenmaterial HIER link eines Specimen der ein entry etc ist wie ist dann das zurückmappen ?!
+  #DiagnosticReport.specimen.identifier	Laborbefund.Probenmaterial.Laborprobenidentifikator
+  #DiagnosticReport.effective[x]	RM
+
 
   - name: "basedOn"
     extension: "add"
     with:
-      fhir: "$fhirResource.basedOn"
+      fhir: "$resourcePath.basedOn"
       openehr: "$reference"
       type: "NONE"
     reference:
@@ -41,11 +46,11 @@ mappings:
         - name: "identifierInReference"
           with:
             fhir: "$fhirRoot.identifier.value"
-            openehr: "$openehrArchetype/protocol[at0004]/items[at0094]/items[at0063]"
+            openehr: "$archetypePath/protocol[at0004]/items[at0094]/items[at0063]"
         - name: "cascadeMapping"
           with:
             fhir: "$fhirRoot"
-            openehr: "$openehrArchetype/protocol[at0004]/items[at0094]/items[at0063]" # will use link
+            openehr: "$archetypePath/protocol[at0004]/items[at0094]/items[at0063]" # will use link
             type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
             openehr_link:
               meaning: "the identifier which it derived from"

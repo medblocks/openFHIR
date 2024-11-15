@@ -12,30 +12,29 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 mappings:
   - name: "status"
     with:
-      fhir: "$fhirResource.status"
-      openehr: "$openEhrArchetype/items[at0005]"
+      fhir: "$resourcePath.status"
+      openehr: "$archetypePath/items[at0005]"
 
-  - name: "result"
+  - name: "issued"
     with:
-      fhir: "$fhirResource.result"
-      openehr: "$reference"
-      type: "NONE"
-    reference:
-      resourceType: "Observation"
-      mappings:
-        - name: "observation recurring"
-          with:
-            fhir: "$fhirRoot"
-            openehr: "$openEhrArchetype.laborbefund.pro_laboranalyt"
-            type: "NONE"
-          followedBy:
-            mappings:
-              - name: "value"
-                with:
-                  fhir: "value.as(Quantity)"
-                  openehr: "messwert.quantity_value"
+      fhir: "$resourcePath.issued"
+      openehr: "$archetypePath/items[at0006]"
 
-              - name: "code"
-                with:
-                  fhir: "code"
-                  openehr: "analyte_name"
+
+#TODO this is where we stoped
+  - name: "observation recurring"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$archetypePath.laborbefund.pro_laboranalyt"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "value"
+          with:
+            fhir: "value.as(Quantity)"
+            openehr: "messwert.quantity_value"
+
+        - name: "code"
+          with:
+            fhir: "code"
+            openehr: "analyte_name"

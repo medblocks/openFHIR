@@ -12,19 +12,19 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 mappings:
   - name: "bodySiteText"
     with:
-      fhir: "$fhirResource.bodysite.text"
-      openehr: "$openEhrArchetype/items[at0001]" #Name of body site
+      fhir: "$resourcePath.bodysite.text"
+      openehr: "$archetypePath/items[at0001]" #Name of body site
     condition:
-      targetRoot: "$fhirResource.bodysite"
+      targetRoot: "$resourcePath.bodysite"
       targetAttribute: "coding"
       operator: "empty"
 
   - name: "bodySiteCoded"
     with:
-      fhir: "$fhirResource.bodysite"
-      openehr: "$openEhrArchetype/items[at0001]" #Name of body site
+      fhir: "$resourcePath.bodysite"
+      openehr: "$archetypePath/items[at0001]" #Name of body site
     condition:
-      targetRoot: "$openEhrArchetype"
+      targetRoot: "$archetypePath"
       targetAttribute: "/items[at0001]"
       operator: "type"
       criteria: ["DV_CODED_TEXT"]

@@ -14,45 +14,45 @@ spec:
 mappings:
   - name: "identifier"
     with:
-      fhir: "$fhirResource.identifier"
-      openehr: "$openEhrArchetype/protocol[at0008]/items[at0010]"
+      fhir: "$resourcePath.identifier"
+      openehr: "$archetypePath/protocol[at0008]/items[at0010]"
       #-> identifier value to DV_ID value
       # -> type to type
       #assigner -> Organization name /code -> DV_IDENTIFIER assigner
 
   - name: "authoredOn"
     with:
-      fhir: "$fhirResource.authoredOn"
+      fhir: "$resourcePath.authoredOn"
       openehr: "$composition/context/start_time"
 
   - name: "status" #TODO this is in openEHR a DV_CODED_TEXT and in FHIR an coding whic then has only a value .
     with:
-      fhir: "$fhirResource.status"
-      openehr: "$openEhrArchetype/protocol[at0008]/items[at0127]"
+      fhir: "$resourcePath.status"
+      openehr: "$archetypePath/protocol[at0008]/items[at0127]"
 
   - name: "code"
     with:
-      fhir: "$fhirResource.code"
-      openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0121]"
+      fhir: "$resourcePath.code"
+      openehr: "$archetypePath/activities[at0001]/description[at0009]/items[at0121]"
 
   - name: "category"
     with:
-      fhir: "$fhirResource.category"
-      openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0148]"
+      fhir: "$resourcePath.category"
+      openehr: "$archetypePath/activities[at0001]/description[at0009]/items[at0148]"
 
   - name: "intent"
     with:
-      fhir: "$fhirResource.intent"
-      openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0065]"
+      fhir: "$resourcePath.intent"
+      openehr: "$archetypePath/activities[at0001]/description[at0009]/items[at0065]"
 
   - name: "note"
     with:
-      fhir: "$fhirResource.note.text"
-      openehr: "$openEhrArchetype/activities[at0001]/description[at0009]/items[at0150]"
+      fhir: "$resourcePath.note.text"
+      openehr: "$archetypePath/activities[at0001]/description[at0009]/items[at0150]"
 
   - name: "organisation"
     with:
-      fhir: "$fhirResource.requester.as(Organization)"
+      fhir: "$resourcePath.requester.as(Organization)"
       openehr: "$reference"
     reference:
       resourceType: "Organization"
