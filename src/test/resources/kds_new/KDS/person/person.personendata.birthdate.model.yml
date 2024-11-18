@@ -10,7 +10,7 @@ mappings:
   - name: "birth date"
     with:
       fhir: "$fhirRoot"
-      openehr: "$openEhrArchetype.daten_zur_geburt.geburtsdatum"
+      openehr: "$archetypePath.daten_zur_geburt.geburtsdatum"
       type: "DATE"
 
 

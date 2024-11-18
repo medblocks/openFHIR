@@ -18,7 +18,7 @@ public class StationarerversorgungsfallTest extends KdsBidirectionalTest {
     final String RESOURCES_ROOT = "/kds/stationarerversorgungsfall/";
     final String OPT = "Stationärer Versorgungsfall.opt";
     final String FLAT = "KDS_StationarerVersorgungsfall.flat.json";
-    final String CONTEXT = "stationarerversorgungsfall.context.yaml";
+    final String CONTEXT = "kds_fall_einfach.context.yaml";
     final String BUNDLE = "KDS_StationarerVersorgungsfall_bundle.json";
 
     @SneakyThrows

@@ -12,7 +12,7 @@ mappings:
   - name: "pid"
     with:
       fhir: "$fhirRoot.identifier"
-      openehr: "$openEhrArchetype.pid"
+      openehr: "$archetypePath.pid"
       type: "IDENTIFIER"
     condition:
       targetRoot: "$fhirRoot.identifier"
@@ -23,7 +23,7 @@ mappings:
   - name: "maiden name"
     with:
       fhir: "$fhirRoot.name"
-      openehr: "$openEhrArchetype.geburtsname"
+      openehr: "$archetypePath.geburtsname"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.structured_name.v1"
     condition:
@@ -35,7 +35,7 @@ mappings:
   - name: "official name"
     with:
       fhir: "$fhirRoot.name"
-      openehr: "$openEhrArchetype.name"
+      openehr: "$archetypePath.name"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.structured_name.v1"
     condition:
@@ -57,7 +57,7 @@ mappings:
         - name: "org"
           with:
             fhir: "$fhirRoot"
-            openehr: "$openEhrArchetype.verwaltungsorganisation"
+            openehr: "$archetypePath.verwaltungsorganisation"
             type: "NONE"
           followedBy:
             mappings:
@@ -76,14 +76,14 @@ mappings:
   - name: "person data address"
     with:
       fhir: "$fhirRoot"
-      openehr: "$openEhrArchetype"
+      openehr: "$archetypePath"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.address.v1"
 
   - name: "gkv identifier"
     with:
       fhir: "$fhirRoot.identifier"
-      openehr: "$openEhrArchetype.versicherten_id_gkv"
+      openehr: "$archetypePath.versicherten_id_gkv"
       type: "IDENTIFIER"
     condition:
       targetRoot: "$fhirRoot.identifier"
@@ -94,7 +94,7 @@ mappings:
   - name: "pvk identifier"
     with:
       fhir: "$fhirRoot.identifier"
-      openehr: "$openEhrArchetype.versicherungsnummer_pkv"
+      openehr: "$archetypePath.versicherungsnummer_pkv"
       type: "IDENTIFIER"
     condition:
       targetRoot: "$fhirRoot.identifier"

@@ -10,13 +10,13 @@ mappings:
   - name: "free text"
     with:
       fhir: "$fhirRoot.text"
-      openehr: "$openEhrArchetype.dosierung.dosierung_freitext"
+      openehr: "$archetypePath.dosierung.dosierung_freitext"
       type: "STRING"
 
   - name: "dose"
     with:
       fhir: "$fhirRoot.dose.as(Quantity)"
-      openehr: "$openEhrArchetype.dosierung.dosis"
+      openehr: "$archetypePath.dosierung.dosis"
       type: "QUANTITY"
 
 

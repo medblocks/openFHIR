@@ -18,7 +18,7 @@ openEHR:
 fhir:
   resourceType: "Bundle"
   condition:
-    targetRoot: "$fhirResource"
+    targetRoot: "$resourcePath"
     targetAttribute: "entry.resource.meta.profile"
     operator: "one of"
     criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient]"

@@ -1,0 +1,144 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDSFallEinfach
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0
+
+mappings:
+  - name: "falltyp"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.type"
+      openehr: "$composition/context/other_context[at0001]/items[at0005]"
+
+  - name: "fallklasse"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.class"
+      openehr: "$composition/context/other_context[at0001]/items[at0004]"
+
+  - name: "fallart"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.status"
+      openehr: "$composition/context/other_context[at0001]/items[at0010]"
+
+  - name: "fallId"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.identifier"
+      openehr: "$composition/context/other_context[at0001]/items[at0003]"
+    condition:
+      targetRoot: "$resourcePath.identifier.type"
+      targetAttribute: "value"
+      operator: "one of"
+      criteria: "[VN]"
+
+  - name: "fallstatus"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.status"
+      openehr: "$composition/context/other_context[at0001]/items[at0010]"
+
+  - name: "organisation"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.serviceProvider"
+      openehr: "$reference"
+    reference:
+      resourceType: "Organization"
+      mappings:
+        - name: "organization"
+          with:
+            fhir: "extension"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.organization.v0]"
+          slotArchetype: "openEHR-EHR-CLUSTER.organization.v0"
+
+
+  - name: "Aufnahmegrund extension"
+    with:
+      fhir: "$resourcePath.extension"
+      openehr: "$archetypePath.aufnahmedaten"
+      type: "NONE"
+    condition:
+      targetRoot: "$resourcePath.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://fhir.de/StructureDefinition/Aufnahmegrund]"
+    followedBy:
+      mappings:
+        - name: "Aufnahmegrund ErsteUndZweiteStelle"
+          with:
+            fhir: "extension.value"
+            openehr: "aufnahmegrund_-_1\\._und_2\\._stelle"
+            type: "CODING"
+          condition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[ErsteUndZweiteStelle]"
+
+        - name: "Aufnahmegrund DritteStelle"
+          with:
+            fhir: "extension.value"
+            openehr: "aufnahmegrund_-_3\\._stelle"
+            type: "CODING"
+          condition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[DritteStelle]"
+
+        - name: "Aufnahmegrund VierteStelle"
+          with:
+            fhir: "extension.value"
+            openehr: "aufnahmegrund_-_4\\._stelle"
+            type: "CODING"
+          condition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[VierteStelle]"
+
+
+  - name: "hospitalization"
+    with:
+      fhir: "$resourcePath.hospitalization"
+      openehr: "$archetypePath"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "admit source"
+          with:
+            fhir: "admitSource.coding"
+            openehr: "aufnahmedaten.vorherige_verantwortliche_organisationseinheit_vor_aufnahme.typ"
+            type: "CODING"
+
+        - name: "discharge disposition"
+          with:
+            fhir: "dischargeDisposition"
+            openehr: "entlassungsdaten"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "coding"
+                with:
+                  fhir: "coding"
+                  openehr: "entlassungsgrund"
+                  type: "CODING"
+
+              - name: "entlassungsgrund"
+                with:
+                  fhir: "extension.value"
+                  openehr: "entlassungsgrund" # todo: this needs to be something else I am sure, but what?
+                  type: "CODING"
+                condition:
+                  targetRoot: "extension"
+                  targetAttribute: "url"
+                  operator: "one of"
+                  criteria: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"

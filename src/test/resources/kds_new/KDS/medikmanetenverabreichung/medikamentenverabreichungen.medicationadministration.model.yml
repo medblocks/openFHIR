@@ -10,28 +10,28 @@ openEhrConfig:
 mappings:
   - name: "status"
     with:
-      fhir: "$fhirResource.status"
-      openehr: "$openEhrArchetype.context.status"
+      fhir: "$resourcePath.status"
+      openehr: "$archetypePath.context.status"
       type: "CODING"
 
   - name: "context"
     with:
-      fhir: "$fhirResource.context.as(Reference).reference"
-      openehr: "$openEhrArchetype.context.fallidentifikation.fall-kennung"
+      fhir: "$resourcePath.context.as(Reference).reference"
+      openehr: "$archetypePath.context.fallidentifikation.fall-kennung"
       type: "STRING"
 
   - name: "effective"
     with:
-      fhir: "$fhirResource.effective.as(DateTimeType)"
-      openehr: "$openEhrArchetype.arzneimittelanwendung.dosierung.zeitablauf_-_täglich.verabreichungszeitpunkt_-intervall/time_value"
+      fhir: "$resourcePath.effective.as(DateTimeType)"
+      openehr: "$archetypePath.arzneimittelanwendung.dosierung.zeitablauf_-_täglich.verabreichungszeitpunkt_-intervall/time_value"
       type: "TIME"
 
   #order for structured dosage matters; it needs to be ABOVE "unstructured dosage" because of openEhrPaths being so similar (belows openehr path is actually within aboves)
 
   - name: "structured dosage"
     with:
-      fhir: "$fhirResource.dosage"
-      openehr: "$openEhrArchetype.arzneimittelanwendung"
+      fhir: "$resourcePath.dosage"
+      openehr: "$archetypePath.arzneimittelanwendung"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.dosage.v2"
     followedBy:
@@ -73,19 +73,19 @@ mappings:
 
   - name: "note"
     with:
-      fhir: "$fhirResource.note.text"
-      openehr: "$openEhrArchetype.arzneimittelanwendung.kommentar"
+      fhir: "$resourcePath.note.text"
+      openehr: "$archetypePath.arzneimittelanwendung.kommentar"
       type: "STRING"
 
   - name: "klinische_indikation"
     with:
-      fhir: "$fhirResource.reasonCode.text"
-      openehr: "$openEhrArchetype.arzneimittelanwendung.klinische_indikation"
+      fhir: "$resourcePath.reasonCode.text"
+      openehr: "$archetypePath.arzneimittelanwendung.klinische_indikation"
       type: "STRING"
 
   - name: "medication"
     with:
-      fhir: "$fhirResource.medication"
+      fhir: "$resourcePath.medication"
       openehr: "$reference"
     reference:
       resourceType: "Medication"
@@ -93,12 +93,12 @@ mappings:
         - name: "medication administration medication"
           with:
             fhir: "$fhirRoot"
-            openehr: "$openEhrArchetype.arzneimittelanwendung.arzneimittel"
+            openehr: "$archetypePath.arzneimittelanwendung.arzneimittel"
             type: "NONE"
           slotArchetype: "openEHR-EHR-CLUSTER.medication.v2"
 
   - name: "medication codeable concept"
     with:
-      fhir: "$fhirResource.medication.as(CodeableConcept).text"
-      openehr: "$openEhrArchetype.arzneimittelanwendung.arzneimittel.arzneimittelgruppe.arzneimittel-code"
+      fhir: "$resourcePath.medication.as(CodeableConcept).text"
+      openehr: "$archetypePath.arzneimittelanwendung.arzneimittel.arzneimittelgruppe.arzneimittel-code"
       type: "STRING"

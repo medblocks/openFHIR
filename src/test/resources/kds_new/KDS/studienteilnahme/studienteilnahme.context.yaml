@@ -10,7 +10,7 @@ openEHR:
 fhir:
   resourceType: "Bundle"
   condition:
-    targetRoot: "$fhirResource"
+    targetRoot: "$resourcePath"
     targetAttribute: "meta.profile"
     operator: "one of"
     criteria: "[Studienteilnahme]"

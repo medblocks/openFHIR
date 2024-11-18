@@ -62,6 +62,7 @@ mappings:
 
 
   - name: "result"
+    extension: "add"
     with:
       fhir: "$resourcePath.result"
       openehr: "$reference"

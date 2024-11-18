@@ -1,0 +1,77 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  episode_institution
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0
+    revision: 0.0.1-alpha
+
+mappings:
+  - name: "admissionDate"
+    fhir: "$resourcePath.period.start"
+    openEHR: "archetypePath/data[at0001]/items[at0004]"
+
+  - name: "seperationDate"
+    fhir: "$resourcePath.period.end"
+    openEHR: "archetypePath/data[at0001]/items[at0002]"
+
+  - name: "room"
+    with:
+      fhir: "$resourcePath.location.identifier.value"
+      openehr: "$archetypePath/data[at0001]/items[at0018]/items[at0023]"
+    condition:
+      targetRoot: "$resourcePath.location.physicalType"
+      targetAttribute: "coding.code"
+      operator: "one of"
+      criteria: "[ro]"
+
+  - name: "bed"
+    with:
+      fhir: "$resourcePath.location.identifier.value"
+      openehr: "$archetypePath/data[at0001]/items[at0018]/items[at0024]"
+    condition:
+      targetRoot: "$resourcePath.location.physicalType"
+      targetAttribute: "coding.code"
+      operator: "one of"
+      criteria: "[bd]"
+
+  - name: "station"
+    with:
+      fhir: "$resourcePath.location.identifier.value"
+      openehr: "$archetypePath"
+    condition:
+      targetRoot: "$resourcePath.location.physicalType"
+      targetAttribute: "coding.code"
+      operator: "one of"
+      criteria: "[wa]"
+
+#TODO this is where i stopped!
+  - name: "organisationsschlüssel"
+    with:
+      fhir: "$resourcePath.serviceType"
+      openehr: "$archetypePath.aufnahmedaten.vorherige_verantwortliche_organisationseinheit_vor_aufnahme"
+    followedBy:
+      mappings:
+        - name: "Fachabteilungsschluessel-erweitert"
+          with:
+            fhir: "coding"
+            openehr: "organisationsschlüssel"
+          condition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[local_terms]" # was http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert, but had to change to local_terms to conform to terminology
+        - name: "Fachabteilungsschluessel"
+          with:
+            fhir: "coding"
+            openehr: "typ"  # todo: I think this is not the right mapping, since this is then mapped to hospitalization.admitSource
+          condition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[local_terms]"  # was http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel, but had to change to local_terms to conform to terminology
+

@@ -10,19 +10,19 @@ mappings:
   - name: "event time"
     with:
       fhir: "$fhirRoot.event"
-      openehr: "$openEhrArchetype.zeitpunkt.time_value"
+      openehr: "$archetypePath.zeitpunkt.time_value"
       type: "TIME"
 
   - name: "when time of day"
     with:
       fhir: "$fhirRoot.repeat.when.value"
-      openehr: "$openEhrArchetype.bestimmtes_ereignis.ereignis"
+      openehr: "$archetypePath.bestimmtes_ereignis.ereignis"
       type: "STRING"
 
 
   - name: "when time of day"
     with:
       fhir: "$fhirRoot.repeat.timeOfDay"
-      openehr: "$openEhrArchetype.bestimmtes_ereignis.offset"
+      openehr: "$archetypePath.bestimmtes_ereignis.offset"
       type: "STRING"
 

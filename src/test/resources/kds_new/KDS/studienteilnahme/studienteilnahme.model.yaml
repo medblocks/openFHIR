@@ -10,14 +10,14 @@ openEhrConfig:
 mappings:
   - name: "category"
     with:
-      fhir: "$fhirResource.category.coding.code"
-      openehr: "$openEhrArchetype.einwilligungserklärung.studie_prüfung.studientyp"
+      fhir: "$resourcePath.category.coding.code"
+      openehr: "$archetypePath.einwilligungserklärung.studie_prüfung.studientyp"
       type: "STRING"
 
   - name: "period"
     with:
-      fhir: "$fhirResource.provision.period"
-      openehr: "$openEhrArchetype.einwilligungserklärung.studienteilnahme"
+      fhir: "$resourcePath.provision.period"
+      openehr: "$archetypePath.einwilligungserklärung.studienteilnahme"
       type: "NONE"
     followedBy:
       mappings:

@@ -1,0 +1,25 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: organization_v0
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.organization.v0 # deprecated
+mappings:
+  - name: "Type"
+    with:
+      fhir: "$fhirParentPath.type"
+      openehr: "$archetypePath/items[at0051]"
+
+  - name: "orgaKey"
+    with:
+      fhir: "$fhirParentPath.identifier"
+      openehr: "$archetypePath/items[at0024]"
+
+  - name: "name"
+    with:
+      fhir: "$fhirParentPath.name"
+      openehr: "$archetypePath/items[at0052]"

@@ -10,7 +10,7 @@ mappings:
   - name: "address straßenanschrift"
     with:
       fhir: "$fhirRoot.address"
-      openehr: "$openEhrArchetype.straßenanschrift"
+      openehr: "$archetypePath.straßenanschrift"
       type: "NONE"
     condition:
       targetRoot: "$fhirRoot.address"
@@ -70,7 +70,7 @@ mappings:
         - name: "line"
           with:
             fhir: "line"
-            openehr: "$openEhrArchetype"
+            openehr: "$archetypePath"
             type: "NONE"
           followedBy:
             mappings:
@@ -113,7 +113,7 @@ mappings:
   - name: "address postfach"
     with:
       fhir: "$fhirRoot.address"
-      openehr: "$openEhrArchetype.postfach"
+      openehr: "$archetypePath.postfach"
       type: "NONE"
     condition:
       targetRoot: "$fhirRoot.address"
@@ -173,7 +173,7 @@ mappings:
         - name: "line"
           with:
             fhir: "line"
-            openehr: "$openEhrArchetype"
+            openehr: "$archetypePath"
             type: "NONE"
           followedBy:
             mappings:

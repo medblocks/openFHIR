@@ -10,32 +10,32 @@ mappings:
   - name: "name"
     with:
       fhir: "$fhirRoot.code.text"
-      openehr: "$openEhrArchetype.arzneimittel-name"
+      openehr: "$archetypePath.arzneimittel-name"
       type: "STRING"
 
   - name: "form"
     with:
       fhir: "$fhirRoot.form"
-      openehr: "$openEhrArchetype.darreichungsform"
+      openehr: "$archetypePath.darreichungsform"
       type: "CODEABLECONCEPT"
 
   - name: "amount"
     with:
       fhir: "$fhirRoot.amount"
-      openehr: "$openEhrArchetype.wirkstärke_konzentration"
+      openehr: "$archetypePath.wirkstärke_konzentration"
       type: "QUANTITY"
 
   - name: "ingridient"
     with:
       fhir: "$fhirRoot.ingredient"
-      openehr: "$openEhrArchetype.bestandteil"
+      openehr: "$archetypePath.bestandteil"
       type: "NONE"
     followedBy:
       mappings:
         - name: "item"
           with:
             fhir: "item.as(CodeableConcept)"
-            openehr: "$openEhrArchetype"
+            openehr: "$archetypePath"
             type: "NONE"
           followedBy:
             mappings:

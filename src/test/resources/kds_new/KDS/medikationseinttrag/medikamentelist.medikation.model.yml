@@ -9,39 +9,39 @@ openEhrConfig:
 mappings:
   - name: "identifier"
     with:
-      fhir: "$fhirResource.identifier"
-      openehr: "$openEhrArchetype.medikationseintrag.identifier.externer_identifier"
+      fhir: "$resourcePath.identifier"
+      openehr: "$archetypePath.medikationseintrag.identifier.externer_identifier"
       type: "IDENTIFIER"
     condition:
-      targetRoot: "$fhirResource.identifier"
+      targetRoot: "$resourcePath.identifier"
       targetAttribute: "system"
       operator: "one of"
       criteria: "[external identifier]"
 
   - name: "description"
     with:
-      fhir: "$fhirResource.note.text"
-      openehr: "$openEhrArchetype.medikationseintrag.beschreibung"
+      fhir: "$resourcePath.note.text"
+      openehr: "$archetypePath.medikationseintrag.beschreibung"
 
   #order for structured dosage matters; it needs to be ABOVE "unstructured dosage" because of openEhrPaths being so similar (belows openehr path is actually within aboves)
 
   - name: "structured dosage"
     with:
-      fhir: "$fhirResource.dosage"
-      openehr: "$openEhrArchetype.medikationseintrag.dosierung2"
+      fhir: "$resourcePath.dosage"
+      openehr: "$archetypePath.medikationseintrag.dosierung2"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.dosage.v2"
 
   - name: "unstructured dosage"
     with:
-      fhir: "$fhirResource.dosage.text"
-      openehr: "$openEhrArchetype.medikationseintrag.dosierung"
+      fhir: "$resourcePath.dosage.text"
+      openehr: "$archetypePath.medikationseintrag.dosierung"
       type: "STRING"
 
   - name: "effective"
     with:
-      fhir: "$fhirResource.effective.as(Period)"
-      openehr: "$openEhrArchetype.medikationseintrag"
+      fhir: "$resourcePath.effective.as(Period)"
+      openehr: "$archetypePath.medikationseintrag"
       type: "NONE"
     followedBy:
       mappings:
@@ -60,13 +60,13 @@ mappings:
 # order is important, because when mapping from openEHR to FHIR, we want the second mapping (better one) to be applied
   - name: "medication"
     with:
-      fhir: "$fhirResource.medication.as(CodeableConcept).text"
-      openehr: "$openEhrArchetype.medikationseintrag.arzneimittel.arzneimittel-name"
+      fhir: "$resourcePath.medication.as(CodeableConcept).text"
+      openehr: "$archetypePath.medikationseintrag.arzneimittel.arzneimittel-name"
       type: "STRING"
 
   - name: "medication"
     with:
-      fhir: "$fhirResource.medication"
+      fhir: "$resourcePath.medication"
       openehr: "$reference"
     reference:
       resourceType: "Medication"
@@ -74,7 +74,7 @@ mappings:
         - name: "medication request medication"
           with:
             fhir: "$fhirRoot"
-            openehr: "$openEhrArchetype.medikationseintrag.arzneimittel"
+            openehr: "$archetypePath.medikationseintrag.arzneimittel"
             type: "NONE"
           slotArchetype: "openEHR-EHR-CLUSTER.medication.v2"
 

@@ -10,13 +10,13 @@ mappings:
   - name: "death date"
     with:
       fhir: "$fhirRoot.deceased.as(DateTimeType)"
-      openehr: "$openEhrArchetype.personendaten.angaben_zum_tod.angaben_zum_tod.sterbedatum"
+      openehr: "$archetypePath.personendaten.angaben_zum_tod.angaben_zum_tod.sterbedatum"
       type: "DATETIME"
 
   - name: "cause of death"
     with:
       fhir: "Condition"
-      openehr: "$openEhrArchetype.personendaten.angaben_zum_tod.angaben_zum_tod"
+      openehr: "$archetypePath.personendaten.angaben_zum_tod.angaben_zum_tod"
       type: "NONE"
     followedBy:
       mappings:

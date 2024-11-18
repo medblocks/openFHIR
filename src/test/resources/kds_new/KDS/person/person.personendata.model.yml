@@ -11,22 +11,22 @@ mappings:
 
   - name: "person data"
     with:
-      fhir: "$fhirResource"
-      openehr: "$openEhrArchetype.personendaten.person"
+      fhir: "$resourcePath"
+      openehr: "$archetypePath.personendaten.person"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.person.v1"
 
   - name: "death details"
     with:
-      fhir: "$fhirResource"
-      openehr: "$openEhrArchetype"
+      fhir: "$resourcePath"
+      openehr: "$archetypePath"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.death_details.v1"
 
   - name: "vital status"
     with:
       fhir: "Observation"
-      openehr: "$openEhrArchetype.vitalstatus"
+      openehr: "$archetypePath.vitalstatus"
       type: "NONE"
     followedBy:
       mappings:
@@ -48,8 +48,8 @@ mappings:
 
   - name: "person birth date"
     with:
-      fhir: "$fhirResource.birthDate"
-      openehr: "$openEhrArchetype.personendaten"
+      fhir: "$resourcePath.birthDate"
+      openehr: "$archetypePath.personendaten"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.person_birth_data_iso.v0"
     followedBy:
@@ -67,8 +67,8 @@ mappings:
 
   - name: "contact person"
     with:
-      fhir: "$fhirResource.contact"
-      openehr: "$openEhrArchetype.personendaten.kontaktperson"
+      fhir: "$resourcePath.contact"
+      openehr: "$archetypePath.personendaten.kontaktperson"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.person.v1"
     followedBy:

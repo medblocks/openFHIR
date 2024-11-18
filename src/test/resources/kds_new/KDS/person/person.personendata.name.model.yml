@@ -10,7 +10,7 @@ mappings:
   - name: "name"
     with:
       fhir: "$fhirRoot"
-      openehr: "$openEhrArchetype"
+      openehr: "$archetypePath"
       type: "NONE"
     followedBy:
       mappings:

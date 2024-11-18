@@ -10,16 +10,16 @@ openEhrConfig:
 mappings:
   - name: "gender"
     with:
-      fhir: "$fhirResource.gender"
-      openehr: "$openEhrArchetype.geschlecht.administratives_geschlecht" #42 in the flat json should be mapped to fhir's one
+      fhir: "$resourcePath.gender"
+      openehr: "$archetypePath.geschlecht.administratives_geschlecht" #42 in the flat json should be mapped to fhir's one
       type: "CODING"
   - name: "comment"
     with:
-      fhir: "$fhirResource.extension.value"
-      openehr: "$openEhrArchetype.geschlecht.anderes_geschlecht_amtlich"
+      fhir: "$resourcePath.extension.value"
+      openehr: "$archetypePath.geschlecht.anderes_geschlecht_amtlich"
       type: "CODING"
     condition:
-      targetRoot: "$fhirResource.extension"
+      targetRoot: "$resourcePath.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[extension_url_to_be_defined]" # need to extend fhir connect if this would want to be mapped from openehr, i.e. 'http://fhir.de/ValueSet/gender-other-de'

@@ -10,20 +10,20 @@ openEhrConfig:
 mappings:
   - name: "case identification"
     with:
-      fhir: "$fhirResource.id"
-      openehr: "$openEhrArchetype.context.case_identification.case_identifier"
+      fhir: "$resourcePath.id"
+      openehr: "$archetypePath.context.case_identification.case_identifier"
       type: "STRING"
 
   - name: "ISM Transition"
     with:
-      fhir: "$fhirResource.status"
-      openehr: "$openEhrArchetype.procedure.ism_transition.current_state"
+      fhir: "$resourcePath.status"
+      openehr: "$archetypePath.procedure.ism_transition.current_state"
       type: "CODING" # add mapping
 
   - name: "Name"
     with:
-      fhir: "$fhirResource.code"
-      openehr: "$openEhrArchetype.procedure"  # todo: this is in excel mapped both to coding.OPS and coding.SCR, which one is it?
+      fhir: "$resourcePath.code"
+      openehr: "$archetypePath.procedure"  # todo: this is in excel mapped both to coding.OPS and coding.SCR, which one is it?
       type: "NONE"
     followedBy:
       mappings:
@@ -42,7 +42,7 @@ mappings:
               - name: "seitenlokalisation root"
                 with:
                   fhir: "extension.value"
-                  openehr: "$openEhrArchetype.procedure.seitenlokalisation"
+                  openehr: "$archetypePath.procedure.seitenlokalisation"
                   type: "CODING"
                 condition:
                   targetRoot: "extension"
@@ -52,38 +52,38 @@ mappings:
 
   - name: "Kategorie"
     with:
-      fhir: "$fhirResource.category"
-      openehr: "$openEhrArchetype.procedure.kategorie_der_prozedur"
+      fhir: "$resourcePath.category"
+      openehr: "$archetypePath.procedure.kategorie_der_prozedur"
       type: "CODEABLECONCEPT"
 
   - name: "Body site"
     with:
-      fhir: "$fhirResource.bodySite"
-      openehr: "$openEhrArchetype.procedure.körperstelle"
+      fhir: "$resourcePath.bodySite"
+      openehr: "$archetypePath.procedure.körperstelle"
       type: "CODEABLECONCEPT"
 
   # todo: example of this extension in FHIR?
 
   - name: "Durchführungsabsicht"
     with:
-      fhir: "$fhirResource.extension"
-      openehr: "$openEhrArchetype.procedure.durchführungsabsicht"
+      fhir: "$resourcePath.extension"
+      openehr: "$archetypePath.procedure.durchführungsabsicht"
       type: "CODING"
     condition:
-      targetRoot: "$fhirResource.extension"
+      targetRoot: "$resourcePath.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[durchfuehrungsabsicht]"
 
   - name: "Comment"
     with:
-      fhir: "$fhirResource.note.text"
-      openehr: "$openEhrArchetype.procedure.comment"
+      fhir: "$resourcePath.note.text"
+      openehr: "$archetypePath.procedure.comment"
       type: "STRING"
 
   - name: "time"
     with:
-      fhir: "$fhirResource.performed.as(DateTimeType)"
-      openehr: "$openEhrArchetype.procedure.time"
+      fhir: "$resourcePath.performed.as(DateTimeType)"
+      openehr: "$archetypePath.procedure.time"
       type: "DATETIME"
 

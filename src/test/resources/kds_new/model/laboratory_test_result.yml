@@ -23,12 +23,12 @@ mappings:
   - name: "effectiveStart"
     with:
       fhir: "$resourcePath.effective"
-      openehr: "$composition/context/start_time" #
+      openehr: "$composition/context/start_time"
 
   - name: "effectiveEnd"
     with:
       fhir: "$resourcePath.effectivePeriod.end"
-      openehr: "$composition/context/end_time" #
+      openehr: "$composition/context/end_time"
 
   #DiagnosticReport.specimen	Laborbefund.Probenmaterial HIER link eines Specimen der ein entry etc ist wie ist dann das zurückmappen ?!
   #DiagnosticReport.specimen.identifier	Laborbefund.Probenmaterial.Laborprobenidentifikator
