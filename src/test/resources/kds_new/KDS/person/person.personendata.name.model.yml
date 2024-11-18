@@ -1,0 +1,73 @@
+format: "0.2.0"
+version: "0.2.0"
+
+# No fhirConfig, because this model has no direct Resource equivalent in FHIR. It can only be used in openEHR Archetype slots or as FHIR Resource attribute.
+
+openEhrConfig:
+  archetype: "openEHR-EHR-CLUSTER.structured_name.v1"
+
+mappings:
+  - name: "name"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$openEhrArchetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "vollständiger_name"
+          with:
+            fhir: "text"
+            openehr: "vollständiger_name" #full name
+            type: "STRING"
+
+        - name: "use"
+          with:
+            fhir: "use"
+            openehr: "namensart"
+            type: "CODING"
+
+        - name: "given"
+          with:
+            fhir: "given"
+            openehr: "vorname"
+            type: "STRING"
+
+        - name: "familyfull"
+          with:
+            fhir: "text"
+            openehr: "familienname"
+            type: "STRING"
+
+        - name: "family"
+          with:
+            fhir: "family.extension.value"
+            openehr: "familienname-nachname"
+            type: "STRING"
+          condition:
+            targetRoot: "family.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-name]"
+
+        - name: "namens zusatz"
+          with:
+            fhir: "family.extension.value"
+            openehr: "familienname-namenszusatz"
+            type: "STRING"
+          condition:
+            targetRoot: "family.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/humanname-namenszusatz]"
+
+        - name: "familienname vorsatzwort"
+          with:
+            fhir: "family.extension.value"
+            openehr: "familienname-vorsatzwort"
+            type: "STRING"
+          condition:
+            targetRoot: "family.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-prefix]"
+

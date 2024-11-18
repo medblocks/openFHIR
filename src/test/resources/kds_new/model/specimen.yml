@@ -12,42 +12,104 @@ spec:
     profile: http://hl7.org/fhir/StructureDefinition/Specimen
 
 mappings:
-  - name: "specimenIdentifier"
+  - name: "identifier"
     with:
       fhir: "$resourcePath.identifier"
-      openehr: "$archetypePath/items[at0001]"
+      openehr: "$archetypePath/items[at0088]" #external identifier
 
-  - name: "specimenCollection"
+  - name: "collection"
     with:
       fhir: "$resourcePath.collection"
       openehr: "$archetypePath"
       type: "NONE"
     followedBy:
       mappings:
-        - name: "specimenCollectionDateTime"
+        - name: "collectionDateTime"
           with:
-            fhir: "specimenCollectionDateTime" # same as onset; try to provide both and use the one that's present
+            fhir: "collected" # same as onset; try to provide both and use the one that's present
             openehr: "/items[at0015]"
-        - name: "specimenCollector"
+        - name: "collector"
           with:
             fhir: "collector.as(Reference).identifier" # explicitly cast to Reference to avoid adding a Resource
-            openehr: "/items[at0070]"
+            openehr: "/items[at0070]" #TODO should in the best case pinpoint to a resource via link, dunno where to put this in openEHR currently
         - name: "specimenCollectionMethod"
           with:
             fhir: "method"
             openehr: "/items[at0007]"
         - name: "specimenCollectionBodySite"
           with:
-            fhir: "bodySite.text"
+            fhir: "bodySite"
             openehr: "/items[at0087]"
+        - name: "samplingContext"
+          with:
+            fhir: "fastingStatus"
+            openehr: "$archetype/items[0008]" #Sampling context
+        - name: "collector"
+          with:
+            fhir: "collector"
+            openehr: "$reference"
+          reference:
+            mappings:
+              - name: "identifierInReference"
+                with:
+                  fhir: "$fhirRoot.identifier"
+                  openehr: "$archetype/items[at0070]"
+              - name: "collectorLink"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "$archetype/items[at0070]/links"
+                  type: "REFERENCED_MAPPING"
+                  openehrLink:
+                    meaning: "the collector that collected this specimen"
+                    type: "collector"
 
-  - name: "specimenType"
+  - name: "type"
     with:
       fhir: "$resourcePath.type"
-      openehr: "$archetypePath/items[at0029]"
+      openehr: "$archetypePath/items[at0029]" # specimen type
 
-  - name: "specimenNote"
+  - name: "note"
     with:
-      fhir: "note.text"
-      openehr: "$archetype/items[at0045]"
+      fhir: "$resourcePath.note"
+      openehr: "$archetype/items[at0045]" # comment
+
+  - name: "descriptionOfSpecimen"
+    with:
+      fhir: "$resourcePath.condition"
+      openehr: "$archetype/items[at0097]" #specimen description
+
+  - name: "descriptionOfSpecimen"
+    with:
+      fhir: "$resourcePath.accessionIdentifier"
+      openehr: "$archetype/items[0001]" #Laboratory specimen identifier
+
+  - name: "dateReceived"
+    with:
+      fhir: "$resourcePath.receivedTime"
+      openehr: "$archetype/items[at0034]" #Date/Time received
+
+  - name: "parent"
+    with:
+      fhir: "$resourcePath.parent"
+      openehr: "$reference"
+    reference:
+      resourceType: "Specimen"
+      mappings:
+        - name: "referenceInIdentifier"
+          with:
+            fhir: "$fhirRoot.identifier"
+            openehr: "$archetype/items[at0003]"
+        - name: "parentLink"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetype/items[at0003]/links"
+            type: "REFERENCED_MAPPING"
+            openehrLink:
+              meaning: "the parent of this specimen"
+              type: "parent"
+
+  - name: "status"
+    with:
+      fhir: "$resourcePath.status"
+      openehr: "archetypePath/items[at0041]" #adequacy for testing
 

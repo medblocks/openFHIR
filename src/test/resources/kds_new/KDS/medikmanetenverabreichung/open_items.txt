@@ -1,0 +1,4 @@
+- arzneimittelanwendung.dosierung.zeitablauf_-_täglich.verabreichungszeitpunkt_-intervall: a discrepancy between TIME in openEHR and DATETIME in FHIR
+- wirkstoff/wirkstoff-code_ask_snomed_ct_unii_cas/wirkstoff-code: CODED or TEXT? In provided example Canonical it's coded, in template it's text
+- klinische_indikation a string but in FHIR CodeableConcept (I mapped now to .text)
+- arzneimittelgruppe/arzneimittel-code is a STRING, but in FHIR CodeableConcept (I mapped now to .text)

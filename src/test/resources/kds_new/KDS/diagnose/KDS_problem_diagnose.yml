@@ -23,14 +23,14 @@ mappings:
             fhir: "$fhirRoot"
             openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
           slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
-        - name: "cascadeMapping"
+        - name: "encounterLink"
           with:
             fhir: "$fhirRoot"
-            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]" # will use link
+            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
             type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
             openehrLink:
               meaning: "the case this composition relates to"
-              type: "case link"
+              type: "case"
 
   - name: "date"
     extension: "add"

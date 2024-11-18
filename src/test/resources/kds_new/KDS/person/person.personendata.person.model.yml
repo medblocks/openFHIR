@@ -1,0 +1,103 @@
+format: "0.2.0"
+version: "0.2.0"
+
+# No fhirConfig, because this model has no direct Resource equivalent in FHIR. It can only be used in openEHR Archetype slots or as FHIR Resource attribute.
+
+openEhrConfig:
+  archetype: "openEHR-EHR-CLUSTER.person.v1"
+
+mappings:
+
+
+  - name: "pid"
+    with:
+      fhir: "$fhirRoot.identifier"
+      openehr: "$openEhrArchetype.pid"
+      type: "IDENTIFIER"
+    condition:
+      targetRoot: "$fhirRoot.identifier"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria: "[http://hospital.smarthealthit.org]"
+
+  - name: "maiden name"
+    with:
+      fhir: "$fhirRoot.name"
+      openehr: "$openEhrArchetype.geburtsname"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-CLUSTER.structured_name.v1"
+    condition:
+      targetRoot: "$fhirRoot.name"
+      targetAttribute: "use"
+      operator: "one of"
+      criteria: "[maiden]"
+
+  - name: "official name"
+    with:
+      fhir: "$fhirRoot.name"
+      openehr: "$openEhrArchetype.name"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-CLUSTER.structured_name.v1"
+    condition:
+      targetRoot: "$fhirRoot.name"
+      targetAttribute: "use"
+      operator: "one of"
+      criteria: "[official]"
+
+  - name: "organization"
+    with:
+      fhir: "$fhirRoot.managingOrganization"
+      openehr: "$reference" # the path of the following reference mapping will be used
+      type: "NONE"
+    # States the FHIR target/source is a Reference.
+    reference:
+      # Implicitly is a "direct" reference, i.e. creates ad-hoc sub-resource. It will be added to the Bundle and referenced in the root Resource.
+      resourceType: "Organization"
+      mappings:
+        - name: "org"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$openEhrArchetype.verwaltungsorganisation"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "org name"
+                with:
+                  fhir: "name"
+                  openehr: "namenszeile"
+                  type: "STRING"
+
+              - name: "org id"
+                with:
+                  fhir: "identifier"
+                  openehr: "identifier.identifier_value"
+                  type: "IDENTIFIER"
+
+  - name: "person data address"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$openEhrArchetype"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-CLUSTER.address.v1"
+
+  - name: "gkv identifier"
+    with:
+      fhir: "$fhirRoot.identifier"
+      openehr: "$openEhrArchetype.versicherten_id_gkv"
+      type: "IDENTIFIER"
+    condition:
+      targetRoot: "$fhirRoot.identifier"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria: "[http://fhir.de/NamingSystem/gkv/patient]"
+
+  - name: "pvk identifier"
+    with:
+      fhir: "$fhirRoot.identifier"
+      openehr: "$openEhrArchetype.versicherungsnummer_pkv"
+      type: "IDENTIFIER"
+    condition:
+      targetRoot: "$fhirRoot.identifier"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria: "[http://fhir.de/NamingSystem/pkv/patient]"

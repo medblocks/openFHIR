@@ -1,0 +1,15 @@
+format: "0.2.0"
+
+openEHR:
+  templateId: "KDS_Prozedur"
+  archetypes:
+    - "openEHR-EHR-ACTION.procedure.v1"
+    - "openEHR-EHR-CLUSTER.case_identification.v0"
+
+fhir:
+  resourceType: "Bundle"
+  condition:
+    targetRoot: "$fhirResource"
+    targetAttribute: "meta.profile"
+    operator: "one of"
+    criteria: "[KDS_Prozedur]"

@@ -34,25 +34,39 @@ mappings:
   #DiagnosticReport.specimen.identifier	Laborbefund.Probenmaterial.Laborprobenidentifikator
   #DiagnosticReport.effective[x]	RM
 
+# at0065 specimen
+  - name: "specimen"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.specimen"
+      openehr: "$reference"
+    reference:
+      resourceType: "Specimen"
+      mappings:
+        - name: "specimenReference"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1]"
+          slotArchetype: "openEHR-EHR-CLUSTER.specimen.v1"
+
 
   - name: "basedOn"
     extension: "add"
     with:
       fhir: "$resourcePath.basedOn"
       openehr: "$reference"
-      type: "NONE"
     reference:
       mappings:
         - name: "identifierInReference"
           with:
             fhir: "$fhirRoot.identifier.value"
             openehr: "$archetypePath/protocol[at0004]/items[at0094]/items[at0063]"
-        - name: "cascadeMapping"
+        - name: "basedOnLink"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetypePath/protocol[at0004]/items[at0094]/items[at0063]" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehr_link:
+            openehr: "$archetypePath/protocol[at0004]/items[at0094]/items[at0063]/links"
+            type: "REFERENCED_MAPPING"
+            openehrLink:
               meaning: "the identifier which it derived from"
               type: "based on"
 

@@ -23,14 +23,14 @@ mappings:
             fhir: "$fhirRoot"
             openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
           slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
-        - name: "cascadeMapping"
+        - name: "encounterLink"
           with:
             fhir: "$fhirRoot"
-            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]" # will use link
+            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
             type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
             openehrLink:
               meaning: "the case this composition relates to"
-              type: "case link"
+              type: "case"
 
   - name: "status"
     extension: "add"
@@ -49,10 +49,23 @@ mappings:
       operator: "one of"
       criteria: "[FILL]"
 
+  - name: "berichtId"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.identifier"
+      openEHR: "$compositionPath/context/other_context[at0001]/items[at0002]"
+    condition:
+      targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
+      targetAttribute: "code"
+      operator: "one of"
+      criteria: "[FILL]"
+
+
   - name: "result"
     with:
       fhir: "$resourcePath.result"
       openehr: "$reference"
+      dependsOn: "laboratoryTestResult.specimen" #execute first specimen mapping since we need it for the link
     reference:
       resourceType: "Observation"
       mappings:

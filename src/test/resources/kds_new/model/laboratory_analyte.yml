@@ -20,21 +20,51 @@ mappings:
       fhir: "$resourcePath.issued"
       openehr: "$archetypePath/items[at0006]"
 
-
-#TODO this is where we stoped
-  - name: "observation recurring"
+  - name: "analyteMeasurement"
     with:
-      fhir: "$fhirRoot"
-      openehr: "$archetypePath.laborbefund.pro_laboranalyt"
-      type: "NONE"
-    followedBy:
-      mappings:
-        - name: "value"
-          with:
-            fhir: "value.as(Quantity)"
-            openehr: "messwert.quantity_value"
+      fhir: "resourcePath.value"
+      openehr: "$archetypePath/items[at0001]"
 
-        - name: "code"
+  - name: "analyteName"
+    with:
+      fhir: "resourcePath.code"
+      openehr: "$archetypePath/items[at0024]"
+
+  - name: "interpretation"
+    with:
+      fhir: "resourcePath.code"
+      openehr: "$archetypePath/items[at0004]"
+
+  - name: "testmethod"
+    with:
+      fhir: "resourcePath.method"
+      openehr: "$archetypePath/items[at0028]"
+
+  - name: "specimen"
+    with:
+      fhir: "$resourcePath.specimen"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Specimen"
+      mappings:
+        - name: "identifierInReference"
           with:
-            fhir: "code"
-            openehr: "analyte_name"
+            fhir: "$fhirRoot.identifier.value"
+            openehr: "$archetypePath/items[at0026]"
+        - name: "specimenLink"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetypePath/items[at0026]/links" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get data
+            openehrLink: #follow this link
+              meaning: "link to the ehr object this specimen was mapped from"
+              type: "specimen"
+
+  - name: "comment"
+    with:
+      fhir: "resourcePath.note"
+      openehr: "$archetypePath/items[at0057]"
+
+
+
