@@ -45,7 +45,7 @@ mappings:
       fhir: "$resourcePath.status"
       openehr: "$composition/context/other_context[at0001]/items[at0010]"
 
-  - name: "organisation"
+  - name: "serviceProvider"
     extension: "add"
     with:
       fhir: "$resourcePath.serviceProvider"
@@ -59,11 +59,10 @@ mappings:
             openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.organization.v0]"
           slotArchetype: "openEHR-EHR-CLUSTER.organization.v0"
 
-
-  - name: "Aufnahmegrund extension"
+  - name: "aufnahmegrundExtension"
     with:
       fhir: "$resourcePath.extension"
-      openehr: "$archetypePath.aufnahmedaten"
+      openehr: "$archetypePath"
       type: "NONE"
     condition:
       targetRoot: "$resourcePath.extension"
@@ -72,73 +71,59 @@ mappings:
       criteria: "[http://fhir.de/StructureDefinition/Aufnahmegrund]"
     followedBy:
       mappings:
-        - name: "Aufnahmegrund ErsteUndZweiteStelle"
+        - name: "ersteUndZweiteStelle"
           with:
-            fhir: "extension.value"
-            openehr: "aufnahmegrund_-_1\\._und_2\\._stelle"
-            type: "CODING"
+            fhir: "extension.value" # since its two extensions nested
+            openehr: "/items[at0008 and name/value='Aufnahmegrund - ErsteUndZweiteStelle']"
           condition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
             criteria: "[ErsteUndZweiteStelle]"
 
-        - name: "Aufnahmegrund DritteStelle"
+        - name: "dritteStelle"
           with:
             fhir: "extension.value"
-            openehr: "aufnahmegrund_-_3\\._stelle"
-            type: "CODING"
+            openehr: "/items[at0008 and name/value='Aufnahmegrund - Dritte Stelle']"
           condition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
             criteria: "[DritteStelle]"
 
-        - name: "Aufnahmegrund VierteStelle"
+        - name: "vierteStelle"
           with:
             fhir: "extension.value"
-            openehr: "aufnahmegrund_-_4\\._stelle"
-            type: "CODING"
+            openehr: "/items[at0008 and name/value='Aufnahmegrund - Vierte Stelle']"
           condition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
             criteria: "[VierteStelle]"
 
-
-  - name: "hospitalization"
+  - name: "recordingDismissal"
     with:
       fhir: "$resourcePath.hospitalization"
       openehr: "$archetypePath"
       type: "NONE"
     followedBy:
-      mappings:
-        - name: "admit source"
-          with:
-            fhir: "admitSource.coding"
-            openehr: "aufnahmedaten.vorherige_verantwortliche_organisationseinheit_vor_aufnahme.typ"
-            type: "CODING"
+       - name: "aufnahmeategorie"
+         with:
+           fhir: "admitSource"
+           openehr: "/data[at0001]/items[at0009]"
+       - name: "entlassungsgrund"
+         with:
+           fhir: "dischargeDisposition.extension.extension.value"
+           openehr: "/data[at0001]/items[at0006]"
+         condition:
+           targetRoot: "dischargeDisposition.extension"
+           targetAttribute: "url"
+           operator: "one of"
+           condition: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
 
-        - name: "discharge disposition"
-          with:
-            fhir: "dischargeDisposition"
-            openehr: "entlassungsdaten"
-            type: "NONE"
-          followedBy:
-            mappings:
-              - name: "coding"
-                with:
-                  fhir: "coding"
-                  openehr: "entlassungsgrund"
-                  type: "CODING"
 
-              - name: "entlassungsgrund"
-                with:
-                  fhir: "extension.value"
-                  openehr: "entlassungsgrund" # todo: this needs to be something else I am sure, but what?
-                  type: "CODING"
-                condition:
-                  targetRoot: "extension"
-                  targetAttribute: "url"
-                  operator: "one of"
-                  criteria: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
+#partOf
+
+  - name: "diagnose"
+    
+# problem diagnose

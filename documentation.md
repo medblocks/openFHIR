@@ -109,14 +109,15 @@ The path element separator is always a single, simple `.`.
 
 Modeling variables/references are required to create reusable paths:
 
-| Variable            | Description                                                                              |
-|---------------------|------------------------------------------------------------------------------------------|
-| `$fhirResource`     | FHIR object at root, if Resource                                                         |
-| `$fhirRoot`         | FHIR object at root, if no Resource                                                      |
-| `$fhirParentPath`   | The path from where the slotArchetype or the profile append is called                    |
-| `$openEhrArchetype` | openEHR placeholder marking the beginning of the context's Archetype                     |
-| `$composition`      | path of the composition                                                                  |
-| `$reference`        | Helper to indicate a skipped path, due to a [Reference Mapping](#fhir-reference-mapping) |
+| Variable          | Description                                                                              |
+|-------------------|------------------------------------------------------------------------------------------|
+| `$resourcePath`   | FHIR object at root, if Resource                                                         |
+| `$fhirRoot`       | FHIR object at root, if no Resource                                                      |
+| `$fhirParentPath` | The path from where the slotArchetype or the profile append is called                    |
+| `$fhirParent`     | The FHIR object of the parent resource from which the slotArchetype mapping was called   |
+| `$archetypePath`  | openEHR placeholder marking the beginning of the context's Archetype                     |
+| `$composition`    | path of the composition                                                                  |
+| `$reference`      | Helper to indicate a skipped path, due to a [Reference Mapping](#fhir-reference-mapping) |
 
 It is also possible to ask the implementation to provide further information from the execution context.
 Here, the openEHR execution environment - with `$openEhrContext` as root and available with each of the following attached after a separator:

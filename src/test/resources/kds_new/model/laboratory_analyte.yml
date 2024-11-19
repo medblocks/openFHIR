@@ -50,7 +50,7 @@ mappings:
       mappings:
         - name: "identifierInReference"
           with:
-            fhir: "$fhirRoot.identifier.value"
+            fhir: "$fhirRoot.identifier"
             openehr: "$archetypePath/items[at0026]"
         - name: "specimenLink"
           with:

@@ -56,11 +56,7 @@ mappings:
       openehr: "$archetypePath"
     followedBy:
       mappings:
-        - name: "bodySiteCode"
-          with:
-            fhir: "coding"
-            openehr: "/data[at0001]/items[at0012]" # Body site
-        - name: "bodySiteText"
+        - name: "bodySiteCluster"
           with:
             fhir: "$resourcePath" #only forwarding the root, can this be done or does it lead to clashes with the father from above ? 
             #I guess the $ prevents that. 

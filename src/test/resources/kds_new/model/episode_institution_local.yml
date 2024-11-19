@@ -49,29 +49,3 @@ mappings:
       operator: "one of"
       criteria: "[wa]"
 
-#TODO this is where i stopped!
-  - name: "organisationsschlüssel"
-    with:
-      fhir: "$resourcePath.serviceType"
-      openehr: "$archetypePath.aufnahmedaten.vorherige_verantwortliche_organisationseinheit_vor_aufnahme"
-    followedBy:
-      mappings:
-        - name: "Fachabteilungsschluessel-erweitert"
-          with:
-            fhir: "coding"
-            openehr: "organisationsschlüssel"
-          condition:
-            targetRoot: "coding"
-            targetAttribute: "system"
-            operator: "one of"
-            criteria: "[local_terms]" # was http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert, but had to change to local_terms to conform to terminology
-        - name: "Fachabteilungsschluessel"
-          with:
-            fhir: "coding"
-            openehr: "typ"  # todo: I think this is not the right mapping, since this is then mapped to hospitalization.admitSource
-          condition:
-            targetRoot: "coding"
-            targetAttribute: "system"
-            operator: "one of"
-            criteria: "[local_terms]"  # was http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel, but had to change to local_terms to conform to terminology
-

@@ -1,0 +1,23 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_organization_v0
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.organization.v0 # deprecated
+mappings:
+
+  - name: "orgaKey" #is populated from the institution mapping
+    extension: "overwrite"
+    with:
+      openehr: "$archetypePath/items[at0024]" #is mapped from fachabteilungsschlüssel
+      fhir: "$parentResource.serviceType"
+    condition:
+      targetRoot: "coding"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria: "[http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel]"
+

@@ -59,7 +59,7 @@ mappings:
       mappings:
         - name: "identifierInReference"
           with:
-            fhir: "$fhirRoot.identifier.value"
+            fhir: "$fhirRoot.identifier"
             openehr: "$archetypePath/protocol[at0004]/items[at0094]/items[at0063]"
         - name: "basedOnLink"
           with:

@@ -9,7 +9,7 @@ spec:
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.organization.v0 # deprecated
 mappings:
-  - name: "Type"
+  - name: "type"
     with:
       fhir: "$fhirParentPath.type"
       openehr: "$archetypePath/items[at0051]"
