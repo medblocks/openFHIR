@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name: service_request.v1
+  name: service_request
   version: 0.0.1a
 spec:
   system: FHIR

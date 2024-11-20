@@ -23,7 +23,7 @@ mappings:
             fhir: "$fhirRoot.identifier"
             openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
           slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
-        - name: "encounterLink"
+        - name: "encounterMapping"
           with:
             fhir: "$fhirRoot"
             openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link

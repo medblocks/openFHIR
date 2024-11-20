@@ -48,7 +48,6 @@ mappings:
     with:
       fhir: "$fhirRoot.managingOrganization"
       openehr: "$reference" # the path of the following reference mapping will be used
-      type: "NONE"
     # States the FHIR target/source is a Reference.
     reference:
       # Implicitly is a "direct" reference, i.e. creates ad-hoc sub-resource. It will be added to the Bundle and referenced in the root Resource.

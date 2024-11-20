@@ -1,7 +1,7 @@
 forengine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name: KDSLaborbericht
+  name: KDS_laborbericht
   version: 0.0.1a
 spec:
   system: FHIR
@@ -23,7 +23,7 @@ mappings:
             fhir: "$fhirRoot.identifier"
             openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
           slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
-        - name: "encounterLink"
+        - name: "encounterMapping"
           with:
             fhir: "$fhirRoot"
             openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
@@ -66,7 +66,7 @@ mappings:
     with:
       fhir: "$resourcePath.result"
       openehr: "$reference"
-      dependsOn: "laboratoryTestResult.specimen" #execute first specimen mapping since we need it for the link
+      dependsOn: "laboratory_test_result.specimen" #execute first specimen mapping since we need it for the link
     reference:
       resourceType: "Observation"
       mappings:

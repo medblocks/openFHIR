@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: context
 metadata:
-  name:  KDSLaborauftragContext
+  name:  laborauftrag.context
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
@@ -16,4 +16,5 @@ context:
     - "openEHR-EHR-CLUSTER.organisation.v1"
     - "openEHR-EHR-CLUSTER.case_identification.v0"
   extensions:
-    - "KDSLaborauftrag"
+    - "KDS_laborauftrag"
+  start: "KDS_laborauftrag"

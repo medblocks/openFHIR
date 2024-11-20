@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name: KDSFallEinfach
+  name: KDS_episode_institution_local
   version: 0.0.1a
 spec:
   system: FHIR
@@ -60,6 +60,7 @@ mappings:
           slotArchetype: "openEHR-EHR-CLUSTER.organization.v0"
 
   - name: "aufnahmegrundExtension"
+    extension: "add"
     with:
       fhir: "$resourcePath.extension"
       openehr: "$archetypePath"
@@ -102,6 +103,7 @@ mappings:
             criteria: "[VierteStelle]"
 
   - name: "recordingDismissal"
+    extension: "add"
     with:
       fhir: "$resourcePath.hospitalization"
       openehr: "$archetypePath"
@@ -121,9 +123,10 @@ mappings:
            operator: "one of"
            condition: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
 
+  - name: "problemDiagnose"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.diagnosis"
+      openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
+    slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
 
-#partOf
-
-  - name: "diagnose"
-    
-# problem diagnose
