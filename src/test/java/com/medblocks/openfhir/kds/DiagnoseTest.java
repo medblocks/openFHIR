@@ -21,7 +21,7 @@ public class DiagnoseTest extends KdsBidirectionalTest {
     final String OPT = "KDS_Diagnose.opt";
     final String FLAT = "KDS_Diagnose.flat.json";
     final String FLAT_MULTIPLE = "KDS_Diagnose.multiples.flat.json";
-    final String CONTEXT = "diagnose.context.yaml";
+    final String CONTEXT = "KDS_diagnose.context.yaml";
     final String BUNDLE = "KDS_Diagnose_bundle_whole.json";
     final String BUNDLE_SINGLE = "KDS_Diagnose_bundle.json";
 

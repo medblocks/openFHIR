@@ -1,0 +1,64 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name:  KDS_medikation.context
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-OBSERVATION.medication_statement.v0
+
+mappings:
+  - name: "fallIdentifikation"
+    extension: "add"
+    with:
+      fhir: "$resourcePath.encounter"
+      openehr: "$reference"
+    reference:
+      resourceType: "Encounter"
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.identifier"
+            openehr: "$compositionPath/context/other_context[at0005]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+          slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
+        - name: "encounterMapping"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$compositionPath/context/other_context[at0005]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+            openehrLink:
+              meaning: "the case this composition relates to"
+              type: "case"
+
+  - name: "identifier"
+    with:
+      fhir: "$resourcePath.identifier"
+      openehr: "$archetypePath/protocol[at0004]/items[openEHR-EHR-CLUSTER.identifier_fhir.v0]/items[at0001]"
+    slotArchetype: "openEHR-EHR-CLUSTER.identifier_fhir.v0"
+
+  - name: "category"
+    with:
+      fhir: "$resourcePath.category"
+      openehr: "$archetypePath/protocol[at0004]/items[openEHR-EHR-CLUSTER.entry_category.v0]"
+    slotArchetype: "openEHR-EHR-CLUSTER.entry_category.v0"
+
+  - name: "status"
+    with:
+      fhir: "$resourcePath"
+      openehr: "$archetypePath/protocol[at0004]/items[openEHR-EHR-CLUSTER.medication_status_fhir.v0]"
+    slotArchetype: "openEHR-EHR-CLUSTER.medication_status_fhir.v0"
+
+  # startzeit is wrong therefore not mapped
+  # Dauer der Einnahme Field wrong in template not mapped
+  # Anwendungsdauer Wrong in template therefore not mapped
+  # author/informant is wrong therefore not mapped
+  # Dosierung [0..2]
+
+
+
+
+  #  Dosierung [0..*]
+  #  DV_CODED_TEXT Verabreichungsweg [0..*]
+  #  DV_TEXT Hinweis

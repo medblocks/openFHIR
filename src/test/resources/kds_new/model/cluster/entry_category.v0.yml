@@ -1,0 +1,28 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  entry_category.v0
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.entry_category.v0
+
+mappings:
+  - name: "category"
+    with:
+      fhir: "$resourcePath.category"
+      openehr: "$archetypePath"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "coding"
+          with:
+            fhir: "coding"
+            openehr: "$archetypePath/items[at0002]"
+        - name: "comment"
+          with:
+            fhir: "text"
+            openehr: "$archetypePath/items[at0003]"
+

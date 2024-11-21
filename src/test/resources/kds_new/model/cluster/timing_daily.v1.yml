@@ -1,0 +1,31 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  timing_daily.v1
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.timing_daily.v1
+
+mappings:
+  - name: "event time"
+    with:
+      fhir: "$fhirRoot.event"
+      openehr: "$archetypePath.zeitpunkt.time_value"
+      type: "TIME"
+
+  - name: "when time of day"
+    with:
+      fhir: "$fhirRoot.repeat.when.value"
+      openehr: "$archetypePath.bestimmtes_ereignis.ereignis"
+      type: "STRING"
+
+
+  - name: "when time of day"
+    with:
+      fhir: "$fhirRoot.repeat.timeOfDay"
+      openehr: "$archetypePath.bestimmtes_ereignis.offset"
+      type: "STRING"
+

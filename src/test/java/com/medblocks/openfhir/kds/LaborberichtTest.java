@@ -23,7 +23,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
     final String RESOURCES_ROOT = "/kds/laborbericht/";
     final String OPT = "KDS_Laborbericht.opt";
     final String FLAT = "KDS_Laborbericht.flat.json";
-    final String CONTEXT = "laborbericht.context.yaml";
+    final String CONTEXT = "KDS_laborbericht.context.yaml";
     final String BUNDLE = "KDS_Laborbericht_bundle.json";
 
     @SneakyThrows

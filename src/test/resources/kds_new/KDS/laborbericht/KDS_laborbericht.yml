@@ -42,7 +42,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resourcePath.identifier"
-      openEHR: "$compositionPath/context/other_context[at0001]/items[at0002]"
+      openehr: "$compositionPath/context/other_context[at0001]/items[at0002]"
     condition:
       targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
       targetAttribute: "code"
@@ -53,7 +53,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resourcePath.identifier"
-      openEHR: "$compositionPath/context/other_context[at0001]/items[at0002]"
+      openehr: "$compositionPath/context/other_context[at0001]/items[at0002]"
     condition:
       targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
       targetAttribute: "code"

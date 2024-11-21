@@ -25,7 +25,7 @@ public class LaborauftragTest extends KdsBidirectionalTest {
     final String OPT = "KDS_Laborauftrag.opt";
     final String FLAT = "KDS_Laborauftrag.flat.json";
     final String FLAT_2 = "KDS_Laborauftrag_2.flat.json";
-    final String CONTEXT = "laborauftrag.context.yaml";
+    final String CONTEXT = "KDS_laborauftrag.context.yaml";
     final String BUNDLE = "KDS_Laborauftrag_bundle.json";
 
     @SneakyThrows

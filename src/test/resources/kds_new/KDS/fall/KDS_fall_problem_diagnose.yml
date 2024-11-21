@@ -15,45 +15,45 @@ mappings:
     extension: "overwrite"
     with:
       fhir: "$fhirParentPath"
-      openEHR: "$archetypePath"
+      openehr: "$archetypePath"
       type: "NONE"
-      followedBy:
-        mapping:
-          - name: "referencedDiagnose" # condition reference
-            with:
-              fhir: "condition"
-              openEHR: "$reference"
-            reference:
-              resourceType: "Condition"
-              mappings:
-                - name: "referencedDiagnose"
-                  with:
-                    fhir: "$fhirRoot"
-                    openehr: "/data[at0001]/links"
-                    type: "REFERENCED_MAPPING"
-                    openehrLink:
-                      meaning: "link to the diagnosis composition"
-                      type: "diagnose"
-          - name: "diagnoseName" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
-            with:
-              fhir: "condition.code" #TODO @Gasper is this correctly how i can access the code in the Condition reference FHIR
-              openEHR: "/data[at0001]/items[at0002]"
-          - name: "diagnoseTyp" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
-            with:
-              fhir: "use.coding.code"
-              openEHR: "/data[at0001]/items[at0009]"
-            condition:
-              targetRoot: "use.coding.code"
-              targetAttribute: "value"
-              operator: "one of"
-              criteria: "[referral-diagnosis, treatment-diagnosis]"
-          - name: "diagnoseSubtyp" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
-            with:
-              fhir: "use.coding.code"
-              openEHR: "/data[at0001]/items[at0079]"
-            condition:
-              targetRoot: "use.coding.code"
-              targetAttribute: "value"
-              operator: "one of"
-              criteria: "[surgery-diagnosis, department-main-diagnosis, cause-of-death, infection-control-diagnosis, AD, DD]"
+    followedBy:
+      mappings:
+        - name: "referencedDiagnose" # condition reference
+          with:
+            fhir: "condition"
+            openehr: "$reference"
+          reference:
+            resourceType: "Condition"
+            mappings:
+              - name: "referencedDiagnose"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "/data[at0001]/links"
+                  type: "REFERENCED_MAPPING"
+                  openehrLink:
+                    meaning: "link to the diagnosis composition"
+                    type: "diagnose"
+        - name: "diagnoseName" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
+          with:
+            fhir: "condition.code" #TODO @Gasper is this correctly how i can access the code in the Condition reference FHIR
+            openehr: "/data[at0001]/items[at0002]"
+        - name: "diagnoseTyp" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
+          with:
+            fhir: "use.coding.code"
+            openehr: "/data[at0001]/items[at0009]"
+          condition:
+            targetRoot: "use.coding.code"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[referral-diagnosis, treatment-diagnosis]"
+        - name: "diagnoseSubtyp" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
+          with:
+            fhir: "use.coding.code"
+            openehr: "/data[at0001]/items[at0079]"
+          condition:
+            targetRoot: "use.coding.code"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[surgery-diagnosis, department-main-diagnosis, cause-of-death, infection-control-diagnosis, AD, DD]"
 

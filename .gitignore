@@ -88,3 +88,8 @@ nb-configuration.xml
 ## Miscellaneous
 ##############################
 *.log
+
+#python environment i used #TODO delete
+tutorial_env/
+
+

@@ -1,0 +1,80 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  medication_statement.v0
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-OBSERVATION.medication_statement.v0
+    revision: 0.0.1a
+
+mappings:
+
+
+#Medication name at0006
+#Medication details at0046
+#Overall directions description at0047
+#Structured dose and timing  at0045
+#Route of administration at0030
+#Description at0032
+# CLinical indication at0023
+# Last administered at0026
+# Endcpoint at0037
+# Addtional details at0048
+# comment at0029
+
+  - name: "eventTime"
+    with:
+      fhir: "$resourcePath.effective"
+      openEHR: "$archetypePath/data[at0001]/events[at0002]" # period -> interval event, datetime to pointInTime event
+
+  - name: "note"
+    with:
+      fhir: "$resourcePath.note.text"
+      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0029]"
+
+#  - name: "routeOfAdministration" # das muss in das dosage mapping
+#    with:
+#      fhir: "$resourcePath.dosage.route.coding" #iterate per dosage
+#      openehr: "$archetypePath/at0030"
+#      #TODO to be 100 % correct this would need to be a new event for each dosage that has another route, nevertheless this seems clinical nonsense
+
+  - name: "structured dosage"
+    with:
+      fhir: "$resourcePath.dosage"
+      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.dosage.v2]"    # link via path and resolve back ?!
+    slotArchetype: "openEHR-EHR-CLUSTER.dosage.v2"
+
+
+  #order for structured dosage matters; it needs to be ABOVE "unstructured dosage" because of openEhrPaths being so similar (belows openehr path is actually within aboves)
+  - name: "structured dosage"
+    with:
+      fhir: "$resourcePath.dosage"
+      openehr: "$archetypePath.medikationseintrag.dosierung2"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-CLUSTER.dosage.v2"
+
+  - name: "unstructured dosage"
+    with:
+      fhir: "$resourcePath.dosage.text"
+      openehr: "$archetypePath.medikationseintrag.dosierung"
+      type: "STRING"
+
+
+  - name: "medication"
+    with:
+      fhir: "$resourcePath.medication"
+      openehr: "$reference"
+    reference:
+      resourceType: "Medication"
+      mappings:
+        - name: "medication request medication"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetypePath.medikationseintrag.arzneimittel"
+            type: "NONE"
+          slotArchetype: "openEHR-EHR-CLUSTER.medication.v2"
+
+

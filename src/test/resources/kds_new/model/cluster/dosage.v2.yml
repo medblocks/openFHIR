@@ -1,0 +1,45 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  dosage.v2
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.dosage.v2
+
+mappings:
+
+    #TODO this is where i stopped
+  - name: "free text"
+    with:
+      fhir: "$fhirRoot.text"
+      openehr: "$archetypePath.dosierung_freitext"
+      type: "STRING"
+
+  - name: "sequence"
+    with:
+      fhir: "$fhirRoot.sequence"
+      openehr: "$archetypePath.dosierungsreihenfolge"
+      type: "QUANTITY" # should this be something else?
+
+  - name: "dose and rate"
+    with:
+      fhir: "$fhirRoot.doseAndRate.dose.as(Quantity)"
+      openehr: "$archetypePath.dosis.quantity_value"
+      type: "QUANTITY"
+
+
+  - name: "as needed"
+    with:
+      fhir: "$fhirRoot.asNeeded.as(BooleanType)"
+      openehr: "$archetypePath.tägliche_dosierung.bei_bedarf"
+      type: "BOOL"
+
+  - name: "dosage timing"
+    with:
+      fhir: "$fhirRoot.timing"
+      openehr: "$archetypePath.tägliche_dosierung"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-CLUSTER.timing_daily.v1"

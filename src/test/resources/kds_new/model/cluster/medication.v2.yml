@@ -1,0 +1,74 @@
+archetype: "openEHR-EHR-CLUSTER.medication.v2"
+
+mappings:
+  - name: "name"
+    with:
+      fhir: "$fhirRoot.code.text"
+      openehr: "$archetypePath.arzneimittel-name"
+      type: "STRING"
+
+  - name: "form"
+    with:
+      fhir: "$fhirRoot.form"
+      openehr: "$archetypePath.darreichungsform"
+      type: "CODEABLECONCEPT"
+
+  - name: "amount"
+    with:
+      fhir: "$fhirRoot.amount"
+      openehr: "$archetypePath.wirkstärke_konzentration"
+      type: "QUANTITY"
+
+  - name: "ingridient"
+    with:
+      fhir: "$fhirRoot.ingredient"
+      openehr: "$archetypePath.bestandteil"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "item"
+          with:
+            fhir: "item.as(CodeableConcept)"
+            openehr: "$archetypePath"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "item text"
+                with:
+                  fhir: "text"
+                  openehr: "bestandteil"
+                  type: "STRING"
+
+              - name: "wirkstofftyp"
+                with:
+                  fhir: "coding"
+                  openehr: "wirkstofftyp"
+                  type: "CODING"
+
+        - name: "strength"
+          with:
+            fhir: "strength"
+            openehr: "bestandteil-menge"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "zahler"
+                with:
+                  fhir: "numerator"
+                  openehr: "zähler"
+                  type: "QUANTITY"
+              - name: "nenner"
+                with:
+                  fhir: "denominator"
+                  openehr: "nenner"
+                  type: "QUANTITY"
+
+
+
+
+  # order is important, because when mapping from openEHR to FHIR, we want the second mapping (better one) to be applied
+  - name: "medication"
+    with:
+      fhir: "$resourcePath.medication.as(CodeableConcept).text"
+      openehr: "$archetypePath.medikationseintrag.arzneimittel.arzneimittel-name"
+      type: "STRING"
