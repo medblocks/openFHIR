@@ -9,11 +9,26 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   openEhrConfig:
     archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
 
+#uniqueValues:
+#  fhir:
+#   mappings: ["$resourcePath.category", "resourcePath.conclusion", "resourcePath.issued"] # if this fields have
+# different values from the openEHR side, make new resource.
+#   operator: "new resource"
 mappings:
+  - name: "eventGeneration" # events are generated here from the structured test diagnoses of openEHR
+    # since the cluster can be panel or analyte this has to be done by the extension !
+    # therefore abstract.
+    # also first mappings, since order matters in FHIRconnect, so the events are generated at first.
+    with:
+      fhir: "$resourcePath.result"
+      openehr: "$archetypePath/data[at0001]/events[at0002]" # path to Cluster
+      type: "ABSTRACT"
+
   - name: "category"
     with:
       fhir: "$resourcePath.category"
-      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0005]"
+      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0005]" # if there are several events add it to all of them
+      # Backwards map all the values back, if they overlap ?!?!?!?
 
   - name: "conclusion"
     with:
@@ -25,18 +40,17 @@ mappings:
       fhir: "$resourcePath.effective"
       openehr: "$composition/context/start_time"
 
+  - name: "issued"
+    with:
+      fhir: "$resourcePath.issued"
+      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0005]/items[at0075]"
+
   - name: "effectiveEnd"
     with:
       fhir: "$resourcePath.effectivePeriod.end"
       openehr: "$composition/context/end_time"
 
-  - name: "event" #TODO needs to be overwriten?!
-    with:
-      fhir: "$resourcePath.effective"
-      openehr: "$archetypePath/data[at0001]/events[at0002]"
-
   - name: "specimen"
-    extension: "add"
     with:
       fhir: "$resourcePath.specimen"
       openehr: "$reference"
@@ -46,9 +60,8 @@ mappings:
         - name: "specimenReference"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1]"
+            openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/data[at0065]/items[openEHR-EHR-CLUSTER.specimen.v1]"
           slotArchetype: "openEHR-EHR-CLUSTER.specimen.v1"
-
 
   - name: "basedOn"
     extension: "add"

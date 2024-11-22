@@ -9,10 +9,13 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   openEhrConfig:
     archetype: openEHR-EHR-OBSERVATION.medication_statement.v0
     revision: 0.0.1a
+#uniqueValues:
+#  fhir:
+#   mappings: [""] # if this fields have
+# different values from the openEHR side, make new resource.
+#   operator: "new resource"
 
 mappings:
-
-
 #Medication name at0006
 #Medication details at0046
 #Overall directions description at0047
@@ -25,6 +28,20 @@ mappings:
 # Addtional details at0048
 # comment at0029
 
+# per event make one resource, per dosage make one event.
+
+  - name: "eventGeneration" #/data[at0001]/events[at0002] add new for each laboratory analyte.
+    extension: "overwrite"
+    with:
+      fhir: "$resourcePath.dosage"
+      openehr: "$archetypePath/data[at0001]/events[at0002]" #will create FOR each result ONE event.
+      type: "EVENT"
+#  - name: "routeOfAdministration" # das muss in das dosage mapping
+#    with:
+#      fhir: "$resourcePath.dosage.route.coding" #iterate per dosage
+#      openehr: "$archetypePath/data[at0030]"
+#      #TODO to be 100 % correct this would need to be a new event for each dosage that has another route, nevertheless this seems clinical nonsense
+
   - name: "eventTime"
     with:
       fhir: "$resourcePath.effective"
@@ -35,11 +52,6 @@ mappings:
       fhir: "$resourcePath.note.text"
       openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0029]"
 
-#  - name: "routeOfAdministration" # das muss in das dosage mapping
-#    with:
-#      fhir: "$resourcePath.dosage.route.coding" #iterate per dosage
-#      openehr: "$archetypePath/at0030"
-#      #TODO to be 100 % correct this would need to be a new event for each dosage that has another route, nevertheless this seems clinical nonsense
 
   - name: "structured dosage"
     with:

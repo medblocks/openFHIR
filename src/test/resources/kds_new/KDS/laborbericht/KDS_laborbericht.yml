@@ -10,6 +10,22 @@ spec:
     archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
 
 mappings:
+  #TODO this is where i stopped -> medication_statement.v0 !
+  #order is important
+  - name: "eventGeneration" #/data[at0001]/events[at0002] add new for each laboratory analyte.
+    extension: "overwrite"
+    with:
+      fhir: "$resourcePath.result"
+      openehr: "$archetypePath/data[at0001]/events[at0002]" #will create FOR each result ONE event.
+    reference:
+      resourceType: "Observation"
+      mappings:
+        - name: "observationRecurring"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]"
+          slotArchetype: "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
+
   - name: "fallIdentifikation"
     extension: "add"
     with:
@@ -61,18 +77,3 @@ mappings:
       criteria: "[FILL]"
 
 
-  - name: "result"
-    extension: "add"
-    with:
-      fhir: "$resourcePath.result"
-      openehr: "$reference"
-      dependsOn: "laboratory_test_result.specimen" #execute first specimen mapping since we need it for the link
-    reference:
-      resourceType: "Observation"
-      mappings:
-        - name: "observationRecurring"
-          with:
-            fhir: "$fhirRoot"
-            openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]"
-            type: "NONE"
-          slotArchetype: "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
