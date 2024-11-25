@@ -50,7 +50,6 @@ mappings:
       manual:
         openehr:
           path: "/at0063"
-          type: "DV_CODED_TEXT"
           value:
             code_string: "at0066"
             terminology_id: "local"

@@ -1,0 +1,103 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  medication.v2.medication-to-medication
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.medication.v2
+  fhirConfig:
+    resourceType: Medication
+
+mappings:
+  #Arzneimittel-Name
+  #  DV_QUANTITY Wirkstärke (Konzentration)
+  #  DV_TEXT Rezeptur Freitextzeile
+  #
+  -
+  - name: "name"
+    with:
+      fhir: "$resourcePath.code"
+      openehr: "$archetypePath/items[at0132]"
+
+  - name: "form"
+    with:
+      fhir: "$resourcePath.form"
+      openehr: "$archetypePath/items[at0071]"
+
+  - name: "ingredients"
+    with:
+      fhir: "$resourcePath.ingredient"
+      openehr: "$archetypePath/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "ingredient"
+          with:
+            fhir: "item.as(CodeableConcept)"
+            openehr: "/items[at0132]"
+        - name: "medication"
+          with:
+            fhir: "item.as(Medication)"
+            openehr: "$reference"
+          reference:
+            resourceType: "Medication"
+            mappings:
+              - name: "medicationMedicationReference"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "/items[openEHR-EHR-CLUSTER.medication.v2]"
+                slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+
+        - name: "medicationSubstance"
+          with:
+            fhir: "item.as(Substance)"
+            openehr: "$reference"
+          reference:
+            resourceType: "Substance"
+            mappings:
+              - name: "medicationSubstanceReference"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "/items[openEHR-EHR-CLUSTER.medication.v2]"
+                slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+
+#TODO this is where i stopped.
+        - name: "strength"
+          with:
+            fhir: "strength"
+            openehr: "bestandteil-menge"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "zahler"
+                with:
+                  fhir: "numerator"
+                  openehr: "zähler"
+              - name: "nenner"
+                with:
+                  fhir: "denominator"
+                  openehr: "nenner"
+
+  - name: "ingredients"
+    with:
+      fhir: "$fhirRoot.ingredient.as(Reference)"
+      openehr: "$archetypePath/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
+      type: "NONE"
+    followedBy:
+      SLOT
+
+
+  - name: "amount"
+    with:
+      fhir: "$resourcePath.amount"
+      openehr: "$archetypePath.wirkstärke_konzentration"
+      type: "QUANTITY"
+
+  # order is important, because when mapping from openEHR to FHIR, we want the second mapping (better one) to be applied
+  - name: "medication"
+    with:
+      fhir: "$resourcePath.medication.as(CodeableConcept).text"
+      openehr: "$archetypePath.medikationseintrag.arzneimittel.arzneimittel-name"

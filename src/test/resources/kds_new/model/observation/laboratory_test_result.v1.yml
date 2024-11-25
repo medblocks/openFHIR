@@ -9,20 +9,8 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   openEhrConfig:
     archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
 
-#uniqueValues:
-#  fhir:
-#   mappings: ["$resourcePath.category", "resourcePath.conclusion", "resourcePath.issued"] # if this fields have
-# different values from the openEHR side, make new resource.
-#   operator: "new resource"
+
 mappings:
-  - name: "eventGeneration" # events are generated here from the structured test diagnoses of openEHR
-    # since the cluster can be panel or analyte this has to be done by the extension !
-    # therefore abstract.
-    # also first mappings, since order matters in FHIRconnect, so the events are generated at first.
-    with:
-      fhir: "$resourcePath.result"
-      openehr: "$archetypePath/data[at0001]/events[at0002]" # path to Cluster
-      type: "ABSTRACT"
 
   - name: "category"
     with:

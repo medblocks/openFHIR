@@ -10,13 +10,19 @@ spec:
     archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
 
 mappings:
-  #TODO this is where i stopped -> medication_statement.v0 !
-  #order is important
-  - name: "eventGeneration" #/data[at0001]/events[at0002] add new for each laboratory analyte.
-    extension: "overwrite"
+  - name: "hierarchyMappings" #always have to be first
+    with:
+      fhir: "$resourcePath.result.as(Observation)"
+      openEHR: "$archetypePath/data[at0001]/events[at0002]"
+    hierarchy:
+      openehrCreate: "event"
+      uniqueValueFHIR: "[effective]"
+
+  - name: "result" #/data[at0001]/events[at0002] add new for each laboratory analyte.
+    extension: "add"
     with:
       fhir: "$resourcePath.result"
-      openehr: "$archetypePath/data[at0001]/events[at0002]" #will create FOR each result ONE event.
+      openehr: "$reference" #will create FOR each result ONE event.
     reference:
       resourceType: "Observation"
       mappings:

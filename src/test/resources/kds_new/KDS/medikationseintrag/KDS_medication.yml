@@ -1,0 +1,85 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name:  KDS_medication.v2
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.medication.v2
+    mappingName: medication.v2.medication-to-medication # only necessary if there are two archetype mappings
+
+mappings:
+
+  - name: "wirkstofftyp"
+    extension: "append"
+    appendTo: "ingredients.followedBy.mappings"
+    with:
+      fhir: "$fhirParentPath.ingredients.extension"
+      openehr: "$openehrParentPath/items[at0142]"
+    condition:
+      targetRoot: "extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp]"
+
+  - name: "wirkstoffrelation"
+    extension: "append"
+    appendTo: "ingredients.followedBy.mappings"
+    with:
+      fhir: "$fhirParentPath.ingredients.extension"
+      openehr: "$reference"
+      type: "NONE"
+    condition:
+      targetRoot: "extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstoffrelation]"
+    followedBy:
+      mappings:
+        - name: "ingriedientsReference"
+          with:
+            fhir: "extension"
+            openehr: "$reference"
+          condition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[ingredientReference]"
+          followedBy:
+            mappings:
+              - name: "relationMedication"
+                with:
+                  fhir: "extension.valueReference.as(Medication)"
+                  openehr: "$reference"
+                reference:
+                  resourceType: "Medication"
+                  mappings:
+                    - name: "wirkstoffRelationMedication"
+                      with:
+                        fhir: "$fhirRoot"
+                        openehr: "$openehrParentPath/items[openEHR-EHR-CLUSTER.medication.v2]"
+                      slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+              - name: "substanceRelation"
+                with:
+                  fhir: "extension.valueReference.as(Substance)"
+                  openehr: "$reference"
+                reference:
+                  resourceType: "Substance"
+                  mappings:
+                    - name: "wirkstoffRelationSubstance"
+                      with:
+                        fhir: "$fhirRoot"
+                        openehr: "$openehrParentPath/items[openEHR-EHR-CLUSTER.medication.v2]"
+                      slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+
+        - name: "ingridientsURI"
+          with:
+            fhir: "extension.valueUri.value"
+            openehr: "$openehrParentPath/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]" # TODO value into URI cause better than nothing. Its anyways useless for clinicans, but post process could be resolving this URI ?!
+          condition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[ingredientUri]"

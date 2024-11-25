@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name:  KDS_medikation.context
+  name:  KDS_medikamentenstatement
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
@@ -49,7 +49,6 @@ mappings:
       fhir: "$resourcePath"
       openehr: "$archetypePath/protocol[at0004]/items[openEHR-EHR-CLUSTER.medication_status_fhir.v0]"
     slotArchetype: "openEHR-EHR-CLUSTER.medication_status_fhir.v0"
-
 
 
 

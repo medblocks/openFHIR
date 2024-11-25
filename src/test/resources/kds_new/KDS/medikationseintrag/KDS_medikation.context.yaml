@@ -21,5 +21,6 @@ context:
     - "openEHR-EHR-CLUSTER.entry_category.v0"
     - "openEHR-EHR-CLUSTER.identifier_fhir.v0"
   extensions:
-    - ""
+    - "KDS_medication.v2"
+    - "KDS_medikamentenstatement"
   start: "openEHR-EHR-OBSERVATION.medication_statement.v0"

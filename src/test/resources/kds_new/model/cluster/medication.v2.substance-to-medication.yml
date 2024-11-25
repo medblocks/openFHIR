@@ -1,0 +1,36 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  medication.v2.medication-to-medication
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.medication.v2
+  fhirConfig:
+    resourceType: Substance
+
+mappings:
+
+  - name: "name"
+    with:
+      fhir: "$resourcePath.code"
+      openehr: "$archetypePath/items[at0132]"
+  - name: "form"
+    with:
+      fhir: "$resourcePath.form"
+      openehr: "$archetypePath/items[at0071]"
+  - name: "ingredients"
+    with:
+      fhir: "$resourcePath.ingredient"
+      openehr: "$archetypePath/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
+      type: "NONE"
+    followedBy:
+      mappings:
+        # codeable COncept
+        - name: "itemAsCode"
+          with:
+            fhir: "item.as(CodeableConcept)"
+            openehr: "/items[at0132]"
+

@@ -16,7 +16,7 @@ mappings:
       fhir: "$resourcePath.start.extension.value"
       openehr: "$archetypePath/items[at0001]"
     condition:
-      targetRoot: "start.extension"
+      targetRoot: "$resourcePath.start.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/lebensphase]"

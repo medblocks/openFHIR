@@ -75,56 +75,9 @@
                 "templateId"
             ]
         },
-        "format": {
-            "type": "string"
-        },
-        "openEHR": {
-            "type": "object",
-            "properties": {
-                "templateId": {
-                    "type": "string"
-                },
-                "archetypes": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            },
-            "required": [
-                "archetypes",
-                "templateId"
-            ]
-        },
         "fhir": {
             "type": "object",
             "properties": {
-                "resourceType": {
-                    "type": "string"
-                },
-                "condition": {
-                    "type": "object",
-                    "properties": {
-                        "targetRoot": {
-                            "type": "string"
-                        },
-                        "targetAttribute": {
-                            "type": "string"
-                        },
-                        "operator": {
-                            "type": "string"
-                        },
-                        "criteria": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "criteria",
-                        "operator",
-                        "targetAttribute",
-                        "targetRoot"
-                    ]
-                },
                 "post-processors": {
                     "type": "object",
                     "properties": {
@@ -192,7 +145,17 @@
                         "referencedResource"
                     ]
                 }
-            }
+            },
+            "required": [
+                "post-processors"
+            ]
         }
-    }
+    },
+    "required": [
+        "context",
+        "engine",
+        "metadata",
+        "spec",
+        "type"
+    ]
 }
