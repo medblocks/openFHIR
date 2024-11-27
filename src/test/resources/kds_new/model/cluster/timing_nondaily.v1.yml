@@ -8,3 +8,8 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.timing_nondaily.v1
+
+
+mappings:
+
+# Has to be programmed not viable check dosage.v2

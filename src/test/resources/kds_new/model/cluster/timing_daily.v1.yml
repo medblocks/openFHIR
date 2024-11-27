@@ -10,22 +10,37 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     archetype: openEHR-EHR-CLUSTER.timing_daily.v1
 
 mappings:
-  - name: "event time"
-    with:
-      fhir: "$fhirRoot.event"
-      openehr: "$archetypePath.zeitpunkt.time_value"
-      type: "TIME"
+# count number of times to repeat
+# countMax Maximum number of times to repeat
+# countMin Minimum number of times to repeat
+#duration How long when it happens
+# durationMax How long when it happens (Max)
+# durationUnit s | min | h | d | wk | mo | a - unit of time (UCUM)
+# frequency frequency times per period
+# frequencyMax Event occurs up to frequencyMax times per period
+# period How long when it happens (Max)
+# periodMax Upper limit of period (3-4 hours)
+# periodUnit s | min | h | d | wk | mo | a - unit of time (UCUM)
+# dayOfWeek mon | tue | wed | thu | fri | sat | sun
+# timeOfDay Time of day for action
+# when Code for time period of occurrence
+# offset Minutes from event (before or after)
 
-  - name: "when time of day"
-    with:
-      fhir: "$fhirRoot.repeat.when.value"
-      openehr: "$archetypePath.bestimmtes_ereignis.ereignis"
-      type: "STRING"
+# Has to be programmed not viable check dosage.v2
 
+#  - name: "frequency"
+#    with:
+#      fhir: "$fhirParentPath.repeat.frequency"
+#      openehr: "$archetypePath/items[at0003]"
+#
+#  - name: "frequencyMax"
+#    with:
+#      fhir: "$fhirParentPath.repeat.frequencyMax"
+#      openehr: "$archetypePath/items[at0003]/value/upper"
+#
+#  - name: "timeOfDay"
+#    with:
+#      fhir: "$fhirParentPath.repeat.timeOfDay"
+#      openehr: "$archetypePath/items[at0004]"
 
-  - name: "when time of day"
-    with:
-      fhir: "$fhirRoot.repeat.timeOfDay"
-      openehr: "$archetypePath.bestimmtes_ereignis.offset"
-      type: "STRING"
 

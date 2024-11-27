@@ -1,0 +1,118 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  medication.v1
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-ACTION.medication.v1
+
+mappings:
+  - name: "hierarchyMappings"
+    with:
+      fhir: "$resourcePath.dosage"
+      openEHR: "$archetypePath/data[at0001]/events[at0002]"
+    #    type: "HIERARCHY"
+    hierarchy:
+      fhirCreate: "resource"
+      openehrCreate: "event"
+      uniqueValueFHIR: "[route]" # if route value is different per dosage slice make a new event
+      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
+
+  - name: "eventTime"
+    with:
+      fhir: "$resourcePath.effective"
+      openEHR: "$archetypePath/data[at0001]/events[at0002]" # period -> interval event, datetime to pointInTime event
+
+  - name: "note"
+    with:
+      fhir: "$resourcePath.note.text"
+      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0029]"
+
+  - name: "dosage"
+    with:
+      fhir: "$resourcePath.dosage"
+      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.dosage.v2]"
+    slotArchetype: "openEHR-EHR-CLUSTER.dosage.v2"
+
+  - name: "medication"
+    with:
+      fhir: "$resourcePath.medication"
+      openehr: "$reference"
+    reference:
+      resourceType: "Medication"
+      mappings:
+        - name: "medicationReference"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
+          slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+
+  - name: "route"
+    with:
+      fhir: "$resourcePath.dosage.route"
+      openehr: "/data[at0001]/events[at0002]/data[at0003]/items[at0030]"
+
+
+  - name: "status"
+    with:
+      fhir: "$fhirResource.status"
+      openehr: "$openEhrArchetype.context.status"
+      type: "CODING"
+
+  - name: "context"
+    with:
+      fhir: "$fhirResource.context.as(Reference).reference"
+      openehr: "$openEhrArchetype.context.fallidentifikation.fall-kennung"
+      type: "STRING"
+
+  - name: "effective"
+    with:
+      fhir: "$fhirResource.effective.as(DateTimeType)"
+      openehr: "$openEhrArchetype.arzneimittelanwendung.dosierung.zeitablauf_-_täglich.verabreichungszeitpunkt_-intervall/time_value"
+      type: "TIME"
+
+  #order for structured dosage matters; it needs to be ABOVE "unstructured dosage" because of openEhrPaths being so similar (belows openehr path is actually within aboves)
+
+  - name: "structured dosage"
+    with:
+      fhir: "$fhirResource.dosage"
+      openehr: "$openEhrArchetype.arzneimittelanwendung"
+      type: "NONE"
+    slotArchetype: "openEHR-EHR-CLUSTER.dosage.v2"
+
+
+  - name: "note"
+    with:
+      fhir: "$fhirResource.note.text"
+      openehr: "$openEhrArchetype.arzneimittelanwendung.kommentar"
+      type: "STRING"
+
+  - name: "klinische_indikation"
+    with:
+      fhir: "$fhirResource.reasonCode.text"
+      openehr: "$openEhrArchetype.arzneimittelanwendung.klinische_indikation"
+      type: "STRING"
+
+  - name: "medication"
+    with:
+      fhir: "$fhirResource.medication"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Medication"
+      mappings:
+        - name: "medication administration medication"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$openEhrArchetype.arzneimittelanwendung.arzneimittel"
+            type: "NONE"
+          slotArchetype: "openEHR-EHR-CLUSTER.medication.v2"
+
+  - name: "medication codeable concept"
+    with:
+      fhir: "$fhirResource.medication.as(CodeableConcept).text"
+      openehr: "$openEhrArchetype.arzneimittelanwendung.arzneimittel.arzneimittelgruppe.arzneimittel-code"
+      type: "STRING"

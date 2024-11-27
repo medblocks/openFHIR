@@ -13,7 +13,7 @@ mappings:
   - name: "fallIdentifikation"
     extension: "add"
     with:
-      fhir: "$resourcePath.encounter"
+      fhir: "$resourcePath.context"
       openehr: "$reference"
     reference:
       resourceType: "Encounter"
@@ -50,13 +50,3 @@ mappings:
       openehr: "$archetypePath/protocol[at0004]/items[openEHR-EHR-CLUSTER.medication_status_fhir.v0]"
     slotArchetype: "openEHR-EHR-CLUSTER.medication_status_fhir.v0"
 
-
-
-  # startzeit is wrong therefore not mapped
-  # Dauer der Einnahme Field wrong in template not mapped
-  # Anwendungsdauer Wrong in template therefore not mapped
-  # author/informant is wrong therefore not mapped
-  # Dosierung [0..2]
-
-  #  DV_CODED_TEXT Verabreichungsweg [0..*]
-  #  DV_TEXT Hinweis

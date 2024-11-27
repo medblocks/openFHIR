@@ -4,8 +4,8 @@ import json
 from genson import SchemaBuilder
 
 # Specify the folder containing YAML files
-folder_path = './'
-output_schema_file = os.path.join(folder_path, 'schema.json')
+folder_path = '../'
+output_schema_file = os.path.join('./', 'fhirConnect_context.json')
 
 # Initialize SchemaBuilder
 builder = SchemaBuilder()

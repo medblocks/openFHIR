@@ -12,15 +12,11 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     resourceType: Substance
 
 mappings:
-
   - name: "name"
     with:
       fhir: "$resourcePath.code"
       openehr: "$archetypePath/items[at0132]"
-  - name: "form"
-    with:
-      fhir: "$resourcePath.form"
-      openehr: "$archetypePath/items[at0071]"
+
   - name: "ingredients"
     with:
       fhir: "$resourcePath.ingredient"
@@ -28,9 +24,39 @@ mappings:
       type: "NONE"
     followedBy:
       mappings:
-        # codeable COncept
-        - name: "itemAsCode"
+        - name: "ingredient"
           with:
-            fhir: "item.as(CodeableConcept)"
+            fhir: "substance.as(CodeableConcept)"
             openehr: "/items[at0132]"
+        - name: "substanceSubstance"
+          with:
+            fhir: "substance.as(Substance)"
+            openehr: "$reference"
+          reference:
+            resourceType: "Substance"
+            mappings:
+              - name: "medicationSubstanceReference"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "/items[openEHR-EHR-CLUSTER.medication.v2]"
+                slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+        - name: "quantity"
+          with:
+            fhir: "quantity"
+            openehr: "/items[at0152]"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "zahler"
+                with:
+                  fhir: "numerator"
+                  openehr: "/items[at0152]/items[at0153]"
+              - name: "nenner"
+                with:
+                  fhir: "denominator"
+                  openehr: "/items[at0152]/items[at0157]"
 
+  - name: "instance"
+    with:
+      fhir: "$resourcePath.instance.quantity"
+      openehr: "$archetypePath/items[at0115]"

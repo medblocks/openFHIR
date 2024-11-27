@@ -1,93 +1,96 @@
 {
     "$schema": "http://json-schema.org/schema#",
-    "anyOf": [
-        {
-            "type": "null"
+    "type": "object",
+    "properties": {
+        "engine": {
+            "type": "string"
         },
-        {
+        "type": {
+            "type": "string"
+        },
+        "metadata": {
             "type": "object",
             "properties": {
-                "engine": {
+                "name": {
                     "type": "string"
                 },
-                "type": {
+                "version": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "version"
+            ]
+        },
+        "spec": {
+            "type": "object",
+            "properties": {
+                "system": {
                     "type": "string"
                 },
-                "metadata": {
+                "version": {
+                    "type": "string"
+                },
+                "openEhrConfig": {
                     "type": "object",
                     "properties": {
-                        "name": {
+                        "archetype": {
                             "type": "string"
                         },
-                        "version": {
+                        "revision": {
+                            "type": "string"
+                        },
+                        "mappingName": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "name",
-                        "version"
+                        "archetype"
                     ]
                 },
-                "spec": {
+                "fhirConifg": {
                     "type": "object",
                     "properties": {
-                        "system": {
+                        "profile": {
                             "type": "string"
-                        },
-                        "version": {
-                            "type": "string"
-                        },
-                        "openEhrConfig": {
-                            "type": "object",
-                            "properties": {
-                                "archetype": {
-                                    "type": "string"
-                                },
-                                "revision": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "archetype"
-                            ]
-                        },
-                        "fhirConifg": {
-                            "type": "object",
-                            "properties": {
-                                "profile": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "profile"
-                            ]
-                        },
-                        "fhirConfig": {
-                            "type": "object",
-                            "properties": {
-                                "profile": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "profile"
-                            ]
                         }
                     },
                     "required": [
-                        "openEhrConfig",
-                        "system",
-                        "version"
+                        "profile"
                     ]
                 },
-                "mappings": {
-                    "anyOf": [
-                        {
-                            "type": "null"
+                "fhirConfig": {
+                    "type": "object",
+                    "properties": {
+                        "resourceType": {
+                            "type": "string"
                         },
-                        {
-                            "type": "array",
-                            "items": {
+                        "profile": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "openEhrConfig",
+                "system",
+                "version"
+            ]
+        },
+        "mappings": {
+            "anyOf": [
+                {
+                    "type": "null"
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
                                 "type": "object",
                                 "properties": {
                                     "name": {
@@ -102,134 +105,11 @@
                                             "openehr": {
                                                 "type": "string"
                                             },
-                                            "type": {
-                                                "type": "string"
-                                            },
                                             "openEHR": {
                                                 "type": "string"
                                             },
-                                            "followedBy": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "mapping": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "name": {
-                                                                    "type": "string"
-                                                                },
-                                                                "with": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "fhir": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "openEHR": {
-                                                                            "type": "string"
-                                                                        }
-                                                                    },
-                                                                    "required": [
-                                                                        "fhir",
-                                                                        "openEHR"
-                                                                    ]
-                                                                },
-                                                                "reference": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "resourceType": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "mappings": {
-                                                                            "type": "array",
-                                                                            "items": {
-                                                                                "type": "object",
-                                                                                "properties": {
-                                                                                    "name": {
-                                                                                        "type": "string"
-                                                                                    },
-                                                                                    "with": {
-                                                                                        "type": "object",
-                                                                                        "properties": {
-                                                                                            "fhir": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "openehr": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "type": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "openehrLink": {
-                                                                                                "type": "object",
-                                                                                                "properties": {
-                                                                                                    "meaning": {
-                                                                                                        "type": "string"
-                                                                                                    },
-                                                                                                    "type": {
-                                                                                                        "type": "string"
-                                                                                                    }
-                                                                                                },
-                                                                                                "required": [
-                                                                                                    "meaning",
-                                                                                                    "type"
-                                                                                                ]
-                                                                                            }
-                                                                                        },
-                                                                                        "required": [
-                                                                                            "fhir",
-                                                                                            "openehr",
-                                                                                            "openehrLink",
-                                                                                            "type"
-                                                                                        ]
-                                                                                    }
-                                                                                },
-                                                                                "required": [
-                                                                                    "name",
-                                                                                    "with"
-                                                                                ]
-                                                                            }
-                                                                        }
-                                                                    },
-                                                                    "required": [
-                                                                        "mappings",
-                                                                        "resourceType"
-                                                                    ]
-                                                                },
-                                                                "condition": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "targetRoot": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "targetAttribute": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "operator": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "criteria": {
-                                                                            "type": "string"
-                                                                        }
-                                                                    },
-                                                                    "required": [
-                                                                        "criteria",
-                                                                        "operator",
-                                                                        "targetAttribute",
-                                                                        "targetRoot"
-                                                                    ]
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "name",
-                                                                "with"
-                                                            ]
-                                                        }
-                                                    }
-                                                },
-                                                "required": [
-                                                    "mapping"
-                                                ]
+                                            "type": {
+                                                "type": "string"
                                             },
                                             "condition": {
                                                 "type": "object",
@@ -322,9 +202,6 @@
                                                             "path": {
                                                                 "type": "string"
                                                             },
-                                                            "type": {
-                                                                "type": "string"
-                                                            },
                                                             "value": {
                                                                 "type": "object",
                                                                 "properties": {
@@ -371,7 +248,6 @@
                                                         "required": [
                                                             "condition",
                                                             "path",
-                                                            "type",
                                                             "value"
                                                         ]
                                                     },
@@ -415,9 +291,6 @@
                                                         ]
                                                     }
                                                 }
-                                            },
-                                            "dependsOn": {
-                                                "type": "string"
                                             }
                                         },
                                         "required": [
@@ -473,48 +346,6 @@
                                                         },
                                                         "slotArchetype": {
                                                             "type": "string"
-                                                        },
-                                                        "followedBy": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "mappings": {
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "type": "object",
-                                                                        "properties": {
-                                                                            "name": {
-                                                                                "type": "string"
-                                                                            },
-                                                                            "with": {
-                                                                                "type": "object",
-                                                                                "properties": {
-                                                                                    "fhir": {
-                                                                                        "type": "string"
-                                                                                    },
-                                                                                    "openehr": {
-                                                                                        "type": "string"
-                                                                                    },
-                                                                                    "type": {
-                                                                                        "type": "string"
-                                                                                    }
-                                                                                },
-                                                                                "required": [
-                                                                                    "fhir",
-                                                                                    "openehr",
-                                                                                    "type"
-                                                                                ]
-                                                                            }
-                                                                        },
-                                                                        "required": [
-                                                                            "name",
-                                                                            "with"
-                                                                        ]
-                                                                    }
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "mappings"
-                                                            ]
                                                         }
                                                     },
                                                     "required": [
@@ -528,43 +359,38 @@
                                             "mappings"
                                         ]
                                     },
-                                    "extension": {
-                                        "type": "string"
-                                    },
-                                    "condition": {
+                                    "hierarchy": {
                                         "type": "object",
                                         "properties": {
-                                            "targetRoot": {
+                                            "fhirCreate": {
                                                 "type": "string"
                                             },
-                                            "targetAttribute": {
+                                            "openehrCreate": {
                                                 "type": "string"
                                             },
-                                            "operator": {
+                                            "uniqueValueFHIR": {
                                                 "type": "string"
                                             },
-                                            "criteria": {
-                                                "anyOf": [
-                                                    {
-                                                        "type": "string"
-                                                    },
-                                                    {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "string"
-                                                        }
-                                                    }
-                                                ]
+                                            "uniqueValueOpenEHR": {
+                                                "type": "string"
                                             }
                                         },
                                         "required": [
-                                            "operator",
-                                            "targetAttribute",
-                                            "targetRoot"
+                                            "openehrCreate",
+                                            "uniqueValueFHIR"
                                         ]
+                                    },
+                                    "slotArchetype": {
+                                        "type": "string"
+                                    },
+                                    "extension": {
+                                        "type": "string"
                                     },
                                     "followedBy": {
                                         "anyOf": [
+                                            {
+                                                "type": "string"
+                                            },
                                             {
                                                 "type": "object",
                                                 "properties": {
@@ -594,74 +420,12 @@
                                                                         "openehr"
                                                                     ]
                                                                 },
-                                                                "followedBy": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "mappings": {
-                                                                            "type": "array",
-                                                                            "items": {
-                                                                                "type": "object",
-                                                                                "properties": {
-                                                                                    "name": {
-                                                                                        "type": "string"
-                                                                                    },
-                                                                                    "with": {
-                                                                                        "type": "object",
-                                                                                        "properties": {
-                                                                                            "fhir": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "openehr": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "type": {
-                                                                                                "type": "string"
-                                                                                            }
-                                                                                        },
-                                                                                        "required": [
-                                                                                            "fhir",
-                                                                                            "openehr",
-                                                                                            "type"
-                                                                                        ]
-                                                                                    },
-                                                                                    "condition": {
-                                                                                        "type": "object",
-                                                                                        "properties": {
-                                                                                            "targetRoot": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "targetAttribute": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "operator": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "criteria": {
-                                                                                                "type": "string"
-                                                                                            }
-                                                                                        },
-                                                                                        "required": [
-                                                                                            "criteria",
-                                                                                            "operator",
-                                                                                            "targetAttribute",
-                                                                                            "targetRoot"
-                                                                                        ]
-                                                                                    }
-                                                                                },
-                                                                                "required": [
-                                                                                    "name",
-                                                                                    "with"
-                                                                                ]
-                                                                            }
-                                                                        }
-                                                                    },
-                                                                    "required": [
-                                                                        "mappings"
-                                                                    ]
-                                                                },
                                                                 "reference": {
                                                                     "type": "object",
                                                                     "properties": {
+                                                                        "resourceType": {
+                                                                            "type": "string"
+                                                                        },
                                                                         "mappings": {
                                                                             "type": "array",
                                                                             "items": {
@@ -705,10 +469,54 @@
                                                                                     },
                                                                                     "slotArchetype": {
                                                                                         "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "name",
+                                                                                    "with"
+                                                                                ]
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "mappings"
+                                                                    ]
+                                                                },
+                                                                "followedBy": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "mappings": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "name": {
+                                                                                        "type": "string"
                                                                                     },
-                                                                                    "followedBy": {
+                                                                                    "with": {
                                                                                         "type": "object",
                                                                                         "properties": {
+                                                                                            "fhir": {
+                                                                                                "type": "string"
+                                                                                            },
+                                                                                            "openehr": {
+                                                                                                "type": "string"
+                                                                                            },
+                                                                                            "type": {
+                                                                                                "type": "string"
+                                                                                            }
+                                                                                        },
+                                                                                        "required": [
+                                                                                            "fhir",
+                                                                                            "openehr"
+                                                                                        ]
+                                                                                    },
+                                                                                    "reference": {
+                                                                                        "type": "object",
+                                                                                        "properties": {
+                                                                                            "resourceType": {
+                                                                                                "type": "string"
+                                                                                            },
                                                                                             "mappings": {
                                                                                                 "type": "array",
                                                                                                 "items": {
@@ -725,27 +533,28 @@
                                                                                                                 },
                                                                                                                 "openehr": {
                                                                                                                     "type": "string"
-                                                                                                                },
-                                                                                                                "type": {
-                                                                                                                    "type": "string"
                                                                                                                 }
                                                                                                             },
                                                                                                             "required": [
                                                                                                                 "fhir",
-                                                                                                                "openehr",
-                                                                                                                "type"
+                                                                                                                "openehr"
                                                                                                             ]
+                                                                                                        },
+                                                                                                        "slotArchetype": {
+                                                                                                            "type": "string"
                                                                                                         }
                                                                                                     },
                                                                                                     "required": [
                                                                                                         "name",
+                                                                                                        "slotArchetype",
                                                                                                         "with"
                                                                                                     ]
                                                                                                 }
                                                                                             }
                                                                                         },
                                                                                         "required": [
-                                                                                            "mappings"
+                                                                                            "mappings",
+                                                                                            "resourceType"
                                                                                         ]
                                                                                     }
                                                                                 },
@@ -754,9 +563,6 @@
                                                                                     "with"
                                                                                 ]
                                                                             }
-                                                                        },
-                                                                        "resourceType": {
-                                                                            "type": "string"
                                                                         }
                                                                     },
                                                                     "required": [
@@ -856,13 +662,42 @@
                                             }
                                         ]
                                     },
+                                    "condition": {
+                                        "type": "object",
+                                        "properties": {
+                                            "targetRoot": {
+                                                "type": "string"
+                                            },
+                                            "targetAttribute": {
+                                                "type": "string"
+                                            },
+                                            "operator": {
+                                                "type": "string"
+                                            },
+                                            "criteria": {
+                                                "anyOf": [
+                                                    {
+                                                        "type": "string"
+                                                    },
+                                                    {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "required": [
+                                            "operator",
+                                            "targetAttribute",
+                                            "targetRoot"
+                                        ]
+                                    },
                                     "fhir": {
                                         "type": "string"
                                     },
                                     "openEHR": {
-                                        "type": "string"
-                                    },
-                                    "slotArchetype": {
                                         "type": "string"
                                     },
                                     "appendTo": {
@@ -873,57 +708,44 @@
                                     "name"
                                 ]
                             }
-                        }
-                    ]
-                },
-                "archetype": {
-                    "type": "string"
-                },
-                "inheritance": {
-                    "type": "string"
-                },
-                "format": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "string"
-                },
-                "openEhrConfig": {
-                    "anyOf": [
-                        {
-                            "type": "null"
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "archetype": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "archetype"
-                            ]
-                        }
-                    ]
-                },
-                "fhirConfig": {
-                    "type": "object",
-                    "properties": {
-                        "resource": {
-                            "type": "string"
-                        },
-                        "multiple": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "resource"
-                    ]
-                },
-                "forengine": {
+                        ]
+                    }
+                }
+            ]
+        },
+        "inheritance": {
+            "type": "string"
+        },
+        "format": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "fhirConfig": {
+            "type": "object",
+            "properties": {
+                "resource": {
                     "type": "string"
                 }
-            }
+            },
+            "required": [
+                "resource"
+            ]
+        },
+        "openEhrConfig": {
+            "type": "object",
+            "properties": {
+                "archetype": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "archetype"
+            ]
+        },
+        "forengine": {
+            "type": "string"
         }
-    ]
+    }
 }

@@ -10,36 +10,46 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     archetype: openEHR-EHR-CLUSTER.dosage.v2
 
 mappings:
-
-    #TODO this is where i stopped
-  - name: "free text"
+  - name: "dosageInstructionText"
     with:
-      fhir: "$fhirRoot.text"
-      openehr: "$archetypePath.dosierung_freitext"
-      type: "STRING"
+      fhir: "$fhirParentPath.text"
+      openehr: "$archetypePath/items[at0178]"
+
+  - name: "asNeeded"
+    with:
+      fhir: "$fhirParentPath.asNeededBoolean.as(Boolean)"
+      openehr: "$archetypePath/items[at0024]"
+
+ # - name: "site"
+  #  with:
+  #    fhir: "$fhirParentPath.site"
+  #    openehr: "$archetypePath/items[at0024]" #Template /data[at0048]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0001]
+
+  - name: "dosageTiming"
+    with:
+      fhir: "$fhirParentPath.timing"
+      openehr: "$archetypePath"
+    type: "PROGRAMMED_MAPPING"
+    mappingCode: "timingToDaily_NonDaily" #FHIR and openEHR are here very different, openEHR uses ISO, FHIR made up their own
+
+  - name: "dose"
+    with:
+      fhir: "$fhirParentPath.doseAndRate.dose"
+      openehr: "$archetypePath/items[at0144]"
+
+  - name: "rate"
+    with:
+      fhir: "$fhirParentPath.doseAndRate.rate"
+      openehr: "$archetypePath/items[at0134]"
+
+  - name: "duration"
+    with:
+      fhir: "$fhirParentPath.timing.duration"
+      openehr: "$archetypePath/items[at0134]"  #not sure if this mapping is correct
+    type: "PROGRAMMED_MAPPING"
+    mappingCode: "dosageDurationToAdministrationDuration" #FHIR and openEHR are here very different, openEHR uses ISO, FHIR made up their own
 
   - name: "sequence"
     with:
-      fhir: "$fhirRoot.sequence"
-      openehr: "$archetypePath.dosierungsreihenfolge"
-      type: "QUANTITY" # should this be something else?
-
-  - name: "dose and rate"
-    with:
-      fhir: "$fhirRoot.doseAndRate.dose.as(Quantity)"
-      openehr: "$archetypePath.dosis.quantity_value"
-      type: "QUANTITY"
-
-
-  - name: "as needed"
-    with:
-      fhir: "$fhirRoot.asNeeded.as(BooleanType)"
-      openehr: "$archetypePath.tägliche_dosierung.bei_bedarf"
-      type: "BOOL"
-
-  - name: "dosage timing"
-    with:
-      fhir: "$fhirRoot.timing"
-      openehr: "$archetypePath.tägliche_dosierung"
-      type: "NONE"
-    slotArchetype: "openEHR-EHR-CLUSTER.timing_daily.v1"
+      fhir: "$fhirParentPath.sequence"
+      openehr: "$archetypePath/items[at0164]"

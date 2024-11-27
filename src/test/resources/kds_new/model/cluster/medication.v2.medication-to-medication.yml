@@ -12,11 +12,6 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     resourceType: Medication
 
 mappings:
-  #Arzneimittel-Name
-  #  DV_QUANTITY Wirkstärke (Konzentration)
-  #  DV_TEXT Rezeptur Freitextzeile
-  #
-  -
   - name: "name"
     with:
       fhir: "$resourcePath.code"
@@ -26,6 +21,27 @@ mappings:
     with:
       fhir: "$resourcePath.form"
       openehr: "$archetypePath/items[at0071]"
+
+  - name: "amount"
+    with:
+      fhir: "$resourcePath.amount"
+      openehr: "$archetypePath/items[at0115]"
+
+  - name: "batch"
+    with:
+      fhir: "$resourcePath.batch"
+      openehr: "$archetypePath"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "id"
+          with:
+            fhir: "id"
+            openehr: "/items[at0150]"
+        - name: "expirationDate"
+          with:
+            fhir: "expirationDate"
+            openehr: "/items[at0003]"
 
   - name: "ingredients"
     with:
@@ -63,41 +79,19 @@ mappings:
                   fhir: "$fhirRoot"
                   openehr: "/items[openEHR-EHR-CLUSTER.medication.v2]"
                 slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
-
-#TODO this is where i stopped.
         - name: "strength"
           with:
             fhir: "strength"
-            openehr: "bestandteil-menge"
+            openehr: "/items[at0152]"
             type: "NONE"
           followedBy:
             mappings:
               - name: "zahler"
                 with:
                   fhir: "numerator"
-                  openehr: "zähler"
+                  openehr: "/items[at0152]/items[at0153]"
               - name: "nenner"
                 with:
                   fhir: "denominator"
-                  openehr: "nenner"
+                  openehr: "/items[at0152]/items[at0157]"
 
-  - name: "ingredients"
-    with:
-      fhir: "$fhirRoot.ingredient.as(Reference)"
-      openehr: "$archetypePath/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
-      type: "NONE"
-    followedBy:
-      SLOT
-
-
-  - name: "amount"
-    with:
-      fhir: "$resourcePath.amount"
-      openehr: "$archetypePath.wirkstärke_konzentration"
-      type: "QUANTITY"
-
-  # order is important, because when mapping from openEHR to FHIR, we want the second mapping (better one) to be applied
-  - name: "medication"
-    with:
-      fhir: "$resourcePath.medication.as(CodeableConcept).text"
-      openehr: "$archetypePath.medikationseintrag.arzneimittel.arzneimittel-name"

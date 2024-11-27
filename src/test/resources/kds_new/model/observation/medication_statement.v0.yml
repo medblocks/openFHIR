@@ -11,18 +11,10 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     revision: 0.0.1a
 
 mappings:
-#Medication details at0046
-#Overall directions description at0047
-#Structured dose and timing  at0045
-#Route of administration at0030
-#Description at0032
-# CLinical indication at0023
-# Last administered at0026
-# Endcpoint at0037
-# Addtional details at0048
-# comment at0029
 
-  - name: "hierarchyMappings"
+#TODO basedOn and partOf missing
+
+  - name: "hierarchyMappings" # is defined by the
     with:
       fhir: "$resourcePath.dosage"
       openEHR: "$archetypePath/data[at0001]/events[at0002]"
@@ -30,7 +22,7 @@ mappings:
     hierarchy:
       fhirCreate: "resource"
       openehrCreate: "event"
-      uniqueValueFHIR: "[route]" # if route value is different per dosage slice make a new event
+      uniqueValueFHIR: "[route, timing.event]" # if route value is different per dosage slice make a new event
       uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
 
   - name: "eventTime"
@@ -38,12 +30,22 @@ mappings:
       fhir: "$resourcePath.effective"
       openEHR: "$archetypePath/data[at0001]/events[at0002]" # period -> interval event, datetime to pointInTime event
 
+  - name: "reasonCode"
+    with:
+      fhir: "$resourcePath.reasonCode"
+      openehr: "/data[at0001]/events[at0002]/data[at0003]/items[at0023]"
+
+  - name: "dateAsserted"
+    with:
+      fhir: "$resourcePath.dateAsserted"
+      openehr: "$composition/context/start_time"
+
   - name: "note"
     with:
       fhir: "$resourcePath.note.text"
       openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0029]"
 
-  - name: "structured dosage"
+  - name: "dosage"
     with:
       fhir: "$resourcePath.dosage"
       openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.dosage.v2]"
@@ -62,4 +64,80 @@ mappings:
             openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
           slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
 
+  - name: "route"
+    with:
+      fhir: "$resourcePath.dosage.route"
+      openehr: "/data[at0001]/events[at0002]/data[at0003]/items[at0030]"
 
+  - name: "reasonCode"
+    with:
+      fhir: "$resourcePath.reasonCode"
+      openehr: "/data[at0001]/events[at0002]/data[at0003]/items[at0023]"
+
+  - name: "reasonReference"
+    with:
+      fhir: "$resourcePath.reasonReference"
+      openehr: "$reference"
+    reference:
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.identifier" # TODO @gasper does this work, should take identifier either of Reference or of Resource
+            openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0023]"
+        - name: "derivedFrom"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0023]links" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+            openehrLink:
+              meaning: "what the medication derived from"
+              type: "derivedFrom"
+
+  - name: "partOf"
+    with:
+      fhir: "$resourcePath.partOf"
+      openehr: "$reference"
+    reference:
+      mappings:
+        - name: "partOfReference"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetypePath/links" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+            openehrLink:
+              meaning: "what the medication is part of"
+              type: "partOf"
+
+  - name: "basedOn" # TODO when ServiceRequest Template is mapped this is to be used.
+    with:
+      fhir: "$resourcePath.basedOn"
+      openehr: "$reference"
+    reference:
+      mappings:
+        - name: "partOfReference"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetypePath/links" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+            openehrLink:
+              meaning: "what the medication is based on"
+              type: "basedOn"
+
+  - name: "derivedFrom" # TODO when ServiceRequest Template is mapped this is to be used.
+    with:
+      fhir: "$resourcePath.basedOn"
+      openehr: "$reference"
+    reference:
+      mappings:
+        - name: "partOfReference"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetypePath/links" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+            openehrLink:
+              meaning: "what the medication is derived from"
+              type: "derivedFrom"
+
+#TODO Demographics:
+#TODO map informationSource
+#TODO map derivedFrom

@@ -1,0 +1,21 @@
+engine: FHIRConnect/v0.0.1
+type: context
+metadata:
+  name:  KDS_medikation.context
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+
+context:
+  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration"
+  templateId: "KDS_Medikamentenverabreichungen"
+  archetypes:
+    - "openEHR-EHR-ACTION.medication.v1"
+    - "openEHR-EHR-CLUSTER.medication.v2"
+    - "openEHR-EHR-CLUSTER.dosage.v2"
+  extensions:
+    - "KDS_medikamentenverabreichung"
+  start: "openEHR-EHR-ACTION.medication.v1"
+
+
