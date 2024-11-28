@@ -11,40 +11,67 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     revision: 0.0.1-alpha
 
 mappings:
+  - name: "composer"
+    with:
+      fhir: "$resource.serviceProvider"
+      openehr: "$composition/composer"
+
+  - name: "healthcareFacility"
+    with:
+      fhir: "$resource.serviceProvider"
+      openehr: "$composition/context/health_care_facility"
+
+  - name: "contextStartTime"
+    with:
+      fhir: "$resource.period.start"
+      openehr: "$composition/context/start_time"
+
+  - name: "contextEndTime"
+    with:
+      fhir: "$resource.period.start"
+      openehr: "$composition/context/end_time"
+
+  - name: "entryProvider"
+    with:
+      fhir: "$resource.serviceProvider"
+      openehr: "$archetype/provider"
+
   - name: "admissionDate"
-    fhir: "$resourcePath.period.start"
-    openEHR: "archetypePath/data[at0001]/items[at0004]"
+    with:
+      fhir: "$resource.period.start"
+      openehr: "archetypePath/data[at0001]/items[at0004]"
 
   - name: "seperationDate"
-    fhir: "$resourcePath.period.end"
-    openEHR: "archetypePath/data[at0001]/items[at0002]"
+    with:
+      fhir: "$resource.period.end"
+      openehr: "archetypePath/data[at0001]/items[at0002]"
 
   - name: "room"
     with:
-      fhir: "$resourcePath.location.identifier.value"
-      openehr: "$archetypePath/data[at0001]/items[at0018]/items[at0023]"
+      fhir: "$resource.location.identifier.value"
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0023]"
     condition:
-      targetRoot: "$resourcePath.location.physicalType"
+      targetRoot: "$resource.location.physicalType"
       targetAttribute: "coding.code"
       operator: "one of"
       criteria: "[ro]"
 
   - name: "bed"
     with:
-      fhir: "$resourcePath.location.identifier.value"
-      openehr: "$archetypePath/data[at0001]/items[at0018]/items[at0024]"
+      fhir: "$resource.location.identifier.value"
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0024]"
     condition:
-      targetRoot: "$resourcePath.location.physicalType"
+      targetRoot: "$resource.location.physicalType"
       targetAttribute: "coding.code"
       operator: "one of"
       criteria: "[bd]"
 
   - name: "station"
     with:
-      fhir: "$resourcePath.location.identifier.value"
-      openehr: "$archetypePath"
+      fhir: "$resource.location.identifier.value"
+      openehr: "$archetype"
     condition:
-      targetRoot: "$resourcePath.location.physicalType"
+      targetRoot: "$resource.location.physicalType"
       targetAttribute: "coding.code"
       operator: "one of"
       criteria: "[wa]"

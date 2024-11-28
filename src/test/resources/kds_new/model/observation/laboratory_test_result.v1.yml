@@ -11,36 +11,62 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 
 
 mappings:
+  - name: "composer"
+    with:
+      fhir: "$resource.performer"
+      openehr: "$composition/composer" #take the first one if its 0..n ?!
+
+  - name: "healthCareFacility"
+    with:
+      fhir: "$resource.performer.as(Organization)"
+      openehr: "$composition/context/health_care_facility"
+
+  - name: "participations"
+    with:
+      fhir: "$resource.resultsInterpreter"
+      openehr: "$composition/context/participations"
+    participationsFunction: "results Interpreter"
+
+  - name: "performer"
+    with:
+      fhir: "$resource.performer"
+      openehr: "$archetype/perfomer"
+
+  - name: "otherParticipants"
+    with:
+      fhir: "$resource.resultsInterpreter"
+      openehr: "$archetype/other_participations"
+    participationsFunction: "results Interpreter"
+
+  - name: "effectiveEnd"
+    with:
+      fhir: "$resource.effectivePeriod.end"
+      openehr: "$composition/context/end_time"
+
+  - name: "effectiveStart"
+    with:
+      fhir: "$resource.effective"
+      openehr: "$composition/context/start_time"
 
   - name: "category"
     with:
-      fhir: "$resourcePath.category"
-      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0005]" # if there are several events add it to all of them
+      fhir: "$resource.category"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0005]" # if there are several events add it to all of them
       # Backwards map all the values back, if they overlap ?!?!?!?
 
   - name: "conclusion"
     with:
-      fhir: "$resourcePath.conclusion"
-      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0057]"
-
-  - name: "effectiveStart"
-    with:
-      fhir: "$resourcePath.effective"
-      openehr: "$composition/context/start_time"
+      fhir: "$resource.conclusion"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0057]"
 
   - name: "issued"
     with:
-      fhir: "$resourcePath.issued"
-      openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[at0005]/items[at0075]"
-
-  - name: "effectiveEnd"
-    with:
-      fhir: "$resourcePath.effectivePeriod.end"
-      openehr: "$composition/context/end_time"
+      fhir: "$resource.issued"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0005]/items[at0075]"
 
   - name: "specimen"
     with:
-      fhir: "$resourcePath.specimen"
+      fhir: "$resource.specimen"
       openehr: "$reference"
     reference:
       resourceType: "Specimen"
@@ -48,24 +74,24 @@ mappings:
         - name: "specimenReference"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/data[at0065]/items[openEHR-EHR-CLUSTER.specimen.v1]"
+            openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/data[at0065]/items[openEHR-EHR-CLUSTER.specimen.v1]"
           slotArchetype: "openEHR-EHR-CLUSTER.specimen.v1"
 
   - name: "basedOn"
     extension: "add"
     with:
-      fhir: "$resourcePath.basedOn"
+      fhir: "$resource.basedOn"
       openehr: "$reference"
     reference: # type automatic since not provided, if no profile url is registered skip mapping
       mappings:
         - name: "identifierInReference"
           with:
             fhir: "$fhirRoot.identifier"
-            openehr: "$archetypePath/protocol[at0004]/items[at0094]/items[at0063]"
+            openehr: "$archetype/protocol[at0004]/items[at0094]/items[at0063]"
         - name: "basedOnLink"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetypePath/protocol[at0004]/items[at0094]/items[at0063]/links"
+            openehr: "$archetype/protocol[at0004]/items[at0094]/items[at0063]/links"
             type: "REFERENCED_MAPPING"
             openehrLink:
               meaning: "the identifier which it derived from"

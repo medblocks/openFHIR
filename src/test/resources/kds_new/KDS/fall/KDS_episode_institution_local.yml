@@ -10,31 +10,33 @@ spec:
     archetype: openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0
 
 mappings:
+
+
   - name: "falltyp"
     extension: "add"
     with:
-      fhir: "$resourcePath.type"
+      fhir: "$resource.type"
       openehr: "$composition/context/other_context[at0001]/items[at0005]"
 
   - name: "fallklasse"
     extension: "add"
     with:
-      fhir: "$resourcePath.class"
+      fhir: "$resource.class"
       openehr: "$composition/context/other_context[at0001]/items[at0004]"
 
   - name: "fallart"
     extension: "add"
     with:
-      fhir: "$resourcePath.status"
+      fhir: "$resource.status"
       openehr: "$composition/context/other_context[at0001]/items[at0010]"
 
   - name: "fallId"
     extension: "add"
     with:
-      fhir: "$resourcePath.identifier"
+      fhir: "$resource.identifier"
       openehr: "$composition/context/other_context[at0001]/items[at0003]"
     condition:
-      targetRoot: "$resourcePath.identifier.type"
+      targetRoot: "$resource.identifier.type"
       targetAttribute: "value"
       operator: "one of"
       criteria: "[VN]"
@@ -42,13 +44,13 @@ mappings:
   - name: "fallstatus"
     extension: "add"
     with:
-      fhir: "$resourcePath.status"
+      fhir: "$resource.status"
       openehr: "$composition/context/other_context[at0001]/items[at0010]"
 
-  - name: "serviceProvider"
+  - name: "serviceProvider" # TODO deprecated needs to be deleted
     extension: "add"
     with:
-      fhir: "$resourcePath.serviceProvider"
+      fhir: "$resource.serviceProvider"
       openehr: "$reference"
     reference:
       resourceType: "Organization"
@@ -62,11 +64,11 @@ mappings:
   - name: "aufnahmegrundExtension"
     extension: "add"
     with:
-      fhir: "$resourcePath.extension"
-      openehr: "$archetypePath"
+      fhir: "$resource.extension"
+      openehr: "$archetype"
       type: "NONE"
     condition:
-      targetRoot: "$resourcePath.extension"
+      targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/Aufnahmegrund]"
@@ -105,8 +107,8 @@ mappings:
   - name: "recordingDismissal"
     extension: "add"
     with:
-      fhir: "$resourcePath.hospitalization"
-      openehr: "$archetypePath"
+      fhir: "$resource.hospitalization"
+      openehr: "$archetype"
       type: "NONE"
     followedBy:
        - name: "aufnahmeategorie"
@@ -126,7 +128,7 @@ mappings:
   - name: "problemDiagnose"
     extension: "add"
     with:
-      fhir: "$resourcePath.diagnosis"
+      fhir: "$resource.diagnosis"
       openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
     slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
 

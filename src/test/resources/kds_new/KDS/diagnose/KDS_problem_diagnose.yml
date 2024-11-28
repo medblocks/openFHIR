@@ -10,10 +10,11 @@ spec:
     archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
 
 mappings:
+
   - name: "fallIdentifikation"
     extension: "add"
     with:
-      fhir: "$resourcePath.encounter"
+      fhir: "$resource.encounter"
       openehr: "$reference"
     reference: #type None
       resourceType: "Encounter"
@@ -21,12 +22,12 @@ mappings:
         - name: "identifierInReference"
           with:
             fhir: "$fhirRoot.identifier"
-            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
           slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
         - name: "encounterMapping"
           with:
             fhir: "$fhirRoot"
-            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
             type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
             openehrLink:
               meaning: "the case this composition relates to"
@@ -35,8 +36,8 @@ mappings:
   - name: "date"
     extension: "add"
     with:
-      fhir: "$resourcePath.extension.value.as(DateTimeType)"
-      openehr: "$archetypePath/data[at0001]/items[at0003]"
+      fhir: "$resource.extension.value.as(DateTimeType)"
+      openehr: "$archetype/data[at0001]/items[at0003]"
     condition:
       targetRoot: "$fhirRoot"
       targetAttribute: "url"
@@ -56,7 +57,7 @@ mappings:
         - name: "codeIcd10Diagnosesicherheit"
           with:
             fhir: "$fhirParentPath.extension"
-            openehr: "$archetypePath/data[at0001]/items[at0073]"
+            openehr: "$archetype/data[at0001]/items[at0073]"
           condition:
             targetRoot: "$fhirParentPath.extension"
             targetAttribute: "url"
@@ -65,12 +66,12 @@ mappings:
         - name: "multipleCoding"
           with:
             fhir: "fhirParentPath.extension"
-            openehr: "$archetypePath/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]"
+            openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]"
           slotArchetype: "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
         - name: "anatomicalLocation" #cannot be a profile of the Cluster since the cluster is mapped from two different points in FHIR
           with:
             fhir: "$fhirParentPath.extension"
-            openehr: "$archetypePath/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]"
+            openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]"
           condition:
             targetRoot: "extension"
             targetAttribute: "url"
@@ -80,8 +81,8 @@ mappings:
   - name: "lebensphase"
     extension: "add"
     with:
-      fhir: "$resourcePath"
-      openehr: "$archetypePath/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
+      fhir: "$resource"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
     slotArchetype: "openEHR-EHR-CLUSTER.lebensphase.v0"
 
   - name: "snomedBodySite"
@@ -96,15 +97,15 @@ mappings:
   - name: "clinicalStatus"
     extension: "add"
     with:
-      fhir: "$resourcePath"
-      openehr: "$archetypePath/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
+      fhir: "$resource"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
     slotArchetype: "openEHR-EHR-CLUSTER.problem_qualifier.v2"
 
   - name: "primärdiagnose"
     extension: "add"
     with:
-      fhir: "$resourcePath"
-      openehr: "$archetypePath"
+      fhir: "$resource"
+      openehr: "$archetype"
     condition:
       targetRoot: "extension"
       targetAttribute: "url"
@@ -122,6 +123,6 @@ mappings:
               - name: "primary"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "$archetypePath"
+                  openehr: "$archetype"
                 slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1" #type none
                 #Is this really correct what if we call the KDS_problem .. here and its not that profile

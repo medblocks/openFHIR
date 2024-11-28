@@ -15,7 +15,7 @@ mappings:
     extension: "overwrite"
     with:
       fhir: "$fhirParentPath"
-      openehr: "$archetypePath"
+      openehr: "$archetype"
       type: "NONE"
     followedBy:
       mappings:

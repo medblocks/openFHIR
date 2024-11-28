@@ -14,8 +14,8 @@ mappings:
   - name: "diagnosesicherheit"
     extension: "add"
     with:
-      fhir: "$resourcePath.extension"
-      openehr: "$archetypePath/at0003"
+      fhir: "$resource.extension"
+      openehr: "$archetype/at0003"
       condition:
         targetRoot: "extension"
         targetAttribute: "url"
@@ -25,8 +25,8 @@ mappings:
   - name: "referenzPrimaerdiagnose"
     extension: "add"
     with:
-      fhir: "$resourcePath.extension"
-      openehr: "$archetypePath/at0063"
+      fhir: "$resource.extension"
+      openehr: "$archetype/at0063"
       manual:
         openEHR:
           path: "/items[at0063]" # the terminology should be set automatically since its local ?!
@@ -45,8 +45,8 @@ mappings:
   - name: "referenzNebendiagnose" #should maybe be contained under the referenzPrimaer
     extension: "add"
     with:
-      fhir: "$resourcePath"
-      openehr: "$archetypePath"
+      fhir: "$resource"
+      openehr: "$archetype"
       manual:
         openehr:
           path: "/items[at0063]"
@@ -60,7 +60,7 @@ mappings:
             operator: "one of"
             criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
         fhir:
-          path: "$resourcePath.extension.url"
+          path: "$resource.extension.url"
           value: "http://hl7.org/fhir/StructureDefinition/condition-related" #linkage happens in the postprocessor
           condition:
             targetRoot: "/items[at0063]"

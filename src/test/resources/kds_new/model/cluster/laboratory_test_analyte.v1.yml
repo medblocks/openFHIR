@@ -12,37 +12,37 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 mappings:
   - name: "status"
     with:
-      fhir: "$resourcePath.status"
-      openehr: "$archetypePath/items[at0005]"
+      fhir: "$resource.status"
+      openehr: "$archetype/items[at0005]"
 
   - name: "issued"
     with:
-      fhir: "$resourcePath.issued"
-      openehr: "$archetypePath/items[at0006]"
+      fhir: "$resource.issued"
+      openehr: "$archetype/items[at0006]"
 
   - name: "analyteMeasurement"
     with:
       fhir: "resourcePath.value"
-      openehr: "$archetypePath/items[at0001]"
+      openehr: "$archetype/items[at0001]"
 
   - name: "analyteName"
     with:
       fhir: "resourcePath.code"
-      openehr: "$archetypePath/items[at0024]"
+      openehr: "$archetype/items[at0024]"
 
   - name: "interpretation"
     with:
       fhir: "resourcePath.code"
-      openehr: "$archetypePath/items[at0004]"
+      openehr: "$archetype/items[at0004]"
 
   - name: "testmethod"
     with:
       fhir: "resourcePath.method"
-      openehr: "$archetypePath/items[at0028]"
+      openehr: "$archetype/items[at0028]"
 
   - name: "specimen"
     with:
-      fhir: "$resourcePath.specimen"
+      fhir: "$resource.specimen"
       openehr: "$reference"
     reference:
       resourceType: "Specimen"
@@ -50,11 +50,11 @@ mappings:
         - name: "identifierInReference"
           with:
             fhir: "$fhirRoot.identifier"
-            openehr: "$archetypePath/items[at0026]"
+            openehr: "$archetype/items[at0026]"
         - name: "specimenLink"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetypePath/items[at0026]/links" # will use link
+            openehr: "$archetype/items[at0026]/links" # will use link
             type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get data
             openehrLink: #follow this link
               meaning: "link to the ehr object this specimen was mapped from"
@@ -63,7 +63,7 @@ mappings:
   - name: "comment"
     with:
       fhir: "resourcePath.note"
-      openehr: "$archetypePath/items[at0057]"
+      openehr: "$archetype/items[at0057]"
 
 
 

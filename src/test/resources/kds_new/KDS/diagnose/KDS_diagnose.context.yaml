@@ -25,15 +25,15 @@ context:
 fhir:
   post-processors:
     name: "primary-reference"
-    referenceEndpoint: "$resourcePath.extension(url=http://hl7.org/fhir/StructureDefinition/condition-related).value"
+    referenceEndpoint: "$resource.extension(url=http://hl7.org/fhir/StructureDefinition/condition-related).value"
     condition:
-      targetRoot: "$resourcePath"
+      targetRoot: "$resource"
       targetAttribute: "extension.url"
       operator: "not of"
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     referencedResource:
       condition:
-        target: "$resourcePath.extension.url"
+        target: "$resource.extension.url"
         operator: "one of"
         criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
 

@@ -13,7 +13,7 @@ mappings:
   - name: "orgaKey" #is populated from the institution mapping
     extension: "overwrite"
     with:
-      openehr: "$archetypePath/items[at0024]" #is mapped from fachabteilungsschlüssel
+      openehr: "$archetype/items[at0024]" #is mapped from fachabteilungsschlüssel
       fhir: "$parentResource.serviceType"
     condition:
       targetRoot: "coding"

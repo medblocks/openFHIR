@@ -14,13 +14,13 @@ spec:
 mappings:
   - name: "identifier"
     with:
-      fhir: "$resourcePath.identifier"
-      openehr: "$archetypePath/items[at0088]" #external identifier
+      fhir: "$resource.identifier"
+      openehr: "$archetype/items[at0088]" #external identifier
 
   - name: "collection"
     with:
-      fhir: "$resourcePath.collection"
-      openehr: "$archetypePath"
+      fhir: "$resource.collection"
+      openehr: "$archetype"
       type: "NONE"
     followedBy:
       mappings:
@@ -65,32 +65,32 @@ mappings:
 
   - name: "type"
     with:
-      fhir: "$resourcePath.type"
-      openehr: "$archetypePath/items[at0029]" # specimen type
+      fhir: "$resource.type"
+      openehr: "$archetype/items[at0029]" # specimen type
 
   - name: "note"
     with:
-      fhir: "$resourcePath.note"
+      fhir: "$resource.note"
       openehr: "$archetype/items[at0045]" # comment
 
   - name: "descriptionOfSpecimen"
     with:
-      fhir: "$resourcePath.condition"
+      fhir: "$resource.condition"
       openehr: "$archetype/items[at0097]" #specimen description
 
   - name: "descriptionOfSpecimen"
     with:
-      fhir: "$resourcePath.accessionIdentifier"
+      fhir: "$resource.accessionIdentifier"
       openehr: "$archetype/items[0001]" #Laboratory specimen identifier
 
   - name: "dateReceived"
     with:
-      fhir: "$resourcePath.receivedTime"
+      fhir: "$resource.receivedTime"
       openehr: "$archetype/items[at0034]" #Date/Time received
 
   - name: "parent"
     with:
-      fhir: "$resourcePath.parent"
+      fhir: "$resource.parent"
       openehr: "$reference"
     reference:
       resourceType: "Specimen"
@@ -110,6 +110,6 @@ mappings:
 
   - name: "status"
     with:
-      fhir: "$resourcePath.status"
+      fhir: "$resource.status"
       openehr: "archetypePath/items[at0041]" #adequacy for testing
 

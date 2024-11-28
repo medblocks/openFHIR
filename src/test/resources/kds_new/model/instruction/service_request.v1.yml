@@ -8,51 +8,67 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-INSTRUCTION.service_request.v1
-  fhirConifg:
-    profile: http://hl7.org/fhir/StructureDefinition/ServiceRequest
+  fhirConfig:
+    resourceType: ServiceRequest
 
 mappings:
+
+  - name: "composer"
+    with:
+      fhir: "$resource.requester"
+      openehr: "$composition/composer" #take the first one if its 0..n ?!
+
+  - name: "healthCareFacility"
+    with:
+      fhir: "$resource.requester.as(Organization)"
+      openehr: "$composition/context/health_care_facility"
+
+  - name: "authoredOn"
+    with:
+      fhir: "$resource.authoredOn"
+      openehr: "$composition/context/start_time"
+
+  - name: "provider"
+    with:
+      fhir: "$resource.requester" # mapping is twice, entry level will overwrite the composer from above if not changed in the extension mapping
+      openehr: "$archetype/provider"
+
   - name: "identifier"
     with:
-      fhir: "$resourcePath.identifier"
-      openehr: "$archetypePath/protocol[at0008]/items[at0010]"
+      fhir: "$resource.identifier"
+      openehr: "$archetype/protocol[at0008]/items[at0010]"
       #-> identifier value to DV_ID value
       # -> type to type
       #assigner -> Organization name /code -> DV_IDENTIFIER assigner
 
-  - name: "authoredOn"
-    with:
-      fhir: "$resourcePath.authoredOn"
-      openehr: "$composition/context/start_time"
-
   - name: "status" #TODO this is in openEHR a DV_CODED_TEXT and in FHIR an coding whic then has only a value .
     with:
-      fhir: "$resourcePath.status"
-      openehr: "$archetypePath/protocol[at0008]/items[at0127]"
+      fhir: "$resource.status"
+      openehr: "$archetype/protocol[at0008]/items[at0127]"
 
   - name: "code"
     with:
-      fhir: "$resourcePath.code"
-      openehr: "$archetypePath/activities[at0001]/description[at0009]/items[at0121]"
+      fhir: "$resource.code"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0121]"
 
   - name: "category"
     with:
-      fhir: "$resourcePath.category"
-      openehr: "$archetypePath/activities[at0001]/description[at0009]/items[at0148]"
+      fhir: "$resource.category"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]"
 
   - name: "intent"
     with:
-      fhir: "$resourcePath.intent"
-      openehr: "$archetypePath/activities[at0001]/description[at0009]/items[at0065]"
+      fhir: "$resource.intent"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0065]"
 
   - name: "note"
     with:
-      fhir: "$resourcePath.note.text"
-      openehr: "$archetypePath/activities[at0001]/description[at0009]/items[at0150]"
+      fhir: "$resource.note.text"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0150]"
 
   - name: "organisation"
     with:
-      fhir: "$resourcePath.requester.as(Organization)"
+      fhir: "$resource.requester.as(Organization)"
       openehr: "$reference"
     reference:
       resourceType: "Organization"

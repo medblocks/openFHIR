@@ -13,10 +13,10 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 mappings:
   - name: "status"
     with:
-      fhir: "$resourcePath.status"
-      openehr: "$archetypePath/items[at0001]"
+      fhir: "$resource.status"
+      openehr: "$archetype/items[at0001]"
 
   - name: "statusReason"
     with:
-      fhir: "$resourcePath.statusReason"
-      openehr: "$archetypePath/items[at0014]"
+      fhir: "$resource.statusReason"
+      openehr: "$archetype/items[at0014]"

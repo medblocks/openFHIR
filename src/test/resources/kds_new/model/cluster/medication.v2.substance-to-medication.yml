@@ -14,13 +14,13 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 mappings:
   - name: "name"
     with:
-      fhir: "$resourcePath.code"
-      openehr: "$archetypePath/items[at0132]"
+      fhir: "$resource.code"
+      openehr: "$archetype/items[at0132]"
 
   - name: "ingredients"
     with:
-      fhir: "$resourcePath.ingredient"
-      openehr: "$archetypePath/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
+      fhir: "$resource.ingredient"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
       type: "NONE"
     followedBy:
       mappings:
@@ -58,5 +58,5 @@ mappings:
 
   - name: "instance"
     with:
-      fhir: "$resourcePath.instance.quantity"
-      openehr: "$archetypePath/items[at0115]"
+      fhir: "$resource.instance.quantity"
+      openehr: "$archetype/items[at0115]"

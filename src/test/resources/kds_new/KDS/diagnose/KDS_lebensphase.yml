@@ -13,10 +13,10 @@ mappings:
   - name: "periodOnsetStart"  # if append name needs to be the same we are appending to
     extension: "add"
     with:
-      fhir: "$resourcePath.start.extension.value"
-      openehr: "$archetypePath/items[at0001]"
+      fhir: "$resource.start.extension.value"
+      openehr: "$archetype/items[at0001]"
     condition:
-      targetRoot: "$resourcePath.start.extension"
+      targetRoot: "$resource.start.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
@@ -24,10 +24,10 @@ mappings:
   - name: "periodOnsetEnd"
     extension: "add"
     with:
-      fhir: "$resourcePath.end.extension.value"
+      fhir: "$resource.end.extension.value"
       openehr: "lebensphase.ende"
     condition:
-      targetRoot: "$resourcePath.end.extension"
+      targetRoot: "$resource.end.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/lebensphase]"

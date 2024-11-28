@@ -12,8 +12,8 @@ spec:
 mappings:
   - name: "hierarchyMappings" #always have to be first
     with:
-      fhir: "$resourcePath.result.as(Observation)"
-      openEHR: "$archetypePath/data[at0001]/events[at0002]"
+      fhir: "$resource.result.as(Observation)"
+      openEHR: "$archetype/data[at0001]/events[at0002]"
     hierarchy:
       openehrCreate: "event"
       uniqueValueFHIR: "[effective]"
@@ -21,7 +21,7 @@ mappings:
   - name: "result" #/data[at0001]/events[at0002] add new for each laboratory analyte.
     extension: "add"
     with:
-      fhir: "$resourcePath.result"
+      fhir: "$resource.result"
       openehr: "$reference" #will create FOR each result ONE event.
     reference:
       resourceType: "Observation"
@@ -29,13 +29,13 @@ mappings:
         - name: "observationRecurring"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetypePath/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]"
+            openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]"
           slotArchetype: "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
 
   - name: "fallIdentifikation"
     extension: "add"
     with:
-      fhir: "$resourcePath.encounter"
+      fhir: "$resource.encounter"
       openehr: "$reference"
     reference:
       resourceType: "Encounter"
@@ -43,12 +43,12 @@ mappings:
         - name: "identifierInReference"
           with:
             fhir: "$fhirRoot.identifier"
-            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
           slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
         - name: "encounterMapping"
           with:
             fhir: "$fhirRoot"
-            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
             type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
             openehrLink:
               meaning: "the case this composition relates to"
@@ -57,14 +57,14 @@ mappings:
   - name: "status"
     extension: "add"
     with:
-      fhir: "$resourcePath.status"
-      openehr: "$compositionPath/context/other_context[at0001]/items[at0005]"
+      fhir: "$resource.status"
+      openehr: "$composition/context/other_context[at0001]/items[at0005]"
 
   - name: "berichtId"
     extension: "add"
     with:
-      fhir: "$resourcePath.identifier"
-      openehr: "$compositionPath/context/other_context[at0001]/items[at0002]"
+      fhir: "$resource.identifier"
+      openehr: "$composition/context/other_context[at0001]/items[at0002]"
     condition:
       targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
       targetAttribute: "code"
@@ -74,8 +74,8 @@ mappings:
   - name: "berichtId"
     extension: "add"
     with:
-      fhir: "$resourcePath.identifier"
-      openehr: "$compositionPath/context/other_context[at0001]/items[at0002]"
+      fhir: "$resource.identifier"
+      openehr: "$composition/context/other_context[at0001]/items[at0002]"
     condition:
       targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
       targetAttribute: "code"

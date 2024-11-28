@@ -13,7 +13,7 @@ mappings:
   - name: "identifierCase"
     with:
       fhir: "$fhirParentPath.value"
-      openehr: "$archetypePath/items[at0001]"
+      openehr: "$archetype/items[at0001]"
     condition:
       targetRoot: "$fhirParentPath.type"
       targetAttribute: "code"

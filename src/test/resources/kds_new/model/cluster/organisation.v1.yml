@@ -15,9 +15,9 @@ mappings:
   - name: "orgName"
     with:
       fhir: "$fhirParentPath.name"
-      openehr: "$archetypePath/items[at0001]"
+      openehr: "$archetype/items[at0001]"
 
   - name: "orgId"
     with:
       fhir: "$fhirParentPath.identifier"
-      openehr: "$archetypePath/items[at0003]"
+      openehr: "$archetype/items[at0003]"

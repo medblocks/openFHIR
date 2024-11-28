@@ -13,7 +13,7 @@ mappings:
   - name: "fallIdentifikation"
     extension: "add"
     with:
-      fhir: "$resourcePath.context"
+      fhir: "$resource.context"
       openehr: "$reference"
     reference:
       resourceType: "Encounter"
@@ -21,12 +21,12 @@ mappings:
         - name: "identifierInReference"
           with:
             fhir: "$fhirRoot.identifier"
-            openehr: "$compositionPath/context/other_context[at0005]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+            openehr: "$composition/context/other_context[at0005]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
           slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
         - name: "encounterMapping"
           with:
             fhir: "$fhirRoot"
-            openehr: "$compositionPath/context/other_context[at0005]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+            openehr: "$composition/context/other_context[at0005]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
             type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
             openehrLink:
               meaning: "the case this composition relates to"
@@ -34,19 +34,19 @@ mappings:
 
   - name: "identifier"
     with:
-      fhir: "$resourcePath.identifier"
-      openehr: "$archetypePath/protocol[at0004]/items[openEHR-EHR-CLUSTER.identifier_fhir.v0]/items[at0001]"
+      fhir: "$resource.identifier"
+      openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.identifier_fhir.v0]/items[at0001]"
     slotArchetype: "openEHR-EHR-CLUSTER.identifier_fhir.v0"
 
   - name: "category"
     with:
-      fhir: "$resourcePath.category"
-      openehr: "$archetypePath/protocol[at0004]/items[openEHR-EHR-CLUSTER.entry_category.v0]"
+      fhir: "$resource.category"
+      openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.entry_category.v0]"
     slotArchetype: "openEHR-EHR-CLUSTER.entry_category.v0"
 
   - name: "status"
     with:
-      fhir: "$resourcePath"
-      openehr: "$archetypePath/protocol[at0004]/items[openEHR-EHR-CLUSTER.medication_status_fhir.v0]"
+      fhir: "$resource"
+      openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.medication_status_fhir.v0]"
     slotArchetype: "openEHR-EHR-CLUSTER.medication_status_fhir.v0"
 

@@ -18,4 +18,4 @@ context:
     - "openEHR-EHR-CLUSTER.case_identification.v0"
   extensions:
     - "KDS_laborbericht"
-  start: "KDS_laborbericht"
+  start: "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"

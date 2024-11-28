@@ -9,13 +9,40 @@ spec:
   openEhrConfig:
     archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
   fhirConfig:
-    profile: http://hl7.org/fhir/StructureDefinition/Condition
+    resourceType: Condition
 
 mappings:
+  - name: "composer"
+    with:
+      fhir: "$resource.recorder"
+      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
+
+  - name: "contextStartTime"
+    with:
+      fhir: "$resource.recordedDate"
+      openehr: "$composition/context/start_time"
+
+  - name: "participations"
+    with:
+      fhir: "$resource.asserter"
+      openehr: "$composition/context/participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+    participationsFunction: "asserter" # participations_mode this one has to be done in the mapping and cannot be mapped automatically.
+
+  - name: "other_participations"
+    with:
+      fhir: "$resource.asserter"
+      openehr: "$archetype/other_participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+    participationsFunction: "asserter"
+
+  - name: "provider"
+    with:
+      fhir: "$resource.recorder"
+      openehr: "$archetype/provider"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+
   - name: "problemDiagnose"
     with:
-      fhir: "$resourcePath.code"
-      openEHR: "$archetypePath"
+      fhir: "$resource.code"
+      openehr: "$archetype"
     followedBy:
       mappings:   
         - name: "problemDiagnoseName"
@@ -27,15 +54,16 @@ mappings:
             fhir: "text"
             openehr: "/data[at0001]/items[at0009]"
 
+
   - name: "note"
     with:
-      fhir: "$resourcePath.note.text"
-      openehr: "$archetypePath/data[at0001]/items[at0069]"
+      fhir: "$resource.note.text"
+      openehr: "$archetype/data[at0001]/items[at0069]"
 
   - name: "dateTime" #allows no spaces cause of paths
     with:
-      fhir: "$resourcePath"
-      openehr: "$archetypePath"
+      fhir: "$resource"
+      openehr: "$archetype"
     followedBy:
       mappings:
         - name: "dateTime"
@@ -43,30 +71,24 @@ mappings:
             fhir: "onset" # if period map period.start if DateTime map DateTime, we cant implement this another way currently :(
             # or we just leave period out, otherwise it will map from openEHR to FHIR period over dateTime
             openehr: "/data[at0001]/items[at0077]"
-     #   - name: "dateTimePeriod" #workaround
-     #     with:
-     #       fhir: "onsetPeriod.start" # Period will be added, but currently is not supported in problem diangose
-     #       #here we would like a not-exists condition if we wanted to pick between one, if both are provided (not here the case)
-     #       openehr: "/data[at0001]/items[at0077]"
-     #       type: "DATETIME" #interval, duration etc is currently missing in FHIRConnect.
 
   - name: "bodySite"
     with:
-      fhir: "$resourcePath.bodySite"
-      openehr: "$archetypePath"
+      fhir: "$resource.bodySite"
+      openehr: "$archetype"
     followedBy:
       mappings:
         - name: "bodySiteCluster"
           with:
-            fhir: "$resourcePath" #only forwarding the root, can this be done or does it lead to clashes with the father from above ? 
+            fhir: "$resource" #only forwarding the root, can this be done or does it lead to clashes with the father from above ? 
             #I guess the $ prevents that. 
             openehr: "/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]" # could be also just loaded at the top if its anyways just $resource....
           slotArchetype: "openEHR-EHR-CLUSTER.anatomical_location.v1"  
 
   - name: "severity"
     with:
-      fhir: "$resourcePath.severity" # Period will be added, but currently is not supporte din problem diangose
-      openehr: "$archetypePath/data[at0005]" #SNOMED to opeNEHR table mapping required + alternatively checkout if there are snomed term_mappings attched and use them.
+      fhir: "$resource.severity" # Period will be added, but currently is not supporte din problem diangose
+      openehr: "$archetype/data[at0005]" #SNOMED to opeNEHR table mapping required + alternatively checkout if there are snomed term_mappings attched and use them.
 
 
 

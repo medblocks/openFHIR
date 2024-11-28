@@ -12,14 +12,14 @@ mappings:
   - name: "type"
     with:
       fhir: "$fhirParentPath.type"
-      openehr: "$archetypePath/items[at0051]"
+      openehr: "$archetype/items[at0051]"
 
   - name: "orgaKey"
     with:
       fhir: "$fhirParentPath.identifier"
-      openehr: "$archetypePath/items[at0024]"
+      openehr: "$archetype/items[at0024]"
 
   - name: "name"
     with:
       fhir: "$fhirParentPath.name"
-      openehr: "$archetypePath/items[at0052]"
+      openehr: "$archetype/items[at0052]"

@@ -14,23 +14,23 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 mappings:
   - name: "name"
     with:
-      fhir: "$resourcePath.code"
-      openehr: "$archetypePath/items[at0132]"
+      fhir: "$resource.code"
+      openehr: "$archetype/items[at0132]"
 
   - name: "form"
     with:
-      fhir: "$resourcePath.form"
-      openehr: "$archetypePath/items[at0071]"
+      fhir: "$resource.form"
+      openehr: "$archetype/items[at0071]"
 
   - name: "amount"
     with:
-      fhir: "$resourcePath.amount"
-      openehr: "$archetypePath/items[at0115]"
+      fhir: "$resource.amount"
+      openehr: "$archetype/items[at0115]"
 
   - name: "batch"
     with:
-      fhir: "$resourcePath.batch"
-      openehr: "$archetypePath"
+      fhir: "$resource.batch"
+      openehr: "$archetype"
       type: "NONE"
     followedBy:
       mappings:
@@ -45,8 +45,8 @@ mappings:
 
   - name: "ingredients"
     with:
-      fhir: "$resourcePath.ingredient"
-      openehr: "$archetypePath/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
+      fhir: "$resource.ingredient"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
       type: "NONE"
     followedBy:
       mappings:
@@ -67,7 +67,7 @@ mappings:
                   openehr: "/items[openEHR-EHR-CLUSTER.medication.v2]"
                 slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
 
-        - name: "medicationSubstance"
+        - name: "medicationSubstance" #TODO mapping this back will cause a problem since it wont know which one to take when mapping back from openEHR to FHIR
           with:
             fhir: "item.as(Substance)"
             openehr: "$reference"

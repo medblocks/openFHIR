@@ -13,7 +13,7 @@ mappings:
   - name: "fallIdentifikation"
     extension: "add"
     with:
-      fhir: "$resourcePath.encounter"
+      fhir: "$resource.encounter"
       openehr: "$reference"
     reference:
       resourceType: "Encounter"
@@ -21,22 +21,21 @@ mappings:
         - name: "identifierInReference"
           with:
             fhir: "$fhirRoot.identifier"
-            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
           slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
         - name: "encounterMapping"
           with:
             fhir: "$fhirRoot"
-            openehr: "$compositionPath/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
             type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
             openehrLink:
               meaning: "the case this composition relates to"
               type: "case"
 
-
   - name: "specimen"
     extension: "add"
     with:
-      fhir: "$resourcePath.specimen"
+      fhir: "$resource.specimen"
       openehr: "$reference"
     reference:
       resourceType: "Specimen"
@@ -44,14 +43,13 @@ mappings:
         - name: "specimenReference"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetypePath/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]"
+            openehr: "$archetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]"
           slotArchetype: "openEHR-EHR-CLUSTER.specimen.v1"
-
 
   - name: "organisation"
     extension: "add"
     with:
-      fhir: "$resourcePath.requester.as(Organization)"
+      fhir: "$resource.requester.as(Organization)"
       openehr: "$reference"
     reference:
       resourceType: "Organization"
@@ -59,10 +57,5 @@ mappings:
         - name: "organizationReference"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetypePath/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
+            openehr: "$archetype/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
           slotArchetype: "openEHR-EHR-CLUSTER.organisation.v1"
-
-
-
-
-
