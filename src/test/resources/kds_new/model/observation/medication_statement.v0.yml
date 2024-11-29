@@ -75,7 +75,16 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
-          slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+          slotArchetype: "CLUSTER.medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
+
+  - name: "medicationCode"
+    with:
+      fhir: "$resource.medication.as(CodeableConcept)"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
+    condition:
+      targetRoot: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]"
+      targetAttribute: "['/items[at0071]', '/items[at0115]', '/items[openEHR-EHR-CLUSTER.medication.v2]', '/items[at0133]', '/items[openEHR-EHR-CLUSTER.drug_class.v0]']"
+      operator: "empty"
 
   - name: "route"
     with:

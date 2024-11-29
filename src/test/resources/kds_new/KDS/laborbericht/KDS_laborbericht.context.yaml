@@ -11,11 +11,11 @@ context:
   profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/DiagnosticReportLab"
   templateId: "KDS_Laborbericht"
   archetypes:
-    - "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
-    - "openEHR-EHR-CLUSTER.case_identification.v0"
-    - "openEHR-EHR-CLUSTER.specimen.v1"
-    - "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
-    - "openEHR-EHR-CLUSTER.case_identification.v0"
+    - "CLUSTER.laboratory_test_analyte.v1"
+    - "CLUSTER.case_identification.v0"
+    - "CLUSTER.specimen.v1"
+    - "OBSERVATION.laboratory_test_result.v1"
+    - "CLUSTER.case_identification.v0"
   extensions:
     - "KDS_laborbericht"
   start: "OBSERVATION.laboratory_test_result.v1"

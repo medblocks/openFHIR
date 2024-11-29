@@ -8,8 +8,8 @@ spec:
   version: R4
   extension:
     extends: EVALUATION.problem_diagnosis.v1
+    inheritance: "exclusive" # execute only the mappings that are in this file, other ones are not used
 
-inheritance: "exclusive"
 mappings:
   - name: "problemDiagnose"
     extension: "overwrite"

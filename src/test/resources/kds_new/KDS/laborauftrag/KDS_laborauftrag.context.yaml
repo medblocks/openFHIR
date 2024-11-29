@@ -11,10 +11,10 @@ context:
   profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab"
   templateId: "KDS_Laborauftrag"
   archetypes:
-    - "openEHR-EHR-INSTRUCTION.service_request.v1"
-    - "openEHR-EHR-CLUSTER.specimen.v1"
-    - "openEHR-EHR-CLUSTER.organisation.v1"
-    - "openEHR-EHR-CLUSTER.case_identification.v0"
+    - "INSTRUCTION.service_request.v1"
+    - "CLUSTER.specimen.v1"
+    - "CLUSTER.organisation.v1"
+    - "CLUSTER.case_identification.v0"
   extensions:
     - "KDS_laborauftrag"
   start: "INSTRUCTION.service_request.v1"

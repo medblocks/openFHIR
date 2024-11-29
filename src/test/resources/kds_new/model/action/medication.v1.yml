@@ -10,6 +10,16 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     archetype: openEHR-EHR-ACTION.medication.v1
 
 mappings:
+  - name: "hierarchyMappings" # is defined by the
+    with:
+      fhir: "$resource.dosage"
+      openEHR: "$archetype
+    #    type: "HIERARCHY"
+    hierarchy:
+      fhirCreate: "resource"
+      openehrCreate: "archetype"
+      uniqueValueFHIR: "[route, site]" # if route value is different per dosage slice make a new archetype
+      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
 
   - name: "composer" #TODO introduce unidirectional mapping or just take the last one ?!
     with:
@@ -36,18 +46,101 @@ mappings:
       fhir: "$resource.actor.performer"
       openehr: "$archetype/provider"
 
+  - name: "category"
+    with:
+      fhir: "$resource.category"
+      openehr: "$archetype/context"
+    manual: #TODO replace with FHIR concept maps
+      - name: "outpatient"
+        openEHR:
+          path: "/setting" # the terminology should be set automatically since its local ?!
+          type: "DV_CODED_TEXT"
+          value:
+            term_mapping: "$resource.category"
+            code_string: "225"
+            terminology_id: "local"
+            value: "home"
+          condition:
+            targetRoot: "$resource.category"
+            targetAttribute: "code"
+            operator: "not of"
+            criteria: "[outpatient]"
+        fhir:
+          path: "$resource.category"
+          value:
+            code: "outpatient"
+            system: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
+            display: "Outpatient"
+          condition:
+            targetRoot: "/setting"
+            targetAttribute: "/defining_code/code_string"
+            operator: "one of"
+            criteria: "[225]"
+
+      - name: "inpatient"
+        openEHR:
+          path: "/setting" # the terminology should be set automatically since its local ?!
+          type: "DV_CODED_TEXT"
+          value:
+            term_mapping: "$resource.category"
+            code_string: "228"
+            terminology_id: "local"
+            value: "primary medical care"
+          condition:
+            targetRoot: "$resource.category"
+            targetAttribute: "code"
+            operator: "one of"
+            criteria: "[inpatient]"
+        fhir:
+          path: "$resource.category"
+          value:
+            code: "inpatient"
+            system: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
+            display: "Inpatient"
+          condition:
+            targetRoot: "/setting"
+            targetAttribute: "/defining_code/code_string"
+            operator: "one of"
+            criteria: "[228]"
+
+      - name: "community"
+        openEHR:
+          path: "/setting" # the terminology should be set automatically since its local ?!
+          type: "DV_CODED_TEXT"
+          value:
+            term_mapping: "$resource.category"
+            code_string: "238"
+            terminology_id: "local"
+            value: "other care"
+          condition:
+            targetRoot: "$resource.category"
+            targetAttribute: "code"
+            operator: "not of"
+            criteria: "[outpatient]"
+        fhir:
+          path: "$resource.category"
+          value:
+            code: "community"
+            system: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
+            display: "Community"
+          condition:
+            targetRoot: "/setting"
+            targetAttribute: "/defining_code/code_string"
+            operator: "one of"
+            criteria: "[238]"
+
   - name: "note"
     with:
       fhir: "$resource.note.text"
       openehr: "$archetype/description[at0017]/items[at0024]"
 
-  - name: "dosage" #TODO is another dosage used here
+  - name: "dosage"
     with:
       fhir: "$resource.dosage"
       openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.dosage.v2]"
-    slotArchetype: "CLUSTER.dosage.v2"
+    slotArchetype: "CLUSTER.dosage.v2.BackboneElement-to-dosage"
 
-  - name: "medication" #TODO map codableConcept
+  - name: "medication"
     with:
       fhir: "$resource.medication"
       openehr: "$reference"
@@ -59,6 +152,33 @@ mappings:
             fhir: "$fhirRoot"
             openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]"
           slotArchetype: "medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
+
+
+  - name: "medicationCode"
+    with:
+      fhir: "$resource.medication.as(CodeableConcept)"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
+    condition:
+      targetRoot: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]"
+      targetAttribute: "[
+      '/items[at0071]',
+      '/items[at0142]',
+      '/items[at0153]',
+      '/items[at0153]',
+      '/items[at0157]',
+      '/items[at0115]',
+      '/items[at0151]',
+      '/items[at0150]', 
+      '/items[at0003]',
+      '/items[at0003]',
+      '/items[at0138]',
+      '/items[at0139]',
+      '/items[at0148]',
+      '/items[at0127]',
+      '/items[at0133]',
+      '/items[at0141]' # does this work since clusters seem not to be attached to this path 
+      ]"
+      operator: "empty"
 
   - name: "route"
     with:

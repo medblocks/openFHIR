@@ -27,19 +27,19 @@ mappings:
     with:
       fhir: "$resource.extension"
       openehr: "$archetype/at0063"
-      manual:
-        openEHR:
-          path: "/items[at0063]" # the terminology should be set automatically since its local ?!
-          type: "DV_CODED_TEXT"
-          value:
-            code_string: "at0064"
-            terminology_id: "local"
-            value: "Hauptdiagnose"
-          condition:
-            targetRoot: "extension"
-            targetAttribute: "url"
-            operator: "not of"
-            criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+    manual:
+      openEHR:
+        path: "/items[at0063]" # the terminology should be set automatically since its local ?!
+        type: "DV_CODED_TEXT"
+        value:
+          code_string: "at0064"
+          terminology_id: "local"
+          value: "Hauptdiagnose"
+        condition:
+          targetRoot: "extension"
+          targetAttribute: "url"
+          operator: "not of"
+          criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
 
 
   - name: "referenzNebendiagnose" #should maybe be contained under the referenzPrimaer
@@ -47,23 +47,23 @@ mappings:
     with:
       fhir: "$resource"
       openehr: "$archetype"
-      manual:
-        openehr:
-          path: "/items[at0063]"
-          value:
-            code_string: "at0066"
-            terminology_id: "local"
-            value: "Nebendiagnose"
-          condition:
-            targetRoot: "extension"
-            targetAttribute: "url"
-            operator: "one of"
-            criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
-        fhir:
-          path: "$resource.extension.url"
-          value: "http://hl7.org/fhir/StructureDefinition/condition-related" #linkage happens in the postprocessor
-          condition:
-            targetRoot: "/items[at0063]"
-            targetAttribute: "/defining_code/code_string"
-            operator: "one of"
-            criteria: "at0066"
+    manual:
+      openehr:
+        path: "/items[at0063]"
+        value:
+          code_string: "at0066"
+          terminology_id: "local"
+          value: "Nebendiagnose"
+        condition:
+          targetRoot: "extension"
+          targetAttribute: "url"
+          operator: "one of"
+          criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+      fhir:
+        path: "$resource.extension.url"
+        value: "http://hl7.org/fhir/StructureDefinition/condition-related" #linkage happens in the postprocessor
+        condition:
+          targetRoot: "/items[at0063]"
+          targetAttribute: "/defining_code/code_string"
+          operator: "one of"
+          criteria: "at0066"

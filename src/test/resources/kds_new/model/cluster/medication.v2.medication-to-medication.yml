@@ -63,12 +63,13 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "/items[openEHR-EHR-CLUSTER.medication.v2]"
-                slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+                slotArchetype: "CLUSTER.medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
 
-        - name: "medicationSubstance" #TODO mapping this back will cause a problem since it wont know which one to take when mapping back from openEHR to FHIR
+        - name: "medicationSubstance"
           with:
             fhir: "item.as(Substance)"
             openehr: "$reference"
+            unidirectional: "fhir->openEHR" # wont convert from openEHR to fhir otherwise would be two mappings
           reference:
             resourceType: "Substance"
             mappings:
@@ -76,7 +77,8 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "/items[openEHR-EHR-CLUSTER.medication.v2]"
-                slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+                slotArchetype: "CLUSTER.medication.v2.substance-to-medication" # depending on the resourceType picks the correct one
+
         - name: "strength"
           with:
             fhir: "strength"

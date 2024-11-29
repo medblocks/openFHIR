@@ -1,0 +1,19 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: EVALUATION.vital_status.v1
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-EVALUATION.vital_status.v1
+  extension:
+    extends: EVALUATION.vital_status.v1
+
+mappings:
+  - name: "status"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.observation_status_fhir.v1]"
+    slotArchetype: "CLUSTER.observation_status_fhir.v1"

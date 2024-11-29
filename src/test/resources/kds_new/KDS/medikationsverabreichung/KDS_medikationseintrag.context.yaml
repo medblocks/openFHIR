@@ -11,9 +11,9 @@ context:
   profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration"
   templateId: "KDS_Medikamentenverabreichungen"
   archetypes:
-    - "openEHR-EHR-ACTION.medication.v1"
-    - "openEHR-EHR-CLUSTER.medication.v2"
-    - "openEHR-EHR-CLUSTER.dosage.v2"
+    - "ACTION.medication.v1"
+    - "CLUSTER.medication.v2.medication-to-medication"
+    - "CLUSTER.dosage.v2.dosage-to-dosage"
   extensions:
     - "KDS_medikamentenverabreichung"
   start: "ACTION.medication.v1"

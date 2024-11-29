@@ -11,10 +11,10 @@ context:
   profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
   templateId: "KDS_Fall_einfach"
   archetypes:
-    - "openEHR-EHR-ADMIN_ENTRY.admission.v0"
-    - "openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0"
-    - "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
-    - "openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0"
+    - "ADMIN_ENTRY.admission.v0"
+    - "ADMIN_ENTRY.discharge_summary.v0"
+    - "EVALUATION.problem_diagnosis.v1"
+    - "ADMIN_ENTRY.episode_institution_local.v0"
   extension:
     - "KDS_episode_institution_local"
     - "KDS_organization_v0"
