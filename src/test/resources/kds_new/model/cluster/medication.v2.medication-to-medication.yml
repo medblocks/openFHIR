@@ -1,15 +1,13 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name:  medication.v2.medication-to-medication
+  name:  CLUSTER.medication.v2.medication-to-medication
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.medication.v2
-  fhirConfig:
-    resourceType: Medication
 
 mappings:
   - name: "name"
@@ -65,7 +63,7 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "/items[openEHR-EHR-CLUSTER.medication.v2]"
-                slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+                slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
 
         - name: "medicationSubstance" #TODO mapping this back will cause a problem since it wont know which one to take when mapping back from openEHR to FHIR
           with:
@@ -78,7 +76,7 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "/items[openEHR-EHR-CLUSTER.medication.v2]"
-                slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+                slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
         - name: "strength"
           with:
             fhir: "strength"

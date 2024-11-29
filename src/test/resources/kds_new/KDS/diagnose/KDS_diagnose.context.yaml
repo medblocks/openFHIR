@@ -20,7 +20,7 @@ context:
     - "KDSProblemDiagnosis" #they overload the vanilla mappings, no version = take the latest
     - "KDSProblemQualifier"
     - "KDSLebensphase"
-  start: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+  start: "EVALUATION.problem_diagnosis.v1"
 
 fhir:
   post-processors:

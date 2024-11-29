@@ -1,13 +1,13 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name: organization_v0
+  name: CLUSTER.organization.v0
   version: 0.0.1a
 spec:
   system: FHIR
   version: R4
   openEhrConfig:
-    archetype: openEHR-EHR-CLUSTER.organization.v0 # deprecated
+    archetype: openEHR-EHR-CLUSTER.organization.v0
 mappings:
   - name: "type"
     with:

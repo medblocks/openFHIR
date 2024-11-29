@@ -17,4 +17,4 @@ context:
     - "openEHR-EHR-CLUSTER.case_identification.v0"
   extensions:
     - "KDS_laborauftrag"
-  start: "openEHR-EHR-INSTRUCTION.service_request.v1"
+  start: "INSTRUCTION.service_request.v1"

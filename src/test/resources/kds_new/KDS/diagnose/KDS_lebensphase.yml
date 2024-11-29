@@ -6,8 +6,8 @@ metadata:
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
-  openEhrConfig:
-    archetype: "openEHR-EHR-CLUSTER.lebensphase.v0"
+  extension:
+    extend: CLUSTER.lebensphase.v0
 
 mappings:
   - name: "periodOnsetStart"  # if append name needs to be the same we are appending to

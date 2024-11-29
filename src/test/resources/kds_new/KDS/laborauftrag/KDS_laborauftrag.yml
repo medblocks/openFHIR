@@ -6,8 +6,8 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  openEhrConfig:
-    archetype: openEHR-EHR-INSTRUCTION.service_request.v1
+  extension:
+    extend: INSTRUCTION.service_request.v1
 
 mappings:
   - name: "fallIdentifikation"
@@ -22,7 +22,7 @@ mappings:
           with:
             fhir: "$fhirRoot.identifier"
             openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-          slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
+          slotArchetype: "CLUSTER.case_identification.v0"
         - name: "encounterMapping"
           with:
             fhir: "$fhirRoot"
@@ -44,7 +44,7 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]"
-          slotArchetype: "openEHR-EHR-CLUSTER.specimen.v1"
+          slotArchetype: "CLUSTER.specimen.v1"
 
   - name: "organisation"
     extension: "add"
@@ -58,4 +58,4 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
-          slotArchetype: "openEHR-EHR-CLUSTER.organisation.v1"
+          slotArchetype: "CLUSTER.organisation.v1"

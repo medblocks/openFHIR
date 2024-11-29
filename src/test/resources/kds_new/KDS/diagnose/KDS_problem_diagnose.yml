@@ -6,11 +6,10 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  openEhrConfig:
-    archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
+  extension:
+    extend: openEHR-EHR-EVALUATION.problem_diagnosis.v1
 
 mappings:
-
   - name: "fallIdentifikation"
     extension: "add"
     with:
@@ -23,7 +22,7 @@ mappings:
           with:
             fhir: "$fhirRoot.identifier"
             openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-          slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
+          slotArchetype: "CLUSTER.case_identification.v0"
         - name: "encounterMapping"
           with:
             fhir: "$fhirRoot"
@@ -67,7 +66,7 @@ mappings:
           with:
             fhir: "fhirParentPath.extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]"
-          slotArchetype: "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
+          slotArchetype: "CLUSTER.multiple_coding_icd10gm.v1"
         - name: "anatomicalLocation" #cannot be a profile of the Cluster since the cluster is mapped from two different points in FHIR
           with:
             fhir: "$fhirParentPath.extension"
@@ -83,7 +82,7 @@ mappings:
     with:
       fhir: "$resource"
       openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
-    slotArchetype: "openEHR-EHR-CLUSTER.lebensphase.v0"
+    slotArchetype: "CLUSTER.lebensphase.v0"
 
   - name: "snomedBodySite"
     extension: "append"
@@ -99,7 +98,7 @@ mappings:
     with:
       fhir: "$resource"
       openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
-    slotArchetype: "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+    slotArchetype: "CLUSTER.problem_qualifier.v2"
 
   - name: "primärdiagnose"
     extension: "add"
@@ -124,5 +123,5 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "$archetype"
-                slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1" #type none
+                slotArchetype: "EVALUATION.problem_diagnosis.v1" #type none
                 #Is this really correct what if we call the KDS_problem .. here and its not that profile

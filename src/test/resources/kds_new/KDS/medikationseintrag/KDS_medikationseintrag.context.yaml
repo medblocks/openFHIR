@@ -23,4 +23,4 @@ context:
   extensions:
     - "KDS_medication.v2"
     - "KDS_medikamentenstatement"
-  start: "openEHR-EHR-OBSERVATION.medication_statement.v0"
+  start: "OBSERVATION.medication_statement.v0"

@@ -19,4 +19,4 @@ context:
     - "KDS_episode_institution_local"
     - "KDS_organization_v0"
     - "KDS_fall_problem_diagnose"
-  start: "openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0"
+  start: "ADMIN_ENTRY.episode_institution_local.v0"

@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name: service_request
+  name: INSTRUCTION.service_request.v1
   version: 0.0.1a
 spec:
   system: FHIR
@@ -77,7 +77,7 @@ mappings:
           with:
             fhir: "extension"
             openehr: "$openEhrArchetyp/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
-          slotArchetype: "openEHR-EHR-CLUSTER.organisation.v1"
+          slotArchetype: "CLUSTER.organisation.v1"
 
 
 

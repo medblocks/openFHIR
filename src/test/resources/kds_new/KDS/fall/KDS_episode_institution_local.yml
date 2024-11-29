@@ -6,8 +6,8 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  openEhrConfig:
-    archetype: openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0
+  extension:
+    extend: ADMIN_ENTRY.episode_institution_local.v0
 
 mappings:
 
@@ -59,7 +59,7 @@ mappings:
           with:
             fhir: "extension"
             openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.organization.v0]"
-          slotArchetype: "openEHR-EHR-CLUSTER.organization.v0"
+          slotArchetype: "CLUSTER.organization.v0"
 
   - name: "aufnahmegrundExtension"
     extension: "add"
@@ -130,5 +130,5 @@ mappings:
     with:
       fhir: "$resource.diagnosis"
       openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
-    slotArchetype: "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+    slotArchetype: "EVALUATION.problem_diagnosis.v1"
 

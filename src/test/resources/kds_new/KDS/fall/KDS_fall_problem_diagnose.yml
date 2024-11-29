@@ -6,8 +6,8 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  openEhrConfig:
-    archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
+  extension:
+    extends: EVALUATION.problem_diagnosis.v1
 
 inheritance: "exclusive"
 mappings:

@@ -16,6 +16,6 @@ context:
     - "openEHR-EHR-CLUSTER.dosage.v2"
   extensions:
     - "KDS_medikamentenverabreichung"
-  start: "openEHR-EHR-ACTION.medication.v1"
+  start: "ACTION.medication.v1"
 
 

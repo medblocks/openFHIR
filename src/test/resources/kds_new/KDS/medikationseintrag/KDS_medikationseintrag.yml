@@ -6,8 +6,8 @@ metadata:
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
-  openEhrConfig:
-    archetype: openEHR-EHR-OBSERVATION.medication_statement.v0
+  extension:
+    extends: OBSERVATION.medication_statement.v0
 
 mappings:
   - name: "fallIdentifikation"
@@ -22,7 +22,7 @@ mappings:
           with:
             fhir: "$fhirRoot.identifier"
             openehr: "$composition/context/other_context[at0005]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-          slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
+          slotArchetype: "CLUSTER.case_identification.v0"
         - name: "encounterMapping"
           with:
             fhir: "$fhirRoot"
@@ -36,17 +36,17 @@ mappings:
     with:
       fhir: "$resource.identifier"
       openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.identifier_fhir.v0]/items[at0001]"
-    slotArchetype: "openEHR-EHR-CLUSTER.identifier_fhir.v0"
+    slotArchetype: "CLUSTER.identifier_fhir.v0"
 
   - name: "category"
     with:
       fhir: "$resource.category"
       openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.entry_category.v0]"
-    slotArchetype: "openEHR-EHR-CLUSTER.entry_category.v0"
+    slotArchetype: "CLUSTER.entry_category.v0"
 
   - name: "status"
     with:
       fhir: "$resource"
       openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.medication_status_fhir.v0]"
-    slotArchetype: "openEHR-EHR-CLUSTER.medication_status_fhir.v0"
+    slotArchetype: "CLUSTER.medication_status_fhir.v0"
 

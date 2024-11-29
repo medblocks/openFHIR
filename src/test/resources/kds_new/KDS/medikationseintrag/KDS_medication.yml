@@ -6,12 +6,10 @@ metadata:
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
-  openEhrConfig:
-    archetype: openEHR-EHR-CLUSTER.medication.v2
-    mappingName: medication.v2.medication-to-medication # only necessary if there are two archetype mappings
+  extension:
+    extends: CLUSTER.medication.v2.medication-to-medication
 
 mappings:
-
   - name: "wirkstofftyp"
     extension: "append"
     appendTo: "ingredients.followedBy.mappings"
@@ -60,7 +58,7 @@ mappings:
                       with:
                         fhir: "$fhirRoot"
                         openehr: "$openehrParentPath/items[openEHR-EHR-CLUSTER.medication.v2]"
-                      slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+                      slotArchetype: "CLUSTER.medication.v2.medication-to-medication"
               - name: "substanceRelation"
                 with:
                   fhir: "extension.valueReference.as(Substance)"
@@ -72,7 +70,7 @@ mappings:
                       with:
                         fhir: "$fhirRoot"
                         openehr: "$openehrParentPath/items[openEHR-EHR-CLUSTER.medication.v2]"
-                      slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+                      slotArchetype: "CLUSTER.medication.v2.substance-to-medication"
 
         - name: "ingridientsURI"
           with:

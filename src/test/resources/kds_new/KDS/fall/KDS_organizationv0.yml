@@ -6,8 +6,9 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  openEhrConfig:
-    archetype: openEHR-EHR-CLUSTER.organization.v0 # deprecated
+  extension:
+    extend: CLUSTER.organization.v0 # deprecated
+
 mappings:
 
   - name: "orgaKey" #is populated from the institution mapping

@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name: problem_diagnosis
+  name: EVALUATION.problem_diagnosis.v1
   version: 0.0.1a
 spec: 
   system: FHIR
@@ -83,7 +83,7 @@ mappings:
             fhir: "$resource" #only forwarding the root, can this be done or does it lead to clashes with the father from above ? 
             #I guess the $ prevents that. 
             openehr: "/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]" # could be also just loaded at the top if its anyways just $resource....
-          slotArchetype: "openEHR-EHR-CLUSTER.anatomical_location.v1"  
+          slotArchetype: "CLUSTER.anatomical_location.v1"  
 
   - name: "severity"
     with:

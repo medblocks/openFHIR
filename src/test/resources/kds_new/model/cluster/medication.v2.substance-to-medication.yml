@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name:  medication.v2.medication-to-medication
+  name:  CLUSTER.medication.v2.substance-to-medication
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
@@ -39,7 +39,7 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "/items[openEHR-EHR-CLUSTER.medication.v2]"
-                slotArchetype: "openEHR-EHR-CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+                slotArchetype: "CLUSTER.medication.v2.substance-to-medication" # depending on the resourceType picks the correct one
         - name: "quantity"
           with:
             fhir: "quantity"

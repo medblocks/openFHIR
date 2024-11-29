@@ -6,8 +6,8 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  openEhrConfig:
-    archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
+  extension:
+    extends: OBSERVATION.laboratory_test_result.v1
 
 mappings:
   - name: "hierarchyMappings" #always have to be first
@@ -30,7 +30,7 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]"
-          slotArchetype: "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
+          slotArchetype: "OBSERVATION.laboratory_test_result.v1"
 
   - name: "fallIdentifikation"
     extension: "add"
@@ -44,7 +44,7 @@ mappings:
           with:
             fhir: "$fhirRoot.identifier"
             openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-          slotArchetype: "openEHR-EHR-CLUSTER.case_identification.v0"
+          slotArchetype: "CLUSTER.case_identification.v0"
         - name: "encounterMapping"
           with:
             fhir: "$fhirRoot"

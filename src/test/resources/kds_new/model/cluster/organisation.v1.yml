@@ -1,15 +1,13 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name: organisation_v1
+  name: CLUSTER.organisation.v1
   version: 0.0.1a
 spec:
   system: FHIR
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.organisation.v1
-  fhirConfig:
-    profile: http://hl7.org/fhir/StructureDefinition/Organization
 
 mappings:
   - name: "orgName"
