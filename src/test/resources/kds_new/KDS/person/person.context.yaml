@@ -23,5 +23,5 @@ context:
     - "EVALUATION.vital_status.v1"
     - "CLUSTER.observation_status_fhir.v1"
   extensions:
-   # - "KDS_medikamentenverabreichung"
+    - "KDS_person_data.v0"
   start: "ADMIN_ENTRY.person_data.v0"

@@ -1,0 +1,52 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: ADMIN_ENTRY.person_data.v0
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-ADMIN_ENTRY.person_data.v0
+
+mappings:
+
+  - name: "personData"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype"
+    slotArchetype: "CLUSTER.person.v1"
+
+  - name: "deathBoolean"
+    with:
+      fhir: "$resource.deceased.as(Boolean)"
+      openehr: "$archetype/data[at0001]/items[at0024]/items[at0025]"
+
+  - name: "deathDateTime"
+    with:
+      fhir: "$resource.deceased.as(DateTime)"
+      openehr: "$resource/data[at0001]/items[at0024]"
+    manual:
+      openEHR:
+        path: "/items[at0025]"
+        type: "DV_BOOLEAN"
+        value:
+          value: "True"
+    condition:
+      targetRoot: "$resource"
+      targetAttribute: "deceased"
+      operator: "not empty"
+    followedBy:
+      mappings:
+        - name: "deathDetails"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$resource/data[at0001]/items[at0024]/items[openEHR-EHR-CLUSTER.death_details.v1]"
+          slotArchetype: "CLUSTER.death_details.v1"
+
+  - name: "personBirthDate"
+    with:
+      fhir: "$resource.birthDate"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person_birth_data_iso.v0]"
+    slotArchetype: "openEHR-EHR-CLUSTER.person_birth_data_iso.v0"
+

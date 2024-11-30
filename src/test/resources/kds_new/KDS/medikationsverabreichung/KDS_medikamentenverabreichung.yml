@@ -6,8 +6,8 @@ metadata:
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
-  openEhrConfig:
-    archetype: "openEHR-EHR-ACTION.medication.v1"
+  extension:
+    extends: openEHR-EHR-ACTION.medication.v1
 
 mappings:
   - name: "berichtId"

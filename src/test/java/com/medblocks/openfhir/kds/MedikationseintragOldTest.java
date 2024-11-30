@@ -24,7 +24,7 @@ public class MedikationseintragOldTest extends KdsBidirectionalTest {
     final String RESOURCES_ROOT = "/kds/medikationseintrag/old/";
     final String OPT = "KDS_Medikationseintrag_v1.opt";
     final String FLAT = "KDSMedicationRequest.flat.json";
-    final String CONTEXT = "KDS_medikationseintrag.context.yaml";
+    final String CONTEXT = "context.KDS_medikationseintrag.yaml";
     final String BUNDLE = "KDS_Medikationseintrag_v1-Fhir-Bundle-input.json";
 
     @SneakyThrows

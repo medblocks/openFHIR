@@ -1,0 +1,25 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_person_data.v0
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  extension:
+    extends: ADMIN_ENTRY.person_data.v0
+
+mappings:
+  - name: "personData"
+    extension: "overwrite"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype"
+    slotArchetype: "CLUSTER.person.v1/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Person']"
+
+  - name: "contactPerson"
+    extension: "add"
+    with:
+      fhir: "$resource.contact"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Kontaktperson']"
+    slotArchetype: "CLUSTER.person.v1"
