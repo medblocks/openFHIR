@@ -1,62 +1,68 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name:  CLUSTER.person.v0
+  name:  CLUSTER.person.v1
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
   openEhrConfig:
-    archetype: openEHR-EHR-CLUSTER.person.v0
+    archetype: openEHR-EHR-CLUSTER.person.v1
 
 
 mapping:
-  - name: ""
-#    followedBy:
-#      mappings:
-#        - name: "name"
-#          with:
-#            fhir: "name.text"
-#            openehr: "name"
-#            type: "STRING"
-#        - name: "role"
-#          with:
-#            fhir: "relationship"
-#            openehr: "rolle_relationship"
-#            type: "CODEABLECONCEPT"
-#        - name: "address"
-#          with:
-#            fhir: "address.text"
-#            openehr: "adresse.adresszeile"
-#            type: "STRING"
-#        - name: "telecom"
-#          with:
-#            fhir: "telecom.value"
-#            openehr: "elektronische_kommunikation.daten.text_value"
-#            type: "STRING"
-#        - name: "organization"
-#          with:
-#            fhir: "organization"
-#            openehr: "$reference"
-#            type: "NONE"
-#          reference:
-#            resourceType: "Organization"
-#            mappings:
-#              - name: "org"
-#                with:
-#                  fhir: "$fhirRoot"
-#                  openehr: "organisation"
-#                  type: "NONE"
-#                followedBy:
-#                  mappings:
-#                    - name: "org name"
-#                      with:
-#                        fhir: "name"
-#                        openehr: "namenszeile"
-#                        type: "STRING"
-#                    - name: "identifier"
-#                      with:
-#                        fhir: "identifier"
-#                        openehr: "identifier.identifier_value"
-#                        type: "IDENTIFIER"
 
+  - name: "name"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.structured_name.v1]"
+    slotArchetype: "CLUSTER.structured_name.v1.person_name-structured_name"
+
+  - name: "address"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.address.v1]"
+    slotArchetype: "CLUSTER.address.v1"
+
+  - name: "organisation"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.organisation.v1]"
+    slotArchetype: "CLUSTER.organisation.v1"
+
+  - name: "electronicCommunication"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.electronic_communication.v1]"
+    slotArchetype: "CLUSTER.electronic_communication.v1"
+
+
+#  - name: "organization"
+#    with:
+#      fhir: "$fhirRoot.managingOrganization"
+#      openehr: "$reference" # the path of the following reference mapping will be used
+#      type: "NONE"
+#    # States the FHIR target/source is a Reference.
+#    reference:
+#      # Implicitly is a "direct" reference, i.e. creates ad-hoc sub-resource. It will be added to the Bundle and referenced in the root Resource.
+#      resourceType: "Organization"
+#      mappings:
+#        - name: "org"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEhrArchetype.verwaltungsorganisation"
+#            type: "NONE"
+#          followedBy:
+#            mappings:
+#              - name: "org name"
+#                with:
+#                  fhir: "name"
+#                  openehr: "namenszeile"
+#                  type: "STRING"
+#
+#              - name: "org id"
+#                with:
+#                  fhir: "identifier"
+#                  openehr: "identifier.identifier_value"
+#                  type: "IDENTIFIER"
+#

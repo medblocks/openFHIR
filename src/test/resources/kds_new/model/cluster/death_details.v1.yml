@@ -16,7 +16,8 @@ mappings:
       fhir: "$fhirRoot"
       openehr: "$archetype/items[at0001]"
 
-  - name: "causeOfDeath" # TODO should be in another Template
+  - name: "causeOfDeath" # TODO should be in another Template, CHECK FOR THE EHR ID/Patient
+  # id TO BE THE SAME! engine should always do that automatically if referencing bundle
     with:
       fhir: "$bundle.entry.resource" # Would that work ?!
       openehr: "$archetype"

@@ -28,7 +28,6 @@ mappings:
     with:
       fhir: "$fhirParentPath.ingredients.extension"
       openehr: "$reference"
-      type: "NONE"
     condition:
       targetRoot: "extension"
       targetAttribute: "url"

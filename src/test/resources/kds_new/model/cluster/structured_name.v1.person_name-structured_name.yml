@@ -1,0 +1,103 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  CLUSTER.structured_name.v1.person_name-structured_name
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.structured_name.v1
+
+#  namenszusatz
+#  nachname
+#  vorsatzwort
+
+mappings:
+  - name: "name"
+    with:
+      fhir: "$resource.name"
+      openehr: "$archetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "typeOfName"
+          with:
+            fhir: "use"
+            openehr: "/items[at0001]"
+
+        - name: "firstName"
+          with:
+            fhir: "given"
+            openehr: "/items[at0002]"
+
+        - name: "prefix"
+          with:
+            fhir: "prefix"
+            openehr: "/items[at0006]"
+
+        - name: "familyName"
+          with:
+            fhir: "family"
+            openehr: "/items[at0005]"
+
+              #      mappings:
+#        - name: "vollständiger_name"
+#          with:
+#            fhir: "text"
+#            openehr: "vollständiger_name" #full name
+#            type: "STRING"
+#
+#        - name: "use"
+#          with:
+#            fhir: "use"
+#            openehr: "namensart"
+#            type: "CODING"
+#
+#        - name: "given"
+#          with:
+#            fhir: "given"
+#            openehr: "vorname"
+#            type: "STRING"
+#
+#        - name: "familyfull"
+#          with:
+#            fhir: "text"
+#            openehr: "familienname"
+#            type: "STRING"
+#
+#        - name: "family"
+#          with:
+#            fhir: "family.extension.value"
+#            openehr: "familienname-nachname"
+#            type: "STRING"
+#          condition:
+#            targetRoot: "family.extension"
+#            targetAttribute: "url"
+#            operator: "one of"
+#            criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-name]"
+#
+#        - name: "namens zusatz"
+#          with:
+#            fhir: "family.extension.value"
+#            openehr: "familienname-namenszusatz"
+#            type: "STRING"
+#          condition:
+#            targetRoot: "family.extension"
+#            targetAttribute: "url"
+#            operator: "one of"
+#            criteria: "[http://fhir.de/StructureDefinition/humanname-namenszusatz]"
+#
+#        - name: "familienname vorsatzwort"
+#          with:
+#            fhir: "family.extension.value"
+#            openehr: "familienname-vorsatzwort"
+#            type: "STRING"
+#          condition:
+#            targetRoot: "family.extension"
+#            targetAttribute: "url"
+#            operator: "one of"
+#            criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-prefix]"
+#
+
+#
