@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name: KDS_person_data.v0
+  name: KDS_admin_entry_person.v0
   version: 0.0.1a
 spec:
   system: FHIR

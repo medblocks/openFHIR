@@ -24,4 +24,7 @@ context:
     - "CLUSTER.observation_status_fhir.v1"
   extensions:
     - "KDS_person_data.v0"
+    - "KDS_gender.v1"
+    - "KDS_structured_name.v1.person_name-structured_name"
+    - "KDS_EVALUATION.vital_status.v1"
   start: "ADMIN_ENTRY.person_data.v0"

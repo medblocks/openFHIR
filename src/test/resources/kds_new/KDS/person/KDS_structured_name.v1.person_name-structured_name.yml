@@ -10,6 +10,27 @@ spec:
     extends: CLUSTER.structured_name.v1.person_name-structured_name
 
 mappings:
+  - name: "name.prefix" #TODO is wrong in the template only qualifier is displayed has to be fixed.
+    extension: "overwrite"
+    with:
+      fhir: "$fhirRoot.prefix.extension"
+      openehr: "$openehrRoot/items[at0006]"
+    condition:
+      targetRoot: "extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier]"
+    followedBy:
+      mappings:
+        - name: "staticExtensionUrl"
+          with:
+            fhir: "extension"
+            openehr: "$reference"
+          manual:
+            fhir:
+              value:
+                extension.url: "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier"
+
   - name: "appendFamily"
     appendTo: "name.familyName"
     followedBy:
@@ -32,7 +53,8 @@ mappings:
                 manual:
                   fhir:
                     value:
-                      extension.url: "[http://fhir.de/StructureDefinition/humanname-namenszusatz]"
+                      extension.url: "http://fhir.de/StructureDefinition/humanname-namenszusatz"
+
 
         - name: "nachnameOhneZusätze"
           with:
@@ -52,7 +74,7 @@ mappings:
                 manual:
                   fhir:
                     value:
-                      extension.url: "[http://hl7.org/fhir/StructureDefinition/humanname-own-name]"
+                      extension.url: "http://hl7.org/fhir/StructureDefinition/humanname-own-name"
 
         - name: "vorsatzwort"
           with:
@@ -72,9 +94,5 @@ mappings:
                 manual:
                   fhir:
                     value:
-                      extension.url: "[http://hl7.org/fhir/StructureDefinition/humanname-own-prefix]"
-#TODO this is where i stopped.
-  - name: "prefixQualifier"
-    with:
-      fhir: ""
-      openehr: ""
+                      extension.url: "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix"
+

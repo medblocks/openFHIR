@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name: EVALUATION.vital_status.v1
+  name: KDS_EVALUATION.vital_status.v1
   version: 0.0.1a
 spec:
   system: FHIR
