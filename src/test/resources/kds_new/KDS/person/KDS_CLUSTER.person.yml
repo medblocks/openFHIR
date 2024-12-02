@@ -31,14 +31,3 @@ mappings:
       fhir: "$resource"
       openehr: "$archetype/items[openEHR-EHR-CLUSTER.address.v1 and name/value='Straßenanschrift']"
     slotArchetype: "CLUSTER.address.v1"
-
-  - name: "postfach"
-    extension: "add"
-    with:
-      fhir: "$resource"
-      openehr: "$archetype/items[openEHR-EHR-CLUSTER.address.v1 and name/value='Postfach']"
-    slotArchetype: "CLUSTER.address.v1"
-
-
-
-#  /items[openEHR-EHR-CLUSTER.organisation.v1]

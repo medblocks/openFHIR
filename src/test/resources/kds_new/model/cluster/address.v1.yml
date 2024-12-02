@@ -10,11 +10,14 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     archetype: openEHR-EHR-CLUSTER.address.v1
 
 mappings:
-  - name: "streetadress"
+  - name: "streetaddress"
     with:
       fhir: "$fhirRoot.address"
       openehr: "$openEhrArchetype"
-      type: "NONE"
+    manual:
+      fhir:
+        path: "$fhirRoot.type"
+        value: "both"
     condition:
       targetRoot: "$fhirRoot.address"
       targetAttribute: "type"
@@ -24,23 +27,18 @@ mappings:
       mappings:
         - name: "city"
           with:
-            fhir: "city.extension.value"
-            openehr: "gemeindeschlüssel"
-
-        - name: "bundesland"
-          with:
-            fhir: "state"
-            openehr: "/items[at0004]"
-
-        - name: "postal code"
-          with:
-            fhir: "postalCode"
-            openehr: "/items[at0005]"
+            fhir: "city"
+            openehr: "/items[at0002]"
 
         - name: "state"
           with:
             fhir: "state"
-            openehr: "stadt"
+            openehr: "/items[at0004]"
+
+        - name: "postalCode"
+          with:
+            fhir: "postalCode"
+            openehr: "/items[at0005]"
 
         - name: "country"
           with:
@@ -52,96 +50,8 @@ mappings:
             fhir: "type"
             openehr: "/items[at0010]"
 
-
-
-
-  - name: "address postfach"
-    with:
-      fhir: "$fhirRoot.address"
-      openehr: "$openEhrArchetype.postfach"
-      type: "NONE"
-    condition:
-      targetRoot: "$fhirRoot.address"
-      targetAttribute: "type"
-      operator: "one of"
-      criteria: "[postal]"
-    followedBy:
-      mappings:
-        - name: "city"
-          with:
-            fhir: "city.extension.value"
-            openehr: "gemeindeschlüssel"
-
-        - name: "bundesland"
-          with:
-            fhir: "state"
-            openehr: "bundesland|value"
-
-        - name: "state"
-          with:
-            fhir: "state"
-            openehr: "stadt"
-
-        - name: "postal code"
-          with:
-            fhir: "postalCode"
-            openehr: "postleitzahl"
-
-        - name: "precinct"
-          with:
-            fhir: "extension.value"
-            openehr: "stadtteil"
-
-        - name: "country"
-          with:
-            fhir: "country"
-            openehr: "land|value"
-
-        - name: "type"
-          with:
-            fhir: "type"
-            openehr: "art|value"
-
-        #        - name: "type"
-        #          with:
-        #            fhir: "type"
-        #            openehr: "art2|value"
-        #            type: "STRING"
-
         - name: "line"
           with:
             fhir: "line"
-            openehr: "$openEhrArchetype"
-          followedBy:
-            mappings:
-              - name: "straße"
-                with:
-                  fhir: "extension.value"
-                  openehr: "straße"
-                condition:
-                  targetRoot: "extension"
-                  targetAttribute: "url"
-                  operator: "one of"
-                  criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName]"
-
-              - name: "hausnummer"
-                with:
-                  fhir: "extension.value"
-                  openehr: "hausnummer"
-                condition:
-                  targetRoot: "extension"
-                  targetAttribute: "url"
-                  operator: "one of"
-                  criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber]"
-
-              - name: "adresszusatz"
-                with:
-                  fhir: "extension.value"
-                  openehr: "adresszusatz"
-                condition:
-                  targetRoot: "extension"
-                  targetAttribute: "url"
-                  operator: "one of"
-                  criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-additionalLocator]"
-
+            openehr: "/items[at0001]"
 

@@ -10,7 +10,6 @@ spec:
     extends: EVALUATION.gender.v1
 
 mappings:
-  -
   - name: "other-amtlich"
     extension: "add"
     with:

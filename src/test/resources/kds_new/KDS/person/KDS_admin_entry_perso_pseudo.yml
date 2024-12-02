@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name: KDS_admin_entry_person.v0
+  name: KDS_admin_entry_perso_pseudo
   version: 0.0.1a
 spec:
   system: FHIR
@@ -49,14 +49,16 @@ mappings:
       openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Kontaktperson']"
     slotArchetype: "CLUSTER.person.v1"
 
-  - name: "versicherungsInformationen"
-    with:
-      fhir: "$resource.identifier"
-      openehr: "$composition/content[openEHR-EHR-ADMIN_ENTRY.versicherungsinformationen.v0]"
-    slotArchetype: "ADMIN_ENTRY.versicherungsinformationen.v0"
 
   - name: "gender"
     with:
       fhir: "$resource.gender"
       openehr: "$composition/content[openEHR-EHR-EVALUATION.gender.v1]"
     slotArchetype: "openEHR-EHR-EVALUATION.gender.v1"
+
+  - name: "dosageTiming"
+    with:
+      fhir: "$resource.identifier"
+      openehr: "$reference"
+    type: "PROGRAMMED_MAPPING"
+    mappingCode: "ehrStatusAddExternalREF" #these identifiers of FHIR need to go to the EHR status to be honest as external references.

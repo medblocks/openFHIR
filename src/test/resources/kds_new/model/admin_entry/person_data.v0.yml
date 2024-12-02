@@ -49,3 +49,23 @@ mappings:
       openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person_birth_data_iso.v0]"
     slotArchetype: "CLUSTER.person_birth_data_iso.v0"
 
+  - name: "link"
+    with:
+      fhir: "$resource.link"
+      openehr: "$reference"
+    reference:
+      mappings:
+        - name: "links"
+          with:
+            fhir: "$fhirRoot.other"
+            openehr: "$archetype/links" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+            openehrLink:
+              meaning: "Part of referenced event"
+              type: "partOf"
+          followedBy:
+              mappings:
+                - name: "type"
+                  with:
+                    fhir: "$fhirRoot.link.type.value"
+                    openehr: "$archetype/links/type"

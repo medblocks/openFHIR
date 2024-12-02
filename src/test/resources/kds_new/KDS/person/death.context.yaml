@@ -16,10 +16,8 @@ context:
     - "CLUSTER.person.v1"
     - "CLUSTER.structured_name.v1"
     - "CLUSTER.address.v1"
-    - "CLUSTER.organisation.v1"
     - "CLUSTER.person_birth_data_iso.v0"
     - "CLUSTER.death_details.v1"
-    - "CLUSTER.electronic_communication.v1"
     - "EVALUATION.vital_status.v1"
     - "CLUSTER.observation_status_fhir.v1"
   extensions:
