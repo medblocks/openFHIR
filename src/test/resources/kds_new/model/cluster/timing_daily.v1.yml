@@ -30,17 +30,17 @@ mappings:
 
 #  - name: "frequency"
 #    with:
-#      fhir: "$fhirParentPath.repeat.frequency"
+#      fhir: "$fhirRoot.repeat.frequency"
 #      openehr: "$archetype/items[at0003]"
 #
 #  - name: "frequencyMax"
 #    with:
-#      fhir: "$fhirParentPath.repeat.frequencyMax"
+#      fhir: "$fhirRoot.repeat.frequencyMax"
 #      openehr: "$archetype/items[at0003]/value/upper"
 #
 #  - name: "timeOfDay"
 #    with:
-#      fhir: "$fhirParentPath.repeat.timeOfDay"
+#      fhir: "$fhirRoot.repeat.timeOfDay"
 #      openehr: "$archetype/items[at0004]"
 
 

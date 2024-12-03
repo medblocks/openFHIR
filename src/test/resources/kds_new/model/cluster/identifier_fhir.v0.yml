@@ -12,7 +12,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 mappings:
   - name: "identifier"
     with:
-      fhir: "$fhirParentPath"
+      fhir: "$fhirRoot"
       openehr: "$archetype/items[at0001]"
     condition:
       targetRoot: "$resource.identifier"

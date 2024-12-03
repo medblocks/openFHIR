@@ -27,13 +27,14 @@ mappings:
             fhir: "type"
             openehr: "$reference"
           manual:
-            fhir:
-              path: "type.coding"
-              # TODO We could also allow json strings that would make a lot of things easier ?
-              # value: "{\"coding\: [{\"system\": \"http://fhir.de/CodeSystem/identifier-type-de-basis\",\"code\": \"KVZ10\"}}"
-              value:
-                system: "http://terminology.hl7.org/CodeSystem/v2-0203"
-                value: "MR"
+            - name: "type"
+              fhir:
+                path: "type.coding"
+                # TODO We could also allow json strings that would make a lot of things easier ?
+                # value: "{\"coding\: [{\"system\": \"http://fhir.de/CodeSystem/identifier-type-de-basis\",\"code\": \"KVZ10\"}}"
+                value:
+                  system: "http://terminology.hl7.org/CodeSystem/v2-0203"
+                  value: "MR"
 
   - name: "personData"
     extension: "overwrite"
@@ -49,14 +50,13 @@ mappings:
       openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Kontaktperson']"
     slotArchetype: "CLUSTER.person.v1"
 
-
   - name: "gender"
     with:
       fhir: "$resource.gender"
       openehr: "$composition/content[openEHR-EHR-EVALUATION.gender.v1]"
     slotArchetype: "openEHR-EHR-EVALUATION.gender.v1"
 
-  - name: "dosageTiming"
+  - name: "identifier"
     with:
       fhir: "$resource.identifier"
       openehr: "$reference"

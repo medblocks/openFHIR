@@ -11,15 +11,15 @@ spec:
 mappings:
   - name: "type"
     with:
-      fhir: "$fhirParentPath.type"
+      fhir: "$fhirRoot.type"
       openehr: "$archetype/items[at0051]"
 
   - name: "orgaKey"
     with:
-      fhir: "$fhirParentPath.identifier"
+      fhir: "$fhirRoot.identifier"
       openehr: "$archetype/items[at0024]"
 
   - name: "name"
     with:
-      fhir: "$fhirParentPath.name"
+      fhir: "$fhirRoot.name"
       openehr: "$archetype/items[at0052]"

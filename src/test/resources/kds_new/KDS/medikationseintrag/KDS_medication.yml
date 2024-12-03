@@ -14,10 +14,10 @@ mappings:
     extension: "append"
     appendTo: "ingredients.followedBy.mappings"
     with:
-      fhir: "$fhirParentPath.ingredients.extension"
-      openehr: "$openehrParentPath/items[at0142]"
+      fhir: "$fhirRoot.ingredients.extension.value"
+      openehr: "$openehrRoot/items[at0142]"
     condition:
-      targetRoot: "extension"
+      targetRoot: "$fhirRoot.ingredients.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp]"
@@ -26,10 +26,10 @@ mappings:
     extension: "append"
     appendTo: "ingredients.followedBy.mappings"
     with:
-      fhir: "$fhirParentPath.ingredients.extension"
+      fhir: "$fhirRoot.ingredients.extension"
       openehr: "$reference"
     condition:
-      targetRoot: "extension"
+      targetRoot: "$fhirRoot.ingredients.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstoffrelation]"
@@ -56,7 +56,7 @@ mappings:
                     - name: "wirkstoffRelationMedication"
                       with:
                         fhir: "$fhirRoot"
-                        openehr: "$openehrParentPath/items[openEHR-EHR-CLUSTER.medication.v2]"
+                        openehr: "$openehrRoot/items[openEHR-EHR-CLUSTER.medication.v2]"
                       slotArchetype: "CLUSTER.medication.v2.medication-to-medication"
               - name: "substanceRelation"
                 with:
@@ -68,13 +68,13 @@ mappings:
                     - name: "wirkstoffRelationSubstance"
                       with:
                         fhir: "$fhirRoot"
-                        openehr: "$openehrParentPath/items[openEHR-EHR-CLUSTER.medication.v2]"
+                        openehr: "$openehrRoot/items[openEHR-EHR-CLUSTER.medication.v2]"
                       slotArchetype: "CLUSTER.medication.v2.substance-to-medication"
 
         - name: "ingridientsURI"
           with:
             fhir: "extension.valueUri.value"
-            openehr: "$openehrParentPath/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]" # TODO value into URI cause better than nothing. Its anyways useless for clinicans, but post process could be resolving this URI ?!
+            openehr: "$openehrRoot/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]" # TODO value into URI cause better than nothing. Its anyways useless for clinicans, but post process could be resolving this URI ?!
           condition:
             targetRoot: "extension"
             targetAttribute: "url"

@@ -14,7 +14,7 @@ mappings:
   - name: "problemDiagnose"
     extension: "overwrite"
     with:
-      fhir: "$fhirParentPath"
+      fhir: "$fhirRoot"
       openehr: "$archetype"
       type: "NONE"
     followedBy:

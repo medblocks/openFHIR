@@ -16,15 +16,15 @@ mappings:
 
   - name: "doseValue"
     with:
-      fhir: "$fhirParentPath.dose"
+      fhir: "$fhirRoot.dose"
       openehr: "$archetype/items[at0144]"
 
   - name: "doseDescription"
     with:
-      fhir: "$fhirParentPath.text"
+      fhir: "$fhirRoot.text"
       openehr: "$archetype/items[at0178]"
 
   - name: "administrationRoute"
     with:
-      fhir: "$fhirParentPath.rate"
+      fhir: "$fhirRoot.rate"
       openehr: "$archetype/items[at0134]"

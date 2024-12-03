@@ -12,10 +12,10 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 mappings:
   - name: "identifierCase"
     with:
-      fhir: "$fhirParentPath.value"
+      fhir: "$fhirRoot.value"
       openehr: "$archetype/items[at0001]"
     condition:
-      targetRoot: "$fhirParentPath.type"
+      targetRoot: "$fhirRoot.type"
       targetAttribute: "code"
       operator: "one of"
       criteria: "[VN]" # visit number

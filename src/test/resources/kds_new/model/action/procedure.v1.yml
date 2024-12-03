@@ -1,0 +1,297 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  KDS_prozedur
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-ACTION.procedure.v1
+
+mappings:
+
+  - name: "composer"
+    with:
+      fhir: "$resource.recorder"
+      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
+
+  - name: "participations"
+    with:
+      fhir: "$resource.performer.actor"
+      openehr: "$composition/context/participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+    participationsFunction: "asserter" # participations_mode this one has to be done in the mapping and cannot be mapped automatically.
+
+  - name: "other_participations"
+    with:
+      fhir: "$resource.performer.actor"
+      openehr: "$archetype/other_participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+    participationsFunction: "asserter"
+
+  - name: "provider"
+    with:
+      fhir: "$resource.performer.actor"
+      openehr: "$archetype/provider"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+
+  - name: "contextStartTime"
+    with:
+      fhir: "$resource.performed"
+      openehr: "$composition/context/start_time"
+
+  - name: "contextEndTime"
+    with:
+      fhir: "$resource.performed.end"
+      openehr: "$composition/context/end_time"
+
+  - name: "ISMTransition"
+    with:
+      fhir: "$resource" #there needs to be a mapping table
+      openehr: "$archetype/ism_transition"
+    manual:
+      - name: "initial"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "524"
+            terminology_id: "openehr"
+            code_string: "Initial"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[unknown]"
+        fhir:
+          path: "status"
+          value: "unknown"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "524"
+
+      - name: "planned"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "526"
+            terminology_id: "openehr"
+            code_string: "Planned"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[preparation]"
+        fhir:
+          path: "status"
+          value: "preparation"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "526"
+
+      - name: "postponed"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "527"
+            terminology_id: "openehr"
+            code_string: "Postponed"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[not-done]"
+        fhir:
+          path: "status"
+          value: "not-done"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "527"
+
+      - name: "scheduled"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "529"
+            terminology_id: "openehr"
+            code_string: "Scheduled"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[preparation]"
+        fhir:
+          path: "status"
+          value: "preparation"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "529"
+
+      - name: "cancelled"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "528"
+            terminology_id: "openehr"
+            code_string: "Cancelled"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[entered-in-error]"
+        fhir:
+          path: "status"
+          value: "entered-in-error"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "528"
+
+      - name: "active"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "245"
+            terminology_id: "openehr"
+            code_string: "Active"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[in-progress]"
+        fhir:
+          path: "status"
+          value: "in-progress"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "245"
+
+      - name: "suspended"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "530"
+            terminology_id: "openehr"
+            code_string: "Suspended"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[on-hold]"
+        fhir:
+          path: "status"
+          value: "on-hold"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "530"
+
+      - name: "aborted"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "531"
+            terminology_id: "openehr"
+            code_string: "Aborted"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[stopped]"
+        fhir:
+          path: "status"
+          value: "stopped"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "531"
+
+      - name: "completed"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "532"
+            terminology_id: "openehr"
+            code_string: "Completed"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[completed]"
+        fhir:
+          path: "status"
+          value: "completed"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "532"
+
+      - name: "expired"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "533"
+            terminology_id: "openehr"
+            code_string: "Expired"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[unknown]"
+        fhir:
+          path: "status"
+          value: "unknown"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "533"
+
+
+  - name: "name"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "Name"
+          with:
+            fhir: "code"
+            openehr: "/description[at0001]/items[at0002]"
+          condition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[http://snomed.info/sct, http://fhir.de/CodeSystem/bfarm/ops]"
+
+  - name: "freetext"
+    with:
+      fhir: "$resource.code.text"
+      openehr: "$archetype/description[at0001]/items[at0049]"
+
+  - name: "comment"
+    with:
+      fhir: "$resource.note.text"
+      openehr: "$archetype/description[at0001]/items[at0005]"
+
+  - name: "category"
+    with:
+      fhir: "$resource.category"
+      openehr: "$archetype/description[at0001]/items[at0067]"
+
+  - name: "bodySite"
+    with:
+      fhir: "$resource.bodySite"
+      openehr: "$archetype/description[at0001]/items[at0063]"

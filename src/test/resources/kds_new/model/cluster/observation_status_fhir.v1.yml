@@ -13,11 +13,11 @@ mappings:
 
   - name: "status"
     with:
-      fhir: "$fhirParentPath.status"
+      fhir: "$fhirRoot.status"
       openehr: "$archetype/items[at0015]"
 
   - name: "code"
     with:
-      fhir: "$fhirParentPath.code"
+      fhir: "$fhirRoot.code"
       openehr: "$archetype/items[at0014]"
 

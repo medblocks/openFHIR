@@ -26,10 +26,11 @@ mappings:
             fhir: "type"
             openehr: "$reference"
           manual:
-            fhir:
-              path: "type"
-              # TODO We could also allow json strings that would make a lot of things easier ?
-              # value: "{\"coding\: [{\"system\": \"http://fhir.de/CodeSystem/identifier-type-de-basis\",\"code\": \"KVZ10\"}}"
-              value:
-                coding.system: "http://fhir.de/CodeSystem/identifier-type-de-basis"
-                coding.value: "KVZ10"
+            - name: "type"
+              fhir:
+                path: "type"
+                # TODO We could also allow json strings that would make a lot of things easier ?
+                # value: "{\"coding\: [{\"system\": \"http://fhir.de/CodeSystem/identifier-type-de-basis\",\"code\": \"KVZ10\"}}"
+                value:
+                  coding.system: "http://fhir.de/CodeSystem/identifier-type-de-basis"
+                  coding.value: "KVZ10"

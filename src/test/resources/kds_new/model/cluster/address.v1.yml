@@ -13,11 +13,12 @@ mappings:
   - name: "streetaddress"
     with:
       fhir: "$fhirRoot.address"
-      openehr: "$openEhrArchetype"
+      openehr: "$archetype"
     manual:
-      fhir:
-        path: "$fhirRoot.type"
-        value: "both"
+      - name: "type"
+        fhir:
+          path: "$fhirRoot.type"
+          value: "both"
     condition:
       targetRoot: "$fhirRoot.address"
       targetAttribute: "type"

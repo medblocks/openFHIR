@@ -47,7 +47,7 @@ mappings:
     extension: "append"
     appendTo: "problemDiagnoseName"
     condition:
-      targetRoot: "$fhirParentPath" # path where the append mapping stopped
+      targetRoot: "$fhirRoot.coding"
       targetAttribute: "system"
       operator: "one of"
       criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]"
@@ -55,21 +55,21 @@ mappings:
       mappings:
         - name: "codeIcd10Diagnosesicherheit"
           with:
-            fhir: "$fhirParentPath.extension"
+            fhir: "extension"
             openehr: "$archetype/data[at0001]/items[at0073]"
           condition:
-            targetRoot: "$fhirParentPath.extension"
+            targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
             criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
         - name: "multipleCoding"
           with:
-            fhir: "fhirParentPath.extension"
+            fhir: "extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]"
           slotArchetype: "CLUSTER.multiple_coding_icd10gm.v1"
         - name: "anatomicalLocation" #cannot be a profile of the Cluster since the cluster is mapped from two different points in FHIR
           with:
-            fhir: "$fhirParentPath.extension"
+            fhir: "extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]"
           condition:
             targetRoot: "extension"
@@ -83,15 +83,6 @@ mappings:
       fhir: "$resource"
       openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
     slotArchetype: "CLUSTER.lebensphase.v0"
-
-  - name: "snomedBodySite"
-    extension: "append"
-    appendTo: "bodySiteCode" # if wanted to add to the where it would be bodySiteCode.where, see YAML paths.
-    condition:
-      targetRoot: "$fhirParentPath.coding"
-      targetAttribute: "system"
-      operator: "one of"
-      criteria: "[http://snomed.info/sct]"
 
   - name: "clinicalStatus"
     extension: "add"

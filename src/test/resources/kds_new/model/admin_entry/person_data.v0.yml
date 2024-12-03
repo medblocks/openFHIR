@@ -26,11 +26,12 @@ mappings:
       fhir: "$resource.deceased.as(DateTime)"
       openehr: "$resource/data[at0001]/items[at0024]"
     manual:
-      openEHR:
-        path: "/items[at0025]"
-        type: "DV_BOOLEAN"
-        value:
-          value: "True"
+      - name: "maindiagnose"
+        openEHR:
+          path: "/items[at0025]"
+          type: "DV_BOOLEAN"
+          value:
+            value: "True"
     condition:
       targetRoot: "$resource"
       targetAttribute: "deceased"

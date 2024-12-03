@@ -12,10 +12,10 @@ spec:
 mappings:
   - name: "orgName"
     with:
-      fhir: "$fhirParentPath.name"
+      fhir: "$fhirRoot.name"
       openehr: "$archetype/items[at0001]"
 
   - name: "orgId"
     with:
-      fhir: "$fhirParentPath.identifier"
+      fhir: "$fhirRoot.identifier"
       openehr: "$archetype/items[at0003]"

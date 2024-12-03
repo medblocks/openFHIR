@@ -27,10 +27,11 @@ mappings:
             fhir: "extension"
             openehr: "$reference"
           manual:
-            fhir:
-              path: "url"
-              value:
-                url: "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier"
+            - name: "url"
+              fhir:
+                path: "url"
+                value:
+                  url: "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier"
 
   - name: "appendFamily"
     appendTo: "name.familyName"
@@ -52,9 +53,10 @@ mappings:
                   fhir: "extension"
                   openehr: "$reference"
                 manual:
-                  fhir:
-                    path: "url"
-                    value: "http://fhir.de/StructureDefinition/humanname-namenszusatz"
+                  - name: "url"
+                    fhir:
+                      path: "url"
+                      value: "http://fhir.de/StructureDefinition/humanname-namenszusatz"
 
 
         - name: "nachnameOhneZusätze"
@@ -73,9 +75,10 @@ mappings:
                   fhir: "extension"
                   openehr: "$reference"
                 manual:
-                  fhir:
-                    path: "url"
-                    value: "http://hl7.org/fhir/StructureDefinition/humanname-own-name"
+                  - name: "url"
+                    fhir:
+                      path: "url"
+                      value: "http://hl7.org/fhir/StructureDefinition/humanname-own-name"
 
         - name: "vorsatzwort"
           with:
@@ -93,7 +96,8 @@ mappings:
                   fhir: "extension"
                   openehr: "$reference"
                 manual:
-                  fhir:
-                    path: "url"
-                    value:  "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix"
+                  - name: "url"
+                    fhir:
+                      path: "url"
+                      value:  "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix"
 
