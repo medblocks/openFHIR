@@ -12,10 +12,6 @@ spec:
     resourceType: Observation
 
 mappings:
-  - name: "composer"
-    with:
-      fhir: "$resource.performer"
-      openehr: "$composition/composer"
 
   - name: "healthCareFacility"
     with:
@@ -27,6 +23,11 @@ mappings:
       fhir: "$resource.performer"
       openehr: "$composition/context/participations"
     participationsFunction: "performer"
+
+  - name: "composer"
+    with:
+      fhir: "$resource.performer"
+      openehr: "$composition/composer"
 
   - name: "performer"
     with:

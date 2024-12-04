@@ -1,0 +1,163 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: ACTION.informed_consent.v0
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: ACTION.informed_consent.v0
+
+mappings:
+
+  - name: "contextStartTime"
+    with:
+      fhir: "$resource.dateTime"
+      openehr: "$composition/context/start_time"
+
+  - name: "healthCareFacility"
+    with:
+      fhir: "$resource.organization"
+      openehr: "$composition/context/health_care_facility"
+
+  - name: "ISMTransition"
+    with:
+      fhir: "$resource" #there needs to be a mapping table
+      openehr: "$archetype/ism_transition"
+    manual:
+      - name: "draft"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "524"
+            terminology_id: "openehr"
+            code_string: "Initial"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[draft]"
+        fhir:
+          path: "status"
+          value: "draft"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "524"
+
+      - name: "proposed"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "526"
+            terminology_id: "openehr"
+            code_string: "Planned"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[proposed]"
+        fhir:
+          path: "status"
+          value: "proposed"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "526"
+
+      - name: "active"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "245"
+            terminology_id: "openehr"
+            code_string: "Active"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[active]"
+        fhir:
+          path: "status"
+          value: "active"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "245"
+
+      - name: "rejected"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "528"
+            terminology_id: "openehr"
+            code_string: "Cancelled"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[rejected]"
+        fhir:
+          path: "status"
+          value: "rejected"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "528"
+
+      - name: "inactive"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "532"
+            terminology_id: "openehr"
+            code_string: "Completed"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[inactive]"
+        fhir:
+          path: "status"
+          value: "inactive"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "532"
+
+      - name: "entered-in-error"
+        openehr:
+          path: "/current_state"
+          value:
+            value: "528"
+            terminology_id: "openehr"
+            code_string: "Cancelled"
+          condition:
+            targetRoot: "state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "[entered-in-error]"
+        fhir:
+          path: "status"
+          value: "entered-in-error"
+        condition:
+          targetRoot: "current_state"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "528"
+
+
+  - name: "period"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/description[at0001]/items[openEHR-EHR-CLUSTER.study_participation.v1]"
+    slotArchetype: "CLUSTER.study_participation.v1"
+
+
+#waiting for template update

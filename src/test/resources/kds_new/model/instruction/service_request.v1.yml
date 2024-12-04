@@ -13,11 +13,6 @@ spec:
 
 mappings:
 
-  - name: "composer"
-    with:
-      fhir: "$resource.requester"
-      openehr: "$composition/composer" #take the first one if its 0..n ?!
-
   - name: "healthCareFacility"
     with:
       fhir: "$resource.requester.as(Organization)"
@@ -27,6 +22,11 @@ mappings:
     with:
       fhir: "$resource.authoredOn"
       openehr: "$composition/context/start_time"
+
+  - name: "composer"
+    with:
+      fhir: "$resource.requester"
+      openehr: "$composition/composer" #take the first one if its 0..n ?!
 
   - name: "provider"
     with:

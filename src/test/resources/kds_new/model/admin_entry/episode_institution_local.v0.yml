@@ -11,10 +11,6 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     revision: 0.0.1-alpha
 
 mappings:
-  - name: "composer"
-    with:
-      fhir: "$resource.serviceProvider"
-      openehr: "$composition/composer"
 
   - name: "healthcareFacility"
     with:
@@ -30,6 +26,11 @@ mappings:
     with:
       fhir: "$resource.period.start"
       openehr: "$composition/context/end_time"
+
+  - name: "composer"
+    with:
+      fhir: "$resource.serviceProvider"
+      openehr: "$composition/composer"
 
   - name: "entryProvider"
     with:

@@ -11,10 +11,6 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 
 
 mappings:
-  - name: "composer"
-    with:
-      fhir: "$resource.performer"
-      openehr: "$composition/composer" #take the first one if its 0..n ?!
 
   - name: "healthCareFacility"
     with:
@@ -26,6 +22,11 @@ mappings:
       fhir: "$resource.resultsInterpreter"
       openehr: "$composition/context/participations"
     participationsFunction: "results Interpreter"
+
+  - name: "composer"
+    with:
+      fhir: "$resource.performer"
+      openehr: "$composition/composer" #take the first one if its 0..n ?!
 
   - name: "performer"
     with:

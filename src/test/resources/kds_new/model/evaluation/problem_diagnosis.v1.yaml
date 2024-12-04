@@ -12,10 +12,6 @@ spec:
     resourceType: Condition
 
 mappings:
-  - name: "composer"
-    with:
-      fhir: "$resource.recorder"
-      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
 
   - name: "contextStartTime"
     with:
@@ -27,6 +23,11 @@ mappings:
       fhir: "$resource.asserter"
       openehr: "$composition/context/participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
     participationsFunction: "asserter" # participations_mode this one has to be done in the mapping and cannot be mapped automatically.
+
+  - name: "composer"
+    with:
+      fhir: "$resource.recorder"
+      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
 
   - name: "other_participations"
     with:

@@ -1,13 +1,13 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name:  KDS_prozedur.v0
+  name:  KDS_procedure.v1
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
   extension:
-    extends: openEHR-EHR-ACTION.procedure.v1
+    extends: ACTION.procedure.v1
 
 mappings:
    # Dokumentationsdatum

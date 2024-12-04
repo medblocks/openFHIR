@@ -23,10 +23,6 @@ mappings:
       uniqueValueFHIR: "[route, timing.event]" # if route value is different per dosage slice make a new event
       uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
 
-  - name: "composer"
-    with:
-      fhir: "$resource.informationSource"
-      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
 
   - name: "healthcareFacility"
     with:
@@ -42,6 +38,11 @@ mappings:
     with:
       fhir: "$resource.informationSource"
       openehr: "$archetype/provider"
+
+  - name: "composer"
+    with:
+      fhir: "$resource.informationSource"
+      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
 
   - name: "eventTime"
     with:

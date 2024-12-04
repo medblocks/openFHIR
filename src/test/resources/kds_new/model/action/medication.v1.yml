@@ -21,11 +21,6 @@ mappings:
       uniqueValueFHIR: "[route, site]" # if route value is different per dosage slice make a new archetype
       uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
 
-  - name: "composer" #TODO introduce unidirectional mapping or just take the last one ?!
-    with:
-      fhir: "$resource.request.requester" # take identifier
-      openehr: "$composition/composer"
-
   - name: "healthcareFacility"
     with:
       fhir: "$resource.requester.as(Organization)"
@@ -40,6 +35,11 @@ mappings:
     with:
       fhir: "$resource.effective.end"
       openehr: "$composition/context/end_time"
+
+  - name: "composer" #TODO introduce unidirectional mapping or just take the last one ?!
+    with:
+      fhir: "$resource.request.requester" # take identifier
+      openehr: "$composition/composer"
 
   - name: "provider"
     with:

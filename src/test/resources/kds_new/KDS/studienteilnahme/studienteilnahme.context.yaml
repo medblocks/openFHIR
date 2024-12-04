@@ -1,0 +1,19 @@
+engine: FHIRConnect/v0.0.1
+type: context
+metadata:
+  name:  KDS_Studienteilnahme.context
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+
+context:
+  profileUrl: "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+  templateId: "Studienteilnahme"
+  archetypes:
+    - "openEHR-EHR-ACTION.informed_consent.v0"
+    - "openEHR-EHR-CLUSTER.study_details.v1"
+    - "openEHR-EHR-CLUSTER.study_participation.v1"
+  extensions:
+    - "KDS_informed_consent"
+  start: "ACTION.informed_consent.v0"

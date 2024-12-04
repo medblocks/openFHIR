@@ -1,0 +1,13 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: CLUSTER.study_details.v1
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.study_details.v1
+
+mappings:
+#empty swaiting for template update
