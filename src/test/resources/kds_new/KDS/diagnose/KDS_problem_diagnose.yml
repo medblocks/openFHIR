@@ -1,13 +1,13 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name: KDSProblemDiagnosis
+  name: KDS_problem_diagnose
   version: 0.0.1a
 spec:
   system: FHIR
   version: R4
   extension:
-    extend: openEHR-EHR-EVALUATION.problem_diagnosis.v1
+    extend: EVALUATION.problem_diagnosis.v1
 
 mappings:
   - name: "fallIdentifikationIdentifier"
@@ -46,10 +46,22 @@ mappings:
       fhir: "$resource.extension.value.as(DateTimeType)"
       openehr: "$archetype/data[at0001]/items[at0003]"
     condition:
-      targetRoot: "$fhirRoot"
+      targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-assertedDate]"
+    followedBy:
+      mappings:
+        - name: "staticExtensionUrl"
+          with:
+            fhir: "$resource.extension"
+            openehr: "$reference"
+          manual:
+            - name: "url"
+              fhir:
+                path: "url"
+                value:
+                  url: "http://hl7.org/fhir/StructureDefinition/condition-assertedDate"
 
   - name: "icd10ProblemDiagnose"
     extension: "append"

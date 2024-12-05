@@ -9,7 +9,6 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   extension:
     extends: CLUSTER.person.v1
 
-
 mappings:
   - name: "name"
     extension: "overwrite"

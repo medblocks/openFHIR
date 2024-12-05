@@ -10,12 +10,6 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     archetype: openEHR-EHR-ACTION.procedure.v1
 
 mappings:
-
-  - name: "composer"
-    with:
-      fhir: "$resource.recorder"
-      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
-
   - name: "participations"
     with:
       fhir: "$resource.performer.actor"
@@ -42,6 +36,11 @@ mappings:
     with:
       fhir: "$resource.performed.end"
       openehr: "$composition/context/end_time"
+
+  - name: "composer"
+    with:
+      fhir: "$resource.recorder"
+      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
 
   - name: "ISMTransition"
     with:
