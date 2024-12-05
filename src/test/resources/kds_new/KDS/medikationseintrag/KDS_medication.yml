@@ -48,7 +48,7 @@ mappings:
             mappings:
               - name: "relationMedication"
                 with:
-                  fhir: "extension.valueReference.as(Medication)"
+                  fhir: "extension.reference.as(Medication)"
                   openehr: "$reference"
                 reference:
                   resourceType: "Medication"
@@ -60,7 +60,7 @@ mappings:
                       slotArchetype: "CLUSTER.medication.v2.medication-to-medication"
               - name: "substanceRelation"
                 with:
-                  fhir: "extension.valueReference.as(Substance)"
+                  fhir: "extension.reference.as(Substance)"
                   openehr: "$reference"
                 reference:
                   resourceType: "Substance"

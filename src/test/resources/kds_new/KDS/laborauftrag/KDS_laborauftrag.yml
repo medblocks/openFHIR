@@ -10,12 +10,19 @@ spec:
     extend: INSTRUCTION.service_request.v1
 
 mappings:
-  - name: "fallIdentifikation"
+  - name: "fallIdentifikationIdentifier"
     extension: "add"
     with:
-      fhir: "$resource.encounter"
+      fhir: "$resource.encounter.identifier"
+      openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+    slotArchetype: "CLUSTER.case_identification.v0"
+
+  - name: "fallIdentifikationReference" # if reference is accessible will overwrite fallIdentifikationIdentifier
+    extension: "add"
+    with:
+      fhir: "$resource.encounter.reference"
       openehr: "$reference"
-    reference:
+    reference: #type None
       resourceType: "Encounter"
       mappings:
         - name: "identifierInReference"
@@ -35,7 +42,7 @@ mappings:
   - name: "specimen"
     extension: "add"
     with:
-      fhir: "$resource.specimen"
+      fhir: "$resource.specimen.reference"
       openehr: "$reference"
     reference:
       resourceType: "Specimen"
@@ -49,7 +56,7 @@ mappings:
   - name: "organisation"
     extension: "add"
     with:
-      fhir: "$resource.requester.as(Organization)"
+      fhir: "$resource.requester.reference.as(Organization)" #TODO @gasper does this work ?
       openehr: "$reference"
     reference:
       resourceType: "Organization"

@@ -21,7 +21,7 @@ mappings:
       mappings:
         - name: "referencedDiagnose" # condition reference
           with:
-            fhir: "condition"
+            fhir: "condition.reference"
             openehr: "$reference"
           reference:
             resourceType: "Condition"

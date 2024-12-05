@@ -142,7 +142,7 @@ mappings:
 
   - name: "medication"
     with:
-      fhir: "$resource.medication"
+      fhir: "$resource.medication.reference"
       openehr: "$reference"
     reference:
       resourceType: "Medication"
@@ -202,7 +202,7 @@ mappings:
 
   - name: "partOf"
     with:
-      fhir: "$resource.partOf"
+      fhir: "$resource.partOf.reference"
       openehr: "$reference"
     reference:
       mappings:
@@ -218,7 +218,7 @@ mappings:
   - name: "request" # always the last one is executed for the mapping back.
     extension: "add"
     with:
-      fhir: "$resource.request"
+      fhir: "$resource.request.reference"
       openehr: "$reference"
     reference:
       resourceType: "MedicationRequest"

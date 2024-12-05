@@ -56,7 +56,7 @@ mappings:
 
   - name: "partOf"
     with:
-      fhir: "$resource.partOf"
+      fhir: "$resource.partOf.reference"
       openehr: "$reference"
     reference:
       mappings:
@@ -71,7 +71,7 @@ mappings:
 
   - name: "basedOn"
     with:
-      fhir: "$resource.basedOn"
+      fhir: "$resource.basedOn.reference"
       openehr: "$reference"
     reference:
       mappings:
@@ -86,7 +86,7 @@ mappings:
 
   - name: "focus"
     with:
-      fhir: "$resource.basedOn"
+      fhir: "$resource.basedOn.reference"
       openehr: "$reference"
     reference:
       mappings:
@@ -101,7 +101,7 @@ mappings:
 
   - name: "encounter"
     with:
-      fhir: "$resource.encounter"
+      fhir: "$resource.encounter.reference"
       openehr: "$reference"
     reference:
       mappings:
@@ -117,7 +117,7 @@ mappings:
 
   - name: "hasMember"
     with:
-      fhir: "$resource.hasMember"
+      fhir: "$resource.hasMember.reference"
       openehr: "$reference"
     reference:
       mappings:

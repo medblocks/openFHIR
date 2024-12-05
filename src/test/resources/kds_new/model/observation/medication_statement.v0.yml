@@ -66,7 +66,7 @@ mappings:
 
   - name: "medication"
     with:
-      fhir: "$resource.medication"
+      fhir: "$resource.medication.reference"
       openehr: "$reference"
     reference:
       resourceType: "Medication"
@@ -98,7 +98,7 @@ mappings:
 
   - name: "reasonReference"
     with:
-      fhir: "$resource.reasonReference"
+      fhir: "$resource.reasonReference.reference"
       openehr: "$reference"
     reference:
       mappings:
@@ -117,7 +117,7 @@ mappings:
 
   - name: "partOf"
     with:
-      fhir: "$resource.partOf"
+      fhir: "$resource.partOf.reference"
       openehr: "$reference"
     reference:
       mappings:
@@ -132,7 +132,7 @@ mappings:
 
   - name: "basedOn"
     with:
-      fhir: "$resource.basedOn"
+      fhir: "$resource.basedOn.reference"
       openehr: "$reference"
     reference:
       mappings:
@@ -147,7 +147,7 @@ mappings:
 
   - name: "derivedFrom"
     with:
-      fhir: "$resource.basedOn"
+      fhir: "$resource.basedOn.reference"
       openehr: "$reference"
     reference:
       mappings:

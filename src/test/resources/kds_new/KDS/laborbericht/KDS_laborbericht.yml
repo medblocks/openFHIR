@@ -21,7 +21,7 @@ mappings:
   - name: "result" #/data[at0001]/events[at0002] add new for each laboratory analyte.
     extension: "add"
     with:
-      fhir: "$resource.result"
+      fhir: "$resource.result.reference"
       openehr: "$reference" #will create FOR each result ONE event.
     reference:
       resourceType: "Observation"
@@ -32,12 +32,19 @@ mappings:
             openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]"
           slotArchetype: "OBSERVATION.laboratory_test_result.v1"
 
-  - name: "fallIdentifikation"
+  - name: "fallIdentifikationIdentifier"
     extension: "add"
     with:
-      fhir: "$resource.encounter"
+      fhir: "$resource.encounter.identifier"
+      openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+    slotArchetype: "CLUSTER.case_identification.v0"
+
+  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+    extension: "add"
+    with:
+      fhir: "$resource.encounter.reference"
       openehr: "$reference"
-    reference:
+    reference: #type None
       resourceType: "Encounter"
       mappings:
         - name: "identifierInReference"

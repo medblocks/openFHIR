@@ -54,7 +54,7 @@ mappings:
             openehr: "/items[at0132]"
         - name: "medication"
           with:
-            fhir: "item.as(Medication)"
+            fhir: "item.reference.as(Medication)"
             openehr: "$reference"
           reference:
             resourceType: "Medication"
@@ -67,7 +67,7 @@ mappings:
 
         - name: "medicationSubstance"
           with:
-            fhir: "item.as(Substance)"
+            fhir: "item.reference.as(Substance)"
             openehr: "$reference"
             unidirectional: "fhir->openEHR" # wont convert from openEHR to fhir otherwise would be two mappings
           reference:
@@ -86,11 +86,11 @@ mappings:
             type: "NONE"
           followedBy:
             mappings:
-              - name: "zahler"
+              - name: "numerator"
                 with:
                   fhir: "numerator"
                   openehr: "/items[at0152]/items[at0153]"
-              - name: "nenner"
+              - name: "denominator"
                 with:
                   fhir: "denominator"
                   openehr: "/items[at0152]/items[at0157]"

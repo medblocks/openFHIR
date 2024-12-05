@@ -10,10 +10,17 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     extends: OBSERVATION.medication_statement.v0
 
 mappings:
-  - name: "fallIdentifikation"
+  - name: "fallIdentifikationIdentifier"
     extension: "add"
     with:
-      fhir: "$resource.context"
+      fhir: "$resource.encounter.identifier"
+      openehr: "$composition/context/other_context[at0005]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+    slotArchetype: "CLUSTER.case_identification.v0"
+
+  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+    extension: "add"
+    with:
+      fhir: "$resource.encounter.reference"
       openehr: "$reference"
     reference:
       resourceType: "Encounter"

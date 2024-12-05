@@ -28,7 +28,7 @@ mappings:
             openehr: "/items[at0132]"
         - name: "substanceSubstance"
           with:
-            fhir: "substance.as(Substance)"
+            fhir: "substance.reference.as(Substance)"
             openehr: "$reference"
           reference:
             resourceType: "Substance"

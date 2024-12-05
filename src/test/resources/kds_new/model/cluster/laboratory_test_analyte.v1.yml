@@ -42,7 +42,7 @@ mappings:
 
   - name: "specimen"
     with:
-      fhir: "$resource.specimen"
+      fhir: "$resource.specimen.reference"
       openehr: "$reference"
     reference:
       resourceType: "Specimen"

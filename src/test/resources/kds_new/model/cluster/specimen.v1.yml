@@ -44,7 +44,7 @@ mappings:
             openehr: "$archetype/items[0008]" #Sampling context
         - name: "collector"
           with:
-            fhir: "collector"
+            fhir: "collector.reference"
             openehr: "$reference"
           reference:
             mappings:
@@ -88,7 +88,7 @@ mappings:
 
   - name: "parent"
     with:
-      fhir: "$resource.parent"
+      fhir: "$resource.parent.reference"
       openehr: "$reference"
     reference:
       resourceType: "Specimen"

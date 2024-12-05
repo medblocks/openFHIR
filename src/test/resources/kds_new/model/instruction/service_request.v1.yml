@@ -68,14 +68,14 @@ mappings:
 
   - name: "organisation"
     with:
-      fhir: "$resource.requester.as(Organization)"
+      fhir: "$resource.requester.reference.as(Organization)"
       openehr: "$reference"
     reference:
       resourceType: "Organization"
       mappings:
         - name: "organization"
           with:
-            fhir: "extension"
+            fhir: "$fhirRoot"
             openehr: "$openEhrArchetyp/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
           slotArchetype: "CLUSTER.organisation.v1"
 

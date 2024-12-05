@@ -50,7 +50,7 @@ mappings:
   - name: "serviceProvider" # TODO deprecated needs to be deleted
     extension: "add"
     with:
-      fhir: "$resource.serviceProvider"
+      fhir: "$resource.serviceProvider.reference"
       openehr: "$reference"
     reference:
       resourceType: "Organization"
