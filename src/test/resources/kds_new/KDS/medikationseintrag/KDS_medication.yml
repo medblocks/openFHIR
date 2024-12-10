@@ -16,7 +16,7 @@ mappings:
     with:
       fhir: "$fhirRoot.ingredients.extension.value"
       openehr: "$openehrRoot/items[at0142]"
-    condition:
+    fhirCondition:
       targetRoot: "$fhirRoot.ingredients.extension"
       targetAttribute: "url"
       operator: "one of"
@@ -28,7 +28,7 @@ mappings:
     with:
       fhir: "$fhirRoot.ingredients.extension"
       openehr: "$reference"
-    condition:
+    fhirCondition:
       targetRoot: "$fhirRoot.ingredients.extension"
       targetAttribute: "url"
       operator: "one of"
@@ -39,7 +39,7 @@ mappings:
           with:
             fhir: "extension"
             openehr: "$reference"
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
@@ -75,7 +75,7 @@ mappings:
           with:
             fhir: "extension.valueUri.value"
             openehr: "$openehrRoot/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]" # TODO value into URI cause better than nothing. Its anyways useless for clinicans, but post process could be resolving this URI ?!
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"

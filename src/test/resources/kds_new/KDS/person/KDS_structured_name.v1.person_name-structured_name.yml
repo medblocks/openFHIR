@@ -15,7 +15,7 @@ mappings:
     with:
       fhir: "$fhirRoot.prefix.extension"
       openehr: "$openehrRoot/items[at0006]"
-    condition:
+    fhirCondition:
       targetRoot: "extension"
       targetAttribute: "url"
       operator: "one of"
@@ -41,7 +41,7 @@ mappings:
           with:
             fhir: "extension"
             openehr: "/items[at0005 and name/value='Familienname-Namenszusatz']"
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
@@ -63,7 +63,7 @@ mappings:
           with:
             fhir: "extension"
             openehr: "/items[at0005 and name/value='Familienname-Nachname']"
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
@@ -84,7 +84,7 @@ mappings:
           with:
             fhir: "extension"
             openehr: "/items[at0005 and name/value='Familienname-Vorsatzwort']"
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"

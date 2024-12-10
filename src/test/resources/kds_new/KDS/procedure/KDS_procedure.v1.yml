@@ -51,7 +51,7 @@ mappings:
     with:
       fhir: "$resource.extension"
       openehr: "$archetype/description[at0001]/items[at0014]"
-    condition:
+    fhirCondition:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"

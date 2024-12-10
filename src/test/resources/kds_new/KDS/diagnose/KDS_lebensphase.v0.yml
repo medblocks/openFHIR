@@ -15,7 +15,7 @@ mappings:
     with:
       fhir: "$resource.start.extension.value"
       openehr: "$archetype/items[at0001]"
-    condition:
+    fhirCondition:
       targetRoot: "$resource.start.extension"
       targetAttribute: "url"
       operator: "one of"
@@ -26,7 +26,7 @@ mappings:
     with:
       fhir: "$resource.end.extension.value"
       openehr: "lebensphase.ende"
-    condition:
+    fhirCondition:
       targetRoot: "$resource.end.extension"
       targetAttribute: "url"
       operator: "one of"

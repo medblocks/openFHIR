@@ -15,7 +15,7 @@ mappings:
     with:
       fhir: "$resource.identifier"
       openehr: "$composition/context/other_context[at0003]/items[at0004]"
-    condition: # TODO @Gasper how did the old engine did that
+    fhirCondition: # TODO @Gasper how did the old engine did that
       targetRoot: "$resource.identifier.type.coding"
       targetAttribute: "code"
       operator: "one of"

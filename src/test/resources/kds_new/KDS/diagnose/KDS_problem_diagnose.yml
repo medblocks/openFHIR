@@ -45,7 +45,7 @@ mappings:
     with:
       fhir: "$resource.extension.value.as(DateTimeType)"
       openehr: "$archetype/data[at0001]/items[at0003]"
-    condition:
+    fhirCondition:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
@@ -66,7 +66,7 @@ mappings:
   - name: "icd10ProblemDiagnose"
     extension: "append"
     appendTo: "problemDiagnoseName"
-    condition:
+    fhirCondition:
       targetRoot: "$fhirRoot.coding"
       targetAttribute: "system"
       operator: "one of"
@@ -77,7 +77,7 @@ mappings:
           with:
             fhir: "extension"
             openehr: "$archetype/data[at0001]/items[at0073]"
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
@@ -91,7 +91,7 @@ mappings:
           with:
             fhir: "extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]"
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
@@ -117,7 +117,7 @@ mappings:
       fhir: "$resource.extension"
       openehr: "$archetype"
       type: "NONE"
-    condition:
+    fhirCondition:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
@@ -136,7 +136,7 @@ mappings:
                   fhir: "$fhirRoot"
                   openehr: "$archetype"
                 slotArchetype: "EVALUATION.problem_diagnosis.v1"
-          condition:
+          openehrCondition:
             targetRoot: "/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
             targetAttribute: "/items[at0063]/defining_code/code_string"
             operator: "one of"

@@ -72,7 +72,7 @@ mappings:
     with:
       fhir: "$resource.identifier"
       openehr: "$composition/context/other_context[at0001]/items[at0002]"
-    condition:
+    fhirCondition:
       targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
       targetAttribute: "code"
       operator: "one of"
@@ -83,7 +83,7 @@ mappings:
     with:
       fhir: "$resource.identifier"
       openehr: "$composition/context/other_context[at0001]/items[at0002]"
-    condition:
+    fhirCondition:
       targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
       targetAttribute: "code"
       operator: "one of"

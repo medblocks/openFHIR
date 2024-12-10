@@ -16,7 +16,7 @@ mappings:
     with:
       openehr: "$archetype/items[at0024]" #is mapped from fachabteilungsschlüssel
       fhir: "$parentResource.serviceType"
-    condition:
+    fhirCondition:
       targetRoot: "coding"
       targetAttribute: "system"
       operator: "one of"

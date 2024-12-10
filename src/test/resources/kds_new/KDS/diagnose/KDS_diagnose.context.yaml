@@ -26,13 +26,13 @@ fhir:
   post-processors:
     name: "primary-reference"
     referenceEndpoint: "$resource.extension(url=http://hl7.org/fhir/StructureDefinition/condition-related).value"
-    condition:
+    fhirCondition:
       targetRoot: "$resource"
       targetAttribute: "extension.url"
       operator: "not of"
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     referencedResource:
-      condition:
+      fhirCondition:
         target: "$resource.extension.url"
         operator: "one of"
         criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"

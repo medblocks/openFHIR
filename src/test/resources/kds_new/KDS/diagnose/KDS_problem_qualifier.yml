@@ -16,7 +16,7 @@ mappings:
     with:
       fhir: "$resource.extension"
       openehr: "$archetype/at0003"
-      condition:
+      fhirCondition:
         targetRoot: "extension"
         targetAttribute: "url"
         operator: "one of"
@@ -36,7 +36,7 @@ mappings:
             code_string: "at0064"
             terminology_id: "local"
             value: "Hauptdiagnose"
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "not of"
@@ -56,7 +56,7 @@ mappings:
             code_string: "at0066"
             terminology_id: "local"
             value: "Nebendiagnose"
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
@@ -64,7 +64,7 @@ mappings:
         fhir:
           path: "$resource.extension.url"
           value: "http://hl7.org/fhir/StructureDefinition/condition-related" #linkage happens in the postprocessor
-          condition:
+          openehrCondition:
             targetRoot: "/items[at0063]"
             targetAttribute: "/defining_code/code_string"
             operator: "one of"

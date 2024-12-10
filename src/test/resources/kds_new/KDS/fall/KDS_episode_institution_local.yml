@@ -35,7 +35,7 @@ mappings:
     with:
       fhir: "$resource.identifier"
       openehr: "$composition/context/other_context[at0001]/items[at0003]"
-    condition:
+    fhirCondition:
       targetRoot: "$resource.identifier.type"
       targetAttribute: "value"
       operator: "one of"
@@ -67,7 +67,7 @@ mappings:
       fhir: "$resource.extension"
       openehr: "$archetype"
       type: "NONE"
-    condition:
+    fhirCondition:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
@@ -78,7 +78,7 @@ mappings:
           with:
             fhir: "extension.value" # since its two extensions nested
             openehr: "/items[at0008 and name/value='Aufnahmegrund - ErsteUndZweiteStelle']"
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
@@ -88,7 +88,7 @@ mappings:
           with:
             fhir: "extension.value"
             openehr: "/items[at0008 and name/value='Aufnahmegrund - Dritte Stelle']"
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
@@ -98,7 +98,7 @@ mappings:
           with:
             fhir: "extension.value"
             openehr: "/items[at0008 and name/value='Aufnahmegrund - Vierte Stelle']"
-          condition:
+          fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
@@ -119,11 +119,11 @@ mappings:
          with:
            fhir: "dischargeDisposition.extension.extension.value"
            openehr: "/data[at0001]/items[at0006]"
-         condition:
+         fhirCondition:
            targetRoot: "dischargeDisposition.extension"
            targetAttribute: "url"
            operator: "one of"
-           condition: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
+           fhirCondition: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
 
   - name: "problemDiagnose"
     extension: "add"

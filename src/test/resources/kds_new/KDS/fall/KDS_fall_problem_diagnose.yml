@@ -42,7 +42,7 @@ mappings:
           with:
             fhir: "use.coding.code"
             openehr: "/data[at0001]/items[at0009]"
-          condition:
+          fhirCondition:
             targetRoot: "use.coding.code"
             targetAttribute: "value"
             operator: "one of"
@@ -51,7 +51,7 @@ mappings:
           with:
             fhir: "use.coding.code"
             openehr: "/data[at0001]/items[at0079]"
-          condition:
+          fhirCondition:
             targetRoot: "use.coding.code"
             targetAttribute: "value"
             operator: "one of"
