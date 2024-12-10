@@ -12,10 +12,10 @@ spec:
 mappings:
   - name: "mehrfachcodierung"
     with:
-      fhir: "$resource"
+      fhir: "$fhirRoot.valueCodeableConcept.coding"
       openehr: "$archetype/items[at0001]"
     condition:
-      targetRoot: "extension"
+      targetRoot: "$fhirRoot"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen]"

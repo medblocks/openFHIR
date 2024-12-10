@@ -37,7 +37,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.end.extension.value"
-      openehr: "lebensphase.ende"
+      openehr: "$archetype/items[at0002]"
     fhirCondition:
       targetRoot: "$resource.end.extension"
       targetAttribute: "url"

@@ -10,29 +10,15 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     extend: CLUSTER.problem_qualifier.v2
 
 mappings:
-  #this needs to be called from the specialized problem diagnose 
-  - name: "diagnosesicherheit"
+  #this needs to be called from the specialized problem diagnose
+    #/context/other_context[at0001]/items[at0005]
+    #verificationStatus
+
+  - name: "clinicalStatus"
     extension: "add"
     with:
-      fhir: "$resource.extension"
-      openehr: "$archetype/items[at0003]"
-    fhirCondition:
-      targetRoot: "extension"
-      targetAttribute: "url"
-      operator: "one of"
-      criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
-    followedBy:
-      mappings:
-        - name: "extension"
-          with:
-            fhir: "$resource"
-            openehr: "$reference"
-          manual:
-            - name: "extensionUrl"
-              fhir:
-                path: "extension.url"
-                value:
-                  url: "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit"
+      fhir: "$resource.clinicalStatus"
+      openehr: "$archetype/items[at0003]" #/data[at0001]/items[at0073]
 
   - name: "referenzPrimaerdiagnose"
     extension: "add"
@@ -74,8 +60,8 @@ mappings:
             operator: "one of"
             criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
         fhir:
-          path: "$resource.extension.url"
-          value: "http://hl7.org/fhir/StructureDefinition/condition-related" #linkage happens in the postprocessor
+          path: "extension.url"
+          value: "http://hl7.org/fhir/StructureDefinition/condition-related"
           openehrCondition:
             targetRoot: "/items[at0063]"
             targetAttribute: "/defining_code/code_string"

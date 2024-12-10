@@ -39,6 +39,11 @@ mappings:
               meaning: "the case this composition relates to"
               type: "case"
 
+  - name: "status"
+    extension: "add"
+    with:
+      fhir: "$resource.verificationStatus"
+      openehr: "$composition/context/other_context[at0001]/items[at0005]"
 
   - name: "date"
     extension: "add"
@@ -71,7 +76,6 @@ mappings:
                 path: "url"
                 value:
                   url: "http://hl7.org/fhir/StructureDefinition/condition-assertedDate"
-
 
   - name: "icd10ProblemDiagnose"
     extension: "append"
@@ -140,7 +144,7 @@ mappings:
       openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
     slotArchetype: "CLUSTER.lebensphase.v0"
 
-  - name: "clinicalStatus"
+  - name: "problemQualifier"
     extension: "add"
     with:
       fhir: "$resource"
