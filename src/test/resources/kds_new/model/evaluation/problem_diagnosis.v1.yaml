@@ -44,6 +44,7 @@ mappings:
     with:
       fhir: "$resource.code"
       openehr: "$archetype"
+      type: "NONE"
     followedBy:
       mappings:   
         - name: "problemDiagnoseName"
@@ -65,6 +66,7 @@ mappings:
     with:
       fhir: "$resource"
       openehr: "$archetype"
+      type: "NONE"
     followedBy:
       mappings:
         - name: "dateTime"
@@ -77,6 +79,7 @@ mappings:
     with:
       fhir: "$resource.bodySite"
       openehr: "$archetype"
+      type: "NONE"
     followedBy:
       mappings:
         - name: "bodySiteCluster"

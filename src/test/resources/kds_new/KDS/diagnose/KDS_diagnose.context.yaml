@@ -22,19 +22,3 @@ context:
     - "KDSLebensphase"
   start: "EVALUATION.problem_diagnosis.v1"
 
-fhir:
-  post-processors:
-    name: "primary-reference"
-    referenceEndpoint: "$resource.extension(url=http://hl7.org/fhir/StructureDefinition/condition-related).value"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "extension.url"
-      operator: "not of"
-      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
-    referencedResource:
-      fhirCondition:
-        target: "$resource.extension.url"
-        operator: "one of"
-        criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
-
-#Add ways to link references here, also when linking in the end the engine should search for context mappings that fit the resource added in the condition. 

@@ -15,22 +15,34 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.extension"
-      openehr: "$archetype/at0003"
-      fhirCondition:
-        targetRoot: "extension"
-        targetAttribute: "url"
-        operator: "one of"
-        criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+      openehr: "$archetype/items[at0003]"
+    fhirCondition:
+      targetRoot: "extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+    followedBy:
+      mappings:
+        - name: "extension"
+          with:
+            fhir: "$resource"
+            openehr: "$reference"
+          manual:
+            - name: "extensionUrl"
+              fhir:
+                path: "extension.url"
+                value:
+                  url: "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit"
 
   - name: "referenzPrimaerdiagnose"
     extension: "add"
     with:
-      fhir: "$resource.extension"
-      openehr: "$archetype/at0063"
+      fhir: "$resource"
+      openehr: "$archetype"
     manual:
       - name: "maindiagnose"
         openEHR:
-          path: "/items[at0063]" # the terminology should be set automatically since its local ?!
+          path: "/items[at0063]"
           type: "DV_CODED_TEXT"
           value:
             code_string: "at0064"
@@ -43,7 +55,7 @@ mappings:
             criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
 
 
-  - name: "referenzNebendiagnose" #should maybe be contained under the referenzPrimaer
+  - name: "referenzNebendiagnose"
     extension: "add"
     with:
       fhir: "$resource"
