@@ -21,7 +21,7 @@ mappings:
     with:
       fhir: "$bundle.entry.resource" # Would that work ?!
       openehr: "$archetype"
-    condition:
+    fhirCondition:
       targetRoot: "$bundle.entry.resource.as(Condition)"
       targetAttribute: "url"
       operator: "one of"

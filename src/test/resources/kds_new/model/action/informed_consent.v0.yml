@@ -33,7 +33,7 @@ mappings:
             value: "524"
             terminology_id: "openehr"
             code_string: "Initial"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
@@ -41,7 +41,7 @@ mappings:
         fhir:
           path: "status"
           value: "draft"
-        condition:
+        openehrCondition:
           targetRoot: "current_state"
           targetAttribute: "value"
           operator: "one of"
@@ -54,7 +54,7 @@ mappings:
             value: "526"
             terminology_id: "openehr"
             code_string: "Planned"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
@@ -62,7 +62,7 @@ mappings:
         fhir:
           path: "status"
           value: "proposed"
-        condition:
+        openehrCondition:
           targetRoot: "current_state"
           targetAttribute: "value"
           operator: "one of"
@@ -75,7 +75,7 @@ mappings:
             value: "245"
             terminology_id: "openehr"
             code_string: "Active"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
@@ -83,7 +83,7 @@ mappings:
         fhir:
           path: "status"
           value: "active"
-        condition:
+        openehrCondition:
           targetRoot: "current_state"
           targetAttribute: "value"
           operator: "one of"
@@ -96,7 +96,7 @@ mappings:
             value: "528"
             terminology_id: "openehr"
             code_string: "Cancelled"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
@@ -104,7 +104,7 @@ mappings:
         fhir:
           path: "status"
           value: "rejected"
-        condition:
+        openehrCondition:
           targetRoot: "current_state"
           targetAttribute: "value"
           operator: "one of"
@@ -117,7 +117,7 @@ mappings:
             value: "532"
             terminology_id: "openehr"
             code_string: "Completed"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
@@ -125,11 +125,11 @@ mappings:
         fhir:
           path: "status"
           value: "inactive"
-        condition:
-          targetRoot: "current_state"
-          targetAttribute: "value"
-          operator: "one of"
-          criteria: "532"
+          openehrCondition:
+            targetRoot: "current_state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "532"
 
       - name: "entered-in-error"
         openehr:
@@ -138,7 +138,7 @@ mappings:
             value: "528"
             terminology_id: "openehr"
             code_string: "Cancelled"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
@@ -146,7 +146,7 @@ mappings:
         fhir:
           path: "status"
           value: "entered-in-error"
-        condition:
+        openehrCondition:
           targetRoot: "current_state"
           targetAttribute: "value"
           operator: "one of"

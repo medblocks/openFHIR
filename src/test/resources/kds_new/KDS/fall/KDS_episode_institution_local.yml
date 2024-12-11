@@ -10,8 +10,6 @@ spec:
     extend: ADMIN_ENTRY.episode_institution_local.v0
 
 mappings:
-
-
   - name: "falltyp"
     extension: "add"
     with:

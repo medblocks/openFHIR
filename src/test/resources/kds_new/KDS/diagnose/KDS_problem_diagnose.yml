@@ -48,40 +48,29 @@ mappings:
   - name: "date"
     extension: "add"
     with:
-      fhir: "$resource.extension"
-      openehr: "$archetype"
-      type: "NONE"
+        fhir: "$resource.extension.value.as(DateTimeType)"
+        openehr: "/data[at0001]/items[at0003]"
     fhirCondition:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-assertedDate]"
-    openehrCondition:
-      targetRoot: "$archetype/data[at0001]"
-      targetAttribute: "/items[at0003]"
-      operator: "not empty" # added so i dont have to followedBy to festellungsdatum
     followedBy:
-      mappings:
-        - name: "feststellungsdatum"
-          with:
-            fhir: "value.as(DateTimeType)"
-            openehr: "/data[at0001]/items[at0003]"
-        - name: "staticExtensionUrl"
-          with:
-            fhir: "$fhirRoot"
-            openehr: "$reference"
-          manual:
-            - name: "url"
-              fhir:
-                path: "url"
-                value:
-                  url: "http://hl7.org/fhir/StructureDefinition/condition-assertedDate"
+      - name: "staticURL"
+        with:
+          fhir: "^url"
+          openehr: "$reference"
+        manual:
+          - name: "url"
+            fhir:
+              - path: "url"
+                value: "http://hl7.org/fhir/StructureDefinition/condition-assertedDate"
 
   - name: "icd10ProblemDiagnose"
     extension: "append"
     appendTo: "problemDiagnose.problemDiagnoseName"
     fhirCondition:
-      targetRoot: "$fhirRoot.coding"
+      targetRoot: "coding"
       targetAttribute: "system"
       operator: "one of"
       criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]"
@@ -100,14 +89,13 @@ mappings:
             mappings:
               - name: "extension"
                 with:
-                  fhir: "$resource"
+                  fhir: "$fhirRoot" #since we want to access extension here
                   openehr: "$reference"
                 manual:
                   - name: "extensionUrl"
                     fhir:
-                      path: "extension.url"
-                      value:
-                        url: "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit"
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit"
 
         - name: "multipleCoding"
           with:
@@ -115,6 +103,7 @@ mappings:
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]"
           slotArchetype: "CLUSTER.multiple_coding_icd10gm.v1"
 
+#TODO this is where i stoppped i think this needs to be in a extension
         - name: "anatomicalLocation" #cannot be a profile of the Cluster since the cluster is mapped from two different points in FHIR
           with:
             fhir: "extension"
@@ -128,14 +117,13 @@ mappings:
             mappings:
               - name: "extension"
                 with:
-                  fhir: "$resource"
+                  fhir: "$fhirRoot" #extension
                   openehr: "$reference"
                 manual:
                   - name: "extensionUrl"
                     fhir:
-                      path: "extension.url"
-                      value:
-                        url: "http://fhir.de/StructureDefinition/seitenlokalisation"
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/seitenlokalisation"
 
   - name: "lebensphase"
     extension: "add"
@@ -156,6 +144,11 @@ mappings:
     with:
       fhir: "$resource.extension.value.reference"
       openehr: "$reference"
+    fhirCondition:
+      targetRoot: "$resource.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     reference:
       resourceType: "Condition"
       mappings:
@@ -171,10 +164,6 @@ mappings:
             targetAttribute: "/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/defining_code/code_string"
             operator: "one of"
             criteria: "[at0064]"
-    fhirCondition:
-      targetRoot: "$resource.extension"
-      targetAttribute: "url"
-      operator: "one of"
-      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+
 
 

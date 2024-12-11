@@ -13,45 +13,44 @@ mappings:
   - name: "periodOnsetStart"  # if append name needs to be the same we are appending to
     extension: "add"
     with:
-      fhir: "$resource.start.extension.value"
+      fhir: "$resource.onsetPeriod.start.extension.value"
       openehr: "$archetype/items[at0001]"
     fhirCondition:
-      targetRoot: "$resource.start.extension"
+      targetRoot: "$resource.start.extension" #parent selector from jsonpath-plus its like ..
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
-    followedBy: #TODO Solution to static values ?
+    followedBy:
       mappings:
         - name: "extension"
           with:
-            fhir: "$resource.start"
+            fhir: "^" # goes on element back to start.extension
             openehr: "$reference"
           manual:
             - name: "extension"
               fhir:
-                path: "extension"
-                value:
-                  url: "http://fhir.de/StructureDefinition/lebensphase"
+                - path: "url"
+                  value: "http://fhir.de/StructureDefinition/lebensphase"
 
   - name: "periodOnsetEnd"
     extension: "add"
     with:
-      fhir: "$resource.end.extension.value"
+      fhir: "$resource.onsetPeriod.end.extension.value"
       openehr: "$archetype/items[at0002]"
     fhirCondition:
-      targetRoot: "$resource.end.extension"
+      targetRoot: "$resource.end.extension" #parent selector from jsonpath-plus
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
-    followedBy: #TODO Solution to static values ?
+    followedBy:
       mappings:
         - name: "extension"
           with:
-            fhir: "$resource.end"
+            fhir: "^" #parent selector from jsonpath-plus its like
             openehr: "$reference"
           manual:
             - name: "extension"
               fhir:
-                path: "extension"
-                value:
-                  url: "http://fhir.de/StructureDefinition/lebensphase"
+                - path: "url"
+                  value: "http://fhir.de/StructureDefinition/lebensphase"
+

@@ -14,7 +14,7 @@ mappings:
     with:
       fhir: "$resource.bodysite.text"
       openehr: "$archetype/items[at0001]" #Name of body site
-    condition:
+    fhirCondition:
       targetRoot: "$resource.bodysite"
       targetAttribute: "coding"
       operator: "empty"
@@ -23,7 +23,7 @@ mappings:
     with:
       fhir: "$resource.bodysite"
       openehr: "$archetype/items[at0001]" #Name of body site
-    condition:
+    openehrCondition:
       targetRoot: "$archetype"
       targetAttribute: "/items[at0001]"
       operator: "type"

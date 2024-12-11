@@ -54,19 +54,20 @@ mappings:
             value: "524"
             terminology_id: "openehr"
             code_string: "Initial"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
             criteria: "[unknown]"
         fhir:
           path: "status"
-          value: "unknown"
-        condition:
-          targetRoot: "current_state"
-          targetAttribute: "value"
-          operator: "one of"
-          criteria: "524"
+          value:
+            value: "unknown"
+          openehrCondition:
+            targetRoot: "current_state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "524"
 
       - name: "planned"
         openehr:
@@ -75,19 +76,20 @@ mappings:
             value: "526"
             terminology_id: "openehr"
             code_string: "Planned"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
             criteria: "[preparation]"
         fhir:
           path: "status"
-          value: "preparation"
-        condition:
-          targetRoot: "current_state"
-          targetAttribute: "value"
-          operator: "one of"
-          criteria: "526"
+          value:
+            value: "preparation"
+          openehrCondition:
+            targetRoot: "current_state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "526"
 
       - name: "postponed"
         openehr:
@@ -96,19 +98,20 @@ mappings:
             value: "527"
             terminology_id: "openehr"
             code_string: "Postponed"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
             criteria: "[not-done]"
         fhir:
           path: "status"
-          value: "not-done"
-        condition:
-          targetRoot: "current_state"
-          targetAttribute: "value"
-          operator: "one of"
-          criteria: "527"
+          value:
+            value: "not-done"
+          openehrCondition:
+            targetRoot: "current_state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "527"
 
       - name: "scheduled"
         openehr:
@@ -117,19 +120,20 @@ mappings:
             value: "529"
             terminology_id: "openehr"
             code_string: "Scheduled"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
             criteria: "[preparation]"
         fhir:
           path: "status"
-          value: "preparation"
-        condition:
-          targetRoot: "current_state"
-          targetAttribute: "value"
-          operator: "one of"
-          criteria: "529"
+          value:
+            value: "preparation"
+          openehrCondition:
+            targetRoot: "current_state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "529"
 
       - name: "cancelled"
         openehr:
@@ -138,19 +142,20 @@ mappings:
             value: "528"
             terminology_id: "openehr"
             code_string: "Cancelled"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
             criteria: "[entered-in-error]"
         fhir:
           path: "status"
-          value: "entered-in-error"
-        condition:
-          targetRoot: "current_state"
-          targetAttribute: "value"
-          operator: "one of"
-          criteria: "528"
+          value:
+            value: "entered-in-error"
+          openehrCondition:
+            targetRoot: "current_state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "528"
 
       - name: "active"
         openehr:
@@ -159,19 +164,20 @@ mappings:
             value: "245"
             terminology_id: "openehr"
             code_string: "Active"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
             criteria: "[in-progress]"
         fhir:
           path: "status"
-          value: "in-progress"
-        condition:
-          targetRoot: "current_state"
-          targetAttribute: "value"
-          operator: "one of"
-          criteria: "245"
+          value:
+            value: "in-progress"
+          openehrCondition:
+            targetRoot: "current_state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "245"
 
       - name: "suspended"
         openehr:
@@ -180,19 +186,20 @@ mappings:
             value: "530"
             terminology_id: "openehr"
             code_string: "Suspended"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
             criteria: "[on-hold]"
         fhir:
           path: "status"
-          value: "on-hold"
-        condition:
-          targetRoot: "current_state"
-          targetAttribute: "value"
-          operator: "one of"
-          criteria: "530"
+          value:
+            value: "on-hold"
+          openehrCondition:
+            targetRoot: "current_state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "530"
 
       - name: "aborted"
         openehr:
@@ -201,19 +208,20 @@ mappings:
             value: "531"
             terminology_id: "openehr"
             code_string: "Aborted"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
             criteria: "[stopped]"
         fhir:
           path: "status"
-          value: "stopped"
-        condition:
-          targetRoot: "current_state"
-          targetAttribute: "value"
-          operator: "one of"
-          criteria: "531"
+          value:
+            value: "stopped"
+          openehrCondition:
+            targetRoot: "current_state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "531"
 
       - name: "completed"
         openehr:
@@ -222,19 +230,20 @@ mappings:
             value: "532"
             terminology_id: "openehr"
             code_string: "Completed"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
             criteria: "[completed]"
         fhir:
           path: "status"
-          value: "completed"
-        condition:
-          targetRoot: "current_state"
-          targetAttribute: "value"
-          operator: "one of"
-          criteria: "532"
+          value:
+            value: "completed"
+          openehrCondition:
+            targetRoot: "current_state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "532"
 
       - name: "expired"
         openehr:
@@ -243,19 +252,20 @@ mappings:
             value: "533"
             terminology_id: "openehr"
             code_string: "Expired"
-          condition:
+          fhirCondition:
             targetRoot: "state"
             targetAttribute: "value"
             operator: "one of"
             criteria: "[unknown]"
         fhir:
           path: "status"
-          value: "unknown"
-        condition:
-          targetRoot: "current_state"
-          targetAttribute: "value"
-          operator: "one of"
-          criteria: "533"
+          value:
+            value: "unknown"
+          openehrCondition:
+            targetRoot: "current_state"
+            targetAttribute: "value"
+            operator: "one of"
+            criteria: "533"
 
 
   - name: "name"
@@ -269,7 +279,7 @@ mappings:
           with:
             fhir: "code"
             openehr: "/description[at0001]/items[at0002]"
-          condition:
+          fhirCondition:
             targetRoot: "coding"
             targetAttribute: "system"
             operator: "one of"

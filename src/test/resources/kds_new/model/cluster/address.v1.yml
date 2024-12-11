@@ -19,7 +19,7 @@ mappings:
         fhir:
           path: "$fhirRoot.type"
           value: "both"
-    condition:
+    fhirCondition:
       targetRoot: "$fhirRoot.address"
       targetAttribute: "type"
       operator: "one of"

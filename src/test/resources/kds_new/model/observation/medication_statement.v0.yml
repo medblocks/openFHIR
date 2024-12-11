@@ -82,7 +82,7 @@ mappings:
     with:
       fhir: "$resource.medication.as(CodeableConcept)"
       openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
-    condition:
+    openehrCondition:
       targetRoot: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]"
       targetAttribute: "['/items[at0071]', '/items[at0115]', '/items[openEHR-EHR-CLUSTER.medication.v2]', '/items[at0133]', '/items[openEHR-EHR-CLUSTER.drug_class.v0]']"
       operator: "empty"

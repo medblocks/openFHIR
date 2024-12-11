@@ -24,12 +24,11 @@ mappings:
       mappings:
         - name: "typeString"
           with:
-            fhir: "type"
+            fhir: "type.coding"
             openehr: "$reference"
           manual:
             - name: "typeMR"
               fhir:
-                path: "type.coding"
                 # TODO We could also allow json strings that would make a lot of things easier ?
                 # value: "{\"coding\: [{\"system\": \"http://fhir.de/CodeSystem/identifier-type-de-basis\",\"code\": \"KVZ10\"}}"
                 value:

@@ -14,7 +14,7 @@ mappings:
     with:
       fhir: "$fhirRoot.valueCodeableConcept.coding"
       openehr: "$archetype/items[at0001]"
-    condition:
+    fhirCondition:
       targetRoot: "$fhirRoot"
       targetAttribute: "url"
       operator: "one of"

@@ -32,7 +32,7 @@ mappings:
           type: "DV_BOOLEAN"
           value:
             value: "True"
-    condition:
+    fhirCondition:
       targetRoot: "$resource"
       targetAttribute: "deceased"
       operator: "not empty"

@@ -24,12 +24,11 @@ mappings:
       mappings:
         - name: "staticExtensionUrl"
           with:
-            fhir: "extension"
+            fhir: "extension.url"
             openehr: "$reference"
           manual:
             - name: "url"
               fhir:
-                path: "url"
                 value:
                   url: "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier"
 

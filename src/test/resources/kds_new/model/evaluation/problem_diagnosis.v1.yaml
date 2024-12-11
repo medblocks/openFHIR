@@ -83,11 +83,10 @@ mappings:
     followedBy:
       mappings:
         - name: "bodySiteCluster"
-          with:
-            fhir: "$resource" #only forwarding the root, can this be done or does it lead to clashes with the father from above ? 
-            #I guess the $ prevents that. 
-            openehr: "/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]" # could be also just loaded at the top if its anyways just $resource....
-          slotArchetype: "CLUSTER.anatomical_location.v1"  
+          with: #TODO This is where i stopped i think this needs to be put in as is not as resource
+            fhir: "$resource" #only forwarding the root, can this be done or does it lead to clashes with the father from above ?
+            openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]" # could be also just loaded at the top if its anyways just $resource....
+          slotArchetype: "CLUSTER.anatomical_location.v1"
 
   - name: "severity"
     with:
