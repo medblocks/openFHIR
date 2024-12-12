@@ -11,14 +11,15 @@ context:
   profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
   templateId: "KDS_Diagnose"
   archetypes:
-    - "CLUSTER.multiple_coding_icd10gm.v1" # i dont think we need to list clusters here ?
+    - "CLUSTER.multiple_coding_icd10gm.v1"
     - "EVALUATION.problem_diagnosis.v1"
     - "CLUSTER.problem_qualifier.v2"
     - "CLUSTER.lebensphase.v0"
     - "CLUSTER.case_identification.v0"
   extensions:
-    - "KDSProblemDiagnosis" #they overload the vanilla mappings, no version = take the latest
-    - "KDSProblemQualifier"
-    - "KDSLebensphase"
+    - "KDS_problem_diagnose" #they overload the vanilla mappings, no version = take the latest
+    - "KDS_problem_qualifier"
+    - "KDS_lebensphase"
+    - "KDS_anatomical_location"
   start: "EVALUATION.problem_diagnosis.v1"
 

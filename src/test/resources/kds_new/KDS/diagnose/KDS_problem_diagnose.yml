@@ -39,6 +39,13 @@ mappings:
               meaning: "the case this composition relates to"
               type: "case"
 
+  - name: "bodySiteDiagnose" #overwrite since we use cluster anatomical location
+    extension: "overwrite"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype"
+    type: "NONE"
+
   - name: "status"
     extension: "add"
     with:
@@ -96,34 +103,12 @@ mappings:
                     fhir:
                       - path: "url"
                         value: "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit"
-
         - name: "multipleCoding"
           with:
             fhir: "extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]"
           slotArchetype: "CLUSTER.multiple_coding_icd10gm.v1"
 
-#TODO this is where i stoppped i think this needs to be in a extension
-        - name: "anatomicalLocation" #cannot be a profile of the Cluster since the cluster is mapped from two different points in FHIR
-          with:
-            fhir: "extension"
-            openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]"
-          fhirCondition:
-            targetRoot: "extension"
-            targetAttribute: "url"
-            operator: "one of"
-            criteria: "[http://fhir.de/StructureDefinition/seitenlokalisation]"
-          followedBy:
-            mappings:
-              - name: "extension"
-                with:
-                  fhir: "$fhirRoot" #extension
-                  openehr: "$reference"
-                manual:
-                  - name: "extensionUrl"
-                    fhir:
-                      - path: "url"
-                        value: "http://fhir.de/StructureDefinition/seitenlokalisation"
 
   - name: "lebensphase"
     extension: "add"
@@ -152,18 +137,26 @@ mappings:
     reference:
       resourceType: "Condition"
       mappings:
-        - name: "primary"
+        - name: "primaryDiagnose"
           with:
             fhir: "$fhirRoot"
-            openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"#This will create another problem diagnose entry since its 0..* and the grammar will add not overwrite
-            # if its not 1..1
-            # on the mapping back from openEHR to FHIR this should not take the current archetype into account, which will be anyways not
+            openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
+            #This will create another problem diagnose entry since its 0..* and the grammar will add not overwrite if its not 1..1
+            #This will create another problem_diagnose
           slotArchetype: "EVALUATION.problem_diagnosis.v1"
           openehrCondition:
             targetRoot: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
             targetAttribute: "/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/defining_code/code_string"
             operator: "one of"
             criteria: "[at0064]"
-
-
-
+          followedBy:
+            mappings:
+              - name: "extensionUrl"
+                with:
+                  fhir: "^^" # goes back to $resource.extension.
+                  openehr: "$reference"
+                manual:
+                  - name: "conditionRelatedUrl"
+                    fhir:
+                      - path: "url"
+                        value: "http://hl7.org/fhir/StructureDefinition/condition-related"

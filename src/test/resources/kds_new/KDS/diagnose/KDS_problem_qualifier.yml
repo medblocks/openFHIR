@@ -24,46 +24,43 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource"
-      openehr: "$archetype"
+      openehr: "$archetype/items[at0063]/value"
+    fhirCondition:
+      targetRoot: "extension"
+      targetAttribute: "url"
+      operator: "not of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     manual:
       - name: "maindiagnose"
         openEHR:
-          path: "/items[at0063]"
-          type: "DV_CODED_TEXT"
-          value:
-            code_string: "at0064"
-            terminology_id: "local"
+          - path: "defining_code/terminology_id"
+            value: "local"
+          - path: "defining_code/code_string"
+            value: "at0064"
+          - path: "../value"
             value: "Hauptdiagnose"
-          fhirCondition:
-            targetRoot: "extension"
-            targetAttribute: "url"
-            operator: "not of"
-            criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
-
 
   - name: "referenzNebendiagnose"
     extension: "add"
     with:
       fhir: "$resource"
-      openehr: "$archetype"
+      openehr: "$archetype/items[at0063]/value"
+    fhirCondition:
+      targetRoot: "$resource.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+    openehrCondition:
+      targetRoot: "$archetype/items[at0063]/value"
+      targetAttribute: "/defining_code/code_string"
+      operator: "one of"
+      criteria: "at0066"
     manual:
-      - name: "sideDiagnose"
-        openehr:
-          path: "/items[at0063]"
-          value:
-            code_string: "at0066"
-            terminology_id: "local"
+      - name: "maindiagnose"
+        openEHR:
+          - path: "defining_code/terminology_id"
+            value: "local"
+          - path: "defining_code/code_string"
+            value: "at0066"
+          - path: "value"
             value: "Nebendiagnose"
-          fhirCondition:
-            targetRoot: "extension"
-            targetAttribute: "url"
-            operator: "one of"
-            criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
-        fhir:
-          path: "extension.url"
-          value: "http://hl7.org/fhir/StructureDefinition/condition-related"
-          openehrCondition:
-            targetRoot: "/items[at0063]"
-            targetAttribute: "/defining_code/code_string"
-            operator: "one of"
-            criteria: "at0066"

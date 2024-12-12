@@ -1,0 +1,44 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name:  KDS_anatomical_location
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  extension:
+    extends: CLUSTER.anatomical_location.v1
+
+mappings:
+  - name: "seitenlokalisation"
+    with:
+      fhir: "$resource.code.coding"
+      openehr: "$archetype"
+      type: "NONE"
+    fhirCondition:
+      targetRoot: "$resource.code.coding"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]"
+    followedBy:
+      mappings:
+        - name: "anatomicalLocation"
+          with:
+            fhir: "extension"
+            openehr: "$archetype/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]"
+          fhirCondition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/seitenlokalisation]"
+          followedBy:
+            mappings:
+              - name: "extension"
+                with:
+                  fhir: "$fhirRoot" #extension
+                  openehr: "$reference"
+                manual:
+                  - name: "extensionUrl"
+                    fhir:
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/seitenlokalisation"
