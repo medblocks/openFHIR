@@ -75,7 +75,7 @@ mappings:
             #TODO @gasper since this is onset[x] can we access it via fhirPath ? does it not have to be onsetDatetime onsetPeriod ?
             openehr: "/data[at0001]/items[at0077]"
 
-  - name: "bodySiteDiagnose" # Templates should pick one by overwriting with empty the one they dont want.
+  - name: "bodySiteDiagnose"
     with:
       fhir: "$resource.bodySite"
       openehr: "$archetype/data[at0012]"

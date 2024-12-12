@@ -24,7 +24,7 @@ mappings:
 
   - name: "contextEndTime"
     with:
-      fhir: "$resource.period.start"
+      fhir: "$resource.period.end"
       openehr: "$composition/context/end_time"
 
   - name: "composer"
@@ -56,17 +56,19 @@ mappings:
       targetAttribute: "coding.code"
       operator: "one of"
       criteria: "[ro]"
-    followedBy: #TODO Solution to static values ?
+    followedBy:
       mappings:
         - name: "physicalTypeStatic"
           with:
-            fhir: "resource.location.physicalType.coding.code"
+            fhir: "^^.physicalType.coding"
             openehr: "$reference"
           manual:
             - name: "physicalType"
               fhir:
-                # value: "{'coding':[{'system':'http://terminology.hl7.org/CodeSystem/location-physical-type','code':'ro'}]}"
-
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
+                - path: "code"
+                  value: "ro"
 
   - name: "bed"
     with:
@@ -77,14 +79,39 @@ mappings:
       targetAttribute: "coding.code"
       operator: "one of"
       criteria: "[bd]"
+    followedBy:
+      mappings:
+        - name: "physicalTypeStatic"
+          with:
+            fhir: "^^.physicalType.coding"
+            openehr: "$reference"
+          manual:
+            - name: "physicalType"
+              fhir:
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
+                - path: "code"
+                  value: "bd"
 
   - name: "station"
     with:
       fhir: "$resource.location.identifier.value"
-      openehr: "$archetype"
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0022]"
     fhirCondition:
       targetRoot: "$resource.location.physicalType"
       targetAttribute: "coding.code"
       operator: "one of"
       criteria: "[wa]"
-
+    followedBy:
+      mappings:
+        - name: "physicalTypeStatic"
+          with:
+            fhir: "^^.physicalType.coding"
+            openehr: "$reference"
+          manual:
+            - name: "physicalType"
+              fhir:
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
+                - path: "code"
+                  value: "wa"

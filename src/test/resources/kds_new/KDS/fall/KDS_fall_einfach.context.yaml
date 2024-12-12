@@ -17,6 +17,6 @@ context:
     - "ADMIN_ENTRY.episode_institution_local.v0"
   extension:
     - "KDS_episode_institution_local"
-    - "KDS_organization_v0"
+    - "KDS_organization"
     - "KDS_fall_problem_diagnose"
   start: "ADMIN_ENTRY.episode_institution_local.v0"

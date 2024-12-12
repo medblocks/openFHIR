@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name: KDS_organization_v0
+  name: KDS_organization
   version: 0.0.1a
 spec:
   system: FHIR
@@ -14,11 +14,22 @@ mappings:
   - name: "orgaKey" #is populated from the institution mapping
     extension: "overwrite"
     with:
+      fhir: "$fhirRoot.serviceType"
       openehr: "$archetype/items[at0024]" #is mapped from fachabteilungsschlüssel
-      fhir: "$parentResource.serviceType"
     fhirCondition:
       targetRoot: "coding"
       targetAttribute: "system"
       operator: "one of"
       criteria: "[http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel]"
+    followedBy:
+      mappings:
+        - name: "fachabteilungsschluessel"
+          with:
+            fhir: "coding" # goes on element back to extension
+            openehr: "$reference"
+          manual:
+            - name: "system"
+              fhir:
+                - path: "system"
+                  value: "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel"
 

@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.organization.v0
+
 mappings:
   - name: "type"
     with:

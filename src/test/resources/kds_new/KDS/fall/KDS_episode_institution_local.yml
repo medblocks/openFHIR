@@ -38,6 +38,17 @@ mappings:
       targetAttribute: "value"
       operator: "one of"
       criteria: "[VN]"
+    followedBy:
+      mappings:
+        - name: "fallId"
+          with:
+            fhir: "type" # goes on element back to start.extension
+            openehr: "$reference"
+          manual:
+            - name: "vn"
+              fhir:
+                - path: "value"
+                  value: "VN"
 
   - name: "fallstatus"
     extension: "add"
@@ -72,6 +83,16 @@ mappings:
       criteria: "[http://fhir.de/StructureDefinition/Aufnahmegrund]"
     followedBy:
       mappings:
+        - name: "aufnahmegrund"
+          with:
+            fhir: "$fhirRoot" # goes on element back to start.extension
+            openehr: "$reference"
+          manual:
+            - name: "extension"
+              fhir:
+                - path: "url"
+                  value: "http://fhir.de/StructureDefinition/Aufnahmegrund"
+
         - name: "ersteUndZweiteStelle"
           with:
             fhir: "extension.value" # since its two extensions nested
@@ -81,6 +102,17 @@ mappings:
             targetAttribute: "url"
             operator: "one of"
             criteria: "[ErsteUndZweiteStelle]"
+          followedBy:
+            mappings:
+              - name: "extension"
+                with:
+                  fhir: "^" # goes on element back to extension
+                  openehr: "$reference"
+                manual:
+                  - name: "extension"
+                    fhir:
+                      - path: "url"
+                        value: "ErsteUndZweiteStelle"
 
         - name: "dritteStelle"
           with:
@@ -91,6 +123,17 @@ mappings:
             targetAttribute: "url"
             operator: "one of"
             criteria: "[DritteStelle]"
+          followedBy:
+            mappings:
+              - name: "extension"
+                with:
+                  fhir: "^" # goes on element back to extension
+                  openehr: "$reference"
+                manual:
+                  - name: "extension"
+                    fhir:
+                      - path: "url"
+                        value: "DritteStelle"
 
         - name: "vierteStelle"
           with:
@@ -101,6 +144,17 @@ mappings:
             targetAttribute: "url"
             operator: "one of"
             criteria: "[VierteStelle]"
+          followedBy:
+            mappings:
+              - name: "extension"
+                with:
+                  fhir: "^" # goes on element back to extension
+                  openehr: "$reference"
+                manual:
+                  - name: "extension"
+                    fhir:
+                      - path: "url"
+                        value: "VierteStelle"
 
   - name: "recordingDismissal"
     extension: "add"
@@ -122,6 +176,17 @@ mappings:
            targetAttribute: "url"
            operator: "one of"
            fhirCondition: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
+         followedBy:
+           mappings:
+             - name: "entlassungsgrundUrl"
+               with:
+                 fhir: "^" # goes on element back to extension
+                 openehr: "$reference"
+               manual:
+                 - name: "extension"
+                   fhir:
+                     - path: "url"
+                       value: "http://fhir.de/StructureDefinition/Entlassungsgrund"
 
   - name: "problemDiagnose"
     extension: "add"
@@ -129,4 +194,3 @@ mappings:
       fhir: "$resource.diagnosis"
       openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
     slotArchetype: "EVALUATION.problem_diagnosis.v1"
-

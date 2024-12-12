@@ -8,7 +8,6 @@ spec:
   version: R4
   extension:
     extends: EVALUATION.problem_diagnosis.v1
-    inheritance: "exclusive" # execute only the mappings that are in this file, other ones are not used
 
 mappings:
   - name: "problemDiagnose"
@@ -34,10 +33,12 @@ mappings:
                   openehrLink:
                     meaning: "link to the diagnosis composition"
                     type: "diagnose"
+
         - name: "diagnoseName" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
           with:
             fhir: "condition.code" #TODO @Gasper is this correctly how i can access the code in the Condition reference FHIR
             openehr: "/data[at0001]/items[at0002]"
+
         - name: "diagnoseTyp" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
           with:
             fhir: "use.coding.code"
@@ -47,6 +48,7 @@ mappings:
             targetAttribute: "value"
             operator: "one of"
             criteria: "[referral-diagnosis, treatment-diagnosis]"
+
         - name: "diagnoseSubtyp" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
           with:
             fhir: "use.coding.code"
