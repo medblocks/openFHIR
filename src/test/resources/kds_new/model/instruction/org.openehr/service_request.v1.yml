@@ -9,7 +9,7 @@ spec:
   openEhrConfig:
     archetype: openEHR-EHR-INSTRUCTION.service_request.v1
   fhirConfig:
-    resourceType: ServiceRequest
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/ServiceRequest
 
 mappings:
 
@@ -37,11 +37,8 @@ mappings:
     with:
       fhir: "$resource.identifier"
       openehr: "$archetype/protocol[at0008]/items[at0010]"
-      #-> identifier value to DV_ID value
-      # -> type to type
-      #assigner -> Organization name /code -> DV_IDENTIFIER assigner
 
-  - name: "status" #TODO this is in openEHR a DV_CODED_TEXT and in FHIR an coding whic then has only a value .
+  - name: "status"
     with:
       fhir: "$resource.status"
       openehr: "$archetype/protocol[at0008]/items[at0127]"

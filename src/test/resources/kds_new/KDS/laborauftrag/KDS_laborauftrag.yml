@@ -42,18 +42,33 @@ mappings:
   - name: "specimen"
     extension: "add"
     with:
-      fhir: "$resource.specimen.reference"
-      openehr: "$reference"
-    reference:
-      resourceType: "Specimen"
+      fhir: "$resource.specimen"
+      openehr: "$archetype/activities[at0001]/description[at0009]"
+    type: "NONE"
+    followedBy:
       mappings:
+        - name: "specimenIdentifier"
+          with:
+            fhir: "identifier"
+            openehr: "/items[openEHR-EHR-CLUSTER.specimen.v1]/items[at0001]"
+          fhirCondition:
+            targetRoot: "$fhirRoot"
+            targetAttribute: "reference" #TODO in the future we should try to resolve, if fails take identifier
+            criteria: "not empty"
         - name: "specimenReference"
           with:
-            fhir: "$fhirRoot"
-            openehr: "$archetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]"
-          slotArchetype: "CLUSTER.specimen.v1"
+            fhir: "reference"
+            openehr: "$reference"
+          reference:
+            resourceType: "Specimen"
+            mappings:
+              - name: "specimenReference"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "/items[openEHR-EHR-CLUSTER.specimen.v1]"
+                slotArchetype: "CLUSTER.specimen.v1"
 
-  - name: "organisation"
+  - name: "organisation" #Deprecated has to go with the update of teh template, since its the composer
     extension: "add"
     with:
       fhir: "$resource.requester.reference.as(Organization)" #TODO @gasper does this work ?
@@ -66,3 +81,59 @@ mappings:
             fhir: "$fhirRoot"
             openehr: "$archetype/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
           slotArchetype: "CLUSTER.organisation.v1"
+
+  - name: "category"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.category.coding"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/value/defining_code"
+    manual:
+      - name: "categoryStatic"
+        openehr:
+          - path: "terminology_id/value"
+            value: "http://terminology.hl7.org/ValueSet/observation-category"
+          - path: "code_string"
+            value: "laboratory"
+          - path: "../value"
+            value: "Laboratory"
+        fhir:
+          - path: "system"
+            value: "http://terminology.hl7.org/CodeSystem/observation-category"
+          - path: "code"
+            value: "laboratory"
+
+  - name: "intent"
+    extension: "overwrite"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/value/defining_code"
+    manual:
+      - name: "categoryStatic"
+        openehr:
+          - path: "terminology_id/value"
+            value: "http://hl7.org/fhir/request-intent"
+          - path: "code_string"
+            value: "order"
+          - path: "../value"
+            value: "Order"
+        fhir:
+          - path: "intent"
+            value: "order"
+
+  - name: "status"
+    extension: "overwrite"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/protocol[at0008]/items[at0127]/value/defining_code"
+    manual:
+      - name: "categoryStatic"
+        openehr:
+          - path: "terminology_id/value"
+            value: "http://hl7.org/fhir/ValueSet/request-status"
+          - path: "code_string"
+            value: "completed"
+          - path: "../value"
+            value: "Completed"
+        fhir:
+          - path: "status"
+            value: "completed"

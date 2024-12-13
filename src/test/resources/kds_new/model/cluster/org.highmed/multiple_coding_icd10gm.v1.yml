@@ -8,6 +8,8 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Coding
 
 mappings:
   - name: "mehrfachcodierung"

@@ -24,7 +24,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource"
-      openehr: "$archetype/items[at0063]/value"
+      openehr: "$archetype/items[at0063]/value/defining_code"
     fhirCondition:
       targetRoot: "extension"
       targetAttribute: "url"
@@ -33,9 +33,9 @@ mappings:
     manual:
       - name: "maindiagnose"
         openEHR:
-          - path: "defining_code/terminology_id"
+          - path: "terminology_id/value"
             value: "local"
-          - path: "defining_code/code_string"
+          - path: "code_string"
             value: "at0064"
           - path: "../value"
             value: "Hauptdiagnose"
@@ -44,23 +44,23 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource"
-      openehr: "$archetype/items[at0063]/value"
+      openehr: "$archetype/items[at0063]/value/defining_code"
     fhirCondition:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     openehrCondition:
-      targetRoot: "$archetype/items[at0063]/value"
-      targetAttribute: "/defining_code/code_string"
+      targetRoot: "$archetype/items[at0063]/value/defining_code"
+      targetAttribute: "/code_string"
       operator: "one of"
       criteria: "at0066"
     manual:
       - name: "maindiagnose"
         openEHR:
-          - path: "defining_code/terminology_id"
+          - path: "terminology_id/value"
             value: "local"
-          - path: "defining_code/code_string"
+          - path: "code_string"
             value: "at0066"
-          - path: "value"
+          - path: "../value"
             value: "Nebendiagnose"
