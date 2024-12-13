@@ -61,8 +61,15 @@ mappings:
               meaning: "the case this composition relates to"
               type: "case"
 
-  - name: "status"
+  - name: "status" # needs to be corrected in the template
     extension: "add"
+    with:
+      fhir: "$resource.status"
+      openehr: "$composition/context/other_context[at0001]/items[at0005]"
+
+
+  - name: "status" #TODO @deprecated needs to go once mapping is updated
+    extension: "overwrite"
     with:
       fhir: "$resource.status"
       openehr: "$composition/context/other_context[at0001]/items[at0005]"
@@ -73,20 +80,22 @@ mappings:
       fhir: "$resource.identifier"
       openehr: "$composition/context/other_context[at0001]/items[at0002]"
     fhirCondition:
-      targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
+      targetRoot: "$resource.identifier.type.coding"
       targetAttribute: "code"
       operator: "one of"
       criteria: "[FILL]"
-
-  - name: "berichtId"
-    extension: "add"
-    with:
-      fhir: "$resource.identifier"
-      openehr: "$composition/context/other_context[at0001]/items[at0002]"
-    fhirCondition:
-      targetRoot: "type.coding(system=http://terminology.hl7.org/CodeSystem/v2-0203)" # is this correct fhirpath syntax
-      targetAttribute: "code"
-      operator: "one of"
-      criteria: "[FILL]"
+    followedBy:
+      mappings:
+        - name: "type"
+          with:
+            fhir: "type.coding"
+            openehr: "$reference"
+          manual:
+            - name: "fill"
+              fhir:
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/v2-0203"
+                - path: "code"
+                  value: "FILL"
 
 

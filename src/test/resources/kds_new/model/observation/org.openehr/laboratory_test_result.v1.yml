@@ -8,7 +8,8 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
-
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/DiagnosticReport
 
 mappings:
 
@@ -54,6 +55,229 @@ mappings:
       fhir: "$resource.category"
       openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0005]" # if there are several events add it to all of them
       # Backwards map all the values back, if they overlap ?!?!?!?
+
+
+  - name: "status" #deprecated needs to go once mapping is updated
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value/defining_code"
+    manual:
+      - name: "registered"
+        fhir:
+          path: "status"
+          value: "registered"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0107]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0107"
+          - path: "../value"
+            value: "registered"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[registered]"
+      - name: "partial"
+        fhir:
+          path: "status"
+          value: "partial"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0037]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0037"
+          - path: "../value"
+            value: "partial"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[partial]"
+
+      - name: "preliminary"
+        fhir:
+          path: "status"
+          value: "preliminary"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0120]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0120"
+          - path: "../value"
+            value: "preliminary"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[preliminary]"
+
+      - name: "final"
+        fhir:
+          path: "status"
+          value: "final"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0038]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0038"
+          - path: "../value"
+            value: "final"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[final]"
+
+      - name: "amended"
+        fhir:
+          path: "status"
+          value: "amended"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0040]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0040"
+          - path: "../value"
+            value: "amended"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[amended]"
+
+      - name: "corrected"
+        fhir:
+          path: "status"
+          value: "corrected"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0115]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0115"
+          - path: "../value"
+            value: "corrected"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[corrected]"
+
+      - name: "appended"
+        fhir:
+          path: "status"
+          value: "appended"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0119]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0119"
+          - path: "../value"
+            value: "appended"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[appended]"
+
+      - name: "cancelled"
+        fhir:
+          path: "status"
+          value: "cancelled"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0074]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0074"
+          - path: "../value"
+            value: "cancelled"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[cancelled]"
+
+      - name: "entered-in-error"
+        fhir:
+          path: "status"
+          value: "entered-in-error"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0116]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0116"
+          - path: "../value"
+            value: "entered-in-error"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[entered-in-error]"
+
+      - name: "unknown"
+        fhir:
+          path: "status"
+          value: "unknown"
+        openehrCondition: # free Text, maybe this should be a Nullflavour
+          targetRoot: "../"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "[unknown]"
+        openehr:
+          - path: "../value"
+            value: "unknown"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[unknown]"
+
+
 
   - name: "conclusion"
     with:
