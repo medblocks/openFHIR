@@ -144,6 +144,9 @@
             },
             "value": {
               "type": "string"
+            },
+            "unidirectional": {
+              "type": "string"
             }
           }
         },
