@@ -663,25 +663,31 @@ public class OpenEhrToFhir {
                                      final String parentFollowedByOpenEhr,
                                      final String slotContext) {
         for (final Mapping mapping : mappings) {
-            final String hardcodedValue = mapping.getWith().getValue();
-            if (mapping.getWith().getFhir() == null) {
+            final With with = mapping.getWith();
+            final String hardcodedValue = with.getValue();
+            if (with.getFhir() == null) {
                 // it means it's hardcoding to openEHR, we can therefore skip it when mapping to FHIR
                 continue;
             }
-            if (mapping.getWith().getOpenehr() == null && hardcodedValue != null) {
+            if (with.getOpenehr() == null && hardcodedValue != null) {
                 // hardcoding to FHIR
-                mapping.getWith().setOpenehr(OPENEHR_ARCHETYPE_FC);
+                with.setOpenehr(OPENEHR_ARCHETYPE_FC);
             }
 
-            final String definedMappingWithOpenEhr = mapping.getWith().getOpenehr();
+            if (with.getUnidirectional() != null && UNIDIRECTIONAL_TOOPENEHR.equals(with.getUnidirectional())) {
+                // this is unidirectional mapping to openEHR only, ignore
+                continue;
+            }
+
+            final String definedMappingWithOpenEhr = with.getOpenehr();
             String openehr = getOpenEhrKey(definedMappingWithOpenEhr, parentFollowedByOpenEhr, firstFlatPath);
 
             final String rmType = getRmType(openehr, mapping, webTemplate);
 
             // get fhir path with conditions included in the fhir path itself
-            final String fhirPath = openFhirStringUtils.amendFhirPath(mapping.getWith().getFhir(),
-                    null, // should condition be added here?
-                    theMapper.getFhirConfig().getResource());
+            final String fhirPath = openFhirStringUtils.amendFhirPath(with.getFhir(),
+                                                                      null, // should condition be added here?
+                                                                      theMapper.getFhirConfig().getResource());
 
             /*
               handling of $reference mappings as defined in the fhir connect spec

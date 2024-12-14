@@ -418,12 +418,17 @@ public class FhirToOpenEhr {
                        final boolean bundle,
                        final boolean multiple) {
         for (final Mapping mapping : mappings) {
-            if (mapping.getWith().getOpenehr() == null && StringUtils.isNotEmpty(mapping.getWith().getValue())) {
+            final With with = mapping.getWith();
+            if (with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
                 continue;
             }
+            if (with.getUnidirectional() != null && FhirConnectConst.UNIDIRECTIONAL_TOFHIR.equals(with.getUnidirectional())) {
+                // this is unidirectional mapping toFhir only, ignore
+                continue;
+            }
             final FhirToOpenEhrHelper initialHelper = createHelper(mainArtifact, fhirConnectMapper, bundle);
-            if (mapping.getWith().getOpenehr() != null && mapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_CONTEXT_FC)) {
+            if (with.getOpenehr() != null && with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_CONTEXT_FC)) {
                 continue;
             }
 
@@ -431,10 +436,10 @@ public class FhirToOpenEhr {
 
             final Condition condition = parentCondition != null ? parentCondition : mapping.getCondition();
 
-            final String fhirPath = openFhirStringUtils.getFhirPathWithConditions(mapping.getWith().getFhir(),
-                    condition,
-                    fhirConnectMapper.getFhirConfig().getResource(),
-                    null);
+            final String fhirPath = openFhirStringUtils.getFhirPathWithConditions(with.getFhir(),
+                                                                                  condition,
+                                                                                  fhirConnectMapper.getFhirConfig().getResource(),
+                                                                                  null);
 
             // because it references Resources not directly tied to a Resource itself, i.e. Condition as a cause of death for a Patient
             final boolean needsToBeAddedToParentHelpers = StringUtils.isNotEmpty(fhirPath)
@@ -442,7 +447,7 @@ public class FhirToOpenEhr {
                     && !fhirPath.startsWith(fhirConnectMapper.getFhirConfig().getResource());
 
 
-            if (mapping.getWith().getOpenehr().contains(FhirConnectConst.REFERENCE) && mapping.getReference() != null) {
+            if (with.getOpenehr().contains(FhirConnectConst.REFERENCE) && mapping.getReference() != null) {
                 createReferenceMapping(mapping, fhirPath, mainArtifact, fhirConnectMapper, templateId, mainOpenEhrPath,
                         parentCondition, helpers, coverHelpers, bundle, multiple);
             } else {

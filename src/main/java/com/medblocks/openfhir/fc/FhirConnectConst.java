@@ -26,6 +26,8 @@ public class FhirConnectConst {
     public static final String DV_TEXT = "DV_TEXT";
     public static final String DV_BOOL = "BOOLEAN";
     public static final String IDENTIFIER = "IDENTIFIER";
+    public static final String UNIDIRECTIONAL_TOFHIR = "openEHR->fhir";
+    public static final String UNIDIRECTIONAL_TOOPENEHR = "fhir->openEHR";
 
 
 }

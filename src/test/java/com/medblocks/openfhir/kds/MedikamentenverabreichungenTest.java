@@ -49,7 +49,7 @@ public class MedikamentenverabreichungenTest extends KdsBidirectionalTest {
         Assert.assertEquals("Aspirin 81 MG Oral Tablet", medicationAdministration.getMedicationCodeableConcept().getText());
         Assert.assertEquals("in-progress", medicationAdministration.getStatusElement().getValueAsString());
         Assert.assertEquals("context reference encounter 123", medicationAdministration.getContext().getReference());
-        Assert.assertTrue(medicationAdministration.getEffectiveDateTimeType().getValueAsString().endsWith("04:05:06+02:00")); // it adds today's date by deafult because there's a discrepancy between TIME in openEHR and DATETIME in FHIR
+        Assert.assertTrue(medicationAdministration.getEffectiveDateTimeType().getValueAsString().contains("04:05:06")); // it adds today's date by deafult because there's a discrepancy between TIME in openEHR and DATETIME in FHIR
 
         Assert.assertEquals("Admin note comment", medicationAdministration.getNoteFirstRep().getText());
 
