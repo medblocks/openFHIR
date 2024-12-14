@@ -1,8 +1,10 @@
 package com.medblocks.openfhir.db.repository;
 
+import com.medblocks.openfhir.db.repository.mongodb.BootstrapMongoRepository;
 import com.medblocks.openfhir.db.repository.mongodb.FhirConnectContextMongoRepository;
 import com.medblocks.openfhir.db.repository.mongodb.FhirConnectMapperMongoRepository;
 import com.medblocks.openfhir.db.repository.mongodb.OptMongoRepository;
+import com.medblocks.openfhir.db.repository.postgres.BootstrapPgRepository;
 import com.medblocks.openfhir.db.repository.postgres.FhirConnectContextPgRepository;
 import com.medblocks.openfhir.db.repository.postgres.FhirConnectMapperPgRepository;
 import com.medblocks.openfhir.db.repository.postgres.OptPgRepository;
@@ -21,10 +23,14 @@ public class RepositoryProducers {
     final private FhirConnectContextMongoRepository fhirConnectContextMongoRepository;
     final private FhirConnectMapperPgRepository fhirConnectMapperPgRepository;
     final private FhirConnectMapperMongoRepository fhirConnectMapperMongoRepository;
+    final private BootstrapPgRepository bootstrapPgRepository;
+    final private BootstrapMongoRepository bootstrapMongoRepository;
 
     @Autowired
     public RepositoryProducers(@Autowired(required = false) final OptMongoRepository optMongoRepository,
                                @Autowired(required = false) final OptPgRepository optPgRepository,
+                               @Autowired(required = false) final BootstrapPgRepository bootstrapPgRepository,
+                               @Autowired(required = false) final BootstrapMongoRepository bootstrapMongoRepository,
                                @Autowired(required = false) final FhirConnectContextPgRepository fhirConnectContextPgRepository,
                                @Autowired(required = false) final FhirConnectContextMongoRepository fhirConnectContextMongoRepository,
                                @Autowired(required = false) final FhirConnectMapperPgRepository fhirConnectMapperPgRepository,
@@ -35,6 +41,8 @@ public class RepositoryProducers {
         this.fhirConnectContextMongoRepository = fhirConnectContextMongoRepository;
         this.fhirConnectMapperPgRepository = fhirConnectMapperPgRepository;
         this.fhirConnectMapperMongoRepository = fhirConnectMapperMongoRepository;
+        this.bootstrapPgRepository = bootstrapPgRepository;
+        this.bootstrapMongoRepository = bootstrapMongoRepository;
     }
 
     @Bean
@@ -58,6 +66,20 @@ public class RepositoryProducers {
         return fhirConnectMapperPgRepository;
     }
 
+    @Bean
+    @Primary
+    @ConditionalOnProperty(name = "db.type", havingValue = "postgres")
+    public BootstrapRepository postgresBootstrapRepository() {
+        return bootstrapPgRepository;
+    }
+
+
+    @Bean
+    @Primary
+    @ConditionalOnProperty(name = "db.type", havingValue = "mongo")
+    public BootstrapRepository mongoBootstrapRepository() {
+        return bootstrapMongoRepository;
+    }
 
     @Bean
     @Primary
