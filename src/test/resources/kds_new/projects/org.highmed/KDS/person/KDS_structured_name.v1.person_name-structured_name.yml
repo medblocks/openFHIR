@@ -6,8 +6,7 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  extension:
-    extends: CLUSTER.structured_name.v1.person_name-structured_name
+  extends: CLUSTER.structured_name.v1.person_name-structured_name
 
 mappings:
   - name: "name.prefix" #TODO is wrong in the template only qualifier is displayed has to be fixed.

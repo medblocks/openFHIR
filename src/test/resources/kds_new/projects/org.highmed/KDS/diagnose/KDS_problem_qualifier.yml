@@ -6,8 +6,7 @@ metadata:
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
-  extension:
-    extend: CLUSTER.problem_qualifier.v2
+  extends: CLUSTER.problem_qualifier.v2
 
 mappings:
   #this needs to be called from the specialized problem diagnose

@@ -14,7 +14,7 @@ spec:
 mappings:
   - name: "mehrfachcodierung"
     with:
-      fhir: "$fhirRoot.valueCodeableConcept.coding"
+      fhir: "$fhirRoot.value.as(CodeableConcept).coding"
       openehr: "$archetype/items[at0001]"
     fhirCondition:
       targetRoot: "$fhirRoot"

@@ -6,8 +6,7 @@ metadata:
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
-  extension:
-    extends: ACTION.informed_consent.v0
+  extends: ACTION.informed_consent.v0
 
 
 mappings:

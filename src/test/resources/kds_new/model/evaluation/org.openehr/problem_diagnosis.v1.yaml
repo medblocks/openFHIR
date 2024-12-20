@@ -61,21 +61,12 @@ mappings:
       fhir: "$resource.note.text"
       openehr: "$archetype/data[at0001]/items[at0069]"
 
-  - name: "dateTime" #allows no spaces cause of paths
+  - name: "dateTime"
     with:
-      fhir: "$resource"
-      openehr: "$archetype"
-      type: "NONE"
-    followedBy:
-      mappings:
-        - name: "dateTime"
-          with:
-            fhir: "onset" # if period map period.start if DateTime map DateTime, we cant implement this another way currently :(
-            # or we just leave period out, otherwise it will map from openEHR to FHIR period over dateTime
-            #TODO @gasper since this is onset[x] can we access it via fhirPath ? does it not have to be onsetDatetime onsetPeriod ?
-            openehr: "/data[at0001]/items[at0077]"
+      fhir: "$resource.onset"
+      openehr: "/data[at0001]/items[at0077]"
 
-  - name: "bodySiteDiagnose"
+  - name: "bodySite"
     with:
       fhir: "$resource.bodySite"
       openehr: "$archetype/data[at0012]"

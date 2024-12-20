@@ -6,8 +6,7 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  extension:
-    extend: EVALUATION.problem_diagnosis.v1
+  extends: EVALUATION.problem_diagnosis.v1
 
 mappings:
   - name: "fallIdentifikationIdentifier"
@@ -39,13 +38,6 @@ mappings:
               meaning: "the case this composition relates to"
               type: "case"
 
-  - name: "bodySiteDiagnose" #overwrite since we use cluster anatomical location
-    extension: "overwrite"
-    with:
-      fhir: "$resource"
-      openehr: "$archetype"
-    type: "NONE"
-
   - name: "status"
     extension: "add"
     with:
@@ -55,8 +47,8 @@ mappings:
   - name: "date"
     extension: "add"
     with:
-        fhir: "$resource.extension.value.as(DateTimeType)"
-        openehr: "/data[at0001]/items[at0003]"
+      fhir: "$resource.extension.value.as(DateTimeType)"
+      openehr: "/data[at0001]/items[at0003]"
     fhirCondition:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
@@ -72,6 +64,19 @@ mappings:
             fhir:
               - path: "url"
                 value: "http://hl7.org/fhir/StructureDefinition/condition-assertedDate"
+
+  - name: "bodySiteCluster"
+    extension: "overwrite"
+    unidirectional: "fhir->openehr" # only if importing, for fhir export openEHR wont check for icd-10 and will just use the archetypes where the icd-10 was mapped to.
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
+    slotArchetype: "CLUSTER.anatomical_location.v1"
+    fhirCondition:
+      targetRoot: "$resource.code.coding"
+      targetAttribute: "system"
+      operator: "not contains"
+      criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]" # execute cluster here if no icd-10 code is provided, otherwise the cluster is below specified
 
   - name: "icd10ProblemDiagnose"
     extension: "append"
@@ -109,13 +114,22 @@ mappings:
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]"
           slotArchetype: "CLUSTER.multiple_coding_icd10gm.v1"
 
+        - name: "bodySiteCluster" # is here added too, in case the icd-10 is present in fhir so we map the localization
+          with:
+            fhir: "extension"
+            openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
+          slotArchetype: "CLUSTER.anatomical_location.v1"
 
   - name: "lebensphase"
-    extension: "add"
-    with:
-      fhir: "$resource"
-      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
-    slotArchetype: "CLUSTER.lebensphase.v0"
+    extension: "append"
+    appendTo: "dateTime"
+    followedBy:
+      mappings:
+        - name: "lebensphaseCluster"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
+          slotArchetype: "CLUSTER.lebensphase.v0"
 
   - name: "problemQualifier"
     extension: "add"

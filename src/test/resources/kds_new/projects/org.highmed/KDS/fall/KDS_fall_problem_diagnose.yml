@@ -6,8 +6,7 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  extension:
-    extends: EVALUATION.problem_diagnosis.v1
+  extends: EVALUATION.problem_diagnosis.v1
 
 mappings:
   - name: "problemDiagnose"

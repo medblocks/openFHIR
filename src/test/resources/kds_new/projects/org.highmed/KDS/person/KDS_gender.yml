@@ -6,8 +6,7 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  extension:
-    extends: EVALUATION.gender.v1
+  extends: EVALUATION.gender.v1
 
 mappings:
   - name: "other-amtlich"

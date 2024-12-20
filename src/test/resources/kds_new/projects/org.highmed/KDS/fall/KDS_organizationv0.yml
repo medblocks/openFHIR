@@ -6,8 +6,7 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  extension:
-    extend: CLUSTER.organization.v0 # deprecated
+  extends: CLUSTER.organization.v0 # deprecated
 
 mappings:
 

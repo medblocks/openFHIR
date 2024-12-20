@@ -6,17 +6,16 @@ metadata:
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
-  extension:
-    extend: CLUSTER.lebensphase.v0
+  extends: CLUSTER.lebensphase.v0
 
 mappings:
   - name: "periodOnsetStart"  # if append name needs to be the same we are appending to
     extension: "add"
     with:
-      fhir: "$resource.onsetPeriod.start.extension.value"
+      fhir: "$fhirRoot.start.extension.value"
       openehr: "$archetype/items[at0001]"
     fhirCondition:
-      targetRoot: "$resource.start.extension" #parent selector from jsonpath-plus its like ..
+      targetRoot: "$fhirRoot.start.extension" #parent selector from jsonpath-plus its like ..
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
@@ -35,10 +34,10 @@ mappings:
   - name: "periodOnsetEnd"
     extension: "add"
     with:
-      fhir: "$resource.onsetPeriod.end.extension.value"
+      fhir: "$fhirRoot.end.extension.value"
       openehr: "$archetype/items[at0002]"
     fhirCondition:
-      targetRoot: "$resource.end.extension" #parent selector from jsonpath-plus
+      targetRoot: "$fhirRoot.end.extension" #parent selector from jsonpath-plus
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/lebensphase]"

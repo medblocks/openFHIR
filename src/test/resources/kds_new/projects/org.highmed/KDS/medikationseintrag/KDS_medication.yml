@@ -6,8 +6,7 @@ metadata:
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
-  extension:
-    extends: CLUSTER.medication.v2.medication-to-medication
+  extends: CLUSTER.medication.v2.medication-to-medication
 
 mappings:
   - name: "wirkstofftyp"

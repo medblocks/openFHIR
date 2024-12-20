@@ -6,8 +6,7 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  extension:
-    extends: ADMIN_ENTRY.person_data.v0
+  extends: ADMIN_ENTRY.person_data.v0
 
 mappings:
   - name: "pid"
