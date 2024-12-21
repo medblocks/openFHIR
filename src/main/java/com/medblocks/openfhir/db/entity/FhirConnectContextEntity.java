@@ -2,7 +2,7 @@ package com.medblocks.openfhir.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
-import com.medblocks.openfhir.fc.model.FhirConnectContext;
+import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import jakarta.persistence.*;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
@@ -43,9 +43,7 @@ public class FhirConnectContextEntity {
         }
         // Serialize object to JSON before persisting
         this.fhirConnectContextJson = new Gson().toJson(fhirConnectContext);
-        if (fhirConnectContext.getOpenEHR() != null) {
-            this.templateId = fhirConnectContext.getOpenEHR().getTemplateId();
-        }
+        this.templateId = fhirConnectContext.getContext().getTemplateId();
     }
 
     @PostLoad

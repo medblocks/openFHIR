@@ -8,7 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.TestOpenFhirMappingContext;
-import com.medblocks.openfhir.fc.model.FhirConnectContext;
+import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import com.medblocks.openfhir.kds.ehrbase.EhrBaseTestClient;
 import com.medblocks.openfhir.tofhir.IntermediateCacheProcessing;
 import com.medblocks.openfhir.tofhir.OpenEhrToFhir;

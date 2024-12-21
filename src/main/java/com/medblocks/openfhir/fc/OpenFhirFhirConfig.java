@@ -1,11 +1,11 @@
 
-package com.medblocks.openfhir.fc.model;
+package com.medblocks.openfhir.fc;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
+import com.medblocks.openfhir.fc.schema.model.Condition;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
         "multiple"
 })
 
-public class FhirConfig {
+public class OpenFhirFhirConfig {
 
     /**
      * (Required)
@@ -38,14 +38,14 @@ public class FhirConfig {
     @JsonProperty("condition")
     private List<Condition> condition;
 
-    public FhirConfig doCopy() {
-        final FhirConfig fhirConfig = new FhirConfig();
+    public OpenFhirFhirConfig copy() {
+        final OpenFhirFhirConfig fhirConfig = new OpenFhirFhirConfig();
         fhirConfig.setResource(resource);
         fhirConfig.setMultiple(multiple);
         if (condition != null) {
             List<Condition> toAdd = new ArrayList<>();
             for (Condition condition1 : condition) {
-                toAdd.add(condition1.doCopy());
+                toAdd.add(condition1.copy());
             }
             fhirConfig.setCondition(toAdd);
         }
@@ -63,7 +63,7 @@ public class FhirConfig {
         this.condition = condition;
     }
 
-    public FhirConfig withCondition(List<Condition> condition) {
+    public OpenFhirFhirConfig withCondition(List<Condition> condition) {
         this.condition = condition;
         return this;
     }
@@ -84,7 +84,7 @@ public class FhirConfig {
         this.resource = resource;
     }
 
-    public FhirConfig withResource(String resource) {
+    public OpenFhirFhirConfig withResource(String resource) {
         this.resource = resource;
         return this;
     }
@@ -108,7 +108,7 @@ public class FhirConfig {
         this.multiple = multiple;
     }
 
-    public FhirConfig withMultiple(Boolean multiple) {
+    public OpenFhirFhirConfig withMultiple(Boolean multiple) {
         this.multiple = multiple;
         return this;
     }

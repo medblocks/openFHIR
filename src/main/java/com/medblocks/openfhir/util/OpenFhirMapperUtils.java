@@ -1,9 +1,11 @@
 package com.medblocks.openfhir.util;
 
 import com.medblocks.openfhir.fc.FhirConnectConst;
-import com.medblocks.openfhir.fc.model.FhirConfig;
-import com.medblocks.openfhir.fc.model.FhirConnectMapper;
-import com.medblocks.openfhir.fc.model.Mapping;
+import com.medblocks.openfhir.fc.OpenFhirFhirConfig;
+import com.medblocks.openfhir.fc.OpenFhirFhirConnectModelMapper;
+import com.medblocks.openfhir.fc.schema.model.Condition;
+import com.medblocks.openfhir.fc.schema.model.FhirConfig;
+import com.medblocks.openfhir.fc.schema.model.Mapping;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.*;
@@ -172,9 +174,9 @@ public class OpenFhirMapperUtils {
             }
 
             // now conditions
-            if (followedByMapping.getCondition() != null
-                    && !followedByMapping.getCondition().getTargetRoot().startsWith(FhirConnectConst.FHIR_RESOURCE_FC)) {
-                followedByMapping.getCondition().setTargetRoot(fhirPath + "." + followedByMapping.getCondition().getTargetRoot());
+            if (followedByMapping.getFhirCondition() != null
+                    && !followedByMapping.getFhirCondition().getTargetRoot().startsWith(FhirConnectConst.FHIR_RESOURCE_FC)) {
+                followedByMapping.getFhirCondition().setTargetRoot(fhirPath + "." + followedByMapping.getFhirCondition().getTargetRoot());
             }
 
         }
@@ -190,11 +192,11 @@ public class OpenFhirMapperUtils {
      * @param fhirPath             parent's fhir path as constructed up until now
      * @param openEhrPath          parent's openehr path as constructed up until now
      */
-    public void prepareForwardingSlotArchetypeMapper(final FhirConnectMapper slotArchetypeMappers,
-                                                     final FhirConnectMapper parentMapper,
+    public void prepareForwardingSlotArchetypeMapper(final OpenFhirFhirConnectModelMapper slotArchetypeMappers,
+                                                     final OpenFhirFhirConnectModelMapper parentMapper,
                                                      final String fhirPath,
                                                      final String openEhrPath) {
-        slotArchetypeMappers.setFhirConfig(new FhirConfig());
+        slotArchetypeMappers.setFhirConfig(new OpenFhirFhirConfig());
         slotArchetypeMappers.getFhirConfig().setResource(parentMapper.getFhirConfig().getResource());
         slotArchetypeMappers.getFhirConfig().setCondition(parentMapper.getFhirConfig().getCondition());
 
@@ -216,11 +218,11 @@ public class OpenFhirMapperUtils {
      * @param fhirPath             parent's fhir path as constructed up until now
      * @param openEhrPath          parent's openehr path as constructed up until now
      */
-    public void prepareForwardingSlotArchetypeMapperNoFhirPrefix(final FhirConnectMapper slotArchetypeMappers,
-                                                                 final FhirConnectMapper parentMapper,
+    public void prepareForwardingSlotArchetypeMapperNoFhirPrefix(final OpenFhirFhirConnectModelMapper slotArchetypeMappers,
+                                                                 final OpenFhirFhirConnectModelMapper parentMapper,
                                                                  final String fhirPath,
                                                                  final String openEhrPath) {
-        slotArchetypeMappers.setFhirConfig(new FhirConfig());
+        slotArchetypeMappers.setFhirConfig(new OpenFhirFhirConfig());
         slotArchetypeMappers.getFhirConfig().setResource(parentMapper.getFhirConfig().getResource());
         slotArchetypeMappers.getFhirConfig().setCondition(parentMapper.getFhirConfig().getCondition());
 
@@ -311,22 +313,23 @@ public class OpenFhirMapperUtils {
                                                                   final String fhirPath,
                                                                   final boolean fhirPrefixing) {
         for (Mapping slotArchetypeMappersMapping : forwardMappers) {
-            if (slotArchetypeMappersMapping.getCondition() == null) {
+            final Condition fhirCondition = slotArchetypeMappersMapping.getFhirCondition();
+            if (fhirCondition == null) {
                 continue;
             }
 
-            if (FhirConnectConst.FHIR_ROOT_FC.equals(slotArchetypeMappersMapping.getCondition().getTargetRoot())) {
+            if (FhirConnectConst.FHIR_ROOT_FC.equals(fhirCondition.getTargetRoot())) {
                 if (!fhirPrefixing) {
-                    slotArchetypeMappersMapping.getCondition().setTargetRoot("");
+                    fhirCondition.setTargetRoot("");
                 } else {
-                    slotArchetypeMappersMapping.getCondition().setTargetRoot(fhirPath);
+                    fhirCondition.setTargetRoot(fhirPath);
                 }
-            } else if (slotArchetypeMappersMapping.getCondition().getTargetRoot().startsWith(FhirConnectConst.FHIR_ROOT_FC)) {
-                slotArchetypeMappersMapping.getCondition().setTargetRoot(slotArchetypeMappersMapping.getCondition().getTargetRoot()
+            } else if (fhirCondition.getTargetRoot().startsWith(FhirConnectConst.FHIR_ROOT_FC)) {
+                fhirCondition.setTargetRoot(fhirCondition.getTargetRoot()
                         .replace(FhirConnectConst.FHIR_ROOT_FC, fhirPrefixing ? fhirPath : ""));
 
-                if (slotArchetypeMappersMapping.getCondition().getTargetRoot().startsWith(".") && !fhirPrefixing) {
-                    slotArchetypeMappersMapping.getCondition().setTargetRoot(slotArchetypeMappersMapping.getCondition().getTargetRoot().substring(1));
+                if (fhirCondition.getTargetRoot().startsWith(".") && !fhirPrefixing) {
+                    fhirCondition.setTargetRoot(fhirCondition.getTargetRoot().substring(1));
                 }
             }
         }

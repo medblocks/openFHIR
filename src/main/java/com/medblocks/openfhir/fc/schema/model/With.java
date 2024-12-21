@@ -1,5 +1,5 @@
 
-package com.medblocks.openfhir.fc.model;
+package com.medblocks.openfhir.fc.schema.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,8 +16,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 public class With {
 
+    /**
+     * (Required)
+     */
     @JsonProperty("fhir")
     private String fhir;
+    /**
+     * (Required)
+     */
     @JsonProperty("openehr")
     private String openehr;
     @JsonProperty("type")
@@ -27,7 +33,7 @@ public class With {
     @JsonProperty("unidirectional")
     private String unidirectional;
 
-    public With doCopy() {
+    public With copy() {
         final With with = new With();
         with.setFhir(fhir);
         with.setOpenehr(openehr);

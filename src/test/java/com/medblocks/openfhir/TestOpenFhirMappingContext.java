@@ -1,7 +1,7 @@
 package com.medblocks.openfhir;
 
-import com.medblocks.openfhir.fc.model.FhirConnectContext;
-import com.medblocks.openfhir.fc.model.FhirConnectMapper;
+import com.medblocks.openfhir.fc.OpenFhirFhirConnectModelMapper;
+import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -33,7 +33,7 @@ public class TestOpenFhirMappingContext extends OpenFhirMappingContext {
     }
 
     public void initRepository(final FhirConnectContext context, final String dir) {
-        final String templateId = context.getOpenEHR().getTemplateId();
+        final String templateId = context.getContext().getTemplateId();
         final String normalizedRepoId = normalizeTemplateId(templateId);
         if (repository.containsKey(normalizedRepoId)) {
             log.info("Repository for template {} already initialized");
@@ -55,7 +55,7 @@ public class TestOpenFhirMappingContext extends OpenFhirMappingContext {
             log.debug("Repo already initialized.");
             return false;
         }
-        final String templateId = context.getOpenEHR().getTemplateId();
+        final String templateId = context.getContext().getTemplateId();
         try {
             fhirContextRepo.setOperationaltemplate(TemplateDocument.Factory.parse(FileUtils.openInputStream(new File(dir + templateId + ".opt"))).getTemplate());
             fhirContextRepo.setWebTemplate(new OPTParser(fhirContextRepo.getOperationaltemplate()).parse());
@@ -68,10 +68,10 @@ public class TestOpenFhirMappingContext extends OpenFhirMappingContext {
         }
     }
 
-    private Map<String, List<FhirConnectMapper>> loadMappings(final String dir,
-                                                              final FhirConnectContext context,
-                                                              boolean slot) {
-        Map<String, List<FhirConnectMapper>> mappers = new HashMap<>();
+    private Map<String, List<OpenFhirFhirConnectModelMapper>> loadMappings(final String dir,
+                                                                           final FhirConnectContext context,
+                                                                           boolean slot) {
+        Map<String, List<OpenFhirFhirConnectModelMapper>> mappers = new HashMap<>();
         for (File file : new File(dir).listFiles()) {
             if (file.getName().endsWith(".model.yml") || file.getName().endsWith(".model.yaml")) {
                 try {
@@ -81,8 +81,8 @@ public class TestOpenFhirMappingContext extends OpenFhirMappingContext {
 
                     final Yaml yaml = new Yaml(representer);
 
-                    final FhirConnectMapper fhirConnectMapper = yaml.loadAs(modelInputStream, FhirConnectMapper.class);
-                    if (context.getOpenEHR().getArchetypes().contains(fhirConnectMapper.getOpenEhrConfig().getArchetype())) {
+                    final OpenFhirFhirConnectModelMapper fhirConnectMapper = yaml.loadAs(modelInputStream, OpenFhirFhirConnectModelMapper.class);
+                    if (context.getContext().getArchetypes().contains(fhirConnectMapper.getOpenEhrConfig().getArchetype())) {
                         final String arch = fhirConnectMapper.getOpenEhrConfig().getArchetype();
                         if(!slot || fhirConnectMapper.getFhirConfig() == null) {
                             if (!mappers.containsKey(arch)) {

@@ -6,12 +6,13 @@ import com.google.gson.JsonObject;
 import com.medblocks.openfhir.db.entity.FhirConnectContextEntity;
 import com.medblocks.openfhir.db.repository.FhirConnectContextRepository;
 import com.medblocks.openfhir.fc.FhirConnectConst;
-import com.medblocks.openfhir.fc.model.Condition;
+import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import com.nedap.archie.rm.composition.Composition;
+import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
@@ -87,8 +88,8 @@ public class OpenFhirEngine {
 
         final Resource resource = parseIncomingFhirResource(incomingFhirResource);
         for (FhirConnectContextEntity context : allUserContexts) {
-            final Condition condition = context.getFhirConnectContext().getFhir().getCondition();
-            final String resourceType = context.getFhirConnectContext().getFhir().getResourceType();
+            final Condition condition = getContextCondition(context.getFhirConnectContext().getContext().getProfileUrl());
+            final String resourceType = "Bundle"; // todo: always bundle?
             final String fhirPathWithCondition = openFhirStringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,
                     Collections.singletonList(condition),
                     resourceType);
@@ -111,6 +112,18 @@ public class OpenFhirEngine {
             log.warn("Returning a fallback context for this input fhir Resource {}", fallbackContext.getId());
         }
         return fallbackContext;
+    }
+
+    private Condition getContextCondition(final URI profileUrl) {
+        if(profileUrl == null) {
+            return null;
+        }
+        final Condition condition = new Condition();
+        condition.setTargetRoot("Bundle"); // todo: always bundle?
+        condition.setTargetAttribute("entry.resource.meta.profile"); // todo: modify accordingly to the agreement, which should this point to now that we've removed general approach?
+        condition.setOperator("one of");
+        condition.setCriteria(profileUrl.toString());
+        return condition;
     }
 
     /**
@@ -155,7 +168,7 @@ public class OpenFhirEngine {
             log.error(logMsg);
             throw new IllegalArgumentException(logMsg);
         }
-        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId();
+        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getContext().getTemplateId();
 
         validatePrerequisites(fhirConnectContext, templateIdToUse);
 
@@ -194,9 +207,9 @@ public class OpenFhirEngine {
         final FhirConnectContextEntity fhirConnectContext = getContextForOpenEhr(openEhrCompositionJson, incomingTemplateId);
 
         // validate prerequisites before starting any kind of mapping logic
-        validatePrerequisites(fhirConnectContext, fhirConnectContext != null ? fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId() : incomingTemplateId);
+        validatePrerequisites(fhirConnectContext, fhirConnectContext != null ? fhirConnectContext.getFhirConnectContext().getContext().getTemplateId() : incomingTemplateId);
 
-        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getOpenEHR().getTemplateId(); // fhirConnectContext can not be null because prerequisites are validated above
+        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getContext().getTemplateId(); // fhirConnectContext can not be null because prerequisites are validated above
 
 
         final OPERATIONALTEMPLATE operationalTemplate = cachedUtils.getOperationalTemplate(templateIdToUse);

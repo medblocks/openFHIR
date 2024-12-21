@@ -1,7 +1,7 @@
 package com.medblocks.openfhir.util;
 
 import com.medblocks.openfhir.fc.FhirConnectConst;
-import com.medblocks.openfhir.fc.model.Condition;
+import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhrHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Coding;

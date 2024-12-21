@@ -1,5 +1,5 @@
 
-package com.medblocks.openfhir.fc.model;
+package com.medblocks.openfhir.fc.schema.model;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;

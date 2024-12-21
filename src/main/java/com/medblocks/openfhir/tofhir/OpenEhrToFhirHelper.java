@@ -1,6 +1,6 @@
 package com.medblocks.openfhir.tofhir;
 
-import com.medblocks.openfhir.fc.model.Condition;
+import com.medblocks.openfhir.fc.schema.model.Condition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.medblocks.openfhir.util;
 
-import com.medblocks.openfhir.fc.model.Condition;
+import com.medblocks.openfhir.fc.schema.model.Condition;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
