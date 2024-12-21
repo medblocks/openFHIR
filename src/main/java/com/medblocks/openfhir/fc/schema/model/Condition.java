@@ -1,5 +1,5 @@
 
-package com.medblocks.openfhir.fc.model;
+package com.medblocks.openfhir.fc.schema.model;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -40,13 +40,13 @@ public class Condition {
     @JsonProperty("identifying")
     private Boolean identifying;
 
-    public Condition doCopy() {
+    public Condition copy() {
         final Condition condition = new Condition();
         condition.setTargetRoot(targetRoot);
         condition.setTargetAttribute(targetAttribute);
         condition.setOperator(operator);
         condition.setCriteria(criteria);
-        condition.setIdentifying(identifying == null ? null : identifying.booleanValue());
+        condition.setIdentifying(identifying == null ? null : new Boolean(identifying.booleanValue()));
         return condition;
     }
 

@@ -2,7 +2,7 @@ package com.medblocks.openfhir.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
-import com.medblocks.openfhir.fc.model.FhirConnectMapper;
+import com.medblocks.openfhir.fc.schema.model.FhirConnectModel;
 import jakarta.persistence.*;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
@@ -13,8 +13,8 @@ import org.hibernate.annotations.UuidGenerator;
 @AllArgsConstructor
 @Builder
 @Entity                             // for postgres
-@Table(name = "fhir_connect_mapper")         // for postgres
-public class FhirConnectMapperEntity {
+@Table(name = "fhir_connect_model")         // for postgres
+public class FhirConnectModelEntity {
     @Id
     @GeneratedValue
     @UuidGenerator
@@ -24,35 +24,36 @@ public class FhirConnectMapperEntity {
     @org.springframework.data.annotation.Transient // so it will be ignored by mongo
     @Lob
     @JsonIgnore
-    String fhirConnectMapperJson;
+    String fhirConnectModelJson;
 
-    @Setter(AccessLevel.NONE)  // Prevents setter generation for this field
-    @Getter(AccessLevel.NONE)  // Prevents getter generation for this field
-    @org.springframework.data.annotation.Transient // so it will be ignored by mongo
     String archetype;
+    String name;
 
     @Transient
-    FhirConnectMapper fhirConnectMapper;
+    FhirConnectModel fhirConnectModel;
 
     @PrePersist
     @PreUpdate
     public void prePersist() {
-        if (fhirConnectMapper == null) {
+        if (fhirConnectModel == null) {
             return;
         }
         // Serialize object to JSON before persisting
-        this.fhirConnectMapperJson = new Gson().toJson(fhirConnectMapper);
-        if (fhirConnectMapper.getOpenEhrConfig() != null) {
-            this.archetype = fhirConnectMapper.getOpenEhrConfig().getArchetype();
+        this.fhirConnectModelJson = new Gson().toJson(fhirConnectModel);
+        if (fhirConnectModel.getSpec().getOpenEhrConfig() != null) {
+            this.archetype = fhirConnectModel.getSpec().getOpenEhrConfig().getArchetype();
+        }
+        if (fhirConnectModel.getMetadata() != null) {
+            this.name = fhirConnectModel.getMetadata().getName();
         }
     }
 
     @PostLoad
     public void postLoad() {
-        if (StringUtils.isEmpty(fhirConnectMapperJson)) {
+        if (StringUtils.isEmpty(fhirConnectModelJson)) {
             return;
         }
         // Deserialize JSON after loading from DB
-        this.fhirConnectMapper = new Gson().fromJson(fhirConnectMapperJson, FhirConnectMapper.class);
+        this.fhirConnectModel = new Gson().fromJson(fhirConnectModelJson, FhirConnectModel.class);
     }
 }

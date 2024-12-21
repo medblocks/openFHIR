@@ -1,9 +1,8 @@
-package com.medblocks.openfhir.fc.model;
+package com.medblocks.openfhir.fc.schema.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +20,13 @@ public class FhirConnectReference {
     @JsonProperty("resourceType")
     private String resourceType;
 
-    public FhirConnectReference doCopy() {
+    public FhirConnectReference copy() {
         final FhirConnectReference fhirConnectReference = new FhirConnectReference();
         fhirConnectReference.setResourceType(resourceType);
         if(mappings != null) {
             List<Mapping> toAdd = new ArrayList<>();
             for (Mapping mapping : mappings) {
-                toAdd.add(mapping.doCopy());
+                toAdd.add(mapping.copy());
             }
             fhirConnectReference.setMappings(toAdd);
         }

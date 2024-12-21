@@ -6,8 +6,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.TestOpenFhirMappingContext;
-import com.medblocks.openfhir.fc.model.FhirConnectContext;
-import com.medblocks.openfhir.fc.model.FhirConnectMapper;
+import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
+import com.medblocks.openfhir.fc.OpenFhirFhirConnectModelMapper;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenEhrPopulator;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
@@ -107,13 +107,13 @@ public class FhirToOpenEhrTest {
 
     @Test
     public void medicationOrder_flat() {
-        final FhirConnectMapper mapper = getMapper("/medication-order.model.yml");
+        final OpenFhirFhirConnectModelMapper mapper = getMapper("/medication-order.model.yml");
         final FhirConnectContext context = getContext("/medication-order.context.yml");
         repo.initRepository(context, getClass().getResource("/").getFile());
         final List<FhirToOpenEhrHelper> helpers = new ArrayList<>();
-        final String templateId = context.getOpenEHR().getTemplateId().toLowerCase().replace(" ", "_");
+        final String templateId = context.getContext().getTemplateId().toLowerCase().replace(" ", "_");
         final ArrayList<FhirToOpenEhrHelper> coverHelpers = new ArrayList<>();
-        fhirToOpenEhr.createHelpers(mapper.getOpenEhrConfig().getArchetype(), mapper, templateId, templateId, mapper.getMappings(), null, helpers, coverHelpers, "Bundle".equals(context.getFhir().getResourceType()), false);
+        fhirToOpenEhr.createHelpers(mapper.getOpenEhrConfig().getArchetype(), mapper, templateId, templateId, mapper.getMappings(), null, helpers, coverHelpers, true, false);
         Assert.assertEquals("medication_order/medication_order/order/medication_item", findOpenEhrPathByFhirPath(new ArrayList<>(helpers), "MedicationRequest.medication.resolve().code.text"));
         Assert.assertEquals("medication_order/medication_order/order/therapeutic_direction/dosage/dose_amount/quantity_value", findOpenEhrPathByFhirPath(new ArrayList<>(helpers), "MedicationRequest.dosageInstruction.doseAndRate.dose"));
     }
@@ -604,12 +604,12 @@ public class FhirToOpenEhrTest {
         return resource;
     }
 
-    private FhirConnectMapper getMapper(final String path) {
+    private OpenFhirFhirConnectModelMapper getMapper(final String path) {
         final Representer representer = new Representer(new DumperOptions());
         representer.getPropertyUtils().setSkipMissingProperties(true);
         final Yaml yaml = new Yaml(representer);
         final InputStream inputStream = this.getClass().getResourceAsStream(path);
-        return yaml.loadAs(inputStream, FhirConnectMapper.class);
+        return yaml.loadAs(inputStream, OpenFhirFhirConnectModelMapper.class);
     }
 
     private FhirConnectContext getContext(final String path) {

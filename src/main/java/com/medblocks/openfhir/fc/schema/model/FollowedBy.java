@@ -1,10 +1,9 @@
 
-package com.medblocks.openfhir.fc.model;
+package com.medblocks.openfhir.fc.schema.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,12 +23,12 @@ public class FollowedBy {
     @JsonProperty("mappings")
     private List<Mapping> mappings;
 
-    public FollowedBy doCopy() {
+    public FollowedBy copy() {
         final FollowedBy followedBy = new FollowedBy();
         if (mappings != null) {
             final List<Mapping> mappings = new ArrayList<>();
             for (Mapping mapping : this.mappings) {
-                mappings.add(mapping.doCopy());
+                mappings.add(mapping.copy());
             }
             followedBy.setMappings(mappings);
         }

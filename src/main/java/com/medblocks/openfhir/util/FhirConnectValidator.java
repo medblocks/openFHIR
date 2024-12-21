@@ -6,42 +6,32 @@ import com.github.fge.jsonschema.core.report.LogLevel;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
-import com.medblocks.openfhir.fc.FhirConnectConst;
-import com.medblocks.openfhir.fc.model.FhirConnectContext;
-import com.medblocks.openfhir.fc.model.FhirConnectMapper;
-import com.medblocks.openfhir.fc.model.Mapping;
+import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
+import com.medblocks.openfhir.fc.schema.model.FhirConnectModel;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
-import org.hl7.fhir.r4.model.Base;
-import org.hl7.fhir.r4.model.Bundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Component
 @Slf4j
 public class FhirConnectValidator {
 
-    private final FhirPathR4 fhirPathR4;
-    private final OpenFhirStringUtils openFhirStringUtils;
+    @Autowired
+    private FhirPathR4 fhirPathR4;
 
     @Autowired
-    public FhirConnectValidator(FhirPathR4 fhirPathR4, OpenFhirStringUtils openFhirStringUtils) {
-        this.fhirPathR4 = fhirPathR4;
-        this.openFhirStringUtils = openFhirStringUtils;
-    }
+    private OpenFhirStringUtils openFhirStringUtils;
 
     public List<String> validateAgainstContextSchema(final FhirConnectContext parsed) {
         return validateAgainstSchema(parsed, "/contextual-mapping.schema.json");
     }
 
-    public List<String> validateAgainstModelSchema(final FhirConnectMapper parsed) {
+    public List<String> validateAgainstModelSchema(final FhirConnectModel parsed) {
         return validateAgainstSchema(parsed, "/model-mapping.schema.json");
     }
 
@@ -49,18 +39,14 @@ public class FhirConnectValidator {
         final ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            final InputStream resourceAsStream = getClass().getResourceAsStream(schemaName);
-            if(resourceAsStream == null) {
-                log.error("No such schema found {}", schemaName);
-                return null;
-            }
-            final String schemaString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+            String schemaString = IOUtils.toString(getClass().getResourceAsStream(schemaName),
+                                                   StandardCharsets.UTF_8);
 
-            final JsonNode schemaNode = objectMapper.readTree(schemaString);
-            final JsonNode jsonNode = objectMapper.convertValue(parsed, JsonNode.class);
-            final JsonSchemaFactory schemaFactory = JsonSchemaFactory.byDefault();
-            final JsonSchema schema = schemaFactory.getJsonSchema(schemaNode);
-            final ProcessingReport report = schema.validate(jsonNode);
+            JsonNode schemaNode = objectMapper.readTree(schemaString);
+            JsonNode jsonNode = objectMapper.convertValue(parsed, JsonNode.class);
+            JsonSchemaFactory schemaFactory = JsonSchemaFactory.byDefault();
+            JsonSchema schema = schemaFactory.getJsonSchema(schemaNode);
+            ProcessingReport report = schema.validate(jsonNode);
             if (!report.isSuccess()) {
                 final List<String> errors = new ArrayList<>();
                 report.iterator().forEachRemaining(err -> {
@@ -77,36 +63,13 @@ public class FhirConnectValidator {
         return null;
     }
 
-    public List<String> validateFhirConnectMapper(final FhirConnectMapper mapper) {
-        final FhirConnectMapper toValidateOn = mapper.copy();
+    public List<String> validateFhirConnectModel(final FhirConnectModel modelMapper) {
         final List<String> errors = new ArrayList<>();
-//        if (!mapper.getFormat().equals("0.0.2")) {
-//            errors.add("Format of the model mapper needs to be 0.0.2");
+//        if (!modelMapper.getFormat().equals("0.0.2")) {
+//            errors.add("Format of the model modelMapper needs to be 0.0.2");
 //        }
 
-        // validate fhirpaths in there
-        if (toValidateOn.getFhirConfig() != null && toValidateOn.getFhirConfig().getCondition() != null) {
-            final String path = openFhirStringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,
-                    toValidateOn.getFhirConfig().getCondition(), toValidateOn.getFhirConfig().getResource());
-            try {
-                fhirPathR4.evaluate(new Bundle(), path, Base.class); // we don't care about the result, only if it passes the validation
-            } catch (final Exception e) {
-                errors.add("FhirPath constructed from fhirConfig.conditions is not a valid one. Constructed: " + path);
-            }
-        }
-
-        for (Mapping mapping : toValidateOn.getMappings()) {
-            if(toValidateOn.getFhirConfig() == null) {
-                continue;
-            }
-            final String path = openFhirStringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,
-                    Collections.singletonList(mapping.getCondition()), toValidateOn.getFhirConfig().getResource());
-            try {
-                fhirPathR4.evaluate(new Bundle(), path, Base.class); // we don't care about the result, only if it passes the validation
-            } catch (final Exception e) {
-                errors.add("FhirPath constructed from mapping name '" + mapping.getName() + "' is not a valid one. Constructed: " + path);
-            }
-        }
+        // todo: imeplement other validation (fhir path, openehr paths, ..)
 
 
         return errors;

@@ -1,126 +1,78 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://schema.better.care/fhirconnect/model/0.2.0/model-mapping-schema",
-  "description": "Model Mapping schema for file format v0.2.0",
-  "title": "Model Mapping",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FHIRConnect Model Schema",
   "type": "object",
   "properties": {
-    "format": {
-      "type": "string"
+    "engine": {
+      "type": "string",
+      "pattern": "^FHIRConnect/v[0-9]+\\.[0-9]+\\.[0-9]+$"
     },
-    "version": {
-      "type": "string"
+    "type": {
+      "type": "string",
+      "enum": ["model", "extension"]
     },
-    "fhirConfig": {
-      "$ref": "#/$defs/fhirConfig"
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z]+(_[a-z0-9]+)*(_v[0-9]+)?$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+[a-z]?$"
+        }
+      },
+      "required": ["name", "version"]
     },
-    "openEhrConfig": {
-      "$ref": "#/$defs/openEhrConfig"
+    "spec": {
+      "type": "object",
+      "properties": {
+        "system": {
+          "type": "string",
+          "enum": ["FHIR"]
+        },
+        "version": {
+          "type": "string",
+          "enum": ["R4"]
+        },
+        "extensionOf": {
+          "type": "string"
+        },
+        "openEhrConfig": {
+          "type": "object",
+          "properties": {
+            "archetype": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          "required": ["archetype"]
+        },
+        "fhirConfig": {
+          "type": "object",
+          "properties": {
+            "structureDefinition": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "required": ["structureDefinition"]
+        }
+      },
+      "required": ["system", "version"]
     },
     "mappings": {
       "$ref": "#/$defs/mappings"
     }
   },
-  "required": [
-    "format",
-    "version",
-    "openEhrConfig",
-    "mappings"
-  ],
-  "additionalProperties": false,
-  "$defs": {
-    "fhirConfig": {
-      "type": [
-        "object",
-        "null"
-      ],
-      "additionalProperties": false,
-      "properties": {
-        "resource": {
-          "type": "string"
-        },
-        "multiple": {
-          "type": ["boolean", "null"]
-        },
-        "alwaysBundled": {
-          "type": [
-            "boolean",
-            "null"
-          ]
-        },
-        "condition": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/mapping/properties/condition"
-          }
-        }
-      },
-      "required": [
-        "resource"
-      ],
-      "title": "FHIR Config"
-    },
-    "openEhrConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "archetype": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "archetype"
-      ],
-      "title": "openEHR Config"
-    },
+  "$defs":{
     "mappings": {
       "type": "array",
       "items": {
         "$ref": "#/$defs/mapping"
       },
-      "additionalProperties": false,
       "title": "Mappings"
-    },
-    "map": {
-      "type": "object",
-      "properties": {
-        "system":{
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "key": {
-              "type": "string"
-            },
-            "value": {
-              "type": "string"
-            }
-          }
-        },
-        "code":{
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "key": {
-              "type": "string"
-            },
-            "value": {
-              "type": "string"
-            }
-          }
-        },
-        "unit":{
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "key": {
-              "type": "string"
-            },
-            "value": {
-              "type": "string"
-            }
-          }
-        }
-      }
     },
     "mapping": {
       "type": "object",
@@ -128,6 +80,14 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["NONE", "QUANTITY", "DATETIME", "CODEABLECONCEPT", "CODING", "STRING", "DOSAGE", "ID", "IDENTIFIER", "PROPORTION"]
+        },
+        "extension": {
+          "type": "string",
+          "enum": ["add", "append", "overwrite"]
         },
         "with": {
           "type": "object",
@@ -150,15 +110,37 @@
             }
           }
         },
-        "map": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/map"
+        "fhirCondition": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "targetRoot": {
+              "type": "string"
+            },
+            "targetAttribute": {
+              "type": "string"
+            },
+            "operator": {
+              "type": "string"
+            },
+            "criteria": {
+              "type": "string"
+            },
+            "identifying": {
+              "type": "boolean"
+            }
           },
           "additionalProperties": false,
-          "title": "Map"
+          "required": [
+            "targetRoot",
+            "targetAttribute",
+            "operator",
+            "criteria"
+          ]
         },
-        "condition": {
+        "openehrCondition": {
           "type": [
             "object",
             "null"
@@ -245,6 +227,7 @@
       ],
       "title": "Model Mapping"
     }
-  }
+
+  },
+  "required": ["engine", "type", "metadata", "spec", "mappings"]
 }
-  

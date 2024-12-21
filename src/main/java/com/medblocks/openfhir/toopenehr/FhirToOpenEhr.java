@@ -5,8 +5,12 @@ import com.google.gson.JsonObject;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.OpenFhirMappingContext;
 import com.medblocks.openfhir.fc.FhirConnectConst;
-import com.medblocks.openfhir.fc.model.Condition;
-import com.medblocks.openfhir.fc.model.*;
+import com.medblocks.openfhir.fc.OpenFhirFhirConfig;
+import com.medblocks.openfhir.fc.OpenFhirFhirConnectModelMapper;
+import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
+import com.medblocks.openfhir.fc.schema.model.Condition;
+import com.medblocks.openfhir.fc.schema.model.Mapping;
+import com.medblocks.openfhir.fc.schema.model.With;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenEhrPopulator;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
@@ -81,13 +85,14 @@ public class FhirToOpenEhr {
      * @return JsonObject representing a flat path structure/format of the mapped openEHR Composition
      */
     public JsonObject fhirToFlatJsonObject(final FhirConnectContext context, final Resource resource, final OPERATIONALTEMPLATE operationaltemplate) {
-        final boolean bundle = ResourceType.Bundle.name().equals(context.getFhir().getResourceType());
+//        final boolean bundle = ResourceType.Bundle.name().equals(context.getFhir().getResourceType()); todo: is this always true? with new context mappings there's no more fhir type
+        final boolean bundle = true;
 
         // mapping is always done on a Bundle, therefore if the incoming Resource is not a Bundle, we first wrap it to one
         final Bundle toRunEngineOn = prepareBundle(resource);
 
         final WebTemplate webTemplate = openEhrApplicationScopedUtils.parseWebTemplate(operationaltemplate);
-        final String templateId = OpenFhirMappingContext.normalizeTemplateId(context.getOpenEHR().getTemplateId());
+        final String templateId = OpenFhirMappingContext.normalizeTemplateId(context.getContext().getTemplateId());
 
         // helper objects for mapping to openEHR, where 'helpers' are regular ones constructed as part of the
         // mapping and 'coverHelpers' are those that don't directly reference the FHIR Resource but another one
@@ -377,11 +382,11 @@ public class FhirToOpenEhr {
      */
     void createHelpers(final String templateId, final Resource resource, final Condition parentCondition, final List<FhirToOpenEhrHelper> helpers, final List<FhirToOpenEhrHelper> coverHelpers, final boolean bundle) {
         ((Bundle) resource).getEntry().forEach(entry -> {
-            final List<FhirConnectMapper> mapperForResources = openFhirTemplateRepo.getMapperForResource(entry.getResource());
+            final List<OpenFhirFhirConnectModelMapper> mapperForResources = openFhirTemplateRepo.getMapperForResource(entry.getResource());
             if (mapperForResources == null || mapperForResources.isEmpty()) {
                 return;
             }
-            for (FhirConnectMapper mapperForResource : mapperForResources) {
+            for (OpenFhirFhirConnectModelMapper mapperForResource : mapperForResources) {
                 final String mainArchetype = mapperForResource.getOpenEhrConfig().getArchetype();
                 createHelpers(mainArchetype, mapperForResource, templateId, templateId, mapperForResource.getMappings(), parentCondition, helpers, coverHelpers, bundle, mapperForResource.getFhirConfig().getMultiple());
             }
@@ -408,14 +413,14 @@ public class FhirToOpenEhr {
      * @param multiple          if a specific model mapper should create multiple Resources instead of a single one
      */
     void createHelpers(final String mainArtifact,
-                       final FhirConnectMapper fhirConnectMapper,
+                       final OpenFhirFhirConnectModelMapper fhirConnectMapper,
                        final String templateId,
                        final String mainOpenEhrPath,
                        final List<Mapping> mappings,
                        final Condition parentCondition,
                        final List<FhirToOpenEhrHelper> helpers,
                        final List<FhirToOpenEhrHelper> coverHelpers,
-                       final boolean bundle,
+                       final boolean bundle, // todo: remove this if it turns out it's always true with the new contexts mappings
                        final boolean multiple) {
         for (final Mapping mapping : mappings) {
             final With with = mapping.getWith();
@@ -434,7 +439,7 @@ public class FhirToOpenEhr {
 
             hardcodingToFhir(mapping, fhirConnectMapper, initialHelper);
 
-            final Condition condition = parentCondition != null ? parentCondition : mapping.getCondition();
+            final Condition condition = parentCondition != null ? parentCondition : mapping.getFhirCondition();
 
             final String fhirPath = openFhirStringUtils.getFhirPathWithConditions(with.getFhir(),
                                                                                   condition,
@@ -497,7 +502,7 @@ public class FhirToOpenEhr {
     private void createFollowedByMappings(final FhirToOpenEhrHelper initialHelper, final Mapping mapping,
                                           final String openehr, final String mainOpenEhrPath, final String fhirPath,
                                           final boolean multiple, final List<FhirToOpenEhrHelper> innerHelpers,
-                                          final FhirConnectMapper fhirConnectMapper, final String mainArtifact, final String templateId,
+                                          final OpenFhirFhirConnectModelMapper fhirConnectMapper, final String mainArtifact, final String templateId,
                                           final List<FhirToOpenEhrHelper> coverHelpers, final boolean bundle, final boolean needsToBeAddedToParentHelpers,
                                           final List<FhirToOpenEhrHelper> helpers) {
         final List<Mapping> followedByMappings = mapping.getFollowedBy().getMappings();
@@ -537,12 +542,12 @@ public class FhirToOpenEhr {
     private void createSlotMappings(final FhirToOpenEhrHelper initialHelper, final Mapping mapping,
                                     final String openehr, final String mainOpenEhrPath, final String fhirPath,
                                     final boolean multiple, final List<FhirToOpenEhrHelper> innerHelpers,
-                                    final FhirConnectMapper fhirConnectMapper, final String mainArtifact, final String templateId,
+                                    final OpenFhirFhirConnectModelMapper fhirConnectMapper, final String mainArtifact, final String templateId,
                                     final List<FhirToOpenEhrHelper> coverHelpers, final boolean bundle, final boolean needsToBeAddedToParentHelpers,
                                     final List<FhirToOpenEhrHelper> helpers) {
-        final List<FhirConnectMapper> slotArchetypeMapperss = openFhirTemplateRepo.getSlotMapperForArchetype(templateId, mapping.getSlotArchetype());
+        final List<OpenFhirFhirConnectModelMapper> slotArchetypeMapperss = openFhirTemplateRepo.getSlotMapperForArchetype(templateId, mapping.getSlotArchetype());
 
-        for (FhirConnectMapper slotArchetypeMappers : slotArchetypeMapperss) {
+        for (OpenFhirFhirConnectModelMapper slotArchetypeMappers : slotArchetypeMapperss) {
             final String openEhrFixed = openehr.replace("/" + FhirConnectConst.REFERENCE, "");
 
             openFhirMapperUtils.prepareForwardingSlotArchetypeMapperNoFhirPrefix(slotArchetypeMappers, fhirConnectMapper, fhirPath, openEhrFixed);
@@ -575,7 +580,7 @@ public class FhirToOpenEhr {
         }
     }
 
-    private void hardcodingToFhir(final Mapping mapping, final FhirConnectMapper fhirConnectMapper, final FhirToOpenEhrHelper initialHelper) {
+    private void hardcodingToFhir(final Mapping mapping, final OpenFhirFhirConnectModelMapper fhirConnectMapper, final FhirToOpenEhrHelper initialHelper) {
         if (mapping.getWith().getFhir() == null) {
             // is hardcoding
             mapping.getWith().setFhir(fhirConnectMapper.getFhirConfig().getResource());
@@ -583,7 +588,7 @@ public class FhirToOpenEhr {
         }
     }
 
-    private String createMainMapping(final Mapping mapping, final FhirConnectMapper fhirConnectMapper, final FhirToOpenEhrHelper initialHelper,
+    private String createMainMapping(final Mapping mapping, final OpenFhirFhirConnectModelMapper fhirConnectMapper, final FhirToOpenEhrHelper initialHelper,
                                      final String mainOpenEhrPath, final String fhirPath, final boolean multiple,
                                      final boolean needsToBeAddedToParentHelpers,
                                      final List<FhirToOpenEhrHelper> helpers, final List<FhirToOpenEhrHelper> coverHelpers) {
@@ -611,7 +616,7 @@ public class FhirToOpenEhr {
         return openehr;
     }
 
-    private void createReferenceMapping(final Mapping mapping, final String fhirPath, final String mainArtifact, final FhirConnectMapper fhirConnectMapper,
+    private void createReferenceMapping(final Mapping mapping, final String fhirPath, final String mainArtifact, final OpenFhirFhirConnectModelMapper fhirConnectMapper,
                                         final String templateId, final String mainOpenEhrPath, final Condition parentCondition,
                                         final List<FhirToOpenEhrHelper> helpers, final List<FhirToOpenEhrHelper> coverHelpers,
                                         final boolean bundle, final boolean multiple) {
@@ -655,8 +660,8 @@ public class FhirToOpenEhr {
      * @param bundle            if we're mapping to a Bundle (if FhirConnect.context.resourceType is Bundle)
      * @return instantiated FhirToOpenEhrHelper
      */
-    private FhirToOpenEhrHelper createHelper(final String mainArtifact, final FhirConnectMapper mapperForResource, final boolean bundle) {
-        final FhirConfig fhirConfig = mapperForResource.getFhirConfig();
+    private FhirToOpenEhrHelper createHelper(final String mainArtifact, final OpenFhirFhirConnectModelMapper mapperForResource, final boolean bundle) {
+        final OpenFhirFhirConfig fhirConfig = mapperForResource.getFhirConfig();
 
         return FhirToOpenEhrHelper.builder()
                 .archetype(mainArtifact)
@@ -667,7 +672,7 @@ public class FhirToOpenEhr {
     /**
      * Creates limiting criteria based on the FhirConnect FhirConfig Condition element.
      */
-    private String getLimitingCriteria(final FhirConfig fhirConfig, final boolean bundle) {
+    private String getLimitingCriteria(final OpenFhirFhirConfig fhirConfig, final boolean bundle) {
         if (fhirConfig == null) {
             return null;
         }
