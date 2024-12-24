@@ -3,6 +3,7 @@ package com.medblocks.openfhir;
 import com.medblocks.openfhir.fc.FhirConnectConst;
 import com.medblocks.openfhir.fc.OpenFhirFhirConnectModelMapper;
 import com.medblocks.openfhir.fc.schema.model.Condition;
+import com.medblocks.openfhir.util.FhirConnectModelMerger;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,10 +28,14 @@ public abstract class OpenFhirMappingContext {
 
     private final FhirPathR4 fhirPathR4;
     private final OpenFhirStringUtils openFhirStringUtils;
+    protected final FhirConnectModelMerger modelMerger;
 
-    public OpenFhirMappingContext(FhirPathR4 fhirPathR4, OpenFhirStringUtils openFhirStringUtils) {
+    public OpenFhirMappingContext(final FhirPathR4 fhirPathR4,
+                                  final OpenFhirStringUtils openFhirStringUtils,
+                                  final FhirConnectModelMerger modelMerger) {
         this.fhirPathR4 = fhirPathR4;
         this.openFhirStringUtils = openFhirStringUtils;
+        this.modelMerger = modelMerger;
     }
 
     /**
@@ -46,13 +51,16 @@ public abstract class OpenFhirMappingContext {
         if (fhirConnectMapper == null) {
             return null;
         }
-        return fhirConnectMapper.stream().map(map -> map.copy()).collect(Collectors.toList());
+        return fhirConnectMapper.stream().map(OpenFhirFhirConnectModelMapper::copy).collect(Collectors.toList());
     }
+
 
     /**
      * Returns a fhir connect model mapper for a specific archetype within a template. It retrieves from a slotArchetype
      * repository cache instead of from the main one.
+     * @deprecated we don't differentiate between slots mappers and regular mappers anymore, so @see getMapperForArchetype
      */
+    @Deprecated
     public List<OpenFhirFhirConnectModelMapper> getSlotMapperForArchetype(final String templateId, final String archetypeId) {
         final OpenFhirContextRepository repoForTemplate = repository.get(normalizeTemplateId(templateId));
         if (repoForTemplate == null) {

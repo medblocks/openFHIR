@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OpenFhirFhirConnectModelMapper {
 
+    private String name;
     private OpenFhirFhirConfig fhirConfig;
     private OpenEhrConfig openEhrConfig;
     private List<Mapping> mappings;
@@ -24,7 +25,7 @@ public class OpenFhirFhirConnectModelMapper {
     public OpenFhirFhirConnectModelMapper copy() {
         final OpenFhirFhirConnectModelMapper fhirConnectMapper = new OpenFhirFhirConnectModelMapper();
         fhirConnectMapper.setFhirConfig(fhirConfig == null ? null : fhirConfig.copy());
-
+        fhirConnectMapper.setName(name);
         fhirConnectMapper.setOpenEhrConfig(openEhrConfig == null ? null : openEhrConfig.copy());
         if (mappings != null) {
             final List<Mapping> copiedMappings = new ArrayList<>();
@@ -46,6 +47,7 @@ public class OpenFhirFhirConnectModelMapper {
                                                                                     .getCondition())
                                                              .withMultiple(fhirConnectModel.getSpec().getFhirConfig().getMultiple())
                                                              .withResource(parseResourceType(fhirConnectModel)));
+        openFhirFhirConnectModelMapper.setName(fhirConnectModel.getMetadata().getName());
         return openFhirFhirConnectModelMapper;
     }
 

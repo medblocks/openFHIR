@@ -145,6 +145,7 @@ mappings:
                   operator: "one of"
                   criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
 
+# todo: where are these ones below?
         - name: "code alpha"
           with:
             fhir: "coding"

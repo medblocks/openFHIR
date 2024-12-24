@@ -8,6 +8,7 @@ import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.TestOpenFhirMappingContext;
 import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import com.medblocks.openfhir.fc.OpenFhirFhirConnectModelMapper;
+import com.medblocks.openfhir.util.FhirConnectModelMerger;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenEhrPopulator;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
@@ -42,7 +43,8 @@ import java.util.*;
 public class FhirToOpenEhrTest {
     final FhirPathR4 fhirPathR4 = new FhirPathR4(FhirContext.forR4());
     final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
-    final TestOpenFhirMappingContext repo = new TestOpenFhirMappingContext(fhirPathR4, openFhirStringUtils);
+    final FhirConnectModelMerger fhirConnectModelMerger = new FhirConnectModelMerger();
+    final TestOpenFhirMappingContext repo = new TestOpenFhirMappingContext(fhirPathR4, openFhirStringUtils, fhirConnectModelMerger);
     FhirToOpenEhr fhirToOpenEhr;
 
     @Before
@@ -113,7 +115,7 @@ public class FhirToOpenEhrTest {
         final List<FhirToOpenEhrHelper> helpers = new ArrayList<>();
         final String templateId = context.getContext().getTemplateId().toLowerCase().replace(" ", "_");
         final ArrayList<FhirToOpenEhrHelper> coverHelpers = new ArrayList<>();
-        fhirToOpenEhr.createHelpers(mapper.getOpenEhrConfig().getArchetype(), mapper, templateId, templateId, mapper.getMappings(), null, helpers, coverHelpers, true, false);
+        fhirToOpenEhr.createHelpers(mapper.getOpenEhrConfig().getArchetype(), mapper, templateId, templateId, mapper.getMappings(), null, helpers, coverHelpers, true, false, false);
         Assert.assertEquals("medication_order/medication_order/order/medication_item", findOpenEhrPathByFhirPath(new ArrayList<>(helpers), "MedicationRequest.medication.resolve().code.text"));
         Assert.assertEquals("medication_order/medication_order/order/therapeutic_direction/dosage/dose_amount/quantity_value", findOpenEhrPathByFhirPath(new ArrayList<>(helpers), "MedicationRequest.dosageInstruction.doseAndRate.dose"));
     }

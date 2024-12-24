@@ -222,7 +222,9 @@ public class OpenFhirStringUtils {
     }
 
     public String fixFhirPath(final String fhirPath) {
-        return fhirPath.replace("." + FHIR_ROOT_FC, "");
+        return fhirPath
+                .replace("." + FHIR_ROOT_FC, "")
+                .replace( FHIR_ROOT_FC, "");
     }
 
     /**

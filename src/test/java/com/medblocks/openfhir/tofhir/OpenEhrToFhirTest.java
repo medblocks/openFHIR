@@ -7,21 +7,14 @@ import com.google.gson.JsonPrimitive;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.TestOpenFhirMappingContext;
 import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
-import com.medblocks.openfhir.util.*;
+import com.medblocks.openfhir.util.FhirConnectModelMerger;
+import com.medblocks.openfhir.util.FhirInstanceCreator;
+import com.medblocks.openfhir.util.FhirInstanceCreatorUtility;
+import com.medblocks.openfhir.util.FhirInstancePopulator;
+import com.medblocks.openfhir.util.OpenEhrCachedUtils;
+import com.medblocks.openfhir.util.OpenFhirMapperUtils;
+import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import com.nedap.archie.rm.composition.Composition;
-import org.apache.commons.io.IOUtils;
-import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
-import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
-import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
-import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
-import org.hl7.fhir.r4.model.*;
-import org.junit.Assert;
-import org.junit.Test;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.openehr.schemas.v1.TemplateDocument;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -29,28 +22,48 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.io.IOUtils;
+import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
+import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
+import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
+import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Medication;
+import org.hl7.fhir.r4.model.MedicationRequest;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Quantity;
+import org.junit.Assert;
+import org.junit.Test;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.openehr.schemas.v1.TemplateDocument;
+import org.yaml.snakeyaml.Yaml;
 
 public class OpenEhrToFhirTest {
+
     final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
     final FhirPathR4 fhirPath = new FhirPathR4(FhirContext.forR4());
     final OpenFhirMapperUtils openFhirMapperUtils = new OpenFhirMapperUtils();
-    final TestOpenFhirMappingContext repo = new TestOpenFhirMappingContext(fhirPath, openFhirStringUtils);
+    final FhirConnectModelMerger fhirConnectModelMerger = new FhirConnectModelMerger();
+    final TestOpenFhirMappingContext repo = new TestOpenFhirMappingContext(fhirPath, openFhirStringUtils,
+                                                                           fhirConnectModelMerger);
     final OpenEhrToFhir openEhrToFhir;
 
     {
-        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(openFhirStringUtils);
+        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(
+                openFhirStringUtils);
         openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
-                repo,
-                new OpenEhrCachedUtils(null),
-                new Gson(),
-                openFhirStringUtils,
-                new OpenEhrRmWorker(openFhirStringUtils),
-                new OpenFhirMapperUtils(),
-                new FhirInstancePopulator(),
-                new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
-                fhirInstanceCreatorUtility,
-                fhirPath,
-                new IntermediateCacheProcessing(openFhirStringUtils));
+                                          repo,
+                                          new OpenEhrCachedUtils(null),
+                                          new Gson(),
+                                          openFhirStringUtils,
+                                          new OpenEhrRmWorker(openFhirStringUtils),
+                                          new OpenFhirMapperUtils(),
+                                          new FhirInstancePopulator(),
+                                          new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
+                                          fhirInstanceCreatorUtility,
+                                          fhirPath,
+                                          new IntermediateCacheProcessing(openFhirStringUtils));
     }
 
     public static void assertBloodPressureFhir(final Bundle bundle) {
@@ -79,23 +92,33 @@ public class OpenEhrToFhirTest {
         Assert.assertEquals("at0025", obs3.getBodySite().getCodingFirstRep().getCode());
         Assert.assertEquals("local", obs3.getBodySite().getCodingFirstRep().getSystem());
 
-        Assert.assertTrue(Arrays.asList(obs1, obs3).stream().allMatch(o -> o.getComponent().size() == 3)); // it includes interpretation component
+        Assert.assertTrue(Arrays.asList(obs1, obs3).stream()
+                                  .allMatch(o -> o.getComponent().size() == 3)); // it includes interpretation component
         Assert.assertTrue(Arrays.asList(obs2).stream().allMatch(o -> o.getComponent().size() == 2));
 
         Assert.assertTrue(Arrays.asList(obs2).stream()
-                .allMatch(o -> o.getComponent().stream()
-                        .allMatch(com -> com.getCode() != null
-                                && com.getCode().getCoding().size() == 1
-                                && (com.getCode().getCodingFirstRep().getCode().equals("8480-6") || com.getCode().getCodingFirstRep().getCode().equals("8462-4")))));
+                                  .allMatch(o -> o.getComponent().stream()
+                                          .allMatch(com -> com.getCode() != null
+                                                  && com.getCode().getCoding().size() == 1
+                                                  && (com.getCode().getCodingFirstRep().getCode().equals("8480-6")
+                                                  || com.getCode().getCodingFirstRep().getCode().equals("8462-4")))));
 
         Assert.assertTrue(Arrays.asList(obs1, obs3).stream()
-                .allMatch(o -> o.getComponent().stream()
-                        .allMatch(com -> !com.getInterpretationFirstRep().isEmpty() || (com.getCode() != null
-                                && com.getCode().getCoding().size() == 1
-                                && (com.getCode().getCodingFirstRep().getCode().equals("8480-6") || com.getCode().getCodingFirstRep().getCode().equals("8462-4"))))));
+                                  .allMatch(o -> o.getComponent().stream()
+                                          .allMatch(com -> !com.getInterpretationFirstRep().isEmpty() || (
+                                                  com.getCode() != null
+                                                          && com.getCode().getCoding().size() == 1
+                                                          && (
+                                                          com.getCode().getCodingFirstRep().getCode().equals("8480-6")
+                                                                  || com.getCode().getCodingFirstRep().getCode()
+                                                                  .equals("8462-4"))))));
 
-        Assert.assertTrue(obs1.getComponent().stream().anyMatch(comp -> "This is interpreted as 0th clin interpretation".equals(comp.getInterpretationFirstRep().getText())));
-        Assert.assertTrue(obs3.getComponent().stream().anyMatch(comp -> "This is interpreted as 2th clin interpretation".equals(comp.getInterpretationFirstRep().getText())));
+        Assert.assertTrue(obs1.getComponent().stream().anyMatch(
+                comp -> "This is interpreted as 0th clin interpretation".equals(
+                        comp.getInterpretationFirstRep().getText())));
+        Assert.assertTrue(obs3.getComponent().stream().anyMatch(
+                comp -> "This is interpreted as 2th clin interpretation".equals(
+                        comp.getInterpretationFirstRep().getText())));
 
         final Quantity firstDiastolic = obs1.getComponent().stream()
                 .filter(comp -> comp.getCode().getCodingFirstRep().getCode().equals("8462-4"))
@@ -140,7 +163,8 @@ public class OpenEhrToFhirTest {
         Assert.assertEquals("700.0", thirdSystolic.getValue().toPlainString());
 
         // assert hardcoded
-        Assert.assertTrue(Stream.of(obs1, obs2, obs3).allMatch(obs -> obs.getPerformerFirstRep().getDisplay().equals("John Doe")));
+        Assert.assertTrue(Stream.of(obs1, obs2, obs3)
+                                  .allMatch(obs -> obs.getPerformerFirstRep().getDisplay().equals("John Doe")));
     }
 
     @Test
@@ -149,7 +173,8 @@ public class OpenEhrToFhirTest {
         repo.initRepository(context, getClass().getResource("/").getFile());
         final OPERATIONALTEMPLATE operationalTemplate = getOperationalTemplate("/Blood Pressure.opt");
         final WebTemplate growthChartOptTemplate = new OPTParser(operationalTemplate).parse();
-        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/blood-pressure_flat.json"), growthChartOptTemplate);
+        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/blood-pressure_flat.json"),
+                                                                             growthChartOptTemplate);
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationalTemplate);
 
         assertBloodPressureFhir(bundle);
@@ -161,7 +186,8 @@ public class OpenEhrToFhirTest {
         repo.initRepository(context, getClass().getResource("/").getFile());
         final OPERATIONALTEMPLATE operationalTemplate = getOperationalTemplate("/Growth chart.opt");
         final WebTemplate growthChartOptTemplate = new OPTParser(operationalTemplate).parse();
-        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/growth_chart_flat.json"), growthChartOptTemplate);
+        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/growth_chart_flat.json"),
+                                                                             growthChartOptTemplate);
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationalTemplate);
         Assert.assertEquals(12, bundle.getEntry().size());
         // 3x weight
@@ -174,11 +200,14 @@ public class OpenEhrToFhirTest {
                 .filter(en -> "weight".equals(en.getCategoryFirstRep().getCodingFirstRep().getCode()))
                 .collect(Collectors.toList());
         Assert.assertEquals(3, weights.size());
-        final Observation firstWeight = weights.stream().filter(e -> "2022-02-03T04:05:06".equals(openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
+        final Observation firstWeight = weights.stream().filter(e -> "2022-02-03T04:05:06".equals(
+                        openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
                 .findFirst().orElse(null);
-        final Observation secondWeight = weights.stream().filter(e -> "2022-02-04T04:05:06".equals(openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
+        final Observation secondWeight = weights.stream().filter(e -> "2022-02-04T04:05:06".equals(
+                        openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
                 .findFirst().orElse(null);
-        final Observation thirdWeight = weights.stream().filter(e -> "2022-02-05T04:05:06".equals(openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
+        final Observation thirdWeight = weights.stream().filter(e -> "2022-02-05T04:05:06".equals(
+                        openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
                 .findFirst().orElse(null);
         Assert.assertEquals("501.0", firstWeight.getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("kg", firstWeight.getValueQuantity().getUnit());
@@ -207,11 +236,14 @@ public class OpenEhrToFhirTest {
                 .filter(en -> "head_circumference".equals(en.getCategoryFirstRep().getCodingFirstRep().getCode()))
                 .collect(Collectors.toList());
         Assert.assertEquals(3, heads.size());
-        final Observation firstHead = heads.stream().filter(e -> "2023-02-03T04:05:06".equals(openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
+        final Observation firstHead = heads.stream().filter(e -> "2023-02-03T04:05:06".equals(
+                        openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
                 .findFirst().orElse(null);
-        final Observation secondHead = heads.stream().filter(e -> "2023-02-04T04:05:06".equals(openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
+        final Observation secondHead = heads.stream().filter(e -> "2023-02-04T04:05:06".equals(
+                        openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
                 .findFirst().orElse(null);
-        final Observation thirdHead = heads.stream().filter(e -> "2023-02-05T04:05:06".equals(openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
+        final Observation thirdHead = heads.stream().filter(e -> "2023-02-05T04:05:06".equals(
+                        openFhirMapperUtils.dateTimeToString(e.getEffectiveDateTimeType().getValue())))
                 .findFirst().orElse(null);
         Assert.assertEquals("50.0", firstHead.getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("cm", firstHead.getValueQuantity().getUnit());
@@ -227,38 +259,59 @@ public class OpenEhrToFhirTest {
         repo.initRepository(context, getClass().getResource("/").getFile());
         final OPERATIONALTEMPLATE operationalTemplate = getOperationalTemplate("/medication order.opt");
         final WebTemplate growthChartOptTemplate = new OPTParser(operationalTemplate).parse();
-        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/medication_order_flat.json"), growthChartOptTemplate);
+        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/medication_order_flat.json"),
+                                                                             growthChartOptTemplate);
         final Bundle createdResources = openEhrToFhir.compositionToFhir(context, composition, operationalTemplate);
         Assert.assertEquals(2, createdResources.getEntry().size());
         final MedicationRequest medicationRequestOne = (MedicationRequest) createdResources.getEntry().stream()
                 .map(res -> (MedicationRequest) res.getResource())
-                .filter(res -> res.getNote().stream().anyMatch(note -> note.getText().startsWith("Additional instruction on one")))
+                .filter(res -> res.getNote().stream()
+                        .anyMatch(note -> note.getText().startsWith("Additional instruction on one")))
                 .findFirst()
                 .orElse(null);
-        Assert.assertEquals("Lorem ipsum0", ((Medication) medicationRequestOne.getMedicationReference().getResource()).getCode().getText());
-        Assert.assertEquals("21.0", ((Quantity) medicationRequestOne.getDosageInstructionFirstRep().getDoseAndRateFirstRep().getDose()).getValue().toPlainString());
-        Assert.assertEquals("mm", ((Quantity) medicationRequestOne.getDosageInstructionFirstRep().getDoseAndRateFirstRep().getDose()).getUnit());
+        Assert.assertEquals("Lorem ipsum0",
+                            ((Medication) medicationRequestOne.getMedicationReference().getResource()).getCode()
+                                    .getText());
+        Assert.assertEquals("21.0",
+                            ((Quantity) medicationRequestOne.getDosageInstructionFirstRep().getDoseAndRateFirstRep()
+                                    .getDose()).getValue().toPlainString());
+        Assert.assertEquals("mm",
+                            ((Quantity) medicationRequestOne.getDosageInstructionFirstRep().getDoseAndRateFirstRep()
+                                    .getDose()).getUnit());
         Assert.assertEquals(2, medicationRequestOne.getNote().size());
-        Assert.assertTrue(medicationRequestOne.getNote().stream().anyMatch(note -> note.getText().equals("Additional instruction on one first")));
-        Assert.assertTrue(medicationRequestOne.getNote().stream().anyMatch(note -> note.getText().equals("Additional instruction on one second")));
+        Assert.assertTrue(medicationRequestOne.getNote().stream()
+                                  .anyMatch(note -> note.getText().equals("Additional instruction on one first")));
+        Assert.assertTrue(medicationRequestOne.getNote().stream()
+                                  .anyMatch(note -> note.getText().equals("Additional instruction on one second")));
         Assert.assertNull(medicationRequestOne.getAuthoredOn());
 
-        Assert.assertEquals("at0067", medicationRequestOne.getDosageInstruction().get(0).getAdditionalInstructionFirstRep().getCodingFirstRep().getCode());
-        Assert.assertEquals("local", medicationRequestOne.getDosageInstruction().get(0).getAdditionalInstructionFirstRep().getCodingFirstRep().getSystem());
+        Assert.assertEquals("at0067",
+                            medicationRequestOne.getDosageInstruction().get(0).getAdditionalInstructionFirstRep()
+                                    .getCodingFirstRep().getCode());
+        Assert.assertEquals("local",
+                            medicationRequestOne.getDosageInstruction().get(0).getAdditionalInstructionFirstRep()
+                                    .getCodingFirstRep().getSystem());
 
         final MedicationRequest medicationRequestTwo = (MedicationRequest) createdResources.getEntry().stream()
                 .map(res -> (MedicationRequest) res.getResource())
-                .filter(res -> res.getNote().stream().anyMatch(note -> note.getText().startsWith("Additional instruction on two")))
+                .filter(res -> res.getNote().stream()
+                        .anyMatch(note -> note.getText().startsWith("Additional instruction on two")))
                 .findFirst()
                 .orElse(null);
-        Assert.assertEquals("Lorem ipsum1", ((Medication) medicationRequestTwo.getMedicationReference().getResource()).getCode().getText());
+        Assert.assertEquals("Lorem ipsum1",
+                            ((Medication) medicationRequestTwo.getMedicationReference().getResource()).getCode()
+                                    .getText());
         Assert.assertTrue(medicationRequestTwo.getDosageInstruction().isEmpty());
         Assert.assertEquals(3, medicationRequestTwo.getNote().size());
-        Assert.assertTrue(medicationRequestTwo.getNote().stream().anyMatch(note -> note.getText().equals("Additional instruction on two first")));
-        Assert.assertTrue(medicationRequestTwo.getNote().stream().anyMatch(note -> note.getText().equals("Additional instruction on two second")));
-        Assert.assertTrue(medicationRequestTwo.getNote().stream().anyMatch(note -> note.getText().equals("Additional instruction on two third")));
+        Assert.assertTrue(medicationRequestTwo.getNote().stream()
+                                  .anyMatch(note -> note.getText().equals("Additional instruction on two first")));
+        Assert.assertTrue(medicationRequestTwo.getNote().stream()
+                                  .anyMatch(note -> note.getText().equals("Additional instruction on two second")));
+        Assert.assertTrue(medicationRequestTwo.getNote().stream()
+                                  .anyMatch(note -> note.getText().equals("Additional instruction on two third")));
 
-        Assert.assertEquals("2022-02-03T04:05:06", openFhirMapperUtils.dateTimeToString(medicationRequestTwo.getAuthoredOn()));
+        Assert.assertEquals("2022-02-03T04:05:06",
+                            openFhirMapperUtils.dateTimeToString(medicationRequestTwo.getAuthoredOn()));
     }
 
     @Test
@@ -295,43 +348,141 @@ public class OpenEhrToFhirTest {
         );
         final Map<String, List<String>> stringListMap = openEhrToFhir.joinValuesThatAreOne(toJoin);
         Assert.assertEquals(3, stringListMap.get("growth_chart/body_weight/any_event:1/state_of_dress").size());
-        Assert.assertEquals("growth_chart/body_weight/any_event:1/state_of_dress|code", stringListMap.get("growth_chart/body_weight/any_event:1/state_of_dress").get(0));
-        Assert.assertEquals("growth_chart/body_weight/any_event:1/state_of_dress|terminology", stringListMap.get("growth_chart/body_weight/any_event:1/state_of_dress").get(1));
-        Assert.assertEquals("growth_chart/body_weight/any_event:1/state_of_dress|value", stringListMap.get("growth_chart/body_weight/any_event:1/state_of_dress").get(2));
+        Assert.assertEquals("growth_chart/body_weight/any_event:1/state_of_dress|code",
+                            stringListMap.get("growth_chart/body_weight/any_event:1/state_of_dress").get(0));
+        Assert.assertEquals("growth_chart/body_weight/any_event:1/state_of_dress|terminology",
+                            stringListMap.get("growth_chart/body_weight/any_event:1/state_of_dress").get(1));
+        Assert.assertEquals("growth_chart/body_weight/any_event:1/state_of_dress|value",
+                            stringListMap.get("growth_chart/body_weight/any_event:1/state_of_dress").get(2));
         Assert.assertEquals(3, stringListMap.get("growth_chart/body_weight/any_event:2/math_function").size());
         Assert.assertEquals(2, stringListMap.get("growth_chart/body_weight/encoding").size());
         Assert.assertEquals(1, stringListMap.get("growth_chart/body_weight/any_event:1/confounding_factors:0").size());
     }
 
     @Test
+    public void joinValuesThatAreOne_oneContainsTheOther() {
+        final List<String> toJoin = Arrays.asList(
+                "diagnose/diagnose:0/klinisch_relevanter_zeitraum_zeitpunkt_der_genesung",
+                "diagnose/diagnose:0/klinischer_status/diagnostic_status|code",
+                "diagnose/diagnose:0/klinischer_status/diagnostic_status|terminology",
+                "diagnose/diagnose:0/klinischer_status/diagnostic_status|value",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status|terminology",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status|code",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status|value",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status2|value",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status2|terminology",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status2|code",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle|code",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle|terminology",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle|value",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle2|value",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle2|code",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle2|terminology",
+                "diagnose/diagnose:0/diagnosesicherheit|value",
+                "diagnose/diagnose:0/diagnosesicherheit|terminology",
+                "diagnose/diagnose:0/diagnosesicherheit|code",
+                "diagnose/diagnose:0/diagnosesicherheit2|value",
+                "diagnose/diagnose:0/diagnosesicherheit2|code",
+                "diagnose/diagnose:0/diagnosesicherheit2|terminology",
+                "diagnose/diagnose:0/diagnoseerläuterung",
+                "diagnose/diagnose:0/letztes_dokumentationsdatum",
+                "diagnose/diagnose:0/language|code",
+                "diagnose/diagnose:0/language|terminology"
+        );
+        final Map<String, List<String>> stringListMap = openEhrToFhir.joinValuesThatAreOne(toJoin);
+        Assert.assertEquals(3, stringListMap.get("diagnose/diagnose:0/klinischer_status/klinischer_status").size());
+
+        final JsonObject flatJsonObject = new JsonObject();
+        toJoin.forEach(tj -> flatJsonObject.add(tj, new JsonPrimitive("random")));
+
+        flatJsonObject.add("diagnose/diagnose:0/lebensphase/ende|code", new JsonPrimitive("44"));
+        flatJsonObject.add("diagnose/diagnose:0/lebensphase/ende|value", new JsonPrimitive(
+                "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de' available"));
+        flatJsonObject.add("diagnose/diagnose:0/lebensphase/ende|terminology", new JsonPrimitive(
+                "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"));
+        flatJsonObject.add("diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|value",
+                           new JsonPrimitive("†"));
+        flatJsonObject.add("diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|code",
+                           new JsonPrimitive("at0002"));
+        flatJsonObject.add("diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|terminology",
+                           new JsonPrimitive("local"));
+        flatJsonObject.add("diagnose/diagnose:0/klinisch_relevanter_zeitraum_zeitpunkt_der_genesung",
+                           new JsonPrimitive("2022-02-03T04:05:06"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnostic_status|code", new JsonPrimitive("at0016"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnostic_status|terminology",
+                           new JsonPrimitive("local"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnostic_status|value",
+                           new JsonPrimitive("Preliminary"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status|terminology",
+                           new JsonPrimitive("local"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status|code", new JsonPrimitive("at0026"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status|value",
+                           new JsonPrimitive("Active"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status2|value",
+                           new JsonPrimitive("Active"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status2|terminology",
+                           new JsonPrimitive("local"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status2|code",
+                           new JsonPrimitive("at0026"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle|code", new JsonPrimitive("42"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle|terminology", new JsonPrimitive(
+                "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/diagnosis-role"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle|value", new JsonPrimitive(
+                "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/diagnosis-role' available"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle2|value", new JsonPrimitive(
+                "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/diagnosis-role' available"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle2|code", new JsonPrimitive("42"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle2|terminology", new JsonPrimitive(
+                "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/diagnosis-role"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit|value", new JsonPrimitive(
+                "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT' available"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit|terminology", new JsonPrimitive(
+                "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit|code", new JsonPrimitive("42"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit2|value", new JsonPrimitive(
+                "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT' available"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit2|code", new JsonPrimitive("42"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit2|terminology", new JsonPrimitive(
+                "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnoseerläuterung", new JsonPrimitive("Lorem ipsum"));
+        flatJsonObject.add("diagnose/diagnose:0/letztes_dokumentationsdatum", new JsonPrimitive("2022-02-03T04:05:06"));
+        flatJsonObject.add("diagnose/diagnose:0/language|code", new JsonPrimitive("en"));
+
+        final List<String> matchingEntries = openEhrToFhir.getAllEntriesThatMatch(
+                openFhirStringUtils.addRegexPatternToSimplifiedFlatFormat("diagnose/diagnose/klinischer_status/klinischer_status"),
+                flatJsonObject);
+        Assert.assertEquals(3, matchingEntries.size());
+    }
+
+    @Test
     public void joinValuesThatAreOne_dots() {
         final List<String> toJoin = Arrays.asList("stationärer_versorgungsfall/context/start_time",
-                "stationärer_versorgungsfall/context/setting|terminology",
-                "stationärer_versorgungsfall/context/setting|code",
-                "stationärer_versorgungsfall/context/setting|value",
-                "stationärer_versorgungsfall/context/_end_time",
-                "stationärer_versorgungsfall/context/_health_care_facility|name",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|terminology",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|code",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|value",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|terminology",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|value",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|code",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|value",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|code",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|terminology",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|terminology",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|value",
-                "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|code",
-                "stationärer_versorgungsfall/aufnahmedaten/kennung_vor_der_aufnahme",
-                "stationärer_versorgungsfall/aufnahmedaten/datum_uhrzeit_der_aufnahme",
-                "stationärer_versorgungsfall/aufnahmedaten/vorheriger_patientenstandort_vor_aufnahme/campus"
+                                                  "stationärer_versorgungsfall/context/setting|terminology",
+                                                  "stationärer_versorgungsfall/context/setting|code",
+                                                  "stationärer_versorgungsfall/context/setting|value",
+                                                  "stationärer_versorgungsfall/context/_end_time",
+                                                  "stationärer_versorgungsfall/context/_health_care_facility|name",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|terminology",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|code",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|value",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|terminology",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|value",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|code",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|value",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|code",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|terminology",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|terminology",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|value",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|code",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/kennung_vor_der_aufnahme",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/datum_uhrzeit_der_aufnahme",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/vorheriger_patientenstandort_vor_aufnahme/campus"
         );
 
         final JsonObject flatJsonObject = new JsonObject();
         toJoin.forEach(tj -> flatJsonObject.add(tj, new JsonPrimitive("random")));
 
-        final String testingPath = "$openEhrArchetype.aufnahmedaten.aufnahmegrund_-_1\\._und_2\\._stelle";
+        final String testingPath = "$archetype.aufnahmedaten.aufnahmegrund_-_1\\._und_2\\._stelle";
 
         final String prepared = openFhirStringUtils.prepareOpenEhrSyntax(testingPath, "stationärer_versorgungsfall");
 

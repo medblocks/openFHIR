@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 import org.springframework.http.ResponseEntity;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
@@ -53,6 +54,7 @@ public abstract class KdsBidirectionalTest {
     final String EHRBASE_HOST = "http://localhost:8081";
 
     final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
+    final FhirConnectModelMerger fhirConnectModelMerger = new FhirConnectModelMerger();
     final FhirPathR4 fhirPath = new FhirPathR4(FhirContext.forR4());
     final JsonParser jsonParser = (JsonParser) FhirContext.forR4().newJsonParser();
 
@@ -69,8 +71,7 @@ public abstract class KdsBidirectionalTest {
 
     @Before
     public void init() {
-        //todo: GASPER: see how to refactor tests so context and opt is not explicitly referenced but rather taken based on the context.condition
-        repo = new TestOpenFhirMappingContext(fhirPath, openFhirStringUtils);
+        repo = new TestOpenFhirMappingContext(fhirPath, openFhirStringUtils, fhirConnectModelMerger);
         fhirPath.setEvaluationContext(new IFhirPathEvaluationContext() {
             // todo!!
             @Override
@@ -165,7 +166,9 @@ public abstract class KdsBidirectionalTest {
     }
 
     protected FhirConnectContext getContext(final String path) {
-        final Yaml yaml = new Yaml();
+        final LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setEnumCaseSensitive(false);
+        final Yaml yaml = new Yaml(loaderOptions);
         final InputStream inputStream = this.getClass().getResourceAsStream(path);
         return yaml.loadAs(inputStream, FhirConnectContext.class);
     }
