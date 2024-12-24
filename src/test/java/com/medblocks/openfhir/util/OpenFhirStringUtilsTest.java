@@ -32,7 +32,7 @@ public class OpenFhirStringUtilsTest {
         final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
         Condition condition = new Condition();
 
-        Assert.assertEquals("MedicationStatement.effective.as(Period)", openFhirStringUtils.getFhirPathWithConditions("$fhirResource.effective.as(Period)",
+        Assert.assertEquals("MedicationStatement.effective.as(Period)", openFhirStringUtils.getFhirPathWithConditions("$resource.effective.as(Period)",
                 null,
                 "MedicationStatement",
                 null));
@@ -43,7 +43,7 @@ public class OpenFhirStringUtilsTest {
                 "MedicationStatement.medication.resolve()"));
 
 
-        condition.setTargetRoot("$fhirResource.location.physicalType.coding");
+        condition.setTargetRoot("$resource.location.physicalType.coding");
         condition.setTargetAttribute("code");
         condition.setCriteria("[bd]");
         condition.setOperator("one of");
@@ -54,7 +54,7 @@ public class OpenFhirStringUtilsTest {
                 null));
 
 
-        condition.setTargetRoot("$fhirResource.identifier");
+        condition.setTargetRoot("$resource.identifier");
         condition.setTargetAttribute("system");
         condition.setCriteria("[external identifier]");
         condition.setOperator("one of");
@@ -70,7 +70,7 @@ public class OpenFhirStringUtilsTest {
                         "MedicationStatement.dosage"));
 
         condition = new Condition();
-        condition.setTargetRoot("$fhirResource.identifier");
+        condition.setTargetRoot("$resource.identifier");
         condition.setTargetAttribute("system");
         condition.setCriteria("[id]");
         condition.setOperator("one of");
@@ -150,12 +150,12 @@ public class OpenFhirStringUtilsTest {
                         null));
 
         condition = new Condition();
-        condition.setTargetRoot("$fhirResource.extension");
+        condition.setTargetRoot("$resource.extension");
         condition.setTargetAttribute("url");
         condition.setCriteria("[http://fhir.de/StructureDefinition/Aufnahmegrund]");
         condition.setOperator("one of");
         Assert.assertEquals("Encounter.extension.where(url.toString().contains('http://fhir.de/StructureDefinition/Aufnahmegrund'))",
-                openFhirStringUtils.getFhirPathWithConditions("$fhirResource.extension",
+                openFhirStringUtils.getFhirPathWithConditions("$resource.extension",
                         condition,
                         "Encounter",
                         null));

@@ -5,7 +5,20 @@ import ca.uhn.fhir.fhirpath.IFhirPathEvaluationContext;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import com.medblocks.openfhir.tofhir.IntermediateCacheProcessing;
+import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
+import com.medblocks.openfhir.tofhir.OpenEhrToFhirTest;
+import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
+import com.medblocks.openfhir.toopenehr.FhirToOpenEhrTest;
+import com.medblocks.openfhir.util.FhirConnectModelMerger;
+import com.medblocks.openfhir.util.FhirInstanceCreator;
+import com.medblocks.openfhir.util.FhirInstanceCreatorUtility;
+import com.medblocks.openfhir.util.FhirInstancePopulator;
+import com.medblocks.openfhir.util.OpenEhrCachedUtils;
+import com.medblocks.openfhir.util.OpenEhrPopulator;
+import com.medblocks.openfhir.util.OpenFhirMapperUtils;
+import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datastructures.Element;
@@ -18,30 +31,8 @@ import com.nedap.archie.rm.datavalues.quantity.DvProportion;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartyIdentified;
-import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
-import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
-import com.medblocks.openfhir.tofhir.OpenEhrToFhirTest;
-import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
-import com.medblocks.openfhir.toopenehr.FhirToOpenEhrTest;
-import com.medblocks.openfhir.util.*;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.apache.commons.io.IOUtils;
-import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
-import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
-import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
-import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.hl7.fhir.instance.model.api.IBase;
-import org.hl7.fhir.instance.model.api.IIdType;
-import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
-import org.hl7.fhir.r4.model.*;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.openehr.schemas.v1.TemplateDocument;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -51,19 +42,45 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.apache.commons.io.IOUtils;
+import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
+import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
+import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
+import org.hl7.fhir.instance.model.api.IBase;
+import org.hl7.fhir.instance.model.api.IIdType;
+import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
+import org.hl7.fhir.r4.model.Attachment;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Consent;
+import org.hl7.fhir.r4.model.Medication;
+import org.hl7.fhir.r4.model.MedicationRequest;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Quantity;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.StringType;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.openehr.schemas.v1.TemplateDocument;
+import org.yaml.snakeyaml.Yaml;
 
 public class BidirectionalTest {
+
     final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
     final FhirPathR4 fhirPath = new FhirPathR4(FhirContext.forR4());
 
     final OpenFhirMapperUtils openFhirMapperUtils = new OpenFhirMapperUtils();
+    final FhirConnectModelMerger fhirConnectModelMerger = new FhirConnectModelMerger();
     TestOpenFhirMappingContext repo;
     OpenEhrToFhir openEhrToFhir;
     FhirToOpenEhr fhirToOpenEhr;
 
     @Before
     public void init() {
-        repo = new TestOpenFhirMappingContext(fhirPath, openFhirStringUtils);
+        repo = new TestOpenFhirMappingContext(fhirPath, openFhirStringUtils, fhirConnectModelMerger);
         fhirPath.setEvaluationContext(new IFhirPathEvaluationContext() {
             // todo!!
             @Override
@@ -72,38 +89,43 @@ public class BidirectionalTest {
             }
         });
 
-        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(openFhirStringUtils);
+        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(
+                openFhirStringUtils);
         openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
-                repo,
-                new OpenEhrCachedUtils(null),
-                new Gson(),
-                openFhirStringUtils,
-                new OpenEhrRmWorker(openFhirStringUtils),
-                new OpenFhirMapperUtils(),
-                new FhirInstancePopulator(),
-                new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
-                fhirInstanceCreatorUtility,
-                fhirPath,
-                new IntermediateCacheProcessing(openFhirStringUtils));
+                                          repo,
+                                          new OpenEhrCachedUtils(null),
+                                          new Gson(),
+                                          openFhirStringUtils,
+                                          new OpenEhrRmWorker(openFhirStringUtils),
+                                          new OpenFhirMapperUtils(),
+                                          new FhirInstancePopulator(),
+                                          new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
+                                          fhirInstanceCreatorUtility,
+                                          fhirPath,
+                                          new IntermediateCacheProcessing(openFhirStringUtils));
         fhirToOpenEhr = new FhirToOpenEhr(fhirPath,
-                new OpenFhirStringUtils(),
-                new FlatJsonUnmarshaller(),
-                new Gson(),
-                new OpenEhrRmWorker(openFhirStringUtils),
-                openFhirStringUtils,
-                repo,
-                new OpenEhrCachedUtils(null),
-                new OpenFhirMapperUtils(),
-                new OpenEhrPopulator(new OpenFhirMapperUtils()));
+                                          new OpenFhirStringUtils(),
+                                          new FlatJsonUnmarshaller(),
+                                          new Gson(),
+                                          new OpenEhrRmWorker(openFhirStringUtils),
+                                          openFhirStringUtils,
+                                          repo,
+                                          new OpenEhrCachedUtils(null),
+                                          new OpenFhirMapperUtils(),
+                                          new OpenEhrPopulator(new OpenFhirMapperUtils()));
     }
+
     @Test
     public void news2() throws IOException {
         final FhirConnectContext context = getContext("/news2/NEWS2_Context_Mapping.context.yaml");
         repo.initRepository(context, getClass().getResource("/news2/").getFile());
         final OPERATIONALTEMPLATE operationalTemplate = getOperationalTemplate("/news2/NEWS2 Encounter Parent.opt");
-        final Bundle testBundle = FhirContext.forR4().newJsonParser().parseResource(Bundle.class, getClass().getResourceAsStream("/news2/exampleBundle.json"));
-        final Composition composition = fhirToOpenEhr.fhirToCompositionRm(context, testBundle, operationalTemplate); // should create two of them :o what now :o
-        final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationalTemplate); // should create two of them :o what now :o
+        final Bundle testBundle = FhirContext.forR4().newJsonParser()
+                .parseResource(Bundle.class, getClass().getResourceAsStream("/news2/exampleBundle.json"));
+        final Composition composition = fhirToOpenEhr.fhirToCompositionRm(context, testBundle,
+                                                                          operationalTemplate); // should create two of them :o what now :o
+        final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle,
+                                                                         operationalTemplate); // should create two of them :o what now :o
 
         // assert composition
         final String totalScorePath = "/content[openEHR-EHR-OBSERVATION.news2.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0028]/value"; // path to DvCount
@@ -124,7 +146,8 @@ public class BidirectionalTest {
 
         final Long respirationValue = ((DvOrdinal) composition.itemAtPath(respirationRatePath)).getValue();
         Assert.assertEquals(Long.valueOf(2), respirationValue);
-        Assert.assertEquals("ScoreOf", ((DvOrdinal) composition.itemAtPath(respirationRatePath)).getSymbol().getValue());
+        Assert.assertEquals("ScoreOf",
+                            ((DvOrdinal) composition.itemAtPath(respirationRatePath)).getSymbol().getValue());
 
         Assert.assertEquals(Long.valueOf(2), ((DvOrdinal) composition.itemAtPath(spo2Path)).getValue());
         Assert.assertEquals(Long.valueOf(0), ((DvOrdinal) composition.itemAtPath(airOrOxygenPath)).getValue());
@@ -165,7 +188,8 @@ public class BidirectionalTest {
         Assert.assertEquals(Double.valueOf(0.93), spo2.getMagnitude());
 
         // openEHR to FHIR
-        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat("/news2/news2_encounter_parent_FLAT.json"), new OPTParser(operationalTemplate).parse());
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(
+                getFlat("/news2/news2_encounter_parent_FLAT.json"), new OPTParser(operationalTemplate).parse());
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationalTemplate);
 
         // news2
@@ -178,7 +202,8 @@ public class BidirectionalTest {
         Assert.assertEquals("survey", news2Observation.get(0).getCategoryFirstRep().getCodingFirstRep().getCode());
         Assert.assertEquals("9", news2Observation.get(0).getValueQuantity().getValue().toPlainString());
 //        Assert.assertEquals(Long.valueOf("1724566899000"), (Long) news2Observation.get(0).getEffectiveDateTimeType().getValue().getTime());
-        final Observation.ObservationComponentComponent raspirationRateComponent = getComponentByCode(news2Observation.get(0), "1104301000000104", true);
+        final Observation.ObservationComponentComponent raspirationRateComponent = getComponentByCode(
+                news2Observation.get(0), "1104301000000104", true);
         Assert.assertEquals("3", raspirationRateComponent
                 .getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("at0064", raspirationRateComponent
@@ -186,33 +211,39 @@ public class BidirectionalTest {
         Assert.assertEquals("≥25", raspirationRateComponent
                 .getValueQuantity().getUnit());
 
-        final Observation.ObservationComponentComponent spoScale1 = getComponentByCode(news2Observation.get(0), "1104311000000102", true);
+        final Observation.ObservationComponentComponent spoScale1 = getComponentByCode(news2Observation.get(0),
+                                                                                       "1104311000000102", true);
         Assert.assertEquals("2", spoScale1.getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("at0032", spoScale1.getValueQuantity().getCode());
         Assert.assertEquals("92-93", spoScale1.getValueQuantity().getUnit());
 
 
-        final Observation.ObservationComponentComponent airOrOxygen = getComponentByCode(news2Observation.get(0), "1104331000000105", true);
+        final Observation.ObservationComponentComponent airOrOxygen = getComponentByCode(news2Observation.get(0),
+                                                                                         "1104331000000105", true);
         Assert.assertEquals("0", airOrOxygen.getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("at0036", airOrOxygen.getValueQuantity().getCode());
         Assert.assertEquals("Air", airOrOxygen.getValueQuantity().getUnit());
 
-        final Observation.ObservationComponentComponent systolic = getComponentByCode(news2Observation.get(0), "1104341000000101", true);
+        final Observation.ObservationComponentComponent systolic = getComponentByCode(news2Observation.get(0),
+                                                                                      "1104341000000101", true);
         Assert.assertEquals("2", systolic.getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("at0016", systolic.getValueQuantity().getCode());
         Assert.assertEquals("91-100", systolic.getValueQuantity().getUnit());
 
-        final Observation.ObservationComponentComponent consciousness = getComponentByCode(news2Observation.get(0), "1104361000000100", true);
+        final Observation.ObservationComponentComponent consciousness = getComponentByCode(news2Observation.get(0),
+                                                                                           "1104361000000100", true);
         Assert.assertEquals("0", consciousness.getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("at0024", consciousness.getValueQuantity().getCode());
         Assert.assertEquals("Alert", consciousness.getValueQuantity().getUnit());
 
-        final Observation.ObservationComponentComponent temperature = getComponentByCode(news2Observation.get(0), "1104371000000107", true);
+        final Observation.ObservationComponentComponent temperature = getComponentByCode(news2Observation.get(0),
+                                                                                         "1104371000000107", true);
         Assert.assertEquals("3", temperature.getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("at0039", temperature.getValueQuantity().getCode());
         Assert.assertEquals("≤35.0", temperature.getValueQuantity().getUnit());
 
-        final Observation.ObservationComponentComponent pulse = getComponentByCode(news2Observation.get(0), "1104351000000103", true);
+        final Observation.ObservationComponentComponent pulse = getComponentByCode(news2Observation.get(0),
+                                                                                   "1104351000000103", true);
         Assert.assertEquals("1", pulse.getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("at0012", pulse.getValueQuantity().getCode());
         Assert.assertEquals("41-50", pulse.getValueQuantity().getUnit());
@@ -258,7 +289,8 @@ public class BidirectionalTest {
                 .collect(Collectors.toList());
         Assert.assertEquals(1, temperatureObservation.size());
         Assert.assertEquals("final", temperatureObservation.get(0).getStatusElement().getValueAsString());
-        Assert.assertEquals("vital-signs", temperatureObservation.get(0).getCategoryFirstRep().getCodingFirstRep().getCode());
+        Assert.assertEquals("vital-signs",
+                            temperatureObservation.get(0).getCategoryFirstRep().getCodingFirstRep().getCode());
         Assert.assertEquals("2.1", temperatureObservation.get(0).getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("Cel", temperatureObservation.get(0).getValueQuantity().getUnit());
 
@@ -280,7 +312,8 @@ public class BidirectionalTest {
                 .collect(Collectors.toList());
         Assert.assertEquals(1, repirationObservation.size());
         Assert.assertEquals("final", repirationObservation.get(0).getStatusElement().getValueAsString());
-        Assert.assertEquals("vital-signs", repirationObservation.get(0).getCategoryFirstRep().getCodingFirstRep().getCode());
+        Assert.assertEquals("vital-signs",
+                            repirationObservation.get(0).getCategoryFirstRep().getCodingFirstRep().getCode());
         Assert.assertEquals("183.0", repirationObservation.get(0).getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("/min", repirationObservation.get(0).getValueQuantity().getUnit());
 
@@ -291,14 +324,16 @@ public class BidirectionalTest {
                 .collect(Collectors.toList());
         Assert.assertEquals(1, poximetryObservation.size());
         Assert.assertEquals("final", poximetryObservation.get(0).getStatusElement().getValueAsString());
-        Assert.assertEquals("vital-signs", poximetryObservation.get(0).getCategoryFirstRep().getCodingFirstRep().getCode());
+        Assert.assertEquals("vital-signs",
+                            poximetryObservation.get(0).getCategoryFirstRep().getCodingFirstRep().getCode());
         Assert.assertEquals("37.6", poximetryObservation.get(0).getValueQuantity().getValue().toPlainString());
         Assert.assertEquals("%", poximetryObservation.get(0).getValueQuantity().getCode());
         Assert.assertEquals("percent", poximetryObservation.get(0).getValueQuantity().getUnit());
         Assert.assertEquals("http://unitsofmeasure.org", poximetryObservation.get(0).getValueQuantity().getSystem());
     }
 
-    private Observation.ObservationComponentComponent getComponentByCode(final Observation observation, final String code, boolean assertOnlyOne) {
+    private Observation.ObservationComponentComponent getComponentByCode(final Observation observation,
+                                                                         final String code, boolean assertOnlyOne) {
         final List<Observation.ObservationComponentComponent> allMatching = observation.getComponent().stream()
                 .filter(com -> code.equals(com.getCode().getCodingFirstRep().getCode()))
                 .collect(Collectors.toList());
@@ -326,22 +361,34 @@ public class BidirectionalTest {
         final String decisionCodePath = "/content[openEHR-EHR-EVALUATION.advance_intervention_decisions.v1, 'Advance intervention decisions']/data[at0001]/items[at0014]/items[at0034]/value";
         final String commentInterventionPath = "/content[openEHR-EHR-EVALUATION.advance_intervention_decisions.v1]/data[at0001]/items[at0014]/items[at0040]/value/value";
 
-        Assert.assertEquals("NR", ((DvCodedText) composition.itemAtPath(typeOfDirectiveCodePath)).getDefiningCode().getCodeString());
-        Assert.assertEquals("urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4.14.1", ((DvCodedText) composition.itemAtPath(typeOfDirectiveCodePath)).getDefiningCode().getTerminologyId().getValue());
+        Assert.assertEquals("NR", ((DvCodedText) composition.itemAtPath(typeOfDirectiveCodePath)).getDefiningCode()
+                .getCodeString());
+        Assert.assertEquals("urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4.14.1",
+                            ((DvCodedText) composition.itemAtPath(typeOfDirectiveCodePath)).getDefiningCode()
+                                    .getTerminologyId().getValue());
         Assert.assertEquals("active", ((DvText) composition.itemAtPath(statusPath)).getValue());
-        Assert.assertEquals("Comment of this thing which is nice", ((DvText) composition.itemAtPath(commentPath)).getValue());
+        Assert.assertEquals("Comment of this thing which is nice",
+                            ((DvText) composition.itemAtPath(commentPath)).getValue());
         final Element mediaElement = (Element) ((Cluster) composition.itemAtPath(mediaPath)).getItems().get(0);
         final DvMultimedia multimedia = (DvMultimedia) mediaElement.getValue();
         Assert.assertTrue(new String(multimedia.getData()).startsWith("JVBER"));
         Assert.assertEquals("application/pdf", multimedia.getMediaType().getCodeString());
-        Assert.assertEquals("Voorbeeld voorpagina wilsverklaringen - PDF.pdf", composition.itemAtPath(mediaNamePath + "/value"));
-        Assert.assertEquals("Cardiopulmonary resuscitation (procedure)", ((DvCodedText) composition.itemAtPath(treatmentCodePath)).getValue());
-        Assert.assertEquals("89666000", ((DvCodedText) composition.itemAtPath(treatmentCodePath)).getDefiningCode().getCodeString());
-        Assert.assertEquals("http://snomed.info/sct", ((DvCodedText) composition.itemAtPath(treatmentCodePath)).getDefiningCode().getTerminologyId().getValue());
+        Assert.assertEquals("Voorbeeld voorpagina wilsverklaringen - PDF.pdf",
+                            composition.itemAtPath(mediaNamePath + "/value"));
+        Assert.assertEquals("Cardiopulmonary resuscitation (procedure)",
+                            ((DvCodedText) composition.itemAtPath(treatmentCodePath)).getValue());
+        Assert.assertEquals("89666000", ((DvCodedText) composition.itemAtPath(treatmentCodePath)).getDefiningCode()
+                .getCodeString());
+        Assert.assertEquals("http://snomed.info/sct",
+                            ((DvCodedText) composition.itemAtPath(treatmentCodePath)).getDefiningCode()
+                                    .getTerminologyId().getValue());
         Assert.assertEquals("Comment of this treatment directive", composition.itemAtPath(commentInterventionPath));
         Assert.assertEquals("Yes, but", ((DvCodedText) composition.itemAtPath(decisionCodePath)).getValue());
-        Assert.assertEquals("JA_MAAR", ((DvCodedText) composition.itemAtPath(decisionCodePath)).getDefiningCode().getCodeString());
-        Assert.assertEquals("urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4", ((DvCodedText) composition.itemAtPath(decisionCodePath)).getDefiningCode().getTerminologyId().getValue());
+        Assert.assertEquals("JA_MAAR",
+                            ((DvCodedText) composition.itemAtPath(decisionCodePath)).getDefiningCode().getCodeString());
+        Assert.assertEquals("urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4",
+                            ((DvCodedText) composition.itemAtPath(decisionCodePath)).getDefiningCode()
+                                    .getTerminologyId().getValue());
 
         Assert.assertEquals("en", composition.getLanguage().getCodeString());
         Assert.assertEquals("ISO_639-1", composition.getLanguage().getTerminologyId().getValue());
@@ -356,12 +403,16 @@ public class BidirectionalTest {
 
         final List<Consent> treatmentDirectives = bundle.getEntry().stream()
                 .map(en -> ((Consent) en.getResource()))
-                .filter(en -> en.getMeta().getProfile().stream().anyMatch(prof -> "http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective".equals(prof.getValue())))
+                .filter(en -> en.getMeta().getProfile().stream().anyMatch(
+                        prof -> "http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective".equals(
+                                prof.getValue())))
                 .collect(Collectors.toList());
 
         final List<Consent> advanceDirectives = bundle.getEntry().stream()
                 .map(en -> ((Consent) en.getResource()))
-                .filter(en -> en.getMeta().getProfile().stream().anyMatch(prof -> "http://nictiz.nl/fhir/StructureDefinition/zib-AdvanceDirective".equals(prof.getValue())))
+                .filter(en -> en.getMeta().getProfile().stream().anyMatch(
+                        prof -> "http://nictiz.nl/fhir/StructureDefinition/zib-AdvanceDirective".equals(
+                                prof.getValue())))
                 .collect(Collectors.toList());
 
         Assert.assertEquals(1, treatmentDirectives.size());
@@ -369,16 +420,22 @@ public class BidirectionalTest {
 
         // assert treatment directives
         final Consent treatment = treatmentDirectives.get(0);
-        Assert.assertEquals("JA_MAAR", ((CodeableConcept) treatment.getModifierExtension().get(0).getValue()).getCodingFirstRep().getCode());
-        Assert.assertEquals("urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4", ((CodeableConcept) treatment.getModifierExtension().get(0).getValue()).getCodingFirstRep().getSystem());
+        Assert.assertEquals("JA_MAAR",
+                            ((CodeableConcept) treatment.getModifierExtension().get(0).getValue()).getCodingFirstRep()
+                                    .getCode());
+        Assert.assertEquals("urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4",
+                            ((CodeableConcept) treatment.getModifierExtension().get(0).getValue()).getCodingFirstRep()
+                                    .getSystem());
 
         Assert.assertEquals("89666000", (treatment.getExtension().stream()
-                .filter(ext -> ext.getUrl().equals("http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-Treatment"))
+                .filter(ext -> ext.getUrl()
+                        .equals("http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-Treatment"))
                 .map(ext -> ((CodeableConcept) ext.getValue()))
                 .findAny().orElse(null).getCodingFirstRep().getCode()));
 
         Assert.assertEquals("http://snomed.info/sct", (treatment.getExtension().stream()
-                .filter(ext -> ext.getUrl().equals("http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-Treatment"))
+                .filter(ext -> ext.getUrl()
+                        .equals("http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-Treatment"))
                 .map(ext -> ((CodeableConcept) ext.getValue()))
                 .findAny().orElse(null).getCodingFirstRep().getSystem()));
 
@@ -390,7 +447,8 @@ public class BidirectionalTest {
 
         // assert advance directives
         final Consent advanced = advanceDirectives.get(0);
-        Assert.assertEquals("urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4.14.1", advanced.getCategoryFirstRep().getCodingFirstRep().getSystem());
+        Assert.assertEquals("urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4.14.1",
+                            advanced.getCategoryFirstRep().getCodingFirstRep().getSystem());
         Assert.assertEquals("NR", advanced.getCategoryFirstRep().getCodingFirstRep().getCode());
         Assert.assertEquals("active", advanced.getStatusElement().getValueAsString());
 
@@ -413,14 +471,16 @@ public class BidirectionalTest {
         final Bundle bundle = new Bundle();
         final Bundle.BundleEntryComponent entry = new Bundle.BundleEntryComponent();
         final Consent consent = FhirContext.forR4().newXmlParser()
-                .parseResource(Consent.class, getClass().getResourceAsStream("/rso_poc_acp/zib-AdvanceDirective - example.xml"));
+                .parseResource(Consent.class,
+                               getClass().getResourceAsStream("/rso_poc_acp/zib-AdvanceDirective - example.xml"));
         consent.setPatient(new Reference().setDisplay("Max Muuster"));
         entry.setResource(consent);
         bundle.addEntry(entry);
 
         final Bundle.BundleEntryComponent entry2 = new Bundle.BundleEntryComponent();
         entry2.setResource(FhirContext.forR4().newXmlParser()
-                .parseResource(Consent.class, getClass().getResourceAsStream("/rso_poc_acp/zib-TreatmentDirective - example.xml")));
+                                   .parseResource(Consent.class, getClass().getResourceAsStream(
+                                           "/rso_poc_acp/zib-TreatmentDirective - example.xml")));
         bundle.addEntry(entry2);
         return bundle;
     }
@@ -430,12 +490,14 @@ public class BidirectionalTest {
         final Bundle bundle = new Bundle();
         final Bundle.BundleEntryComponent entry = new Bundle.BundleEntryComponent();
         entry.setResource(FhirContext.forR4().newXmlParser()
-                .parseResource(Consent.class, getClass().getResourceAsStream("/rso_poc_acp/zib-AdvanceDirective - example.xml")));
+                                  .parseResource(Consent.class, getClass().getResourceAsStream(
+                                          "/rso_poc_acp/zib-AdvanceDirective - example.xml")));
         bundle.addEntry(entry);
 
         final Bundle.BundleEntryComponent entry2 = new Bundle.BundleEntryComponent();
         entry2.setResource(FhirContext.forR4().newXmlParser()
-                .parseResource(Consent.class, getClass().getResourceAsStream("/rso_poc_acp/zib-AdvanceDirective - example2.xml")));
+                                   .parseResource(Consent.class, getClass().getResourceAsStream(
+                                           "/rso_poc_acp/zib-AdvanceDirective - example2.xml")));
         bundle.addEntry(entry2);
         return bundle;
     }
@@ -448,7 +510,8 @@ public class BidirectionalTest {
         final WebTemplate template = new OPTParser(operationalTemplate).parse();
 
         // have a composition from config
-        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/medication_order_flat.json"), template);
+        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/medication_order_flat.json"),
+                                                                             template);
 
         // transform it to FHIR
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationalTemplate);
@@ -476,17 +539,31 @@ public class BidirectionalTest {
         final List<Object> additionalInstructions = rmComposition.itemsAtPath(additionalInstruction);
         final List<Object> orderStarts = rmComposition.itemsAtPath(orderStartDate);
         final List<Object> directDurations = rmComposition.itemsAtPath(directionDuration);
-        if (medicationTexts.isEmpty() || doseAmounts.isEmpty() || additionalInstructions.isEmpty() || orderStarts.isEmpty() || directDurations.isEmpty()) {
+        if (medicationTexts.isEmpty() || doseAmounts.isEmpty() || additionalInstructions.isEmpty()
+                || orderStarts.isEmpty() || directDurations.isEmpty()) {
             Assert.fail();
         }
 
-        Assert.assertTrue(medicationTexts.stream().allMatch(med -> ((DvText) med).getValue().equals("Lorem ipsum1") || ((DvText) med).getValue().equals("Lorem ipsum0")));
-        Assert.assertTrue(doseAmounts.stream().allMatch(med -> ((DvQuantity) med).getMagnitude().equals(21.0) && ((DvQuantity) med).getUnits().equals("mm")));
-        Assert.assertTrue(additionalInstructions.stream().anyMatch(med -> ((DvText) ((Element) med).getValue()).getValue().startsWith("Additional instruction on one first")));
-        Assert.assertTrue(additionalInstructions.stream().anyMatch(med -> ((DvText) ((Element) med).getValue()).getValue().startsWith("Additional instruction on one second")));
-        Assert.assertTrue(additionalInstructions.stream().anyMatch(med -> ((DvText) ((Element) med).getValue()).getValue().startsWith("Additional instruction on two first")));
-        Assert.assertTrue(additionalInstructions.stream().anyMatch(med -> ((DvText) ((Element) med).getValue()).getValue().startsWith("Additional instruction on two second")));
-        Assert.assertTrue(additionalInstructions.stream().anyMatch(med -> ((DvText) ((Element) med).getValue()).getValue().startsWith("Additional instruction on two third")));
+        Assert.assertTrue(medicationTexts.stream().allMatch(
+                med -> ((DvText) med).getValue().equals("Lorem ipsum1") || ((DvText) med).getValue()
+                        .equals("Lorem ipsum0")));
+        Assert.assertTrue(doseAmounts.stream().allMatch(
+                med -> ((DvQuantity) med).getMagnitude().equals(21.0) && ((DvQuantity) med).getUnits().equals("mm")));
+        Assert.assertTrue(additionalInstructions.stream().anyMatch(
+                med -> ((DvText) ((Element) med).getValue()).getValue()
+                        .startsWith("Additional instruction on one first")));
+        Assert.assertTrue(additionalInstructions.stream().anyMatch(
+                med -> ((DvText) ((Element) med).getValue()).getValue()
+                        .startsWith("Additional instruction on one second")));
+        Assert.assertTrue(additionalInstructions.stream().anyMatch(
+                med -> ((DvText) ((Element) med).getValue()).getValue()
+                        .startsWith("Additional instruction on two first")));
+        Assert.assertTrue(additionalInstructions.stream().anyMatch(
+                med -> ((DvText) ((Element) med).getValue()).getValue()
+                        .startsWith("Additional instruction on two second")));
+        Assert.assertTrue(additionalInstructions.stream().anyMatch(
+                med -> ((DvText) ((Element) med).getValue()).getValue()
+                        .startsWith("Additional instruction on two third")));
         Assert.assertEquals(5, additionalInstructions.size());
         Assert.assertEquals(1, orderStarts.size());
         final Element date = (Element) orderStarts.get(0);
@@ -494,7 +571,8 @@ public class BidirectionalTest {
         Assert.assertEquals(5, ((LocalDateTime) ((DvDateTime) date.getValue()).getValue()).getMinute());
         Assert.assertEquals(2022, ((LocalDateTime) ((DvDateTime) date.getValue()).getValue()).getYear());
         Assert.assertEquals("Indefinite", ((DvCodedText) directDurations.get(0)).getValue());
-        Assert.assertEquals("local", ((DvCodedText) directDurations.get(0)).getDefiningCode().getTerminologyId().getName());
+        Assert.assertEquals("local",
+                            ((DvCodedText) directDurations.get(0)).getDefiningCode().getTerminologyId().getName());
         Assert.assertEquals("at0067", ((DvCodedText) directDurations.get(0)).getDefiningCode().getCodeString());
     }
 
@@ -505,7 +583,7 @@ public class BidirectionalTest {
         final OPERATIONALTEMPLATE operationalTemplate = getOperationalTemplate("/medication order.opt");
         final Bundle testBundle = FhirToOpenEhrTest.testMedicationMedicationRequestBundle();
         final Composition composition = fhirToOpenEhr.fhirToCompositionRm(context,
-                testBundle, operationalTemplate);
+                                                                          testBundle, operationalTemplate);
 
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationalTemplate);
         // fix references; I think this is only the case for testing, otherwise references should be intact
@@ -520,9 +598,12 @@ public class BidirectionalTest {
 
         Assert.assertEquals(1, bundle.getEntry().size());
         final MedicationRequest medReq = (MedicationRequest) bundle.getEntryFirstRep().getResource();
-        Assert.assertEquals("medication text", ((Medication) medReq.getMedicationReference().getResource()).getCode().getText());
-        Assert.assertEquals("unit", ((Quantity) medReq.getDosageInstructionFirstRep().getDoseAndRateFirstRep().getDose()).getUnit());
-        Assert.assertEquals("111.0", ((Quantity) medReq.getDosageInstructionFirstRep().getDoseAndRateFirstRep().getDose()).getValue().toPlainString());
+        Assert.assertEquals("medication text",
+                            ((Medication) medReq.getMedicationReference().getResource()).getCode().getText());
+        Assert.assertEquals("unit", ((Quantity) medReq.getDosageInstructionFirstRep().getDoseAndRateFirstRep()
+                .getDose()).getUnit());
+        Assert.assertEquals("111.0", ((Quantity) medReq.getDosageInstructionFirstRep().getDoseAndRateFirstRep()
+                .getDose()).getValue().toPlainString());
         compareFlatJsons(context, operationalTemplate, testBundle, bundle);
     }
 
@@ -534,7 +615,8 @@ public class BidirectionalTest {
         final WebTemplate template = new OPTParser(operationalTemplate).parse();
 
         // have a composition from config
-        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/blood-pressure_flat.json"), template);
+        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/blood-pressure_flat.json"),
+                                                                             template);
 
         // transform it to FHIR
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationalTemplate);
@@ -555,7 +637,8 @@ public class BidirectionalTest {
         }
         for (Object systolicValues : objects) {
             final Double systolicMagnitude = ((DvQuantity) systolicValues).getMagnitude();
-            Assert.assertTrue(rmComposition.itemsAtPath(systolicPath).stream().anyMatch(item -> ((DvQuantity) item).getMagnitude().equals(systolicMagnitude)));
+            Assert.assertTrue(rmComposition.itemsAtPath(systolicPath).stream()
+                                      .anyMatch(item -> ((DvQuantity) item).getMagnitude().equals(systolicMagnitude)));
         }
         final List<Object> objects1 = composition.itemsAtPath(diastolicPath);
         if (objects1.isEmpty()) {
@@ -563,7 +646,8 @@ public class BidirectionalTest {
         }
         for (Object diastolicValues : objects1) {
             final Double systolicMagnitude = ((DvQuantity) diastolicValues).getMagnitude();
-            Assert.assertTrue(rmComposition.itemsAtPath(diastolicPath).stream().anyMatch(item -> ((DvQuantity) item).getMagnitude().equals(systolicMagnitude)));
+            Assert.assertTrue(rmComposition.itemsAtPath(diastolicPath).stream()
+                                      .anyMatch(item -> ((DvQuantity) item).getMagnitude().equals(systolicMagnitude)));
         }
         final List<Object> objects2 = composition.itemsAtPath(interpretationPath);
         if (objects2.isEmpty()) {
@@ -571,7 +655,8 @@ public class BidirectionalTest {
         }
         for (Object interpretationValues : objects2) {
             final String interpretationValue = ((DvText) ((Element) interpretationValues).getValue()).getValue();
-            Assert.assertTrue(rmComposition.itemsAtPath(interpretationPath).stream().anyMatch(item -> ((DvText) ((Element) item).getValue()).getValue().equals(interpretationValue)));
+            Assert.assertTrue(rmComposition.itemsAtPath(interpretationPath).stream().anyMatch(
+                    item -> ((DvText) ((Element) item).getValue()).getValue().equals(interpretationValue)));
         }
         final List<Object> objects3 = composition.itemsAtPath(descriptionPath);
         if (objects3.isEmpty()) {
@@ -579,7 +664,8 @@ public class BidirectionalTest {
         }
         for (Object descriptionValues : objects3) {
             final String descriptionValue = ((DvText) ((Element) descriptionValues).getValue()).getValue();
-            Assert.assertTrue(rmComposition.itemsAtPath(descriptionPath).stream().anyMatch(item -> ((DvText) ((Element) item).getValue()).getValue().equals(descriptionValue)));
+            Assert.assertTrue(rmComposition.itemsAtPath(descriptionPath).stream().anyMatch(
+                    item -> ((DvText) ((Element) item).getValue()).getValue().equals(descriptionValue)));
         }
         final List<Object> objects4 = composition.itemsAtPath(locationPath);
         if (objects4.isEmpty()) {
@@ -587,7 +673,8 @@ public class BidirectionalTest {
         }
         for (Object locationValues : objects4) {
             final String locationValue = ((DvText) ((Element) locationValues).getValue()).getValue();
-            Assert.assertTrue(rmComposition.itemsAtPath(locationPath).stream().anyMatch(item -> ((DvText) ((Element) item).getValue()).getValue().equals(locationValue)));
+            Assert.assertTrue(rmComposition.itemsAtPath(locationPath).stream().anyMatch(
+                    item -> ((DvText) ((Element) item).getValue()).getValue().equals(locationValue)));
         }
 
     }
@@ -600,7 +687,8 @@ public class BidirectionalTest {
         final WebTemplate template = new OPTParser(operationalTemplate).parse();
 
         // have a composition from config
-        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/growth_chart_flat.json"), template);
+        final Composition composition = new FlatJsonUnmarshaller().unmarshal(getFlat("/growth_chart_flat.json"),
+                                                                             template);
 
         // transform it to FHIR
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationalTemplate);
@@ -632,13 +720,17 @@ public class BidirectionalTest {
         Assert.assertTrue(weights.stream().allMatch(weight -> ((DvQuantity) weight).getMagnitude().equals(501.0)
                 || ((DvQuantity) weight).getMagnitude().equals(502.0)
                 || ((DvQuantity) weight).getMagnitude().equals(503.0)));
-        Assert.assertNotNull(weights.stream().filter(weight -> ((DvQuantity) weight).getMagnitude().equals(501.0) && ((DvQuantity) weight).getUnits().equals("kg")).findAny().orElse(null));
-        Assert.assertNotNull(weights.stream().filter(weight -> ((DvQuantity) weight).getMagnitude().equals(502.0) && ((DvQuantity) weight).getUnits().equals("t")).findAny().orElse(null));
-        Assert.assertNotNull(weights.stream().filter(weight -> ((DvQuantity) weight).getMagnitude().equals(503.0) && ((DvQuantity) weight).getUnits().equals("mm")).findAny().orElse(null));
+        Assert.assertNotNull(weights.stream().filter(weight -> ((DvQuantity) weight).getMagnitude().equals(501.0)
+                && ((DvQuantity) weight).getUnits().equals("kg")).findAny().orElse(null));
+        Assert.assertNotNull(weights.stream().filter(weight -> ((DvQuantity) weight).getMagnitude().equals(502.0)
+                && ((DvQuantity) weight).getUnits().equals("t")).findAny().orElse(null));
+        Assert.assertNotNull(weights.stream().filter(weight -> ((DvQuantity) weight).getMagnitude().equals(503.0)
+                && ((DvQuantity) weight).getUnits().equals("mm")).findAny().orElse(null));
         Assert.assertEquals(3, weightComment.size());
-        Assert.assertTrue(weightComment.stream().allMatch(weight -> ((DvText) weight).getValue().equals("body_weightLorem ipsum0")
-                || ((DvText) weight).getValue().equals("body_weightLorem ipsum1")
-                || ((DvText) weight).getValue().equals("body_weightLorem ipsum2")));
+        Assert.assertTrue(
+                weightComment.stream().allMatch(weight -> ((DvText) weight).getValue().equals("body_weightLorem ipsum0")
+                        || ((DvText) weight).getValue().equals("body_weightLorem ipsum1")
+                        || ((DvText) weight).getValue().equals("body_weightLorem ipsum2")));
 
         // height
         Assert.assertTrue(heights.stream().allMatch(height -> ((DvQuantity) height).getMagnitude().equals(500.0)));
@@ -653,7 +745,7 @@ public class BidirectionalTest {
         final Observation testResource = FhirToOpenEhrTest.testBloodPressureObservation();
         final Bundle testBundle = new Bundle().addEntry(new Bundle.BundleEntryComponent().setResource(testResource));
         final Composition composition = fhirToOpenEhr.fhirToCompositionRm(context,
-                testResource, operationalTemplate);
+                                                                          testResource, operationalTemplate);
 
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationalTemplate);
 
@@ -663,11 +755,21 @@ public class BidirectionalTest {
         final Observation observation = (Observation) bundle.getEntryFirstRep().getResource();
         Assert.assertEquals("description", observation.getCode().getText());
         Assert.assertEquals(3, observation.getComponent().size());
-        Assert.assertEquals("interpretation text", observation.getComponent().stream().filter(com -> com.getCode().isEmpty()).map(com -> com.getInterpretationFirstRep().getText()).findFirst().orElse(null));
-        Assert.assertEquals("456.0", observation.getComponent().stream().filter(com -> "8480-6".equals(com.getCode().getCodingFirstRep().getCode())).map(com -> com.getValueQuantity().getValue().toPlainString()).findFirst().orElse(null));
-        Assert.assertEquals("789.0", observation.getComponent().stream().filter(com -> "8462-4".equals(com.getCode().getCodingFirstRep().getCode())).map(com -> com.getValueQuantity().getValue().toPlainString()).findFirst().orElse(null));
-        Assert.assertEquals("mm[Hg2]", observation.getComponent().stream().filter(com -> "8462-4".equals(com.getCode().getCodingFirstRep().getCode())).map(com -> com.getValueQuantity().getUnit()).findFirst().orElse(null));
-        Assert.assertEquals("mm[Hg]", observation.getComponent().stream().filter(com -> "8480-6".equals(com.getCode().getCodingFirstRep().getCode())).map(com -> com.getValueQuantity().getUnit()).findFirst().orElse(null));
+        Assert.assertEquals("interpretation text",
+                            observation.getComponent().stream().filter(com -> com.getCode().isEmpty())
+                                    .map(com -> com.getInterpretationFirstRep().getText()).findFirst().orElse(null));
+        Assert.assertEquals("456.0", observation.getComponent().stream()
+                .filter(com -> "8480-6".equals(com.getCode().getCodingFirstRep().getCode()))
+                .map(com -> com.getValueQuantity().getValue().toPlainString()).findFirst().orElse(null));
+        Assert.assertEquals("789.0", observation.getComponent().stream()
+                .filter(com -> "8462-4".equals(com.getCode().getCodingFirstRep().getCode()))
+                .map(com -> com.getValueQuantity().getValue().toPlainString()).findFirst().orElse(null));
+        Assert.assertEquals("mm[Hg2]", observation.getComponent().stream()
+                .filter(com -> "8462-4".equals(com.getCode().getCodingFirstRep().getCode()))
+                .map(com -> com.getValueQuantity().getUnit()).findFirst().orElse(null));
+        Assert.assertEquals("mm[Hg]", observation.getComponent().stream()
+                .filter(com -> "8480-6".equals(com.getCode().getCodingFirstRep().getCode()))
+                .map(com -> com.getValueQuantity().getUnit()).findFirst().orElse(null));
         Assert.assertEquals("THIS IS LOCATION OF MEASUREMENT", observation.getBodySite().getText());
         Assert.assertEquals("at00256", observation.getBodySite().getCodingFirstRep().getCode());
         Assert.assertEquals("remotey", observation.getBodySite().getCodingFirstRep().getSystem());
@@ -699,19 +801,27 @@ public class BidirectionalTest {
                 .filter(en -> "weight".equals(en.getCategoryFirstRep().getCodingFirstRep().getCode()))
                 .collect(Collectors.toList());
         Assert.assertEquals(3, weights.size());
-        final Observation firstWeight = weights.stream().filter(e -> "65.0".equals(e.getValueQuantity().getValue().toPlainString()) && "kg".equals(e.getValueQuantity().getUnit()))
+        final Observation firstWeight = weights.stream()
+                .filter(e -> "65.0".equals(e.getValueQuantity().getValue().toPlainString()) && "kg".equals(
+                        e.getValueQuantity().getUnit()))
                 .findFirst().orElse(null);
-        final Observation secondWeight = weights.stream().filter(e -> "66.0".equals(e.getValueQuantity().getValue().toPlainString()) && "kg".equals(e.getValueQuantity().getUnit()))
+        final Observation secondWeight = weights.stream()
+                .filter(e -> "66.0".equals(e.getValueQuantity().getValue().toPlainString()) && "kg".equals(
+                        e.getValueQuantity().getUnit()))
                 .findFirst().orElse(null);
-        final Observation thirdWeight = weights.stream().filter(e -> "68.0".equals(e.getValueQuantity().getValue().toPlainString()) && "kg".equals(e.getValueQuantity().getUnit()))
+        final Observation thirdWeight = weights.stream()
+                .filter(e -> "68.0".equals(e.getValueQuantity().getValue().toPlainString()) && "kg".equals(
+                        e.getValueQuantity().getUnit()))
                 .findFirst().orElse(null);
         Assert.assertNotNull(firstWeight);
         Assert.assertNotNull(secondWeight);
         Assert.assertNotNull(thirdWeight);
 
 
-        Assert.assertEquals("2020-10-07T01:00:00", openFhirMapperUtils.dateTimeToString(secondWeight.getEffectiveDateTimeType().getValue()));
-        Assert.assertEquals("2020-10-07T03:00:00", openFhirMapperUtils.dateTimeToString(thirdWeight.getEffectiveDateTimeType().getValue()));
+        Assert.assertEquals("2020-10-07T01:00:00",
+                            openFhirMapperUtils.dateTimeToString(secondWeight.getEffectiveDateTimeType().getValue()));
+        Assert.assertEquals("2020-10-07T03:00:00",
+                            openFhirMapperUtils.dateTimeToString(thirdWeight.getEffectiveDateTimeType().getValue()));
 //        Assert.assertTrue(firstWeight.getEffectiveDateTimeType().isEmpty()); // todo
         Assert.assertNull(secondWeight.getNoteFirstRep().getText());
         Assert.assertEquals("just too fat", thirdWeight.getNoteFirstRep().getText());
@@ -721,11 +831,17 @@ public class BidirectionalTest {
                 .filter(en -> "height".equals(en.getCategoryFirstRep().getCodingFirstRep().getCode()))
                 .collect(Collectors.toList());
         Assert.assertEquals(3, heights.size());
-        final Observation firstHeight = heights.stream().filter(e -> "180.0".equals(e.getValueQuantity().getValue().toPlainString()) && "cm".equals(e.getValueQuantity().getUnit()))
+        final Observation firstHeight = heights.stream()
+                .filter(e -> "180.0".equals(e.getValueQuantity().getValue().toPlainString()) && "cm".equals(
+                        e.getValueQuantity().getUnit()))
                 .findFirst().orElse(null);
-        final Observation secondHeight = heights.stream().filter(e -> "200.0".equals(e.getValueQuantity().getValue().toPlainString()) && "cm".equals(e.getValueQuantity().getUnit()))
+        final Observation secondHeight = heights.stream()
+                .filter(e -> "200.0".equals(e.getValueQuantity().getValue().toPlainString()) && "cm".equals(
+                        e.getValueQuantity().getUnit()))
                 .findFirst().orElse(null);
-        final Observation thirdHeight = heights.stream().filter(e -> "220.0".equals(e.getValueQuantity().getValue().toPlainString()) && "m".equals(e.getValueQuantity().getUnit()))
+        final Observation thirdHeight = heights.stream()
+                .filter(e -> "220.0".equals(e.getValueQuantity().getValue().toPlainString()) && "m".equals(
+                        e.getValueQuantity().getUnit()))
                 .findFirst().orElse(null);
         Assert.assertNotNull(firstHeight);
         Assert.assertNotNull(secondHeight);
@@ -743,23 +859,33 @@ public class BidirectionalTest {
                 .filter(en -> "head_circumference".equals(en.getCategoryFirstRep().getCodingFirstRep().getCode()))
                 .collect(Collectors.toList());
         Assert.assertEquals(3, heads.size());
-        final Observation firstHead = heads.stream().filter(e -> "54.0".equals(e.getValueQuantity().getValue().toPlainString()) && "cm".equals(e.getValueQuantity().getUnit()))
+        final Observation firstHead = heads.stream()
+                .filter(e -> "54.0".equals(e.getValueQuantity().getValue().toPlainString()) && "cm".equals(
+                        e.getValueQuantity().getUnit()))
                 .findFirst().orElse(null);
-        final Observation secondHead = heads.stream().filter(e -> "55.0".equals(e.getValueQuantity().getValue().toPlainString()) && "cm".equals(e.getValueQuantity().getUnit()))
+        final Observation secondHead = heads.stream()
+                .filter(e -> "55.0".equals(e.getValueQuantity().getValue().toPlainString()) && "cm".equals(
+                        e.getValueQuantity().getUnit()))
                 .findFirst().orElse(null);
-        final Observation thirdHead = heads.stream().filter(e -> "56.0".equals(e.getValueQuantity().getValue().toPlainString()) && "cm".equals(e.getValueQuantity().getUnit()))
+        final Observation thirdHead = heads.stream()
+                .filter(e -> "56.0".equals(e.getValueQuantity().getValue().toPlainString()) && "cm".equals(
+                        e.getValueQuantity().getUnit()))
                 .findFirst().orElse(null);
         Assert.assertNotNull(firstHead);
         Assert.assertNotNull(secondHead);
         Assert.assertNotNull(thirdHead);
         Assert.assertTrue(heads.stream().allMatch(obs -> obs.getStatusElement().getValueAsString().equals("final")));
 
-        Assert.assertEquals("2020-10-07T01:00:00", openFhirMapperUtils.dateTimeToString(firstHead.getEffectiveDateTimeType().getValue()));
-        Assert.assertEquals("2020-10-07T02:00:00", openFhirMapperUtils.dateTimeToString(secondHead.getEffectiveDateTimeType().getValue()));
-        Assert.assertEquals("2020-10-07T03:00:00", openFhirMapperUtils.dateTimeToString(thirdHead.getEffectiveDateTimeType().getValue()));
+        Assert.assertEquals("2020-10-07T01:00:00",
+                            openFhirMapperUtils.dateTimeToString(firstHead.getEffectiveDateTimeType().getValue()));
+        Assert.assertEquals("2020-10-07T02:00:00",
+                            openFhirMapperUtils.dateTimeToString(secondHead.getEffectiveDateTimeType().getValue()));
+        Assert.assertEquals("2020-10-07T03:00:00",
+                            openFhirMapperUtils.dateTimeToString(thirdHead.getEffectiveDateTimeType().getValue()));
     }
 
-    private void compareFlatJsons(final FhirConnectContext context, final OPERATIONALTEMPLATE operationalTemplate, final Bundle testBundle, final Bundle afterBundle) {
+    private void compareFlatJsons(final FhirConnectContext context, final OPERATIONALTEMPLATE operationalTemplate,
+                                  final Bundle testBundle, final Bundle afterBundle) {
         repo.initRepository(context, getClass().getResource("/").getFile());
         final JsonObject initialFlatJson = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationalTemplate);
         final JsonObject afterFlatJson = fhirToOpenEhr.fhirToFlatJsonObject(context, afterBundle, operationalTemplate);

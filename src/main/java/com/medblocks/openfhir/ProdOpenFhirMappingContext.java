@@ -32,16 +32,14 @@ import org.springframework.web.context.annotation.RequestScope;
 public class ProdOpenFhirMappingContext extends OpenFhirMappingContext {
 
     private FhirConnectModelRepository fhirConnectModelRepository;
-    private FhirConnectModelMerger modelMerger;
 
     @Autowired
     public ProdOpenFhirMappingContext(final FhirPathR4 fhirPathR4,
                                       final OpenFhirStringUtils openFhirStringUtils,
                                       final FhirConnectModelRepository fhirConnectModelRepository,
                                       final FhirConnectModelMerger modelMerger) {
-        super(fhirPathR4, openFhirStringUtils);
+        super(fhirPathR4, openFhirStringUtils, modelMerger);
         this.fhirConnectModelRepository = fhirConnectModelRepository;
-        this.modelMerger = modelMerger;
     }
 
     public void initMappingCache(final FhirConnectContext context,
@@ -65,16 +63,22 @@ public class ProdOpenFhirMappingContext extends OpenFhirMappingContext {
 
         openFhirFhirConnectModelMappers.forEach(mapperEntity -> {
             final String archetype = mapperEntity.getOpenEhrConfig().getArchetype();
+            final String mappingName = mapperEntity.getName();
+
             if (mapperEntity.getFhirConfig() == null) {
-                if (!slotMappers.containsKey(archetype)) {
-                    slotMappers.put(archetype,
-                                    new ArrayList<>()); // todo: the fact there is no fhirConfig no longer means it's a slot archetype.. however maybe we don't need to differentiate between them anymore
+                if (!slotMappers.containsKey(mappingName)) {
+                    slotMappers.put(mappingName,
+                                    new ArrayList<>()); // todo: the fact there is no fhirConfig no longer means it's a slot mappingName.. however maybe we don't need to differentiate between them anymore
                 }
-                slotMappers.get(archetype).add(mapperEntity);
+                slotMappers.get(mappingName).add(mapperEntity);
             } else {
+                if (!mappers.containsKey(mappingName)) {
+                    mappers.put(mappingName, new ArrayList<>());
+                }
                 if (!mappers.containsKey(archetype)) {
                     mappers.put(archetype, new ArrayList<>());
                 }
+                mappers.get(mappingName).add(mapperEntity);
                 mappers.get(archetype).add(mapperEntity);
             }
 
@@ -95,11 +99,11 @@ public class ProdOpenFhirMappingContext extends OpenFhirMappingContext {
             throw new IllegalArgumentException("Couldn't find any model entities for this template.");
         }
 
-        final List<FhirConnectModel> vanillaModels = modelEntities.stream()
+        final List<FhirConnectModel> coreModels = modelEntities.stream()
                 .map(FhirConnectModelEntity::getFhirConnectModel)
                 .collect(Collectors.toList());
         final List<FhirConnectModel> extensionsModels = loadExtensions(context.getExtensions());
-        return modelMerger.joinModelMappers(vanillaModels, extensionsModels);
+        return modelMerger.joinModelMappers(coreModels, extensionsModels);
     }
 
     private List<FhirConnectModel> loadExtensions(final List<String> extensions) {

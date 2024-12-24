@@ -1,0 +1,25 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  CLUSTER.case_identification.v0
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.case_identification.v0
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Identifier
+
+mappings:
+  - name: "identifierCase"
+    with:
+      fhir: "$fhirRoot.value"
+      openehr: "$archetype.case_identifier"
+      type: "STRING"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "type.coding.code"
+      operator: "one of"
+      criteria: "[VN]" # visit number
+

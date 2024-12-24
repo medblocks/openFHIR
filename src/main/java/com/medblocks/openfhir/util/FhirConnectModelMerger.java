@@ -14,67 +14,67 @@ import org.springframework.stereotype.Component;
 public class FhirConnectModelMerger {
 
     /**
-     * Will join all vanillaModels with extensions according to extension logic (add, append, overwrite, ..)
+     * Will join all coreModels with extensions according to extension logic (add, append, overwrite, ..)
      *
-     * @param vanillaModels vanilla models as gotten from the database
+     * @param coreModels core models as gotten from the database
      * @param extensions extension models as gotten from the database
      * @return a list of OpenFhirFhirConnectModelMappers used in the actual implementation of the engine
      */
-    public List<OpenFhirFhirConnectModelMapper> joinModelMappers(final List<FhirConnectModel> vanillaModels,
+    public List<OpenFhirFhirConnectModelMapper> joinModelMappers(final List<FhirConnectModel> coreModels,
                                                                  final List<FhirConnectModel> extensions) {
         if (extensions == null) {
-            return vanillaModels.stream()
+            return coreModels.stream()
                     .map(vm -> new OpenFhirFhirConnectModelMapper().fromFhirConnectModelMapper(vm))
                     .collect(Collectors.toList());
         }
         final List<OpenFhirFhirConnectModelMapper> builtMappers = new ArrayList<>();
-        for (final FhirConnectModel vanillaModel : vanillaModels) {
-            // find if there is any extension that exists for this vanilla
-            final List<FhirConnectModel> extensionsOfThisVanilla = extensions.stream()
-                    .filter(ext -> ext.getSpec().getExtensionOf().equals(vanillaModel.getMetadata().getName()))
+        for (final FhirConnectModel coreModel : coreModels) {
+            // find if there is any extension that exists for this core
+            final List<FhirConnectModel> extensionsOfThisCore = extensions.stream()
+                    .filter(ext -> ext.getSpec().get_extends().equals(coreModel.getMetadata().getName()))
                     .collect(Collectors.toList());
 
-            builtMappers.add(mergeToVanilla(vanillaModel, extensionsOfThisVanilla));
+            builtMappers.add(mergeWithCore(coreModel, extensionsOfThisCore));
         }
         return builtMappers;
     }
 
     /**
-     * Merges extensions to the vanilla model mapping
+     * Merges extensions to the core model mapping
      *
-     * @param vanillaModel to be merged on
+     * @param coreModel to be merged on
      * @param extensions to be merged
-     * @return constructed OpenFhirFhirConnectModelMapper that results from a merge of vanilla and extensions
+     * @return constructed OpenFhirFhirConnectModelMapper that results from a merge of core and extensions
      */
-    private OpenFhirFhirConnectModelMapper mergeToVanilla(final FhirConnectModel vanillaModel,
-                                                          final List<FhirConnectModel> extensions) {
+    private OpenFhirFhirConnectModelMapper mergeWithCore(final FhirConnectModel coreModel,
+                                                         final List<FhirConnectModel> extensions) {
         if (extensions == null || extensions.isEmpty()) {
-            // no extension exists for this vanilla mapping, add it to the output as is
-            return new OpenFhirFhirConnectModelMapper().fromFhirConnectModelMapper(vanillaModel);
+            // no extension exists for this core mapping, add it to the output as is
+            return new OpenFhirFhirConnectModelMapper().fromFhirConnectModelMapper(coreModel);
         }
         for (final FhirConnectModel extension : extensions) {
             for (final Mapping extensionMapping : extension.getMappings()) {
                 switch (extensionMapping.getExtension()) {
-                    case ADD -> addMapping(vanillaModel, extensionMapping);
-                    case APPEND -> appendMapping(vanillaModel, extensionMapping);
-                    case OVERWRITE -> overwriteMapping(vanillaModel, extensionMapping);
+                    case ADD -> addMapping(coreModel, extensionMapping);
+                    case APPEND -> appendMapping(coreModel, extensionMapping);
+                    case OVERWRITE -> overwriteMapping(coreModel, extensionMapping);
                 }
             }
         }
-        return new OpenFhirFhirConnectModelMapper().fromFhirConnectModelMapper(vanillaModel);
+        return new OpenFhirFhirConnectModelMapper().fromFhirConnectModelMapper(coreModel);
     }
 
     /**
      * Overwrites a mapping, meaning it overwrites it completely
      *
-     * @param vanillaModel where it looks for this specific mapping to overwrite it
+     * @param coreModel where it looks for this specific mapping to overwrite it
      * @param extensionMapping the one to overwrite with
      */
-    void overwriteMapping(final FhirConnectModel vanillaModel, final Mapping extensionMapping) {
+    void overwriteMapping(final FhirConnectModel coreModel, final Mapping extensionMapping) {
         log.info("Overriding {} with mapping from the extension", extensionMapping.getName());
-        final Mapping toOverwrite = findMappingByName(vanillaModel.getMappings(), extensionMapping.getName());
+        final Mapping toOverwrite = findMappingByName(coreModel.getMappings(), extensionMapping.getName());
         if (toOverwrite == null) {
-            log.error("Couldn't find mapping named {} in the vanilla model mapper. Not overwriting anything.",
+            log.error("Couldn't find mapping named {} in the core model mapper. Not overwriting anything.",
                       extensionMapping.getName());
             return;
         }
@@ -84,14 +84,14 @@ public class FhirConnectModelMerger {
     /**
      * Appends a mapping to a specific other mapping
      *
-     * @param vanillaModel where it looks for this specific mapping that it needs to append to
+     * @param coreModel where it looks for this specific mapping that it needs to append to
      * @param extensionMapping that needs to be appended
      */
-    void appendMapping(final FhirConnectModel vanillaModel, final Mapping extensionMapping) {
+    void appendMapping(final FhirConnectModel coreModel, final Mapping extensionMapping) {
         log.info("Appending {} with mapping from the extension", extensionMapping.getName());
-        final Mapping toAppendTo = findMapping(vanillaModel.getMappings(), extensionMapping.getAppendTo());
+        final Mapping toAppendTo = findMapping(coreModel.getMappings(), extensionMapping.getAppendTo());
         if (toAppendTo == null) {
-            log.error("Couldn't find mapping named {} in the vanilla model mapper. Not appending anything.",
+            log.error("Couldn't find mapping named {} in the core model mapper. Not appending anything.",
                       extensionMapping.getName());
             return;
         }
@@ -126,14 +126,17 @@ public class FhirConnectModelMerger {
     }
 
     /**
-     * Adds a mapping to core vanillaModel mappers
+     * Adds a mapping to core coreModel mappers
      *
-     * @param vanillaModel where it adds the mapping to
+     * @param coreModel where it adds the mapping to
      * @param extensionMapping to be added
      */
-    void addMapping(final FhirConnectModel vanillaModel, final Mapping extensionMapping) {
+    void addMapping(final FhirConnectModel coreModel, final Mapping extensionMapping) {
         log.info("Adding {} mapping from the extension", extensionMapping.getName());
-        vanillaModel.getMappings().add(extensionMapping);
+        if (coreModel.getMappings() == null) {
+            coreModel.setMappings(new ArrayList<>());
+        }
+        coreModel.getMappings().add(extensionMapping);
     }
 
     /**

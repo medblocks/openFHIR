@@ -36,7 +36,7 @@
           "type": "string",
           "enum": ["R4"]
         },
-        "extensionOf": {
+        "extends": {
           "type": "string"
         },
         "openEhrConfig": {
@@ -88,6 +88,9 @@
         "extension": {
           "type": "string",
           "enum": ["add", "append", "overwrite"]
+        },
+        "appendTo": {
+          "type": "string"
         },
         "with": {
           "type": "object",
@@ -222,8 +225,7 @@
         }
       },
       "required": [
-        "name",
-        "with"
+        "name"
       ],
       "title": "Model Mapping"
     }

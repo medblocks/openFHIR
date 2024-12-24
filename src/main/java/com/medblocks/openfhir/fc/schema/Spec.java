@@ -15,7 +15,7 @@ import java.util.Map;
 @JsonPropertyOrder({
     "system",
     "version",
-    "extensionOf",
+    "extends",
     "openEhrConfig",
     "fhirConfig"
 })
@@ -40,8 +40,8 @@ public class Spec {
      * (Required)
      *
      */
-    @JsonProperty("extensionOf")
-    private String extensionOf;
+    @JsonProperty("extends")
+    private String _extends;
 
     /**
      * FHIR Config
@@ -85,9 +85,9 @@ public class Spec {
      * (Required)
      *
      */
-    @JsonProperty("extensionOf")
-    public String getExtensionOf() {
-        return extensionOf;
+    @JsonProperty("extends")
+    public String get_extends() {
+        return _extends;
     }
 
     /**
@@ -95,9 +95,9 @@ public class Spec {
      * (Required)
      *
      */
-    @JsonProperty("extensionOf")
-    public void setSystem(String extensionOf) {
-        this.extensionOf = extensionOf;
+    @JsonProperty("extends")
+    public void set_extends(String _extends) {
+        this._extends = _extends;
     }
 
     /**
@@ -181,7 +181,7 @@ public class Spec {
     
     public enum Version {
 
-        R_4("R4");
+        R4("R4");
         private final String value;
         private final static Map<String, Version> CONSTANTS = new HashMap<String, Version>();
 
