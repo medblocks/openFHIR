@@ -473,7 +473,7 @@ public class FhirToOpenEhr {
      * @param bundle whether a fhir context mapper is expecting a Bundle
      * @param multiple if a specific model mapper should create multiple Resources instead of a single one
      */
-    void createHelpers(final String mainArtifact,
+    public void createHelpers(final String mainArtifact,
                        final OpenFhirFhirConnectModelMapper fhirConnectMapper,
                        final String templateId,
                        final String mainOpenEhrPath,

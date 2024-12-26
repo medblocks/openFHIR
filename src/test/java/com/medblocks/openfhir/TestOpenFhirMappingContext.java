@@ -2,7 +2,6 @@ package com.medblocks.openfhir;
 
 import com.medblocks.openfhir.fc.OpenFhirFhirConnectModelMapper;
 import com.medblocks.openfhir.fc.schema.Metadata;
-import com.medblocks.openfhir.fc.schema.Spec;
 import com.medblocks.openfhir.fc.schema.context.Context;
 import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import com.medblocks.openfhir.fc.schema.model.FhirConnectModel;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
-import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.introspector.Property;
@@ -133,11 +131,13 @@ public class TestOpenFhirMappingContext extends OpenFhirMappingContext {
             if (!mappers.containsKey(mappingName)) {
                 mappers.put(mappingName, new ArrayList<>());
             }
-            if (!mappers.containsKey(archetype)) {
+            if (!mappers.containsKey(archetype) && !archetype.equals(mappingName)) {
                 mappers.put(archetype, new ArrayList<>());
             }
             mappers.get(mappingName).add(mapperEntity);
-            mappers.get(archetype).add(mapperEntity);
+            if (!archetype.equals(mappingName)) {
+                mappers.get(archetype).add(mapperEntity);
+            }
         });
 
         return mappers;
@@ -191,7 +191,7 @@ public class TestOpenFhirMappingContext extends OpenFhirMappingContext {
             constructor.setPropertyUtils(new PropertyUtils() {
                 @Override
                 public Property getProperty(Class<? extends Object> type, String name) {
-                    if ( name.equals("extends") ) {
+                    if (name.equals("extends")) {
                         name = "_extends";
                     }
                     return super.getProperty(type, name);

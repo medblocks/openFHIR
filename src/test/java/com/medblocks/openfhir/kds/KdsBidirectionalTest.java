@@ -166,9 +166,7 @@ public abstract class KdsBidirectionalTest {
     }
 
     protected FhirConnectContext getContext(final String path) {
-        final LoaderOptions loaderOptions = new LoaderOptions();
-        loaderOptions.setEnumCaseSensitive(false);
-        final Yaml yaml = new Yaml(loaderOptions);
+        final Yaml yaml = OpenFhirTestUtility.getYaml();
         final InputStream inputStream = this.getClass().getResourceAsStream(path);
         return yaml.loadAs(inputStream, FhirConnectContext.class);
     }
