@@ -1,0 +1,47 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: "openEHR-EHR-OBSERVATION.body_weight.v2"
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: "openEHR-EHR-OBSERVATION.body_weight.v2"
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Observation
+    condition:
+      - targetRoot: "$resource"
+        targetAttribute: "category.coding.code"
+        operator: "one of"
+        criteria: "[weight]"
+
+
+
+mappings:
+  - name: "patient"
+    with:
+      fhir: "$resource.subject.reference"
+      openehr: "$openEhrContext.$ehr"
+      type: "STRING"
+  - name: "weight"
+    with:
+      fhir: "$resource.value"
+      openehr: "$archetype.body_weight.any_event.weight"
+      type: "QUANTITY"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$loinc.29463-7, $snomed.27113001]"
+      
+  - name: "time"
+    with:
+      fhir: "$resource.effective"
+      openehr: "$archetype.body_weight.any_event.time"
+      type: "DATETIME"
+  - name: "comment"
+    with:
+      fhir: "$resource.note.text"
+      openehr: "$archetype.body_weight.any_event.comment"
+      type: "STRING"

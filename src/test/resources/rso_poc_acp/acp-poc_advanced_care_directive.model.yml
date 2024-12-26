@@ -1,57 +1,60 @@
-
-
-format: "0.0.2"
-version: "0.2.0"
-
-fhirConfig:
-  resource: "Consent"
-  condition:
-    - targetRoot: "$fhirResource"
-      targetAttribute: "meta.profile"
-      operator: "one of"
-      criteria: "[http://nictiz.nl/fhir/StructureDefinition/zib-AdvanceDirective]"
-openEhrConfig:
-  archetype: "openEHR-EHR-EVALUATION.advance_care_directive.v2"
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: "openEHR-EHR-EVALUATION.advance_care_directive.v2"
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: "openEHR-EHR-EVALUATION.advance_care_directive.v2"
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Observation
+    condition:
+      - targetRoot: "$resource"
+        targetAttribute: "meta.profile"
+        operator: "one of"
+        criteria: "[http://nictiz.nl/fhir/StructureDefinition/zib-AdvanceDirective]"
 
 mappings:
   - name: "author"
     with:
-      fhir: "$fhirResource.patient.display"
-      openehr: "$openEhrArchetype.composer|name"
+      fhir: "$resource.patient.display"
+      openehr: "$archetype.composer|name"
       type: "TEXT"
 
   - name: "type of directive"
     with:
-      fhir: "$fhirResource.category.coding"
-      openehr: "$openEhrArchetype.advance_care_directive.type_of_directive"
+      fhir: "$resource.category.coding"
+      openehr: "$archetype.advance_care_directive.type_of_directive"
       type: "CODING"
-    condition:
-      targetRoot: "$fhirResource.category.coding"
+    fhirCondition:
+      targetRoot: "$resource.category.coding"
       targetAttribute: "system"
       operator: "one of"
       criteria: "[urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4.14.1]"
 
   - name: "status"
     with:
-      fhir: "$fhirResource.status"
-      openehr: "$openEhrArchetype.advance_care_directive.status"
+      fhir: "$resource.status"
+      openehr: "$archetype.advance_care_directive.status"
       type: "TEXT"
 
   - name: "comment"
     with:
-      fhir: "$fhirResource.extension"
-      openehr: "$openEhrArchetype.advance_care_directive.comment"
+      fhir: "$resource.extension"
+      openehr: "$archetype.advance_care_directive.comment"
       type: "TEXT"
-    condition:
-      targetRoot: "$fhirResource.extension"
+    fhirCondition:
+      targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://nictiz.nl/fhir/StructureDefinition/Comment]"
 
   - name: "media"
     with:
-      fhir: "$fhirResource.source.as(Attachment)"
-      openehr: "$openEhrArchetype.advance_care_directive.media_file.content"
+      fhir: "$resource.source.as(Attachment)"
+      openehr: "$archetype.advance_care_directive.media_file.content"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.media_file.v1"
     followedBy:
@@ -59,11 +62,11 @@ mappings:
         - name: "media title"
           with:
             fhir: "title"
-            openehr: "$openEhrArchetype.advance_care_directive.media_file.content_name"
+            openehr: "$archetype.advance_care_directive.media_file.content_name"
             type: "TEXT"
 
 #  - name: "media name"
 #    with:
-#      fhir: "$fhirResource.source.as(Attachment).title"
-#      openehr: "$openEhrArchetype.advance_care_directive.media_file.content_name"
+#      fhir: "$resource.source.as(Attachment).title"
+#      openehr: "$archetype.advance_care_directive.media_file.content_name"
 #      type: "TEXT"

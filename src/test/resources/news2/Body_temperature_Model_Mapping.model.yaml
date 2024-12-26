@@ -1,27 +1,32 @@
-format: "0.2.0"
-version: "0.0.1"
-
-fhirConfig:
-  resource: "Observation"
-  condition:
-    - targetRoot: "$fhirResource"
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: "openEHR-EHR-OBSERVATION.body_temperature.v2"
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: "openEHR-EHR-OBSERVATION.body_temperature.v2"
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Observation
+    condition:
+    - targetRoot: "$resource"
       targetAttribute: "code.coding.code"
       operator: "one of"
       criteria: "[$snomed.276885007,$loinc.8310-5]" #need to add support for adding two codes
-    - targetRoot: "$fhirResource"
+    - targetRoot: "$resource"
       targetAttribute: "status"
       operator: "one of"
       criteria: "[final]"
-    - targetRoot: "$fhirResource"
+    - targetRoot: "$resource"
       targetAttribute: "category.coding.code"
       operator: "one of"
       criteria: "[vital-signs]"
-openEhrConfig:
-  archetype: "openEHR-EHR-OBSERVATION.body_temperature.v2"
 
 mappings:
   - name: "value"
     with:
-      fhir: "$fhirResource.value"
-      openehr: "$openEhrArchetype.body_temperature.any_event.temperature"
+      fhir: "$resource.value"
+      openehr: "$archetype.body_temperature.any_event.temperature"
       type: "QUANTITY"
