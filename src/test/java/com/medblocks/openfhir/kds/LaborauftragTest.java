@@ -1,42 +1,45 @@
 package com.medblocks.openfhir.kds;
 
+import static org.junit.Assert.assertEquals;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Organization;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.ServiceRequest;
+import org.hl7.fhir.r4.model.Specimen;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.assertEquals;
-
-@Ignore
 public class LaborauftragTest extends KdsBidirectionalTest {
 
-    final String RESOURCES_ROOT = "/kds/laborauftrag/";
+    final String MODEL_MAPPINGS = "/kds_new/";
+    final String CONTEXT = "/kds_new/projects/org.highmed/KDS/laborauftrag/KDS_laborauftrag.context.yaml";
+    final String HELPER_LOCATION = "/kds/laborauftrag/";
     final String OPT = "KDS_Laborauftrag.opt";
     final String FLAT = "KDS_Laborauftrag.flat.json";
-    final String FLAT_2 = "KDS_Laborauftrag_2.flat.json";
-    final String CONTEXT = "laborauftrag.context.yaml";
+
     final String BUNDLE = "KDS_Laborauftrag_bundle.json";
 
     @SneakyThrows
     @Override
     protected void prepareState() {
-        context = getContext(RESOURCES_ROOT + CONTEXT);
-        repo.initRepository(context, getClass().getResource(RESOURCES_ROOT).getFile());
-        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCES_ROOT + OPT));
+        context = getContext(CONTEXT);
+        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(HELPER_LOCATION + OPT));
         operationaltemplate = getOperationalTemplate();
+        repo.initRepository(context, operationaltemplate, getClass().getResource(MODEL_MAPPINGS).getFile());
         webTemplate = new OPTParser(operationaltemplate).parse();
     }
 
@@ -44,7 +47,8 @@ public class LaborauftragTest extends KdsBidirectionalTest {
     public void kdsServiceRequest_toFhir_toOpenEhr() throws IOException {
 
         // openEHR to FHIR
-        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat(RESOURCES_ROOT + FLAT_2), webTemplate);
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat(HELPER_LOCATION + FLAT),
+                                                                                     webTemplate);
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
 
         final List<ServiceRequest> requests = bundle.getEntry().stream()
@@ -54,39 +58,8 @@ public class LaborauftragTest extends KdsBidirectionalTest {
 
         Assert.assertEquals(1, requests.size());
         final ServiceRequest serviceRequest = requests.get(0);
-        Assert.assertEquals("42", serviceRequest.getCode().getCodingFirstRep().getCode());
-        Assert.assertEquals("No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/ValueSet/ValueSetOrderCodes' available", serviceRequest.getCode().getText());
 
-        Assert.assertEquals("Laboratory", serviceRequest.getCategoryFirstRep().getText());
-        Assert.assertEquals("laboratory code", serviceRequest.getCategoryFirstRep().getCodingFirstRep().getCode());
-
-        Assert.assertEquals("order", serviceRequest.getIntentElement().getValueAsString());
-        Assert.assertEquals("SR comment", serviceRequest.getNoteFirstRep().getText());
-
-        Assert.assertEquals("sr id", serviceRequest.getIdentifierFirstRep().getValue());
-        Assert.assertEquals("dev/null", serviceRequest.getIdentifierFirstRep().getType().getCodingFirstRep().getCode());
-        Assert.assertEquals("completed", serviceRequest.getStatusElement().getValueAsString());
-
-        // Specimen
-        final List<Reference> specimenReferences = serviceRequest.getSpecimen();
-        Assert.assertEquals(2, specimenReferences.size());
-        final List<Specimen> specimens = specimenReferences.stream().map(spec -> (Specimen) spec.getResource()).toList();
-
-        final Specimen specimen1 = specimens.get(0);
-        Assert.assertEquals("spec_id_1", specimen1.getIdentifierFirstRep().getValue());
-        Assert.assertEquals("2022-02-03T04:05:06+01:00", specimen1.getCollection().getCollectedDateTimeType().getValueAsString());
-        Assert.assertEquals("TheCollector", specimen1.getCollection().getCollector().getIdentifier().getValue());
-
-        final Specimen specimen2 = specimens.get(1);
-        Assert.assertEquals("spec_id_2", specimen2.getIdentifierFirstRep().getValue());
-        Assert.assertEquals("2023-02-03T04:05:06+01:00", specimen2.getCollection().getCollectedDateTimeType().getValueAsString());
-        Assert.assertEquals("TheCollector2", specimen2.getCollection().getCollector().getIdentifier().getValue());
-
-
-        // Requester
-        final Organization org = (Organization) serviceRequest.getRequester().getResource();
-        Assert.assertEquals("Einsender name", org.getName());
-        Assert.assertEquals("Einsender id", org.getIdentifierFirstRep().getValue());
+        assertServiceRequest(serviceRequest);
 
 
         final Bundle toRunMappingOn = new Bundle();
@@ -99,7 +72,8 @@ public class LaborauftragTest extends KdsBidirectionalTest {
                     final String reqId = UUID.randomUUID().toString();
                     requesterReference.setReference(reqId);
                     requester.setId(reqId);
-                    toRunMappingOn.addEntry(new Bundle.BundleEntryComponent().setFullUrl(reqId).setResource((Resource) requester));
+                    toRunMappingOn.addEntry(
+                            new Bundle.BundleEntryComponent().setFullUrl(reqId).setResource((Resource) requester));
                 }
             }
             toRunMappingOn.addEntry(bundleEntryComponent);
@@ -108,8 +82,9 @@ public class LaborauftragTest extends KdsBidirectionalTest {
         final JsonObject jsonObject2 = fhirToOpenEhr.fhirToFlatJsonObject(context, toRunMappingOn, operationaltemplate);
 
 
-        final JsonObject expected = new Gson().fromJson(IOUtils.toString(getClass().getResourceAsStream("/kds/laborauftrag/Laborauftrag_expected-jsonobject-from-flat.json")),
-                JsonObject.class);
+        final JsonObject expected = new Gson().fromJson(IOUtils.toString(
+                                                                getClass().getResourceAsStream(HELPER_LOCATION + "Laborauftrag_expected-jsonobject-from-flat.json")),
+                                                        JsonObject.class);
 
 
         compareJsonObjects(jsonObject2, expected);
@@ -120,34 +95,49 @@ public class LaborauftragTest extends KdsBidirectionalTest {
 
     }
 
+    @SneakyThrows
     public JsonObject toOpenEhr() {
-        final Bundle testBundle = getTestBundle(RESOURCES_ROOT + BUNDLE);
+        final Bundle testBundle = getTestBundle(HELPER_LOCATION + BUNDLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
-        Assert.assertEquals("123456-0_KH", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/receiver_order_identifier/text_value").getAsString());
-        Assert.assertEquals("completed", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/request_status|code").getAsString());
-        Assert.assertEquals("2345-7", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/current_activity/name_der_laborleistung|code").getAsString());
-        Assert.assertEquals("http://loinc.org", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/current_activity/name_der_laborleistung|terminology").getAsString());
-        Assert.assertEquals("Blood Glucose Test", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/current_activity/name_der_laborleistung|value").getAsString());
-        Assert.assertEquals("laboratory", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/current_activity/art_der_laborleistung_kategorie|code").getAsString());
-        Assert.assertEquals("http://terminology.hl7.org/ValueSet/observation-category", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/current_activity/art_der_laborleistung_kategorie|terminology").getAsString());
-        Assert.assertEquals("order", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/current_activity/intent|code").getAsString());
-        Assert.assertEquals("SP-987654", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/current_activity/specimen:0/laboratory_specimen_identifier|id").getAsString());
-        Assert.assertEquals("2024-08-24T11:00:00", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/current_activity/specimen:0/collection_date_time/date_time_value").getAsString());
-        Assert.assertEquals("Example Hospital", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/einsender/name").getAsString());
-        Assert.assertEquals("ORG-001", jsonObject.getAsJsonPrimitive("request_for_service/laborleistung/einsender/identifier|id").getAsString());
+
+        Assert.assertEquals("123456-0_KH",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/auftrags-id_des_anfordernden_einsendenden_systems_plac|id").getAsString());
+        Assert.assertEquals("completed",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/status_der_anfrage|code").getAsString());
+        Assert.assertEquals("2345-7",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/aktuelle_aktivität/name_der_laborleistung|code").getAsString());
+        Assert.assertEquals("http://loinc.org",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/aktuelle_aktivität/name_der_laborleistung|terminology").getAsString());
+        Assert.assertEquals("Blood Glucose Test",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/aktuelle_aktivität/name_der_laborleistung|value").getAsString());
+        Assert.assertEquals("laboratory",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/aktuelle_aktivität/art_der_laborleistung_kategorie|code").getAsString());
+        Assert.assertEquals("http://terminology.hl7.org/ValueSet/observation-category",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/aktuelle_aktivität/art_der_laborleistung_kategorie|terminology").getAsString());
+        Assert.assertEquals("Laboratory",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/aktuelle_aktivität/art_der_laborleistung_kategorie|value").getAsString());
+        Assert.assertEquals("order",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/aktuelle_aktivität/intention|code").getAsString());
+        Assert.assertEquals("Sample collected in the morning.",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/aktuelle_aktivität/kommentar").getAsString());
+        Assert.assertEquals("Example Hospital",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/einsender/namenszeile").getAsString());
+        Assert.assertEquals("ORG-001",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/einsender/identifier|id").getAsString());
+
+        Assert.assertEquals("SP-987654",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/aktuelle_aktivität/probe:0/laborprobenidentifikator|id").getAsString());
+        Assert.assertEquals("2024-08-24T11:00:00",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/aktuelle_aktivität/probe:0/zeitpunkt_der_probenentnahme/date_time_value").getAsString());
+        Assert.assertEquals("example-practitioner",   jsonObject.getAsJsonPrimitive("leistungsanforderung/laborleistung/aktuelle_aktivität/probe:0/identifikator_des_probenehmers|id").getAsString());
+
 
         return jsonObject;
     }
 
     @Test
     public void toFhir() {
-        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat(RESOURCES_ROOT + FLAT), new OPTParser(operationaltemplate).parse());
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat(HELPER_LOCATION + FLAT),
+                                                                                     new OPTParser(
+                                                                                             operationaltemplate).parse());
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
-        final List<Bundle.BundleEntryComponent> allServiceRequests = bundle.getEntry().stream().filter(en -> en.getResource() instanceof ServiceRequest).collect(Collectors.toList());
+        final List<Bundle.BundleEntryComponent> allServiceRequests = bundle.getEntry().stream()
+                .filter(en -> en.getResource() instanceof ServiceRequest).collect(Collectors.toList());
         assertEquals(1, allServiceRequests.size());
 
         final ServiceRequest serviceRequest = (ServiceRequest) allServiceRequests.get(0).getResource();
+
+        assertServiceRequest(serviceRequest);
+    }
+
+    private void assertServiceRequest(final ServiceRequest serviceRequest) {
 
         //  - name: "identifier"
         Assert.assertEquals("Medical record identifier", serviceRequest.getIdentifierFirstRep().getValue());
@@ -179,20 +169,23 @@ public class LaborauftragTest extends KdsBidirectionalTest {
         //  - name: "specimen"
         final List<Reference> specimenReferences = serviceRequest.getSpecimen();
         Assert.assertEquals(2, specimenReferences.size());
-        final List<Specimen> specimens = specimenReferences.stream().map(spec -> (Specimen) spec.getResource()).toList();
+        final List<Specimen> specimens = specimenReferences.stream().map(spec -> (Specimen) spec.getResource())
+                .toList();
 
         //  - name: "specimen identifier"
         //  - name: "specimen collection date time"
         //  - name: "specimen collector"
         final Specimen specimen1 = specimens.get(0);
-        Assert.assertEquals("SP-987654", specimen1.getIdentifierFirstRep().getValue());
-        Assert.assertEquals("2024-08-24T09:00:00+02:00", specimen1.getCollection().getCollectedDateTimeType().getValueAsString());
-        Assert.assertEquals("Dr. John Doe1", specimen1.getCollection().getCollector().getIdentifier().getValue());
+        Assert.assertEquals("spec1", specimen1.getIdentifierFirstRep().getValue());
+        Assert.assertEquals("2022-02-03T04:05:06+01:00",
+                            specimen1.getCollection().getCollectedDateTimeType().getValueAsString());
+        Assert.assertEquals("probenehmers_id1", specimen1.getCollection().getCollector().getIdentifier().getValue());
 
         final Specimen specimen2 = specimens.get(1);
-        Assert.assertEquals("1_SP-987654", specimen2.getIdentifierFirstRep().getValue());
-        Assert.assertEquals("2025-08-24T09:00:00+02:00", specimen2.getCollection().getCollectedDateTimeType().getValueAsString());
-        Assert.assertEquals("Dr. John Doe2", specimen2.getCollection().getCollector().getIdentifier().getValue());
+        Assert.assertEquals("spec2", specimen2.getIdentifierFirstRep().getValue());
+        Assert.assertEquals("3022-02-03T04:05:06+01:00",
+                            specimen2.getCollection().getCollectedDateTimeType().getValueAsString());
+        Assert.assertEquals("probenehmers_id2", specimen2.getCollection().getCollector().getIdentifier().getValue());
 
     }
 

@@ -1,0 +1,20 @@
+engine: FHIRConnect/v0.0.1
+type: context
+metadata:
+  name:  KDS_laborauftrag.context
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+
+context:
+  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab"
+  templateId: "KDS_Laborauftrag"
+  archetypes:
+    - "INSTRUCTION.service_request.v1"
+    - "CLUSTER.specimen.v1"
+    - "CLUSTER.organisation.v1"
+    - "CLUSTER.case_identification.v0"
+  extensions:
+    - "KDS_laborauftrag"
+  start: "INSTRUCTION.service_request.v1"
