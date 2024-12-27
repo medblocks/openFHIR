@@ -9,7 +9,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   openEhrConfig:
     archetype: "openEHR-EHR-CLUSTER.media_file.v1"
   fhirConfig:
-    structureDefinition: http://hl7.org/fhir/StructureDefinition/
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Attachment
 
 mappings:
   - name: "media"

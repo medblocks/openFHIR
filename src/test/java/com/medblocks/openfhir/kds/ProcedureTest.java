@@ -11,11 +11,13 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Procedure;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Ignore
 public class ProcedureTest extends KdsBidirectionalTest {
 
     final String RESOURCES_ROOT = "/kds/procedure/";

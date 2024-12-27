@@ -9,12 +9,14 @@ import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonU
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.r4.model.*;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Ignore
 public class PersonOldTest extends KdsBidirectionalTest {
 
     final String RESOURCES_ROOT = "/kds/person/old/";

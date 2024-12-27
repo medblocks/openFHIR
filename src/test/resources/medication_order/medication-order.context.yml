@@ -8,7 +8,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
 
 context:
-  profileUrl: "MedicationOrder"
+  profileUrl: "MedicationRequest"
   templateId: "medication order"
   archetypes:
     # This list could be computed by the (GUI) tooling, which will help to create these mappings.
