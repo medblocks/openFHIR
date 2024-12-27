@@ -1,0 +1,120 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: CLUSTER.specimen.v1
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.specimen.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Person #todo if we make this Organization, it also means it will try to map fhir->openehr standalone organization without the context of a template (resulting in leistungsanforderung/identifikator_des_probenehmers|id, leistungsanforderung/zeitpunkt_der_probenentnahme/date_time_value).. what do we do?
+
+mappings:
+  - name: "identifier"
+    with:
+      fhir: "$resource.identifier"
+      openehr: "$archetype/items[at0088]" #external identifier
+      type: "IDENTIFIER"
+
+  - name: "collection"
+    with:
+      fhir: "$resource.collection"
+      openehr: "$archetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "collected.as(DateTimeType)"
+          with:
+            fhir: "collected" # same as onset; try to provide both and use the one that's present
+            openehr: "$archetype.zeitpunkt_der_probenentnahme.date_time_value"
+            type: "DATETIME"
+
+        - name: "collector"
+          with:
+            fhir: "collector.as(Reference).identifier" # explicitly cast to Reference to avoid adding a Resource
+            openehr: "$archetype.identifikator_des_probenehmers" #TODO should in the best case pinpoint to a resource via link, dunno where to put this in openEHR currently
+            type: "IDENTIFIER"
+
+        - name: "specimenCollectionMethod"
+          with:
+            fhir: "method"
+            openehr: "/items[at0007]"
+        - name: "specimenCollectionBodySite"
+          with:
+            fhir: "bodySite"
+            openehr: "/items[at0087]"
+        - name: "samplingContext"
+          with:
+            fhir: "fastingStatus"
+            openehr: "$archetype/items[0008]" #Sampling context
+#        - name: "collector"
+#          with:
+#            fhir: "collector.reference"
+#            openehr: "$reference"
+#          reference:
+#            mappings:
+#              - name: "identifierInReference"
+#                with:
+#                  fhir: "$resource.identifier"
+#                  openehr: "$archetype/items[at0070]"
+#              - name: "collectorLink"
+#                with:
+#                  fhir: "$resource"
+#                  openehr: "$archetype/items[at0070]/links"
+#                  type: "REFERENCED_MAPPING"
+#                  openehrLink:
+#                    meaning: "the collector that collected this specimen"
+#                    type: "collector"
+
+  - name: "type"
+    with:
+      fhir: "$resource.type"
+      openehr: "$archetype/items[at0029]" # specimen type
+
+  - name: "note"
+    with:
+      fhir: "$resource.note"
+      openehr: "$archetype/items[at0045]" # comment
+
+  - name: "descriptionOfSpecimen"
+    with:
+      fhir: "$resource.condition"
+      openehr: "$archetype/items[at0097]" #specimen description
+
+  - name: "descriptionOfSpecimen"
+    with:
+      fhir: "$resource.accessionIdentifier"
+      openehr: "$archetype/items[0001]" #Laboratory specimen identifier
+
+  - name: "dateReceived"
+    with:
+      fhir: "$resource.receivedTime"
+      openehr: "$archetype/items[at0034]" #Date/Time received
+
+#  - name: "parent"
+#    with:
+#      fhir: "$resource.parent.reference"
+#      openehr: "$reference"
+#    reference:
+#      resourceType: "Specimen"
+#      mappings:
+#        - name: "referenceInIdentifier"
+#          with:
+#            fhir: "$resource.identifier"
+#            openehr: "$archetype/items[at0003]"
+#        - name: "parentLink"
+#          with:
+#            fhir: "$resource"
+#            openehr: "$archetype/items[at0003]/links"
+#            type: "REFERENCED_MAPPING"
+#            openehrLink:
+#              meaning: "the parent of this specimen"
+#              type: "parent"
+
+  - name: "status"
+    with:
+      fhir: "$resource.status"
+      openehr: "$archetype/items[at0041]" #adequacy for testing
+
