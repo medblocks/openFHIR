@@ -63,6 +63,8 @@ mappings:
                   type: "IDENTIFIER"
 
 
+# todo: I don't think you need this. A simple mapping from Resource.category with terminology mapping (like in many other places
+# todo: suffices. Goes for all three mappings below. Why do this manual kind of mapping??
 #  - name: "category"
 #    extension: "overwrite"
 #    with:

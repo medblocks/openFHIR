@@ -571,6 +571,19 @@ public class OpenEhrToFhir {
                     existing.getLastObject().getClass(),
                     existing.getRemovedPath(),
                     null);
+
+            hardcodedReturn.setPath(
+                    openFhirStringUtils.getFhirPathWithConditions(condition.getTargetRoot(), condition, targetResource,
+                                                                  parentFhirEhr).replace(targetResource + ".", "") + "." + hardcodedReturn.getPath());
+
+            intermediateCacheProcessing.populateIntermediateCache(hardcodedReturn,
+                                                                  instance.toString(),
+                                                                  instantiatedIntermediateElements,
+                                                                  instance.getResourceType().name(),
+                                                                  fullOpenEhrPath,
+                                                                  parentFhirEhr,
+                                                                  parentOpenEhr);
+
             fhirInstancePopulator.populateElement(getLastReturn(hardcodedReturn).getReturning(),
                                                   new StringType(stringFromCriteria));
         } else {

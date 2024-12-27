@@ -371,12 +371,7 @@ public class OpenFhirStringUtils {
                 // all is done already
                 return originalFhirPath;
             } else {
-                if (originalFhirPath.startsWith(parentPath.replace(parentsWhereCondition, ""))) {
-                    return setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath);
-                } else {
-                    final String remainingItemsFromParent = originalFhirPath.replace(setParentsWherePathToTheCorrectPlace(parentPath, originalFhirPath), "");
-                    return setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath) + remainingItemsFromParent;
-                }
+                return setParentsWherePathToTheCorrectPlace(originalFhirPath, parentPath);
             }
         }
     }
@@ -459,10 +454,10 @@ public class OpenFhirStringUtils {
             final String childPath = children[i];
             if (parentIndex >= parents.length || childPath.equals(parents[parentIndex])) {
                 childPathJoiner.add(childPath);
-                parentIndex++;
                 if (parentIndex < parents.length) {
                     parentSubstringCount += parents[parentIndex].length();
                 }
+                parentIndex++;
             } else {
                 final String string = parents[parentIndex];
                 if (string.startsWith(WHERE)) {
@@ -471,6 +466,8 @@ public class OpenFhirStringUtils {
                     childPathJoiner.add(firstWhereCondition);
                     childPathJoiner.add(childPath);
                     parentIndex += (int) (firstWhereCondition.chars().filter(ch -> ch == '.').count() + 1);
+                } else {
+                    childPathJoiner.add(childPath);
                 }
             }
         }

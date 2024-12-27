@@ -546,20 +546,25 @@ public class FhirToOpenEhr {
 
     private void createFollowedByMappings(final Mapping mapping, final String openehr, final String openEhrPath) {
         for (final Mapping followedByMapping : mapping.getFollowedBy().getMappings()) {
-            if (!followedByMapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_ARCHETYPE_FC)) {
-                final String followedByOpenEhrPath = followedByMapping.getWith().getOpenehr();
+            final With with = followedByMapping.getWith();
+            if (with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
+                // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
+                continue;
+            }
+            if (!with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_ARCHETYPE_FC)) {
+                final String followedByOpenEhrPath = with.getOpenehr();
                 final String delimeter = followedByOpenEhrPath.startsWith("|") ? "" : "/";
-                followedByMapping.getWith().setOpenehr(
+                with.setOpenehr(
                         openehr.replace(FhirConnectConst.REFERENCE + "/", "") + delimeter + followedByOpenEhrPath
                                 .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + ".", "")
                                 .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
             } else {
-                if (followedByMapping.getWith().getOpenehr().equals(FhirConnectConst.OPENEHR_ARCHETYPE_FC)) {
+                if (with.getOpenehr().equals(FhirConnectConst.OPENEHR_ARCHETYPE_FC)) {
                     // if you did $archetype, then we replace with parent's path
-                    followedByMapping.getWith().setOpenehr(openehr);
+                    with.setOpenehr(openehr);
                 } else {
                     // if you prefixed it with $archetype, it means you know what you're setting yourself
-                    followedByMapping.getWith().setOpenehr(followedByMapping.getWith().getOpenehr()
+                    with.setOpenehr(with.getOpenehr()
                                                                    .replace(FhirConnectConst.REFERENCE + ".", "")
                                                                    .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + ".",
                                                                             openEhrPath + ".")
