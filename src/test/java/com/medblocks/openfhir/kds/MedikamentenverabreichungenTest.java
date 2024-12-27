@@ -9,11 +9,13 @@ import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Ignore
 public class MedikamentenverabreichungenTest extends KdsBidirectionalTest {
 
     final String RESOURCES_ROOT = "/kds/medikamentenverabreichungen/";

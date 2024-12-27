@@ -9,7 +9,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   openEhrConfig:
     archetype: "openEHR-EHR-EVALUATION.advance_care_directive.v2"
   fhirConfig:
-    structureDefinition: http://hl7.org/fhir/StructureDefinition/Observation
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Consent
     condition:
       - targetRoot: "$resource"
         targetAttribute: "meta.profile"

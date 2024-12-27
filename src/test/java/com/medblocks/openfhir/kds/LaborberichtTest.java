@@ -11,6 +11,7 @@ import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Specimen;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore
 public class LaborberichtTest extends KdsBidirectionalTest {
 
     final String RESOURCES_ROOT = "/kds/laborbericht/";

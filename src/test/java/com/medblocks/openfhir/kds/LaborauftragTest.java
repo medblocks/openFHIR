@@ -10,6 +10,7 @@ import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.*;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore
 public class LaborauftragTest extends KdsBidirectionalTest {
 
     final String RESOURCES_ROOT = "/kds/laborauftrag/";

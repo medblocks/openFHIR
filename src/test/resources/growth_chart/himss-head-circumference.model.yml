@@ -15,6 +15,10 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
         targetAttribute: "category.coding.code"
         operator: "one of"
         criteria: "[head_circumference]"
+      - targetRoot: "$resource"
+        targetAttribute: "status"
+        operator: "one of"
+        criteria: "[final]"
 
 
 mappings:

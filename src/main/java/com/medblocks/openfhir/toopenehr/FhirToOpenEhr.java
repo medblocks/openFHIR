@@ -424,33 +424,31 @@ public class FhirToOpenEhr {
     void createHelpers(final String templateId, final Resource resource, final Condition parentCondition,
                        final List<FhirToOpenEhrHelper> helpers, final List<FhirToOpenEhrHelper> coverHelpers,
                        final boolean bundle, final String startingArchetype) {
-//        ((Bundle) resource).getEntry().forEach(entry -> {
-//            final List<OpenFhirFhirConnectModelMapper> mappers = openFhirTemplateRepo.getMapperForArchetype(
-//                    startingArchetype);
-//            final List<OpenFhirFhirConnectModelMapper> mapperForResources = openFhirTemplateRepo.getMapperForResource(
-//                    entry.getResource());
-//            if (mapperForResources == null || mapperForResources.isEmpty()) {
-//                return;
-//            }
-//            for (OpenFhirFhirConnectModelMapper mapperForResource : mapperForResources) {
-//                final String mainArchetype = mapperForResource.getOpenEhrConfig().getArchetype();
-//                createHelpers(mainArchetype, mapperForResource, templateId, templateId, mapperForResource.getMappings(),
-//                              parentCondition, helpers, coverHelpers, bundle,
-//                              mapperForResource.getFhirConfig().getMultiple(), false);
-//            }
-//        });
+        ((Bundle) resource).getEntry().forEach(entry -> {
+            final List<OpenFhirFhirConnectModelMapper> mapperForResources = openFhirTemplateRepo.getMapperForResource(
+                    entry.getResource());
+            if (mapperForResources == null || mapperForResources.isEmpty()) {
+                return;
+            }
+            for (OpenFhirFhirConnectModelMapper mapperForResource : mapperForResources) {
+                final String mainArchetype = mapperForResource.getOpenEhrConfig().getArchetype();
+                createHelpers(mainArchetype, mapperForResource, templateId, templateId, mapperForResource.getMappings(),
+                              parentCondition, helpers, coverHelpers, bundle,
+                              mapperForResource.getFhirConfig().getMultiple(), false);
+            }
+        });
 
-        final List<OpenFhirFhirConnectModelMapper> mappers = openFhirTemplateRepo.getMapperForArchetype(
-                templateId, startingArchetype);
-        if (mappers == null || mappers.isEmpty()) {
-            return;
-        }
-        for (OpenFhirFhirConnectModelMapper mapperForResource : mappers) {
-            final String mainArchetype = mapperForResource.getOpenEhrConfig().getArchetype();
-            createHelpers(mainArchetype, mapperForResource, templateId, templateId, mapperForResource.getMappings(),
-                          parentCondition, helpers, coverHelpers, bundle,
-                          mapperForResource.getFhirConfig().getMultiple(), false);
-        }
+//        final List<OpenFhirFhirConnectModelMapper> mappers = openFhirTemplateRepo.getMapperForArchetype(
+//                templateId, startingArchetype);
+//        if (mappers == null || mappers.isEmpty()) {
+//            return;
+//        }
+//        for (OpenFhirFhirConnectModelMapper mapperForResource : mappers) {
+//            final String mainArchetype = mapperForResource.getOpenEhrConfig().getArchetype();
+//            createHelpers(mainArchetype, mapperForResource, templateId, templateId, mapperForResource.getMappings(),
+//                          parentCondition, helpers, coverHelpers, bundle,
+//                          mapperForResource.getFhirConfig().getMultiple(), false);
+//        }
     }
 
     /**
