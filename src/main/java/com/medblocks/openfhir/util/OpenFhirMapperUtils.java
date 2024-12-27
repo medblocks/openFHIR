@@ -1,5 +1,6 @@
 package com.medblocks.openfhir.util;
 
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_ARCHETYPE_FC;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
 
 import com.medblocks.openfhir.fc.FhirConnectConst;
@@ -7,6 +8,7 @@ import com.medblocks.openfhir.fc.OpenFhirFhirConfig;
 import com.medblocks.openfhir.fc.OpenFhirFhirConnectModelMapper;
 import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.fc.schema.model.Mapping;
+import com.medblocks.openfhir.fc.schema.model.With;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -167,7 +169,13 @@ public class OpenFhirMapperUtils {
                                           final String fhirPath,
                                           final String openehr,
                                           final String slotContext) {
-        for (Mapping followedByMapping : followedByMappings) {
+        for (final Mapping followedByMapping : followedByMappings) {
+            final With with = followedByMapping.getWith();
+            final String hardcodedValue = with.getValue();
+            if (followedByMapping.getWith().getOpenehr() == null && hardcodedValue != null) {
+                // hardcoding to FHIR
+                with.setOpenehr(OPENEHR_ARCHETYPE_FC);
+            }
             if (!followedByMapping.getWith().getFhir().startsWith(FhirConnectConst.FHIR_RESOURCE_FC)) {
                 followedByMapping.getWith().setFhir(fhirPath + "." + followedByMapping.getWith().getFhir());
             }

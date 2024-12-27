@@ -1,0 +1,119 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: ADMIN_ENTRY.episode_institution_local.v0
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Encounter
+
+mappings:
+
+  - name: "healthcareFacility"
+    with:
+      fhir: "$resource.serviceProvider.as(Reference).display"
+      openehr: "$archetype.context._health_care_facility|name"
+      type: "STRING"
+
+  - name: "contextPeriod"
+    with:
+      fhir: "$resource.period"
+      openehr: "$archetype.context"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "contextStart"
+          with:
+            fhir: "start"
+            openehr: "start_time"
+            type: "DATETIME"
+        - name: "contextEnd"
+          with:
+            fhir: "end"
+            openehr: "_end_time"
+            type: "DATETIME"
+
+  #todo: mapped to same field as above?
+  - name: "composer"
+    with:
+      fhir: "$resource.serviceProvider.as(Reference).display"
+      openehr: "$composition.composer|name"
+      type: "STRING"
+
+  # todo ??? no such 'provider' exists, or does it?
+  #  - name: "entryProvider"
+  #    with:
+  #      fhir: "$resource.serviceProvider"
+  #      openehr: "$archetype/provider"
+
+  #todo: these two will overwrite contextStartTime and contextEndTime
+
+  - name: "period"
+    with:
+      fhir: "$resource.period"
+      openehr: "$archetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "admissionDate"
+          with:
+            fhir: "start"
+            openehr: "$archetype.institutionsaufenthalt.aufnahmedatum"
+            type: "DATETIME"
+        - name: "seperationDate"
+          with:
+            fhir: "end"
+            openehr: "$archetype.institutionsaufenthalt.entlassungsdatum"
+            type: "DATETIME"
+
+  - name: "room"
+    with:
+      fhir: "$resource.location.location.as(Reference).identifier.value"
+      openehr: "$archetype.institutionsaufenthalt.standort.zimmer"
+    fhirCondition:
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
+      operator: "one of"
+      criteria: "[ro]"
+    followedBy:
+      mappings:
+        - name: "hardcodingRoomSystem"
+          with:
+            fhir: "$resource.location.physicalType.coding.system"
+            value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
+
+  - name: "bed"
+    with:
+      fhir: "$resource.location.location.as(Reference).identifier.value"
+      openehr: "$archetype.institutionsaufenthalt.standort.bett"
+    fhirCondition:
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
+      operator: "one of"
+      criteria: "[bd]"
+    followedBy:
+      mappings:
+        - name: "hardcodingBedSystem"
+          with:
+            fhir: "$resource.location.physicalType.coding.system"
+            value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
+
+  - name: "station"
+    with:
+      fhir: "$resource.location.location.as(Reference).identifier.value"
+      openehr: "$archetype.institutionsaufenthalt.standort.station"
+    fhirCondition:
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
+      operator: "one of"
+      criteria: "[wa]"
+    followedBy:
+      mappings:
+        - name: "hardcodingWardSystem"
+          with:
+            fhir: "$resource.location.physicalType.coding.system"
+            value: "http://terminology.hl7.org/CodeSystem/location-physical-type"

@@ -1,0 +1,24 @@
+engine: FHIRConnect/v0.0.1
+type: context
+metadata:
+  name:  KDS_fall_einfach.context
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+
+context:
+  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+  templateId: "KDS_Fall_einfach"
+  archetypes:
+    - "EVALUATION.problem_diagnosis.v1"
+    - "ADMIN_ENTRY.episode_institution_local.v0"
+    - "CLUSTER.organisation.v1"
+    # need to reference also all those from problem diagnose?
+    - "CLUSTER.anatomical_location.v1"
+  extensions:
+    - "KDS_episode_institution_local"
+    - "KDS_organisation"
+    - "KDS_fall_problem_diagnose"
+    - "KDS_anatomical_location"
+  start: "ADMIN_ENTRY.episode_institution_local.v0"
