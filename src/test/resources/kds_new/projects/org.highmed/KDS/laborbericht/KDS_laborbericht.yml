@@ -1,0 +1,105 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_laborbericht
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  extends: OBSERVATION.laboratory_test_result.v1
+
+mappings:
+  #  - name: "hierarchyMappings" #always have to be first
+  #    with:
+  #      fhir: "$resource.result.as(Observation)"
+  #      openEHR: "$archetype/data[at0001]/events[at0002]"
+  #    hierarchy:
+  #      openehrCreate: "event"
+  #      uniqueValueFHIR: "[effective]"
+
+  - name: "result" #/data[at0001]/events[at0002] add new for each laboratory analyte.
+    extension: "add"
+    with:
+      fhir: "$resource.result"
+      openehr: "$reference" #will create FOR each result ONE event.
+    reference:
+      resourceType: "Observation"
+      mappings:
+        - name: "observationRecurring"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetype.laborbefund.pro_laboranalyt"
+          slotArchetype: "CLUSTER.laboratory_test_analyte.v1"
+
+  #  - name: "fallIdentifikationIdentifier"
+  #    extension: "add"
+  #    with:
+  #      fhir: "$resource.encounter.identifier"
+  #      # todo: not ok; slotArchetype CLUSTER.case_identification has a "case_identifier", BUT this template requires a "fall-kennung".
+  #      openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+  #    slotArchetype: "CLUSTER.case_identification.v0"
+
+  #  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+  #    extension: "add"
+  #    with:
+  #      fhir: "$resource.encounter.reference"
+  #      openehr: "$reference"
+  #    reference: #type None
+  #      resourceType: "Encounter"
+  #      mappings:
+  #        - name: "identifierInReference"
+  #          with:
+  #            fhir: "$fhirRoot.identifier"
+  #            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+  #          slotArchetype: "CLUSTER.case_identification.v0"
+  #        - name: "encounterMapping"
+  #          with:
+  #            fhir: "$fhirRoot"
+  #            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+  #            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+  #            openehrLink:
+  #              meaning: "the case this composition relates to"
+  #              type: "case"
+
+  # todo: you're already overriding it below from the core mapping, so this here is obsolete
+#  - name: "status" # needs to be corrected in the template
+#    extension: "add"
+#    with:
+#      fhir: "$resource.status"
+#      openehr: "$archetype.context.status"
+
+
+  - name: "status" #TODO @deprecated needs to go once mapping is updated
+    extension: "overwrite"
+    with:
+      fhir: "$resource.status"
+      openehr: "$archetype.context.status"
+
+  - name: "berichtIdParent"
+    extension: "add"
+    with:
+      fhir: "$resource.identifier"
+      openehr: "$archetype.context.bericht_id"
+    fhirCondition:
+      targetRoot: "$resource.identifier"
+      targetAttribute: "type.coding.code"
+      operator: "one of"
+      criteria: "[FILL]"
+    followedBy:
+      mappings:
+        - name: "berichtId"
+          extension: "add"
+          with:
+            fhir: "value"
+            openehr: "$archetype.context.bericht_id"
+            type: "STRING"
+        - name: "typeSystem"
+          with:
+            fhir: "type.coding.system"
+            value: "http://terminology.hl7.org/CodeSystem/v2-0203"
+
+
+
+
+
+

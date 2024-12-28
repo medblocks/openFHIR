@@ -15,7 +15,7 @@ mappings:
   - name: "identifier"
     with:
       fhir: "$resource.identifier"
-      openehr: "$archetype/items[at0088]" #external identifier
+      openehr: "$archetype.externer_identifikator" #external identifier
       type: "IDENTIFIER"
 
   - name: "collection"
@@ -25,9 +25,9 @@ mappings:
       type: "NONE"
     followedBy:
       mappings:
-        - name: "collected.as(DateTimeType)"
+        - name: "collected"
           with:
-            fhir: "collected" # same as onset; try to provide both and use the one that's present
+            fhir: "collected.as(DateTimeType)" # same as onset; try to provide both and use the one that's present
             openehr: "$archetype.zeitpunkt_der_probenentnahme.date_time_value"
             type: "DATETIME"
 
@@ -39,16 +39,22 @@ mappings:
 
         - name: "specimenCollectionMethod"
           with:
-            fhir: "method"
-            openehr: "/items[at0007]"
+            fhir: "method.text"
+            openehr: "$archetype.probenentnahmemethode"
+            type: "STRING"
+
         - name: "specimenCollectionBodySite"
           with:
-            fhir: "bodySite"
-            openehr: "/items[at0087]"
+            fhir: "bodySite.text"
+            openehr: "$archetype.körperstelle"
+            type: "STRING"
+
         - name: "samplingContext"
           with:
-            fhir: "fastingStatus"
-            openehr: "$archetype/items[0008]" #Sampling context
+            fhir: "fastingStatus.as(CodeableConcept).text"
+            openehr: "$archetype.probenentahmebedingung" #Sampling context
+            type: "STRING"
+
 #        - name: "collector"
 #          with:
 #            fhir: "collector.reference"
@@ -71,27 +77,32 @@ mappings:
   - name: "type"
     with:
       fhir: "$resource.type"
-      openehr: "$archetype/items[at0029]" # specimen type
+      openehr: "$archetype.probenart" # specimen type
+      type: "CODEABLECONCEPT"
 
   - name: "note"
     with:
-      fhir: "$resource.note"
-      openehr: "$archetype/items[at0045]" # comment
+      fhir: "$resource.note.text"
+      openehr: "$archetype.kommentar" # comment
+      type: "STRING"
 
   - name: "descriptionOfSpecimen"
     with:
       fhir: "$resource.condition"
-      openehr: "$archetype/items[at0097]" #specimen description
+      openehr: "$archetype.beschreibung_der_probe" #specimen description
+      type: "CODEABLECONCEPT"
 
-  - name: "descriptionOfSpecimen"
+  - name: "identifierOfSpecimen"
     with:
       fhir: "$resource.accessionIdentifier"
-      openehr: "$archetype/items[0001]" #Laboratory specimen identifier
+      openehr: "$archetype.laborprobenidentifikator" #Laboratory specimen identifier
+      type: "IDENTIFIER"
 
   - name: "dateReceived"
     with:
       fhir: "$resource.receivedTime"
-      openehr: "$archetype/items[at0034]" #Date/Time received
+      openehr: "$archetype.zeitpunkt_des_probeneingangs" #Date/Time received
+      type: "DATETIME"
 
 #  - name: "parent"
 #    with:
@@ -116,5 +127,6 @@ mappings:
   - name: "status"
     with:
       fhir: "$resource.status"
-      openehr: "$archetype/items[at0041]" #adequacy for testing
+      openehr: "$archetype.eignung_zur_analyse|code" #adequacy for testing
+      type: "STRING"
 
