@@ -53,8 +53,8 @@ public class FhirConnectService {
             final List<String> strings = validator.validateAgainstModelSchema(fhirConnectModel);
             if (strings != null && !strings.isEmpty()) {
                 log.error(
-                        "[{}] Error occurred trying to validate FC model mapper against the schema. Nothing has been created.",
-                        reqId);
+                        "[{}] Error occurred trying to validate FC model mapper against the schema. Nothing has been created. Errors: {}",
+                        reqId, strings);
                 throw new RequestValidationException("Couldn't validate against the yaml schema", strings);
             }
 
@@ -77,7 +77,7 @@ public class FhirConnectService {
             throw e;
         } catch (final Exception e) {
             log.error("Couldn't create a FhirConnectModel, reqId: {}", reqId, e);
-            throw new IllegalArgumentException("Couldn't create a FhirConnectModel. Invalid one.");
+            throw new IllegalArgumentException("Couldn't create a FhirConnectModel. Invalid one.", e);
         }
     }
 
@@ -104,8 +104,8 @@ public class FhirConnectService {
             final List<String> strings = validator.validateAgainstContextSchema(fhirContext);
             if (strings != null && !strings.isEmpty()) {
                 log.error(
-                        "[{}] Error occurred trying to validate connect context mapper against the schema. Nothing has been created.",
-                        reqId);
+                        "[{}] Error occurred trying to validate connect context mapper against the schema. Nothing has been created. Errors: {}",
+                        reqId, strings);
                 throw new RequestValidationException("Couldn't validate against the yaml schema", strings);
             }
 
@@ -130,7 +130,7 @@ public class FhirConnectService {
             throw e;
         } catch (final Exception e) {
             log.error("Couldn't create/update a FhirConnectContext, reqId: {}", reqId, e);
-            throw new IllegalArgumentException("Couldn't create a FhirConnectContext. Invalid one.");
+            throw new IllegalArgumentException("Couldn't create a FhirConnectContext. Invalid one.", e);
         }
     }
 

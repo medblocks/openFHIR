@@ -12,8 +12,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement #if you put Person, it will map it again
 
 
-mapping:
-
+mappings:
   - name: "name"
     with:
       fhir: "$resource.name"
