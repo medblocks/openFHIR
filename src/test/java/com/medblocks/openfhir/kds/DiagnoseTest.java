@@ -240,7 +240,7 @@ public class DiagnoseTest extends KdsBidirectionalTest {
     public JsonObject toOpenEhr() {
         final Bundle testBundle = getTestBundle(HELPER_LOCATION + BUNDLE);
         final JsonObject jsonObject = new JsonObject();
-
+        // todo: once we figure stuff out how to handle referenced conditions etc
         return jsonObject;
     }
 }

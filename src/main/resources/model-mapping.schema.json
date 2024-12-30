@@ -290,7 +290,6 @@
     "engine",
     "type",
     "metadata",
-    "spec",
-    "mappings"
+    "spec"
   ]
 }
