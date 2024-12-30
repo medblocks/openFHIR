@@ -1,0 +1,18 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: CLUSTER.person_birth_data_iso.v0
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.person_birth_data_iso.v0
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
+
+mappings:
+  - name: "birthdate"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$archetype.geburtsdatum"
