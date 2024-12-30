@@ -4,10 +4,10 @@ package com.medblocks.openfhir.fc;
  * Utility class containing all constants defined by the FHIR Connect specification
  */
 public class FhirConnectConst {
-    public static final String FHIR_RESOURCE_FC = "$fhirResource";
+    public static final String FHIR_RESOURCE_FC = "$resource";
     public static final String FHIR_ROOT_FC = "$fhirRoot";
     public static final String THIS = "$this";
-    public static final String OPENEHR_ARCHETYPE_FC = "$openEhrArchetype";
+    public static final String OPENEHR_ARCHETYPE_FC = "$archetype";
     public static final String OPENEHR_CONTEXT_FC = "$openEhrContext";
     public static final String OPENEHR_TYPE_NONE = "NONE";
     public static final String OPENEHR_TYPE_MEDIA = "MEDIA";
@@ -27,7 +27,9 @@ public class FhirConnectConst {
     public static final String DV_BOOL = "BOOLEAN";
     public static final String IDENTIFIER = "IDENTIFIER";
     public static final String UNIDIRECTIONAL_TOFHIR = "openEHR->fhir";
-    public static final String UNIDIRECTIONAL_TOOPENEHR = "fhir->openEHR";
+    public static final String UNIDIRECTIONAL_TOOPENEHR = "fhir->openehr";
+    public static final String CONDITION_OPERATOR_ONE_OF = "one of";
+    public static final String CONDITION_OPERATOR_EMPTY = "empty";
 
 
 }

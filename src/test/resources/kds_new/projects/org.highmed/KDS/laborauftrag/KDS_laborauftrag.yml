@@ -1,0 +1,122 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_laborauftrag
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  extends: INSTRUCTION.service_request.v1
+
+mappings:
+#  - name: "fallIdentifikationIdentifier"
+#    extension: "add"
+#    with:
+#      fhir: "$resource.encounter.identifier"
+#      openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+#    slotArchetype: "CLUSTER.case_identification.v0"
+#
+#  - name: "fallIdentifikationReference" # if reference is accessible will overwrite fallIdentifikationIdentifier
+#    extension: "add"
+#    with:
+#      fhir: "$resource.encounter.reference"
+#      openehr: "$reference"
+#    reference: #type None
+#      resourceType: "Encounter"
+#      mappings:
+#        - name: "identifierInReference"
+#          with:
+#            fhir: "$fhirRoot.identifier"
+#            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+#          slotArchetype: "CLUSTER.case_identification.v0"
+#        - name: "encounterMapping"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "the case this composition relates to"
+#              type: "case"
+
+
+
+  - name: "specimen"
+    extension: "add"
+    with:
+      fhir: "$resource.specimen"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Specimen"
+      mappings:
+        - name: "specimenRecurring"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetype.laborleistung.aktuelle_aktivität.probe" # you need to do this because specimen is recurring element in openehr
+          slotArchetype: "CLUSTER.specimen.v1"
+          followedBy:
+            mappings:
+              - name: "specimenIdentifier"
+                with:
+                  fhir: "identifier"
+                  openehr: "laborprobenidentifikator"
+                  type: "IDENTIFIER"
+
+
+# todo: I don't think you need this. A simple mapping from Resource.category with terminology mapping (like in many other places
+# todo: suffices. Goes for all three mappings below. Why do this manual kind of mapping??
+#  - name: "category"
+#    extension: "overwrite"
+#    with:
+#      fhir: "$resource.category.coding"
+#      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/value/defining_code"
+#    manual:
+#      - name: "categoryStatic"
+#        openehr:
+#          - path: "terminology_id/value"
+#            value: "http://terminology.hl7.org/ValueSet/observation-category"
+#          - path: "code_string"
+#            value: "laboratory"
+#          - path: "../value"
+#            value: "Laboratory"
+#        fhir:
+#          - path: "system"
+#            value: "http://terminology.hl7.org/CodeSystem/observation-category"
+#          - path: "code"
+#            value: "laboratory"
+#
+#  - name: "intent"
+#    extension: "overwrite"
+#    with:
+#      fhir: "$resource"
+#      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/value/defining_code"
+#    manual:
+#      - name: "categoryStatic"
+#        openehr:
+#          - path: "terminology_id/value"
+#            value: "http://hl7.org/fhir/request-intent"
+#          - path: "code_string"
+#            value: "order"
+#          - path: "../value"
+#            value: "Order"
+#        fhir:
+#          - path: "intent"
+#            value: "order"
+#
+#  - name: "status"
+#    extension: "overwrite"
+#    with:
+#      fhir: "$resource"
+#      openehr: "$archetype/protocol[at0008]/items[at0127]/value/defining_code"
+#    manual:
+#      - name: "categoryStatic"
+#        openehr:
+#          - path: "terminology_id/value"
+#            value: "http://hl7.org/fhir/ValueSet/request-status"
+#          - path: "code_string"
+#            value: "completed"
+#          - path: "../value"
+#            value: "Completed"
+#        fhir:
+#          - path: "status"
+#            value: "completed"

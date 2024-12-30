@@ -24,6 +24,16 @@
           ],
           "text": "Diagnostic procedure"
         },
+        "extension": [
+          {
+            "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht",
+            "valueCoding" : {
+              "code": "durchführungsabsicht",
+              "display": "valuedurchführungsabsicht",
+              "system":"Durchfuehrungsabsicht"
+            }
+          }
+        ],
         "code": {
           "coding": [
             {

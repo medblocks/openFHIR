@@ -1,0 +1,18 @@
+engine: FHIRConnect/v0.0.1
+type: context
+metadata:
+  name: "Growth chart"
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+
+context:
+  profileUrl: "Observation"
+  templateId: "Growth chart"
+  archetypes:
+    - "openEHR-EHR-OBSERVATION.body_weight.v2"
+    - "openEHR-EHR-OBSERVATION.height.v2"
+    - "openEHR-EHR-OBSERVATION.body_mass_index.v2"
+    - "openEHR-EHR-OBSERVATION.head_circumference.v1"
+  start: "openEHR-EHR-OBSERVATION.body_weight.v2"

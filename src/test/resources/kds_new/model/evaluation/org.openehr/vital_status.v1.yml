@@ -1,0 +1,133 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: EVALUATION.vital_status.v1
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-EVALUATION.vital_status.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Observation
+
+mappings:
+
+  - name: "healthCareFacility"
+    with:
+      fhir: "$resource.performer.as(Reference).display"
+      openehr: "$archetype.context._health_care_facility"
+
+#  - name: "participations"
+#    with:
+#      fhir: "$resource.performer"
+#      openehr: "$archetype/context/participations"
+#    participationsFunction: "performer"
+#
+#  - name: "composer"
+#    with:
+#      fhir: "$resource.performer"
+#      openehr: "$archetype/composer"
+#
+#  - name: "performer"
+#    with:
+#      fhir: "$resource.performer"
+#      openehr: "$archetype/perfomer"
+#
+#  - name: "otherParticipants"
+#    with:
+#      fhir: "$resource.performer"
+#      openehr: "$archetype/other_participations"
+#    participationsFunction: "performer"
+
+  - name: "effective"
+    with:
+      fhir: "$resource.effective"
+      openehr: "sterbedatum"
+      type: "DATETIME"
+
+  - name: "vitalStatus"
+    with:
+      fhir: "$resource.value"
+      openehr: "$archetype.something" #todo where in template?!
+
+  - name: "note"
+    with:
+      fhir: "$resource.note.text"
+      openehr: "$archetype.kommentar"
+
+#  - name: "partOf"
+#    with:
+#      fhir: "$resource.partOf.reference"
+#      openehr: "$reference"
+#    reference:
+#      mappings:
+#        - name: "partOfReference"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "Part of referenced event"
+#              type: "partOf"
+#
+#  - name: "basedOn"
+#    with:
+#      fhir: "$resource.basedOn.reference"
+#      openehr: "$reference"
+#    reference:
+#      mappings:
+#        - name: "partOfReference"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "Fulfills plan, proposal or order"
+#              type: "basedOn"
+#
+#  - name: "focus"
+#    with:
+#      fhir: "$resource.basedOn.reference"
+#      openehr: "$reference"
+#    reference:
+#      mappings:
+#        - name: "partOfReference"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "What the observation is about, when it is not about the subject of record"
+#              type: "focus"
+#
+#  - name: "encounter"
+#    with:
+#      fhir: "$resource.encounter.reference"
+#      openehr: "$reference"
+#    reference:
+#      mappings:
+#        - name: "partOfReference"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "case or contact"
+#              type: "case"
+#
+#
+#  - name: "hasMember"
+#    with:
+#      fhir: "$resource.hasMember.reference"
+#      openehr: "$reference"
+#    reference:
+#      mappings:
+#        - name: "partOfReference"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "Related resource that belongs to the Observation group"
+#              type: "hasMember"

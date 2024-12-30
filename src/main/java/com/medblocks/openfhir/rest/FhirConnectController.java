@@ -1,7 +1,7 @@
 package com.medblocks.openfhir.rest;
 
 import com.medblocks.openfhir.db.FhirConnectService;
-import com.medblocks.openfhir.db.entity.FhirConnectMapperEntity;
+import com.medblocks.openfhir.db.entity.FhirConnectModelEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -91,7 +91,7 @@ public class FhirConnectController {
     }
 
     @GetMapping("/fc")
-    List<FhirConnectMapperEntity> userModelMappers(@RequestHeader(value = "x-req-id", required = false) final String reqId) {
+    List<FhirConnectModelEntity> userModelMappers(@RequestHeader(value = "x-req-id", required = false) final String reqId) {
         return service.all(reqId);
     }
 

@@ -1,0 +1,72 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  CLUSTER.dosage.v2.dosage-to-dosage
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.dosage.v2
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Dosage
+
+mappings:
+  - name: "dosageInstructionText"
+    with:
+      fhir: "$fhirRoot.text"
+      openehr: "$archetype.dosierung_freitext"
+      type: "STRING"
+
+  - name: "asNeeded"
+    with:
+      fhir: "$fhirRoot.asNeeded.as(BooleanType)"
+      openehr: "$archetype.tägliche_dosierung.bei_bedarf"
+      type: "BOOL"
+
+
+#todo: do we not map timing then? or do we map it like in the old ones
+#  - name: "dosageTiming"
+#    with:
+#      fhir: "$fhirRoot.timing"
+#      openehr: "$archetype"
+#    type: "PROGRAMMED_MAPPING"
+#    mappingCode: "timingToDaily_NonDaily" #FHIR and openEHR are here very different, openEHR uses ISO, FHIR made up their own
+
+#todo: unit mapping?
+
+
+  - name: "doseQuantityValue"
+    with:
+      fhir: "$fhirRoot.doseAndRate.dose.as(Quantity)"
+      openehr: "$archetype.dosis.quantity_value" # todo: quantity_value vs just |magnitude... how do you know which? maybe aql paths will fix this issue
+      type: "QUANTITY"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "dosis|magnitude"
+      operator: "empty"
+
+  - name: "doseValue"
+    with:
+      fhir: "$fhirRoot.doseAndRate.dose.as(Quantity)"
+      openehr: "$archetype.dosis" # todo: quantity_value vs just |magnitude... how do you know which? maybe aql paths will fix this issue
+      type: "QUANTITY"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "dosis.quantity_value" #todo: how do you know which of these two to take when going fhir->openehr?
+      operator: "empty"
+
+#  - name: "duration"
+#    with:
+#      fhir: "$fhirRoot.timing.duration"
+#      openehr: "$archetype/items[at0134]"  #not sure if this mapping is correct
+#    type: "PROGRAMMED_MAPPING"
+#    mappingCode: "dosageDurationToAdministrationDuration" #FHIR and openEHR are here very different, openEHR uses ISO, FHIR made up their own
+
+  - name: "sequence"
+    with:
+      fhir: "$fhirRoot.sequence"
+      openehr: "$archetype.dosierungsreihenfolge"
+      type: "QUANTITY"

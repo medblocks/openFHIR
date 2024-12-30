@@ -1,0 +1,89 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: INSTRUCTION.service_request.v1
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-INSTRUCTION.service_request.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/ServiceRequest
+    multiple: false # whether output of openEHR -> FHIR should return multiple Resources or a single one.
+
+mappings:
+
+#  - name: "healthCareFacility"
+#    with:
+#      fhir: "$resource.requester.as(Organization)" # todo: what are you mapping here??
+#      openehr: "$archetype/context/health_care_facility"
+
+  - name: "authoredOn"
+    with:
+      fhir: "$resource.authoredOn"
+      openehr: "$archetype.context.start_time"
+      type: DATE
+
+  - name: "composer"
+    with:
+      fhir: "$resource.requester.as(Reference).display"
+      openehr: "$archetype.composer|name" #take the first one if its 0..n ?!
+
+  - name: "provider"
+    with:
+      fhir: "$resource.requester" # mapping is twice, entry level will overwrite the composer from above if not changed in the extension mapping
+      openehr: "$archetype.provider"
+
+  - name: "identifier"
+    with:
+      fhir: "$resource.identifier"
+      openehr: "$archetype.laborleistung.auftrags-id_des_anfordernden_einsendenden_systems_plac"
+      type: IDENTIFIER
+
+  - name: "status"
+    with:
+      fhir: "$resource.status"
+      openehr: "$archetype.laborleistung.status_der_anfrage"
+      type: CODING
+
+  - name: "code"
+    with:
+      fhir: "$resource.code"
+      openehr: "$archetype.laborleistung.aktuelle_aktivität.name_der_laborleistung"
+      type: "CODEABLECONCEPT"
+
+  - name: "category"
+    with:
+      fhir: "$resource.category"
+      openehr: "$archetype.laborleistung.aktuelle_aktivität.art_der_laborleistung_kategorie"
+      type: "CODEABLECONCEPT"
+
+  - name: "intent"
+    with:
+      fhir: "$resource.intent"
+      openehr: "$archetype.laborleistung.aktuelle_aktivität.intention"
+      type: "CODING"
+
+  - name: "note"
+    with:
+      fhir: "$resource.note.text"
+      openehr: "$archetype.laborleistung.aktuelle_aktivität.kommentar"
+      type: "STRING"
+
+  - name: "organisation"
+    with:
+      fhir: "$resource.requester.as(Organization)"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Organization"
+      mappings:
+        - name: "organization"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetype.laborleistung.einsender"
+          slotArchetype: "CLUSTER.organisation.v1"
+
+
+
