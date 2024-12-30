@@ -486,6 +486,9 @@ public class FhirToOpenEhr {
                        // todo: remove this if it turns out it's always true with the new contexts mappings
                        final boolean multiple,
                        final boolean possibleRecursion) {
+        if(mappings == null) {
+            return;
+        }
         for (final Mapping mapping : mappings) {
             final With with = mapping.getWith();
             if (with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
