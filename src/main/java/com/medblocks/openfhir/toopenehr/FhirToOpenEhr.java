@@ -249,7 +249,8 @@ public class FhirToOpenEhr {
                         .startsWith(mainMultiple))) {
 
                     final String openEhrPath = fhirToOpenEhrHelper.getOpenEhrPath();
-                    mainMultiple = openEhrPath.contains("context") ? null : openEhrPath.split(RECURRING_SYNTAX_ESCAPED)[0];
+                    mainMultiple =
+                            ignoreMultipleFlag(openEhrPath) ? null : openEhrPath.split(RECURRING_SYNTAX_ESCAPED)[0];
                     cloned.setOpenEhrPath(
                             fhirToOpenEhrHelper.getOpenEhrPath().replaceFirst(RECURRING_SYNTAX_ESCAPED, ":" + i));
 
@@ -269,6 +270,12 @@ public class FhirToOpenEhr {
                         relevantResource.getIdBase());
             }
         }
+    }
+
+    private boolean ignoreMultipleFlag(final String openEhrPath) {
+        return openEhrPath.contains("context")
+                || openEhrPath.contains("other_participations")
+                || openEhrPath.contains("provider");
     }
 
     /**
@@ -475,18 +482,18 @@ public class FhirToOpenEhr {
      * @param multiple if a specific model mapper should create multiple Resources instead of a single one
      */
     public void createHelpers(final String mainArtifact,
-                       final OpenFhirFhirConnectModelMapper fhirConnectMapper,
-                       final String templateId,
-                       final String mainOpenEhrPath,
-                       final List<Mapping> mappings,
-                       final Condition parentCondition,
-                       final List<FhirToOpenEhrHelper> helpers,
-                       final List<FhirToOpenEhrHelper> coverHelpers,
-                       final boolean bundle,
-                       // todo: remove this if it turns out it's always true with the new contexts mappings
-                       final boolean multiple,
-                       final boolean possibleRecursion) {
-        if(mappings == null) {
+                              final OpenFhirFhirConnectModelMapper fhirConnectMapper,
+                              final String templateId,
+                              final String mainOpenEhrPath,
+                              final List<Mapping> mappings,
+                              final Condition parentCondition,
+                              final List<FhirToOpenEhrHelper> helpers,
+                              final List<FhirToOpenEhrHelper> coverHelpers,
+                              final boolean bundle,
+                              // todo: remove this if it turns out it's always true with the new contexts mappings
+                              final boolean multiple,
+                              final boolean possibleRecursion) {
+        if (mappings == null) {
             return;
         }
         for (final Mapping mapping : mappings) {
@@ -571,11 +578,11 @@ public class FhirToOpenEhr {
                 } else {
                     // if you prefixed it with $archetype, it means you know what you're setting yourself
                     with.setOpenehr(with.getOpenehr()
-                                                                   .replace(FhirConnectConst.REFERENCE + ".", "")
-                                                                   .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + ".",
-                                                                            openEhrPath + ".")
-                                                                   .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC,
-                                                                            openEhrPath));
+                                            .replace(FhirConnectConst.REFERENCE + ".", "")
+                                            .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + ".",
+                                                     openEhrPath + ".")
+                                            .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC,
+                                                     openEhrPath));
                 }
             }
 

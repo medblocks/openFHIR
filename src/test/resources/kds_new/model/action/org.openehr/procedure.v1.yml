@@ -1,0 +1,102 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  ACTION.procedure.v1
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-ACTION.procedure.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Procedure
+    multiple: true
+
+mappings:
+#  - name: "participations"
+#    with:
+#      fhir: "$resource.performer.actor"
+#      openehr: "$composition/context/participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+#    participationsFunction: "asserter" # participations_mode this one has to be done in the mapping and cannot be mapped automatically.
+#
+#  - name: "other_participations"
+#    with:
+#      fhir: "$resource.performer.actor"
+#      openehr: "$archetype/other_participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+#    participationsFunction: "asserter"
+
+  - name: "provider"
+    with:
+      fhir: "$resource.performer.actor"
+      openehr: "$archetype/provider"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+
+  - name: "performed"
+    with:
+      fhir: "$resource.performed.as(Period)"
+      openehr: "$archetype.context"
+    followedBy:
+      mappings:
+        - name: "contextStart"
+          with:
+            fhir: "start"
+            openehr: "$archetype.context.start_time"
+            type: "DATETIME"
+
+        - name: "contextEnd"
+          with:
+            fhir: "end"
+            openehr: "$archetype.context._end_time"
+            type: "DATETIME"
+
+#  - name: "composer"
+#    with:
+#      fhir: "$resource.recorder"
+#      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
+
+  - name: "ISMTransition"
+    with:
+      fhir: "$resource.status" #todo there needs to be a mapping table
+      openehr: "$archetype.prozedur.ism_transition.current_state"
+      type: "STRING"
+
+
+  - name: "name"
+    with:
+      fhir: "$resource.code"
+      openehr: "$archetype.prozedur"
+    followedBy:
+      mappings:
+        - name: "Name"
+          with:
+            fhir: "coding"
+            openehr: "name_der_prozedur"
+            type: "CODING"
+          fhirCondition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[http://fhir.de/CodeSystem/bfarm/ops, http://snomed.info/sct]"
+
+        - name: "freetext"
+          with:
+            fhir: "text"
+            openehr: "freitextbeschreibung"
+            type: "STRING"
+
+  - name: "comment"
+    with:
+      fhir: "$resource.note.text"
+      openehr: "$archetype.prozedur.kommentar"
+      type: "STRING"
+
+  - name: "category"
+    with:
+      fhir: "$resource.category"
+      openehr: "$archetype.prozedur.kategorie_der_prozedur"
+      type: "CODEABLECONCEPT"
+
+  - name: "bodySite"
+    with:
+      fhir: "$resource.bodySite"
+      openehr: "$archetype.prozedur.körperstelle"
+      type: "CODEABLECONCEPT"
