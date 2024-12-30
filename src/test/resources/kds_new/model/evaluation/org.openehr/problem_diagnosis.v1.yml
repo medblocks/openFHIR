@@ -1,0 +1,98 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: EVALUATION.problem_diagnosis.v1
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
+  fhirConfig:
+    structureDefinition: Condition
+
+mappings:
+
+  - name: "contextStartTime"
+    with:
+      fhir: "$resource.recordedDate"
+      openehr: "$archetype.context.start_time"
+      type: "DATETIME"
+#
+#  - name: "participations"
+#    with:
+#      fhir: "$resource.asserter"
+#      openehr: "$composition/context/participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+#    participationsFunction: "asserter" # participations_mode this one has to be done in the mapping and cannot be mapped automatically.
+#
+#  - name: "composer"
+#    with:
+#      fhir: "$resource.recorder"
+#      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
+#
+#  - name: "other_participations"
+#    with:
+#      fhir: "$resource.asserter"
+#      openehr: "$archetype.diagnose/other_participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+#    participationsFunction: "asserter"
+#
+#  - name: "provider"
+#    with:
+#      fhir: "$resource.recorder"
+#      openehr: "$archetype.diagnose/provider"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+
+
+  - name: "problemDiagnose"
+    with:
+      fhir: "$resource.code"
+      openehr: "$archetype"
+    followedBy:
+      mappings:
+        - name: "problemDiagnoseName"
+          with:
+            fhir: "coding"
+            openehr: "diagnose"
+            type: "CODING"
+          followedBy:
+            mappings:
+              - name: "problemDiagnoseNameCode"
+                with:
+                  fhir: "code"
+                  openehr: "kodierte_diagnose"
+        - name: "problemDiagnoseText"
+          with:
+            fhir: "text"
+            openehr: "diagnose.freitextbeschreibung"
+
+  - name: "note"
+    with:
+      fhir: "$resource.note.text"
+      openehr: "$archetype.diagnose.diagnoseerläuterung"
+      type: "STRING"
+
+  - name: "dateTime"
+    with:
+      fhir: "$resource.onset"
+      openehr: "$archetype.diagnose.klinisch_relevanter_zeitraum_zeitpunkt_des_auftretens"
+      type: "DATETIME"
+
+  - name: "bodySite"
+    with:
+      fhir: "$resource.bodySite"
+      openehr: "$archetype.diagnose.anatomical_location.body_site_name"
+      type: "CODEABLECONCEPT"
+
+  - name: "bodySiteCluster"
+    with:
+      fhir: "$resource.bodySite"
+      openehr: "$archetype.diagnose.anatomical_location"
+    slotArchetype: "CLUSTER.anatomical_location.v1"
+
+  - name: "severity"
+    with:
+      fhir: "$resource.severity"
+      openehr: "$archetype.diagnose.severity"
+      type: "CODEABLECONCEPT"
+
+
+

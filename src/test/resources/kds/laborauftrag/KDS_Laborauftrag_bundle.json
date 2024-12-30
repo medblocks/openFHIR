@@ -48,7 +48,8 @@
                 "code": "laboratory",
                 "display": "Laboratory"
               }
-            ]
+            ],
+            "text": "Laboratory"
           }
         ],
         "code": {
@@ -102,7 +103,12 @@
             "display": "Blood specimen"
           }
         ],
-        "priority": "routine"
+        "priority": "routine",
+        "note": [
+          {
+            "text": "Sample collected in the morning."
+          }
+        ]
       }
     },
     {
@@ -146,7 +152,9 @@
         "collection": {
           "collectedDateTime": "2024-08-24T09:00:00Z",
           "collector": {
-            "reference": "Practitioner/example-practitioner",
+            "identifier": {
+              "value": "example-practitioner"
+            },
             "display": "Dr. John Doe"
           }
         },

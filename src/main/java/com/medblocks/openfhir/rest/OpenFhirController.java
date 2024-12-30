@@ -43,7 +43,7 @@ public class OpenFhirController {
      * @param fhirResource incoming FHIR Resource (Bundle or any other), R4
      * @param templateId   template id is an optional parameter if you want to force a specific context mapper; if no
      *                     templateId is provided, then out of all context mappers, the engine will try to find one that
-     *                     matches the given incoming FHIR Resource (based on context mapper resourceType or conditions)
+     *                     matches the given incoming FHIR Resource (based on context mapper context.profileUrl)
      * @param flat         if you want the mapped Composition to be provided in a flat format, default is false meaning it will
      *                     be returned in a canonical format
      * @param reqId        request id that will be logged

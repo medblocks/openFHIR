@@ -1,16 +1,19 @@
+engine: FHIRConnect/v0.0.1
+type: context
+metadata:
+  name: "ACP_POC"
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
 
-
-format: "0.0.2"
-
-openEHR:
+context:
+  profileUrl: "Observation"
   templateId: "ACP_POC"
-
   archetypes:
     - "openEHR-EHR-EVALUATION.advance_care_directive.v2"
     - "openEHR-EHR-EVALUATION.advance_intervention_decisions.v1"
     - "openEHR-EHR-OBSERVATION.karnofsky_performance_status_scale.v1"
     - "openEHR-EHR-EVALUATION.clinical_synopsis.v1"
     - "openEHR-EHR-CLUSTER.media_file.v1"
-
-fhir:
-  resourceType: "Bundle"
+  start: "openEHR-EHR-EVALUATION.advance_care_directive.v2"

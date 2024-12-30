@@ -1,0 +1,74 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: ADMIN_ENTRY.person_data.v0
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-ADMIN_ENTRY.person_data.v0
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Patient
+
+mappings:
+  - name: "personData"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype.personendaten.person"
+    slotArchetype: "CLUSTER.person.v1"
+
+#  - name: "deathBoolean" #todo: where in a template is this?
+#    with:
+#      fhir: "$resource.deceased.as(Boolean)"
+#      openehr: "$archetype.personendaten.angaben_zum_tod.angaben_zum_tod.sterbedatum"
+#
+#  - name: "deathDateTime"
+#    with:
+#      fhir: "$resource.deceased.as(DateTime)"
+#      openehr: "$resource/data[at0001]/items[at0024]"
+#    manual:
+#      - name: "maindiagnose"
+#        openEHR:
+#          path: "/items[at0025]"
+#          type: "DV_BOOLEAN"
+#          value:
+#            value: "True"
+#    fhirCondition:
+#      targetRoot: "$resource"
+#      targetAttribute: "deceased"
+#      operator: "not empty"
+#    followedBy:
+#      mappings:
+#        - name: "deathDetails"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$resource/data[at0001]/items[at0024]/items[openEHR-EHR-CLUSTER.death_details.v1]"
+#          slotArchetype: "CLUSTER.death_details.v1"
+
+  - name: "personBirthDate"
+    with:
+      fhir: "$resource.birthDate"
+      openehr: "$archetype.personendaten.daten_zur_geburt"
+    slotArchetype: "CLUSTER.person_birth_data_iso.v0"
+
+#  - name: "link"
+#    with:
+#      fhir: "$resource.link"
+#      openehr: "$reference"
+#    reference:
+#      mappings:
+#        - name: "links"
+#          with:
+#            fhir: "$fhirRoot.other.reference"
+#            openehr: "$archetype/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "Part of referenced event"
+#              type: "partOf"
+#          followedBy:
+#              mappings:
+#                - name: "type"
+#                  with:
+#                    fhir: "$fhirRoot.link.type.value"
+#                    openehr: "$archetype/links/type"

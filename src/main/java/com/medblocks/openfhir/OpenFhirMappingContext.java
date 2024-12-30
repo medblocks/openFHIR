@@ -1,9 +1,17 @@
 package com.medblocks.openfhir;
 
 import com.medblocks.openfhir.fc.FhirConnectConst;
-import com.medblocks.openfhir.fc.model.Condition;
-import com.medblocks.openfhir.fc.model.FhirConnectMapper;
+import com.medblocks.openfhir.fc.OpenFhirFhirConnectModelMapper;
+import com.medblocks.openfhir.fc.schema.model.Condition;
+import com.medblocks.openfhir.util.FhirConnectModelMerger;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -11,9 +19,6 @@ import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
 import org.hl7.fhir.r4.model.Base;
 import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.Resource;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -23,39 +28,46 @@ public abstract class OpenFhirMappingContext {
 
     private final FhirPathR4 fhirPathR4;
     private final OpenFhirStringUtils openFhirStringUtils;
+    protected final FhirConnectModelMerger modelMerger;
 
-    public OpenFhirMappingContext(FhirPathR4 fhirPathR4, OpenFhirStringUtils openFhirStringUtils) {
+    public OpenFhirMappingContext(final FhirPathR4 fhirPathR4,
+                                  final OpenFhirStringUtils openFhirStringUtils,
+                                  final FhirConnectModelMerger modelMerger) {
         this.fhirPathR4 = fhirPathR4;
         this.openFhirStringUtils = openFhirStringUtils;
+        this.modelMerger = modelMerger;
     }
 
     /**
      * Returns a fhir connect model mapper for a specific archetype within a template.
      */
-    public List<FhirConnectMapper> getMapperForArchetype(final String templateId, final String archetypeId) {
+    public List<OpenFhirFhirConnectModelMapper> getMapperForArchetype(final String templateId, final String archetypeId) {
         final OpenFhirContextRepository repoForTemplate = repository.get(normalizeTemplateId(templateId));
         if (repoForTemplate == null) {
             log.warn("No repo exists for template: {}", templateId);
             return null;
         }
-        final List<FhirConnectMapper> fhirConnectMapper = repoForTemplate.getMappers().get(archetypeId);
+        final List<OpenFhirFhirConnectModelMapper> fhirConnectMapper = repoForTemplate.getMappers().get(archetypeId);
         if (fhirConnectMapper == null) {
             return null;
         }
-        return fhirConnectMapper.stream().map(map -> map.copy()).collect(Collectors.toList());
+        return fhirConnectMapper.stream().map(OpenFhirFhirConnectModelMapper::copy).collect(Collectors.toList());
     }
+
 
     /**
      * Returns a fhir connect model mapper for a specific archetype within a template. It retrieves from a slotArchetype
      * repository cache instead of from the main one.
+     * @deprecated we don't differentiate between slots mappers and regular mappers anymore, so @see getMapperForArchetype
      */
-    public List<FhirConnectMapper> getSlotMapperForArchetype(final String templateId, final String archetypeId) {
+    @Deprecated
+    public List<OpenFhirFhirConnectModelMapper> getSlotMapperForArchetype(final String templateId, final String archetypeId) {
         final OpenFhirContextRepository repoForTemplate = repository.get(normalizeTemplateId(templateId));
         if (repoForTemplate == null) {
             log.warn("No repo exists for template: {}", templateId);
             return null;
         }
-        final List<FhirConnectMapper> fhirConnectMapper = repoForTemplate.getSlotMappers().get(archetypeId);
+        final List<OpenFhirFhirConnectModelMapper> fhirConnectMapper = repoForTemplate.getSlotMappers().get(archetypeId);
         if (fhirConnectMapper == null) {
             return null;
         }
@@ -78,14 +90,14 @@ public abstract class OpenFhirMappingContext {
      * @param resource incoming Resource that is to be mapped
      * @return a list of relevant FhirConnectMappers for the incoming FHIR Resource
      */
-    public List<FhirConnectMapper> getMapperForResource(final Resource resource) {
-        final List<FhirConnectMapper> relevantMappers = new ArrayList<>();
+    public List<OpenFhirFhirConnectModelMapper> getMapperForResource(final Resource resource) {
+        final List<OpenFhirFhirConnectModelMapper> relevantMappers = new ArrayList<>();
         final Set<Map.Entry<String, OpenFhirContextRepository>> repos = repository.entrySet();
         for (Map.Entry<String, OpenFhirContextRepository> repo : repos) {
             final OpenFhirContextRepository specificRepo = repo.getValue();
-            final Map<String, List<FhirConnectMapper>> mappers = specificRepo.getMappers();
-            for (Map.Entry<String, List<FhirConnectMapper>> mapperEntry : mappers.entrySet()) {
-                final List<FhirConnectMapper> connectMappers = mapperEntry.getValue();
+            final Map<String, List<OpenFhirFhirConnectModelMapper>> mappers = specificRepo.getMappers();
+            for (Map.Entry<String, List<OpenFhirFhirConnectModelMapper>> mapperEntry : mappers.entrySet()) {
+                final List<OpenFhirFhirConnectModelMapper> connectMappers = mapperEntry.getValue();
                 getMappers(connectMappers, relevantMappers, resource);
             }
         }
@@ -99,9 +111,9 @@ public abstract class OpenFhirMappingContext {
         return relevantMappers;
     }
 
-    private void getMappers(final List<FhirConnectMapper> connectMappers, final List<FhirConnectMapper> relevantMappers,
+    private void getMappers(final List<OpenFhirFhirConnectModelMapper> connectMappers, final List<OpenFhirFhirConnectModelMapper> relevantMappers,
                             final Resource resource) {
-        for (FhirConnectMapper connectMapper : connectMappers) {
+        for (OpenFhirFhirConnectModelMapper connectMapper : connectMappers) {
             if (connectMapper.getFhirConfig() == null) {
                 continue;
             }

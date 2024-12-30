@@ -1,0 +1,167 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_problem_diagnose
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  extends: EVALUATION.problem_diagnosis.v1
+
+mappings:
+  - name: "fallIdentifikationIdentifier"
+    extension: "add"
+    with:
+      fhir: "$resource.encounter.as(Reference).identifier"
+      openehr: "$archetype.context.case_identification"
+    slotArchetype: "CLUSTER.case_identification.v0"
+
+#--------------------------------
+#  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+#    extension: "add"
+#    with:
+#      fhir: "$resource.encounter.reference"
+#      openehr: "$reference"
+#    reference: #type None
+#      resourceType: "Encounter"
+#      mappings:
+#        - name: "identifierInReference"
+#          with:
+#            fhir: "$fhirRoot.identifier"
+#            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+#          slotArchetype: "CLUSTER.case_identification.v0"
+#        - name: "encounterMapping"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "the case this composition relates to"
+#              type: "case"
+#  -------------------------------------
+
+  - name: "status"
+    extension: "add"
+    with:
+      fhir: "$resource.verificationStatus.text"
+      openehr: "$archetype.context.status"
+      type: "STRING"
+
+  - name: "date"
+    extension: "add"
+    with:
+      fhir: "$resource.extension.value.as(DateTimeType)"
+      openehr: "$archetype.diagnose.feststellungsdatum"
+      type: "DATETIME"
+    fhirCondition:
+      targetRoot: "$resource.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-assertedDate]"
+
+  - name: "bodySiteCluster"
+    extension: "overwrite"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype.diagnose.anatomical_location"
+      unidirectional: "fhir->openehr" # only if importing, for fhir export openEHR wont check for icd-10 and will just use the archetypes where the icd-10 was mapped to.
+    slotArchetype: "CLUSTER.anatomical_location.v1"
+    fhirCondition:
+      targetRoot: "$resource.code.coding"
+      targetAttribute: "system"
+      operator: "not contains"
+      criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]" # execute cluster here if no icd-10 code is provided, otherwise the cluster is below specified
+
+  - name: "icd10ProblemDiagnose"
+    extension: "append"
+    appendTo: "problemDiagnose.problemDiagnoseName"
+    fhirCondition:
+      targetRoot: "coding"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]"
+    followedBy:
+      mappings:
+        - name: "codeIcd10Diagnosesicherheit"
+          with:
+            fhir: "extension"
+            openehr: "diagnosesicherheit"
+            type: "CODEABLECONCEPT"
+          fhirCondition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+
+        - name: "multipleCoding"
+          with:
+            fhir: "extension"
+            openehr: "multiple_coding_icd-10-gm"
+          slotArchetype: "CLUSTER.multiple_coding_icd10gm.v1"
+  #
+        - name: "bodySiteClusterIcd10" # is here added too, in case the icd-10 is present in fhir so we map the localization
+          with:
+            fhir: "extension"
+            openehr: "anatomical_location"
+          slotArchetype: "CLUSTER.anatomical_location.v1"
+
+  - name: "dateTime"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.onset.as(Period)"
+      openehr: "$archetype.diagnose"
+      type: "DATETIME"
+    followedBy:
+      mappings:
+        - name: "start"
+          with:
+            fhir: "$fhirRoot.start"
+            openehr: "$archetype.diagnose.klinisch_relevanter_zeitraum_zeitpunkt_des_auftretens"
+            type: "DATETIME"
+
+        - name: "lebensphaseCluster"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetype.diagnose.lebensphase"
+          slotArchetype: "CLUSTER.lebensphase.v0"
+#
+  - name: "problemQualifier"
+    extension: "add"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype.diagnose.klinischer_status"
+    slotArchetype: "CLUSTER.problem_qualifier.v2"
+
+  - name: "primärdiagnose"
+    extension: "add"
+    with:
+      fhir: "$resource.extension"
+      openehr: "$archetype.diagnose"
+      type: "NONE"
+    fhirCondition:
+      targetRoot: "$resource.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+    followedBy:
+      mappings:
+        - name: "referenced condition"
+          with:
+            fhir: "value"
+            openehr: "$reference"
+            type: "NONE"
+          reference:
+            resourceType: "Condition"
+            mappings:
+              - name: "primaryDiagnose"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "$archetype"
+                  #This will create another problem diagnose entry since its 0..* and the grammar will add not overwrite if its not 1..1
+                  #This will create another problem_diagnose
+                slotArchetype: "EVALUATION.problem_diagnosis.v1"
+                openehrCondition:
+                  targetRoot: "$archetype.diagnose" # beacuse based on this we're then determining what needs to be excluded from mapping
+                  targetAttribute: "klinischer_status.diagnoserolle|code"
+                  operator: "one of"
+                  criteria: "[at0064]"

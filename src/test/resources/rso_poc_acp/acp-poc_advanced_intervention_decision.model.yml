@@ -1,49 +1,52 @@
-
-
-format: "0.0.2"
-version: "0.2.0"
-
-fhirConfig:
-  resource: "Consent"
-  condition:
-    - targetRoot: "$fhirResource"
-      targetAttribute: "meta.profile"
-      operator: "one of"
-      criteria: "[http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective]"
-openEhrConfig:
-  archetype: "openEHR-EHR-EVALUATION.advance_intervention_decisions.v1"
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: "openEHR-EHR-EVALUATION.advance_intervention_decisions.v1"
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: "openEHR-EHR-EVALUATION.advance_intervention_decisions.v1"
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Consent
+    condition:
+      - targetRoot: "$resource"
+        targetAttribute: "meta.profile"
+        operator: "one of"
+        criteria: "[http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective]"
 
 mappings:
 
   - name: "treatment"
     with:
-      fhir: "$fhirResource.extension"
-      openehr: "$openEhrArchetype.advance_intervention_decisions.per_intervention.intervention"
+      fhir: "$resource.extension"
+      openehr: "$archetype.advance_intervention_decisions.per_intervention.intervention"
       type: "CODEABLECONCEPT"
-    condition:
-      targetRoot: "$fhirResource.extension"
+    fhirCondition:
+      targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-Treatment]"
 
   - name: "decision"
     with:
-      fhir: "$fhirResource.modifierExtension"
-      openehr: "$openEhrArchetype.advance_intervention_decisions.per_intervention.decision"
+      fhir: "$resource.modifierExtension"
+      openehr: "$archetype.advance_intervention_decisions.per_intervention.decision"
       type: "CODEABLECONCEPT"
-    condition:
-      targetRoot: "$fhirResource.modifierExtension"
+    fhirCondition:
+      targetRoot: "$resource.modifierExtension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://nictiz.nl/fhir/StructureDefinition/zib-TreatmentDirective-TreatmentPermitted]"
 
   - name: "comment"
     with:
-      fhir: "$fhirResource.extension"
-      openehr: "$openEhrArchetype.advance_intervention_decisions.per_intervention.comment"
+      fhir: "$resource.extension"
+      openehr: "$archetype.advance_intervention_decisions.per_intervention.comment"
       type: "TEXT"
-    condition:
-      targetRoot: "$fhirResource.extension"
+    fhirCondition:
+      targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://nictiz.nl/fhir/StructureDefinition/Comment]"

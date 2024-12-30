@@ -1,0 +1,59 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  CLUSTER.address.v1
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.address.v1
+
+mappings:
+  - name: "streetaddress"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$archetype"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "type"
+      operator: "one of"
+      criteria: "[both]"
+    followedBy:
+      mappings:
+        - name: "city"
+          with:
+            fhir: "city"
+            openehr: "stadt"
+            type: "STRING"
+
+        - name: "state"
+          with:
+            fhir: "state"
+            openehr: "bundesland|code"
+            type: "STRING"
+
+        - name: "postalCode"
+          with:
+            fhir: "postalCode"
+            openehr: "postleitzahl"
+            type: "STRING"
+
+        - name: "country"
+          with:
+            fhir: "country"
+            openehr: "land|code" #todo: map
+            type: "STRING"
+
+#        - name: "type" todo: are we hardcoding  (above with condition) or are we mapping?
+#          with:
+#            fhir: "type"
+#            openehr: "/items[at0010]"
+#            type: "STRING"
+
+        - name: "line"
+          with:
+            fhir: "line"
+            openehr: "straße"
+            type: "STRING"
+
