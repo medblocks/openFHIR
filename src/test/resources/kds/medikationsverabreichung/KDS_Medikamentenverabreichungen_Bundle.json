@@ -42,6 +42,11 @@
                 "context": {
                     "reference": "Encounter/encounter-12345"
                 },
+                "note": [
+                    {
+                        "text": "textab"
+                    }
+                ],
                 "effectiveDateTime": "2024-08-20T14:30:00+00:00",
                 "performer": [
                     {
