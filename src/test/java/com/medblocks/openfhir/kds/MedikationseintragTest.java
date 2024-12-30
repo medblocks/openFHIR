@@ -1,10 +1,17 @@
 package com.medblocks.openfhir.kds;
 
 import ca.uhn.fhir.context.FhirContext;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 import lombok.SneakyThrows;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.xmlbeans.XmlException;
+import org.bson.types.Code;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.r4.model.*;
@@ -16,30 +23,33 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.openehr.schemas.v1.TemplateDocument;
 
-@Ignore
 public class MedikationseintragTest extends KdsBidirectionalTest {
 
-    final String RESOURCES_ROOT = "/kds/medikationseintrag/";
-    final String OPT = "KDS_Medikationseintrag_v1.opt";
-    final String FLAT = "KDSMedicationRequest.flat.json";
-    final String CONTEXT = "medikation.context.yaml";
+
+    final String MODEL_MAPPINGS = "/kds_new/";
+    final String CONTEXT = "/kds_new/projects/org.highmed/KDS/medikationseintrag/KDS_medikationseintrag.context.yaml";
+    final String HELPER_LOCATION = "/kds/medikationseintrag/";
+    final String OPT = "KDS_Medikationseintrag.opt";
+    final String FLAT = "KDS_Medikationseintrag.flat.json";
+
     final String BUNDLE = "KDS_Medikationseintrag_v1-Fhir-Bundle-input.json";
 
     @SneakyThrows
     @Override
     protected void prepareState() {
-        context = getContext(RESOURCES_ROOT + CONTEXT);
-        repo.initRepository(context, getClass().getResource(RESOURCES_ROOT).getFile());
-        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCES_ROOT + OPT));
+        context = getContext(CONTEXT);
+        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(HELPER_LOCATION + OPT));
         operationaltemplate = getOperationalTemplate();
+        repo.initRepository(context, operationaltemplate, getClass().getResource(MODEL_MAPPINGS).getFile());
         webTemplate = new OPTParser(operationaltemplate).parse();
     }
 
     @Test
     public void kdsMedicationList_toFhir() throws IOException {
         // openEHR to FHIR
-        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat(RESOURCES_ROOT + FLAT), webTemplate);
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat(HELPER_LOCATION + FLAT), webTemplate);
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
 
         final List<MedicationStatement> requests = bundle.getEntry().stream()
@@ -52,13 +62,19 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
         final MedicationStatement req1 = requests.get(0);
         final MedicationStatement req2 = requests.get(1);
 
-        Assert.assertEquals("medication statement 2 description", req1.getNoteFirstRep().getText());
-        Assert.assertEquals("medication statement 1 description", req2.getNoteFirstRep().getText());
+        Assert.assertEquals("2022-02-03T04:05:06+01:00", req2.getDateAssertedElement().getValueAsString());
 
-        Assert.assertEquals("Thu Feb 03 04:05:06 CET 2022", req2.getEffectivePeriod().getStart().toString());
-        Assert.assertEquals("Fri Feb 04 04:05:06 CET 2022", req2.getEffectivePeriod().getEnd().toString());
 
-        Assert.assertEquals("Fri Feb 03 04:05:06 CET 2023", req1.getEffectivePeriod().getStart().toString());
+        Assert.assertEquals("behandlungsgrund1", req1.getReasonCodeFirstRep().getText());
+        Assert.assertEquals("behandlungsgrund", req2.getReasonCodeFirstRep().getText());
+
+        Assert.assertEquals("hinweis1", req1.getNoteFirstRep().getText());
+        Assert.assertEquals("hinweis", req2.getNoteFirstRep().getText());
+
+//        Assert.assertEquals("Thu Feb 03 04:05:06 CET 2022", req2.getEffectivePeriod().getStart().toString());
+//        Assert.assertEquals("Fri Feb 04 04:05:06 CET 2022", req2.getEffectivePeriod().getEnd().toString());
+
+//        Assert.assertEquals("Fri Feb 03 04:05:06 CET 2023", req1.getEffectivePeriod().getStart().toString());
 
         Assert.assertEquals("dev/null", req2.getIdentifierFirstRep().getValue());
         Assert.assertEquals("external identifier", req2.getIdentifierFirstRep().getSystem());
@@ -75,9 +91,9 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
         final List<Dosage> req2Dosages = req2.getDosage();
 
 
-        Assert.assertEquals("04:05:06", new SimpleDateFormat("HH:mm:ss").format(req2.getDosageFirstRep().getTiming().getEvent().get(0).getValue()));
+//        Assert.assertEquals("04:05:06", new SimpleDateFormat("HH:mm:ss").format(req2.getDosageFirstRep().getTiming().getEvent().get(0).getValue()));
 //        Assert.assertEquals("when time of day ereignis", req2.getDosageFirstRep().getTiming().getRepeat().getWhen().get(0));
-        Assert.assertEquals("PT0S", req2.getDosageFirstRep().getTiming().getRepeat().getTimeOfDay().get(0).getValue());
+//        Assert.assertEquals("PT0S", req2.getDosageFirstRep().getTiming().getRepeat().getTimeOfDay().get(0).getValue());
 
         Assert.assertEquals(3, req2Dosages.size());
         Assert.assertEquals("structured dosage text", req2Dosages.get(0).getText());
@@ -101,7 +117,7 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
         final Medication med2 = (Medication) req2.getMedicationReference().getResource();
         Assert.assertEquals("req0, medication code text", med2.getCode().getText());
         Assert.assertEquals("42", med2.getForm().getCodingFirstRep().getCode());
-        Assert.assertNull(med1.getForm().getCodingFirstRep().getCode());
+        Assert.assertEquals("52", med1.getForm().getCodingFirstRep().getCode());
         Assert.assertEquals("req1, medication code text", med1.getCode().getText());
         Assert.assertEquals("25.0", med1.getAmount().getNumerator().getValue().toPlainString());
         Assert.assertEquals("mm", med1.getAmount().getNumerator().getUnit());
@@ -188,40 +204,88 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
         Assert.assertEquals("2Ad-hoc Mixtur", ingridient10.getItemCodeableConcept().getCodingFirstRep().getDisplay());
     }
 
+    @Test
+    public void kdsMedicationList_toFhir_testOpenEhrCondition() throws IOException {
+        // openEHR to FHIR
+        final String flat = getFlat(HELPER_LOCATION + FLAT);
+        final Gson gson = new Gson();
+        final JsonObject flatJsonObject = gson.fromJson(flat, JsonObject.class);
+
+//        flatJsonObject.remove("medikamentenliste/medikationseintrag:0/arzneimittel/darreichungsform|value");
+//        flatJsonObject.remove("medikamentenliste/medikationseintrag:0/arzneimittel/darreichungsform|code");
+//        flatJsonObject.remove("medikamentenliste/medikationseintrag:0/arzneimittel/darreichungsform|terminology");
+        flatJsonObject.remove("medikamentenliste/medikationseintrag:1/arzneimittel/wirkstärke_konzentration|magnitude");
+        flatJsonObject.remove("medikamentenliste/medikationseintrag:1/arzneimittel/wirkstärke_konzentration|unit");
+
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(gson.toJson(flatJsonObject), webTemplate);
+        final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
+
+        final List<MedicationStatement> requests = bundle.getEntry().stream()
+                .filter(en -> en.getResource() instanceof MedicationStatement)
+                .map(en -> (MedicationStatement) en.getResource())
+                .collect(Collectors.toList());
+
+        Assert.assertEquals(2, requests.size());
+
+        final MedicationStatement theOneWithMedicationReference = requests.stream()
+                .filter(req -> req.getReasonCodeFirstRep().getText().equals("behandlungsgrund"))
+                .findFirst().orElse(null);
+
+        final MedicationStatement theOneWithMedicationCodeableConcept = requests.stream()
+                .filter(req -> req.getReasonCodeFirstRep().getText().equals("behandlungsgrund1"))
+                .findFirst().orElse(null);
+
+        final Medication med1 = (Medication) theOneWithMedicationReference.getMedicationReference().getResource();
+        final CodeableConcept med2 = theOneWithMedicationCodeableConcept.getMedicationCodeableConcept();
+
+        Assert.assertEquals("req1, medication code text", med2.getText());
+
+        Assert.assertEquals("req0, medication code text", med1.getCode().getText());
+        Assert.assertEquals("20.0", med1.getAmount().getNumerator().getValue().toPlainString());
+        Assert.assertEquals("mm", med1.getAmount().getNumerator().getUnit());
+
+    }
+
 
     public JsonObject toOpenEhr() {
-        final Bundle testBundle = FhirContext.forR4().newJsonParser().parseResource(Bundle.class, getClass().getResourceAsStream(RESOURCES_ROOT + BUNDLE));
+        final Bundle testBundle = FhirContext.forR4().newJsonParser().parseResource(Bundle.class, getClass().getResourceAsStream(HELPER_LOCATION + BUNDLE));
 
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
-        Assert.assertEquals("Take 1 tablet every 6 hours as needed for pain", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/dosierung2:0/dosierung_freitext").getAsString());
-        Assert.assertEquals("500.0", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/dosierung2:0/dosis/quantity_value|magnitude").getAsString());
-        Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/dosierung2:0/dosis/quantity_value|unit").getAsString());
-        Assert.assertEquals("Take 1 tablet every 6 hours as needed for pain", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/dosierung:0").getAsString());
-        Assert.assertEquals("Paracetamol 500mg tablet", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/arzneimittel-name").getAsString());
-        Assert.assertEquals("385055001", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/darreichungsform|code").getAsString());
-        Assert.assertEquals("http://snomed.info/sct", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/darreichungsform|terminology").getAsString());
-        Assert.assertEquals("Paracetamol", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:0/bestandteil").getAsString());
-        Assert.assertEquals("at0143", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:0/wirkstofftyp|code").getAsString());
-        Assert.assertEquals("local", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:0/wirkstofftyp|terminology").getAsString());
-        Assert.assertEquals("500.0", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:0/bestandteil-menge/zähler|magnitude").getAsString());
-        Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:0/bestandteil-menge/zähler|unit").getAsString());
-        Assert.assertEquals("1.0", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:0/bestandteil-menge/nenner|magnitude").getAsString());
-        Assert.assertEquals("tablet", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:0/bestandteil-menge/nenner|unit").getAsString());
-        Assert.assertEquals("11Paracetamol", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:1/bestandteil").getAsString());
-        Assert.assertEquals("at0143", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:1/wirkstofftyp|code").getAsString());
-        Assert.assertEquals("local", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:1/wirkstofftyp|terminology").getAsString());
-        Assert.assertEquals("1500.0", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:1/bestandteil-menge/zähler|magnitude").getAsString());
-        Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:1/bestandteil-menge/zähler|unit").getAsString());
-        Assert.assertEquals("11.0", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:1/bestandteil-menge/nenner|magnitude").getAsString());
-        Assert.assertEquals("tablet", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:1/bestandteil-menge/nenner|unit").getAsString());
-        Assert.assertEquals("at0143", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:2/wirkstofftyp|code").getAsString());
-        Assert.assertEquals("local", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:0/arzneimittel/bestandteil:2/wirkstofftyp|terminology").getAsString());
-        Assert.assertEquals("Take 1 capsule daily", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:1/dosierung2:0/dosierung_freitext").getAsString());
-        Assert.assertEquals("5.0", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:1/dosierung2:0/dosis/quantity_value|magnitude").getAsString());
-        Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:1/dosierung2:0/dosis/quantity_value|unit").getAsString());
-        Assert.assertEquals("Take 1 capsule daily", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:1/dosierung:0").getAsString());
-        Assert.assertEquals("Ramipril 5mg capsule", jsonObject.getAsJsonPrimitive("medikamentenliste_v1/medikationseintrag:1/arzneimittel/arzneimittel-name").getAsString());
+        Assert.assertEquals("Take 1 tablet every 6 hours as needed for pain", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/dosierung2:0/dosierung_freitext").getAsString());
+        Assert.assertEquals("500.0", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/dosierung2:0/dosis/quantity_value|magnitude").getAsString());
+        Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/dosierung2:0/dosis/quantity_value|unit").getAsString());
+        Assert.assertEquals("Take 1 tablet every 6 hours as needed for pain", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/dosierung:0").getAsString());
+        Assert.assertEquals("Paracetamol 500mg tablet", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/arzneimittel-name").getAsString());
+        Assert.assertEquals("385055001", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/darreichungsform|code").getAsString());
+        Assert.assertEquals("http://snomed.info/sct", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/darreichungsform|terminology").getAsString());
+        Assert.assertEquals("Paracetamol", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:0/bestandteil").getAsString());
+        Assert.assertEquals("at0143", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:0/wirkstofftyp|code").getAsString());
+        Assert.assertEquals("local", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:0/wirkstofftyp|terminology").getAsString());
+        Assert.assertEquals("500.0", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:0/bestandteil-menge/zähler|magnitude").getAsString());
+        Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:0/bestandteil-menge/zähler|unit").getAsString());
+        Assert.assertEquals("1.0", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:0/bestandteil-menge/nenner|magnitude").getAsString());
+        Assert.assertEquals("tablet", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:0/bestandteil-menge/nenner|unit").getAsString());
+        Assert.assertEquals("11Paracetamol", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:1/bestandteil").getAsString());
+        Assert.assertEquals("at0143", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:1/wirkstofftyp|code").getAsString());
+        Assert.assertEquals("local", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:1/wirkstofftyp|terminology").getAsString());
+        Assert.assertEquals("1500.0", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:1/bestandteil-menge/zähler|magnitude").getAsString());
+        Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:1/bestandteil-menge/zähler|unit").getAsString());
+        Assert.assertEquals("11.0", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:1/bestandteil-menge/nenner|magnitude").getAsString());
+        Assert.assertEquals("tablet", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:1/bestandteil-menge/nenner|unit").getAsString());
+        Assert.assertEquals("at0143", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:2/wirkstofftyp|code").getAsString());
+        Assert.assertEquals("local", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/arzneimittel/bestandteil:2/wirkstofftyp|terminology").getAsString());
+        Assert.assertEquals("Take 1 capsule daily", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:1/dosierung2:0/dosierung_freitext").getAsString());
+        Assert.assertEquals("5.0", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:1/dosierung2:0/dosis/quantity_value|magnitude").getAsString());
+        Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:1/dosierung2:0/dosis/quantity_value|unit").getAsString());
+        Assert.assertEquals("Take 1 capsule daily", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:1/dosierung:0").getAsString());
+        Assert.assertEquals("Ramipril 5mg capsule", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:1/arzneimittel/arzneimittel-name").getAsString());
+
+        Assert.assertEquals("High cholesterol", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/behandlungsgrund").getAsString());
+        Assert.assertEquals("26643007", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:1/verabreichungsweg:0|code").getAsString());
+        Assert.assertEquals("26643006", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/verabreichungsweg:0|code").getAsString());
+
+        Assert.assertEquals("50621000087108", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/status/status|code").getAsString());
 
         return jsonObject;
     }

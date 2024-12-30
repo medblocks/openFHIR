@@ -53,6 +53,9 @@ public class FhirConnectModelMerger {
             return new OpenFhirFhirConnectModelMapper().fromFhirConnectModelMapper(coreModel);
         }
         for (final FhirConnectModel extension : extensions) {
+            if(extension.getMappings() == null) {
+                continue;
+            }
             for (final Mapping extensionMapping : extension.getMappings()) {
                 switch (extensionMapping.getExtension()) {
                     case ADD -> addMapping(coreModel, extensionMapping);

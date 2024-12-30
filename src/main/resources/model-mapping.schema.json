@@ -9,7 +9,10 @@
     },
     "type": {
       "type": "string",
-      "enum": ["model", "extension"]
+      "enum": [
+        "model",
+        "extension"
+      ]
     },
     "metadata": {
       "type": "object",
@@ -23,18 +26,25 @@
           "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+[a-z]?$"
         }
       },
-      "required": ["name", "version"]
+      "required": [
+        "name",
+        "version"
+      ]
     },
     "spec": {
       "type": "object",
       "properties": {
         "system": {
           "type": "string",
-          "enum": ["FHIR"]
+          "enum": [
+            "FHIR"
+          ]
         },
         "version": {
           "type": "string",
-          "enum": ["R4"]
+          "enum": [
+            "R4"
+          ]
         },
         "extends": {
           "type": "string"
@@ -47,7 +57,9 @@
               "pattern": "^[A-Za-z0-9_-]+$"
             }
           },
-          "required": ["archetype"]
+          "required": [
+            "archetype"
+          ]
         },
         "fhirConfig": {
           "type": "object",
@@ -57,16 +69,21 @@
               "format": "uri"
             }
           },
-          "required": ["structureDefinition"]
+          "required": [
+            "structureDefinition"
+          ]
         }
       },
-      "required": ["system", "version"]
+      "required": [
+        "system",
+        "version"
+      ]
     },
     "mappings": {
       "$ref": "#/$defs/mappings"
     }
   },
-  "$defs":{
+  "$defs": {
     "mappings": {
       "type": "array",
       "items": {
@@ -83,11 +100,26 @@
         },
         "type": {
           "type": "string",
-          "enum": ["NONE", "QUANTITY", "DATETIME", "CODEABLECONCEPT", "CODING", "STRING", "DOSAGE", "ID", "IDENTIFIER", "PROPORTION"]
+          "enum": [
+            "NONE",
+            "QUANTITY",
+            "DATETIME",
+            "CODEABLECONCEPT",
+            "CODING",
+            "STRING",
+            "DOSAGE",
+            "ID",
+            "IDENTIFIER",
+            "PROPORTION"
+          ]
         },
         "extension": {
           "type": "string",
-          "enum": ["add", "append", "overwrite"]
+          "enum": [
+            "add",
+            "append",
+            "overwrite"
+          ]
         },
         "appendTo": {
           "type": "string"
@@ -122,8 +154,8 @@
             "targetRoot": {
               "type": "string"
             },
-            "targetAttribute": {
-              "type": "string"
+            "targetAttributes": {
+              "type": "array"
             },
             "operator": {
               "type": "string"
@@ -138,9 +170,20 @@
           "additionalProperties": false,
           "required": [
             "targetRoot",
-            "targetAttribute",
             "operator",
             "criteria"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "targetAttribute"
+              ]
+            },
+            {
+              "required": [
+                "targetAttributes"
+              ]
+            }
           ]
         },
         "openehrCondition": {
@@ -152,6 +195,9 @@
             "targetRoot": {
               "type": "string"
             },
+            "targetAttributes": {
+              "type": "array"
+            },
             "targetAttribute": {
               "type": "string"
             },
@@ -168,9 +214,19 @@
           "additionalProperties": false,
           "required": [
             "targetRoot",
-            "targetAttribute",
-            "operator",
-            "criteria"
+            "operator"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "targetAttribute"
+              ]
+            },
+            {
+              "required": [
+                "targetAttributes"
+              ]
+            }
           ]
         },
         "followedBy": {
@@ -229,7 +285,12 @@
       ],
       "title": "Model Mapping"
     }
-
   },
-  "required": ["engine", "type", "metadata", "spec", "mappings"]
+  "required": [
+    "engine",
+    "type",
+    "metadata",
+    "spec",
+    "mappings"
+  ]
 }

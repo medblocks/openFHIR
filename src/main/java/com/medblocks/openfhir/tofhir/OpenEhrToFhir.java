@@ -26,6 +26,7 @@ import com.medblocks.openfhir.util.FhirInstanceCreator;
 import com.medblocks.openfhir.util.FhirInstanceCreatorUtility;
 import com.medblocks.openfhir.util.FhirInstancePopulator;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
+import com.medblocks.openfhir.util.OpenEhrConditionEvaluator;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import com.nedap.archie.rm.composition.Composition;
@@ -86,6 +87,7 @@ public class OpenEhrToFhir {
     final private FhirInstanceCreatorUtility fhirInstanceCreatorUtility;
     final private FhirPathR4 fhirPathR4;
     final private IntermediateCacheProcessing intermediateCacheProcessing;
+    final private OpenEhrConditionEvaluator openEhrConditionEvaluator;
 
 
     @Autowired
@@ -99,7 +101,8 @@ public class OpenEhrToFhir {
                          final FhirInstanceCreator fhirInstanceCreator,
                          final FhirInstanceCreatorUtility fhirInstanceCreatorUtility,
                          final FhirPathR4 fhirPathR4,
-                         final IntermediateCacheProcessing intermediateCacheProcessing) {
+                         final IntermediateCacheProcessing intermediateCacheProcessing,
+                         final OpenEhrConditionEvaluator openEhrConditionEvaluator) {
         this.flatJsonMarshaller = flatJsonMarshaller;
         this.openFhirTemplateRepo = openFhirTemplateRepo;
         this.openEhrApplicationScopedUtils = openEhrApplicationScopedUtils;
@@ -112,6 +115,7 @@ public class OpenEhrToFhir {
         this.fhirInstanceCreatorUtility = fhirInstanceCreatorUtility;
         this.fhirPathR4 = fhirPathR4;
         this.intermediateCacheProcessing = intermediateCacheProcessing;
+        this.openEhrConditionEvaluator = openEhrConditionEvaluator;
     }
 
     /**
@@ -574,7 +578,8 @@ public class OpenEhrToFhir {
 
             hardcodedReturn.setPath(
                     openFhirStringUtils.getFhirPathWithConditions(condition.getTargetRoot(), condition, targetResource,
-                                                                  parentFhirEhr).replace(targetResource + ".", "") + "." + hardcodedReturn.getPath());
+                                                                  parentFhirEhr).replace(targetResource + ".", "") + "."
+                            + hardcodedReturn.getPath());
 
             intermediateCacheProcessing.populateIntermediateCache(hardcodedReturn,
                                                                   instance.toString(),
@@ -788,7 +793,7 @@ public class OpenEhrToFhir {
                 continue;
             }
 
-            final JsonObject flatJsonObject = splitByOpenEhrCondition(originalFlatJsonObject,
+            final JsonObject flatJsonObject = openEhrConditionEvaluator.splitByOpenEhrCondition(originalFlatJsonObject,
                                                                       mapping.getOpenehrCondition(),
                                                                       firstFlatPath);
 
@@ -834,7 +839,7 @@ public class OpenEhrToFhir {
                     final String withRegex = openFhirStringUtils.addRegexPatternToSimplifiedFlatFormat(openehr);
 
                     // get all entries from the flat path that match the simplified flat path with regex pattern
-                    final List<String> matchingEntries = getAllEntriesThatMatch(withRegex, flatJsonObject);
+                    final List<String> matchingEntries = openFhirStringUtils.getAllEntriesThatMatch(withRegex, flatJsonObject);
                     final Map<String, List<String>> joinedEntries = joinValuesThatAreOne(matchingEntries);
                     handleRegularMapping(mapping, resourceType, parentFollowedByFhir, parentFollowedByOpenEhr,
                                          theMapper,
@@ -846,55 +851,6 @@ public class OpenEhrToFhir {
             }
 
         }
-    }
-
-    /**
-     * If a mapping has openehrCondition, then the whole JsonObject representing flatPath Composition needs to be split
-     * in a way so that iteration of tha mapping only extracts from the relevant part of the JsonObject
-     *
-     * @return a split JsonObject if openEhrCondition is not null, otherwise the original fullFlatPath
-     */
-    private JsonObject splitByOpenEhrCondition(final JsonObject fullFlatPath, final Condition openEhrCondition,
-                                               final String firstFlatPath) {
-        if (openEhrCondition == null) {
-            return fullFlatPath;
-        }
-        final String combineRootAndAttribute = String.format("%s/%s", openEhrCondition.getTargetRoot(),
-                                                             openEhrCondition.getTargetAttribute());
-        final String openEhrPath = openFhirStringUtils.prepareOpenEhrSyntax(combineRootAndAttribute,
-                                                                            firstFlatPath);
-        final String withRegex = openFhirStringUtils.addRegexPatternToSimplifiedFlatFormat(openEhrPath);
-        final List<String> extractedValueKeys = getAllEntriesThatMatch(withRegex, fullFlatPath);
-
-        if (extractedValueKeys.isEmpty()) {
-            // no such flat path even exists, so let's just consider all entries?
-            log.warn("openehrCondition '{}' doesn't exist in the flat path. All data points relevant for this mapping.",
-                     combineRootAndAttribute);
-            return fullFlatPath;
-        }
-        final JsonObject modifiedJsonObject = new JsonObject();
-        for (final String extractedValueKey : extractedValueKeys) {
-            final String extractedValue = fullFlatPath.getAsJsonPrimitive(extractedValueKey).getAsString();
-            if (!openEhrCondition.getCriteria().contains(extractedValue)) {
-                // find base flat path that needs to be excluded
-                final String baseOpenEhrPath = openFhirStringUtils.prepareOpenEhrSyntax(
-                        openEhrCondition.getTargetAttribute(),
-                        ""); // todo: this won't be ok if targetAttribute isn't exactly simple but rather also includes some indexes etc.
-                final String basePath = extractedValueKey.replace(baseOpenEhrPath, "");
-
-                log.info(
-                        "Flat path {} evaluated to {}, condition.criteria requires it to be {}, therefore excluding all {} from mapping.",
-                        combineRootAndAttribute, extractedValue, openEhrCondition.getCriteria(), basePath);
-
-
-                fullFlatPath.entrySet().forEach((entry) -> {
-                    if (!entry.getKey().startsWith(basePath)) {
-                        modifiedJsonObject.add(entry.getKey(), entry.getValue());
-                    }
-                });
-            }
-        }
-        return modifiedJsonObject;
     }
 
     /**
@@ -936,6 +892,7 @@ public class OpenEhrToFhir {
                     .parentFollowedByOpenEhr(parentFollowedByOpenEhr == null ? null : parentFollowedByOpenEhr.replace(
                             FhirConnectConst.OPENEHR_ARCHETYPE_FC, firstFlatPath))
                     .condition(mapping.getFhirCondition())
+                    .openehrCondition(mapping.getOpenehrCondition())
                     .build();
             helpers.add(openEhrToFhirHelper);
         }
@@ -990,10 +947,11 @@ public class OpenEhrToFhir {
                                                                      openehr);
 
             // recursively prepare all slot archetype mappers
+            final String childWithParentFhirPath = openFhirStringUtils.setParentsWherePathToTheCorrectPlace(fhirPath,
+                                                                                                            parentFollowedByFhir);
             prepareOpenEhrToFhirHelpers(slotArchetypeMappers, resourceType, firstFlatPath,
                                         slotArchetypeMappers.getMappings(),
-                                        helpers, webTemplate, flatJsonObject, true, parentFollowedByFhir, openehr,
-                                        // todo: review, before the 'parentFollowedByFhir' was just 'fhirPath'..
+                                        helpers, webTemplate, flatJsonObject, true, childWithParentFhirPath, openehr,
                                         openehr,
                                         possibleRecursion);
 
@@ -1297,7 +1255,7 @@ public class OpenEhrToFhir {
      * growth_chart/body_weight/any_event:2/weight|magnitude
      * will be joined together, as they are a single object
      */
-    Map<String, List<String>> joinValuesThatAreOne(final List<String> matchingEntries) {
+    public Map<String, List<String>> joinValuesThatAreOne(final List<String> matchingEntries) {
         final Map<String, List<String>> matchings = new HashMap<>();
         for (String matchingEntry : matchingEntries) {
             final String[] split = matchingEntry.split("\\|");
@@ -1576,6 +1534,7 @@ public class OpenEhrToFhir {
                 .parentFollowedByFhirPath(parentFollowedByFhirPath)
                 .parentFollowedByOpenEhr(parentFollowedByOpenEhr1)
                 .condition(mapping.getFhirCondition())
+                .openehrCondition(mapping.getOpenehrCondition())
                 .build();
         helpers.add(openEhrToFhirHelper);
     }
@@ -1606,44 +1565,6 @@ public class OpenEhrToFhir {
             return valueHolder.get(path).getAsString();
         }
         return null;
-    }
-
-    /**
-     * Gets all entries from the flat path that match simplified openehr path with regex pattern
-     *
-     * @param withRegex simplified openehr path with regex pattern
-     * @param compositionFlatPath composition in a flat path format
-     * @return a list of Strings that match the given flat path with regex pattern
-     */
-    List<String> getAllEntriesThatMatch(final String withRegex, final JsonObject compositionFlatPath) {
-        Pattern compiledPattern = Pattern.compile(withRegex);
-        final List<String> match = new ArrayList<>();
-        for (Map.Entry<String, JsonElement> flatEntry : compositionFlatPath.entrySet()) {
-            final Matcher matcher = compiledPattern.matcher(flatEntry.getKey());
-
-            final List<String> matches = new ArrayList<>();
-
-            while (matcher.find() && !isNotSame(flatEntry.getKey(), matcher.group())) {
-                matches.add(matcher.group());
-            }
-            if (matches.isEmpty()) {
-                continue;
-            }
-            match.addAll(matches);
-        }
-        return match;
-    }
-
-    /**
-     * If the only difference is a digit, for example
-     * diagnose/diagnose:0/klinischer_status/klinischer_status2
-     * matching
-     * diagnose/diagnose:0/klinischer_status/klinischer_status
-     * then we need to make sure it's actually not a match
-     */
-    private boolean isNotSame(final String lookingFor, final String found) {
-        final String diff = lookingFor.replace(found, "");
-        return StringUtils.isNotBlank(diff) && Character.isDigit(diff.charAt(0));
     }
 
     @AllArgsConstructor
