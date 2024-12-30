@@ -262,6 +262,10 @@ public class OpenFhirMapperUtils {
         slotArchetypeMappers.getFhirConfig().setResource(parentMapper.getFhirConfig().getResource());
         slotArchetypeMappers.getFhirConfig().setCondition(parentMapper.getFhirConfig().getCondition());
 
+        if (slotArchetypeMappers.getMappings() == null) {
+            return;
+        }
+
         prepareForwardingSlotArchetypeMappings(slotArchetypeMappers.getMappings(),
                                                fhirPath,
                                                openEhrPath,
@@ -291,6 +295,10 @@ public class OpenFhirMapperUtils {
                                                        final String fhirPath,
                                                        final String openEhrPath,
                                                        boolean fhirPrefixing) {
+
+        if (forwardMappers == null) {
+            return;
+        }
 
         // fix fhir forwarding params
         fixFhirForwardingPaths(forwardMappers, fhirPath, fhirPrefixing);

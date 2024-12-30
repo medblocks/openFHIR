@@ -772,6 +772,9 @@ public class OpenEhrToFhir {
                                      final String parentFollowedByOpenEhr,
                                      final String slotContext,
                                      final boolean possibleRecursion) {
+        if (mappings == null) {
+            return;
+        }
         for (final Mapping mapping : mappings) {
             final With with = mapping.getWith();
             final String hardcodedValue = with.getValue();
@@ -795,7 +798,10 @@ public class OpenEhrToFhir {
 
             final JsonObject flatJsonObject = openEhrConditionEvaluator.splitByOpenEhrCondition(originalFlatJsonObject,
                                                                                                 mapping.getOpenehrCondition(),
-                                                                                                parentFollowedByOpenEhr == null ? firstFlatPath : parentFollowedByOpenEhr);
+                                                                                                parentFollowedByOpenEhr
+                                                                                                        == null
+                                                                                                        ? firstFlatPath
+                                                                                                        : parentFollowedByOpenEhr);
 
             final String rmType = getRmType(openehr, mapping, webTemplate);
 
