@@ -13,19 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 public class FhirConnectValidator {
-
-    @Autowired
-    private FhirPathR4 fhirPathR4;
-
-    @Autowired
-    private OpenFhirStringUtils openFhirStringUtils;
 
     public List<String> validateAgainstContextSchema(final FhirConnectContext parsed) {
         return validateAgainstSchema(parsed, "/contextual-mapping.schema.json");
@@ -51,7 +43,11 @@ public class FhirConnectValidator {
                 final List<String> errors = new ArrayList<>();
                 report.iterator().forEachRemaining(err -> {
                     if (err.getLogLevel() == LogLevel.ERROR || err.getLogLevel() == LogLevel.FATAL) {
-                        errors.add(err.getMessage());
+                        if (!err.getMessage().contains("(matched 2 out of 2)")) {
+                            // ugly yes, but this error is there because we have a helper method getAttributes to wrap a getAttribute in a list and return it,
+                            // which makes this validator think both attributes are present
+                            errors.add(err.getMessage());
+                        }
                     }
                 });
                 return errors;

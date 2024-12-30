@@ -9,35 +9,45 @@
     },
     "type": {
       "type": "string",
-      "enum": ["context"]
+      "enum": [
+        "context"
+      ]
     },
     "metadata": {
       "type": "object",
       "properties": {
         "name": {
-          "type": "string",
-          "pattern": "^[A-Za-z0-9_.-]+$"
+          "type": "string"
         },
         "version": {
-          "type": "string",
-          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+[a-z]?$"
+          "type": "string"
         }
       },
-      "required": ["name", "version"]
+      "required": [
+        "name",
+        "version"
+      ]
     },
     "spec": {
       "type": "object",
       "properties": {
         "system": {
           "type": "string",
-          "enum": ["FHIR"]
+          "enum": [
+            "FHIR"
+          ]
         },
         "version": {
           "type": "string",
-          "enum": ["R4"]
+          "enum": [
+            "R4"
+          ]
         }
       },
-      "required": ["system", "version"]
+      "required": [
+        "system",
+        "version"
+      ]
     },
     "context": {
       "type": "object",
@@ -47,30 +57,37 @@
           "format": "uri"
         },
         "templateId": {
-          "type": "string",
-          "pattern": "^[A-Za-z0-9_-]+$"
+          "type": "string"
         },
         "archetypes": {
           "type": "array",
           "items": {
-            "type": "string",
-            "pattern": "^[A-Z]+\\.[A-Za-z0-9_]+\\.v[0-9]+$"
+            "type": "string"
           }
         },
         "extensions": {
           "type": "array",
           "items": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9_-]+$"
+            "type": "string"
           }
         },
         "start": {
-          "type": "string",
-          "pattern": "^[A-Z]+\\.[A-Za-z0-9_]+\\.v[0-9]+$"
+          "type": "string"
         }
       },
-      "required": ["profileUrl", "templateId", "archetypes", "extensions", "start"]
+      "required": [
+        "profileUrl",
+        "templateId",
+        "archetypes",
+        "start"
+      ]
     }
   },
-  "required": ["engine", "type", "metadata", "spec", "context"]
+  "required": [
+    "engine",
+    "type",
+    "metadata",
+    "spec",
+    "context"
+  ]
 }

@@ -87,7 +87,7 @@ public class OpenFhirEngine {
         FhirConnectContextEntity fallbackContext = null;
 
         final Resource resource = parseIncomingFhirResource(incomingFhirResource);
-        for (FhirConnectContextEntity context : allUserContexts) {
+        for (final FhirConnectContextEntity context : allUserContexts) {
             final Condition condition = getContextCondition(context.getFhirConnectContext().getContext().getProfileUrl());
             final String resourceType = "Bundle"; // todo: always bundle?
             final String fhirPathWithCondition = openFhirStringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,

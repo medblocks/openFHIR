@@ -7,6 +7,7 @@ import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import com.medblocks.openfhir.fc.schema.model.FhirConnectModel;
 import com.medblocks.openfhir.util.FhirConnectModelMerger;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
+import com.medblocks.openfhir.util.OpenFhirTestUtility;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -22,13 +23,7 @@ import org.openehr.schemas.v1.TemplateDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.introspector.PropertyUtils;
-import org.yaml.snakeyaml.representer.Representer;
 
 @Component
 @RequestScope
@@ -180,24 +175,7 @@ public class TestOpenFhirMappingContext extends OpenFhirMappingContext {
         try {
             final FileInputStream modelInputStream = FileUtils.openInputStream(file);
 
-            final Representer representer = new Representer(new DumperOptions());
-            representer.getPropertyUtils().setSkipMissingProperties(true);
-
-            final LoaderOptions loaderOptions = new LoaderOptions();
-            loaderOptions.setEnumCaseSensitive(false);
-
-
-            final Constructor constructor = new Constructor(loaderOptions);
-            constructor.setPropertyUtils(new PropertyUtils() {
-                @Override
-                public Property getProperty(Class<? extends Object> type, String name) {
-                    if (name.equals("extends")) {
-                        name = "_extends";
-                    }
-                    return super.getProperty(type, name);
-                }
-            });
-            final Yaml yaml = new Yaml(constructor, representer);
+            final Yaml yaml = OpenFhirTestUtility.getYaml();
 
             return yaml.loadAs(modelInputStream, FhirConnectModel.class);
         } catch (Exception e) {

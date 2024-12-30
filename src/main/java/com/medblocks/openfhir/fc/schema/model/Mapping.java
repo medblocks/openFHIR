@@ -237,9 +237,9 @@ public class Mapping {
 
     public enum ModelExtension {
 
-        ADD("ADD"),
-        APPEND("APPEND"),
-        OVERWRITE("OVERWRITE");
+        ADD("add"),
+        APPEND("append"),
+        OVERWRITE("overwrite");
         private final String value;
         private final static Map<String, ModelExtension> CONSTANTS = new HashMap<String, ModelExtension>();
 
