@@ -633,6 +633,14 @@ public class FhirToOpenEhr {
                                     final List<FhirToOpenEhrHelper> helpers, final boolean breakRecursion) {
         final List<OpenFhirFhirConnectModelMapper> slotArchetypeMapperss = openFhirTemplateRepo.getMapperForArchetype(
                 templateId, mapping.getSlotArchetype());
+        if (slotArchetypeMapperss == null) {
+            log.error("Couldn't find referenced slot archetype mapper {}. Referenced in {}", mapping.getSlotArchetype(),
+                      mapping.getName());
+            throw new IllegalArgumentException(
+                    String.format("Couldn't find referenced slot archetype mapper %s. Referenced in %s",
+                                  mapping.getSlotArchetype(),
+                                  mapping.getName()));
+        }
 
         for (OpenFhirFhirConnectModelMapper slotArchetypeMappers : slotArchetypeMapperss) {
             boolean possibleRecursion = slotArchetypeMappers.getName().equals(fhirConnectMapper.getName());

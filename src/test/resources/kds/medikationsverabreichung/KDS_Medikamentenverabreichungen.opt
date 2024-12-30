@@ -345,8 +345,8 @@ Nicht für die Darstellung von Medikationsplänen, unvollständigen Verabreichun
                   <items id="text">Fall-Beginn</items>
                 </term_definitions>
                 <term_definitions code="at0003">
-                  <items id="description">Der Status des Falls.
-Der Status "abgeschlossen" bedeutet, dass dem Patienten die entsprechende Fallnummer zugeordnet wurde.
+                  <items id="description">Der Status des Falls. 
+Der Status "abgeschlossen" bedeutet, dass dem Patienten die entsprechende Fallnummer zugeordnet wurde. 
 Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnummer fälschlicherweise zugeordnet wurde.</items>
                   <items id="text">Status</items>
                 </term_definitions>

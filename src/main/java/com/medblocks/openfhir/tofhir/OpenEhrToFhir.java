@@ -10,7 +10,6 @@ import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX_E
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.WHERE;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.OpenFhirMappingContext;
@@ -41,8 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -793,12 +790,12 @@ public class OpenEhrToFhir {
                 continue;
             }
 
-            final JsonObject flatJsonObject = openEhrConditionEvaluator.splitByOpenEhrCondition(originalFlatJsonObject,
-                                                                      mapping.getOpenehrCondition(),
-                                                                      firstFlatPath);
-
             final String definedMappingWithOpenEhr = with.getOpenehr();
             String openehr = getOpenEhrKey(definedMappingWithOpenEhr, parentFollowedByOpenEhr, firstFlatPath);
+
+            final JsonObject flatJsonObject = openEhrConditionEvaluator.splitByOpenEhrCondition(originalFlatJsonObject,
+                                                                                                mapping.getOpenehrCondition(),
+                                                                                                parentFollowedByOpenEhr == null ? firstFlatPath : parentFollowedByOpenEhr);
 
             final String rmType = getRmType(openehr, mapping, webTemplate);
 
@@ -839,7 +836,8 @@ public class OpenEhrToFhir {
                     final String withRegex = openFhirStringUtils.addRegexPatternToSimplifiedFlatFormat(openehr);
 
                     // get all entries from the flat path that match the simplified flat path with regex pattern
-                    final List<String> matchingEntries = openFhirStringUtils.getAllEntriesThatMatch(withRegex, flatJsonObject);
+                    final List<String> matchingEntries = openFhirStringUtils.getAllEntriesThatMatch(withRegex,
+                                                                                                    flatJsonObject);
                     final Map<String, List<String>> joinedEntries = joinValuesThatAreOne(matchingEntries);
                     handleRegularMapping(mapping, resourceType, parentFollowedByFhir, parentFollowedByOpenEhr,
                                          theMapper,
@@ -936,6 +934,14 @@ public class OpenEhrToFhir {
 
         final List<OpenFhirFhirConnectModelMapper> slotArchetypeMapperss = openFhirTemplateRepo.getMapperForArchetype(
                 templateId, mapping.getSlotArchetype());
+        if (slotArchetypeMapperss == null) {
+            log.error("Couldn't find referenced slot archetype mapper {}. Referenced in {}", mapping.getSlotArchetype(),
+                      mapping.getName());
+            throw new IllegalArgumentException(
+                    String.format("Couldn't find referenced slot archetype mapper %s. Referenced in %s",
+                                  mapping.getSlotArchetype(),
+                                  mapping.getName()));
+        }
         for (final OpenFhirFhirConnectModelMapper slotArchetypeMappers : slotArchetypeMapperss) {
             boolean possibleRecursion = slotArchetypeMappers.getName().equals(theMapper.getName());
             if (breakRecursion) {

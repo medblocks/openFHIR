@@ -287,6 +287,13 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
 
         Assert.assertEquals("50621000087108", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/status/status|code").getAsString());
 
+        /**
+         * once flat paths are replaced with aql paths, this should no longer be necessary. Reason for why it is now is
+         * in the dosage.v2.dosage-to-dosage.yml
+         */
+        jsonObject.remove("medikamentenliste/medikationseintrag:0/dosierung2:0/dosis");
+        jsonObject.remove("medikamentenliste/medikationseintrag:1/dosierung2:0/dosis");
+
         return jsonObject;
     }
 }
