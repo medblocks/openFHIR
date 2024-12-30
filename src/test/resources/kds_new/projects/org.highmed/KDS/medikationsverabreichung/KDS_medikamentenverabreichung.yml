@@ -1,0 +1,54 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name:  KDS_medikamentenverabreichung
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  extends: ACTION.medication.v1
+
+mappings:
+  - name: "berichtId"
+    extension: "add"
+    with:
+      fhir: "$resource.identifier.value"
+      openehr: "$archetype.context.bericht_id"
+      type: "STRING"
+
+  - name: "status"
+    extension: "add"
+    with:
+      fhir: "$resource.status"
+      openehr: "$archetype.context.status|code"
+      type: "STRING"
+
+#  - name: "fallIdentifikationIdentifier"
+#    extension: "add"
+#    with:
+#      fhir: "$resource.context.as(Reference).identifier"
+#      #      # todo: not ok; slotArchetype CLUSTER.case_identification has a "case_identifier", BUT this template requires a "fall-kennung".
+#      openehr: "$archetype.context.fallidentifikation"
+#    slotArchetype: "CLUSTER.case_identification.v0"
+
+#  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+#    extension: "add"
+#    with:
+#      fhir: "$resource.encounter.reference"
+#      openehr: "$reference"
+#    reference: #type None
+#      resourceType: "Encounter"
+#      mappings:
+#        - name: "identifierInReference"
+#          with:
+#            fhir: "$fhirRoot.identifier"
+#            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+#          slotArchetype: "CLUSTER.case_identification.v0"
+#        - name: "encounterMapping"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "the case this composition relates to"
+#              type: "case"

@@ -33,17 +33,30 @@ mappings:
 #    type: "PROGRAMMED_MAPPING"
 #    mappingCode: "timingToDaily_NonDaily" #FHIR and openEHR are here very different, openEHR uses ISO, FHIR made up their own
 
+#todo: unit mapping?
 
-  - name: "dose"
+
+  - name: "doseQuantityValue"
     with:
       fhir: "$fhirRoot.doseAndRate.dose.as(Quantity)"
-      openehr: "$archetype.dosis.quantity_value"
+      openehr: "$archetype.dosis.quantity_value" # todo: quantity_value vs just |magnitude... how do you know which? maybe aql paths will fix this issue
       type: "QUANTITY"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "dosis|magnitude"
+      operator: "empty"
 
-  - name: "rate"
+  - name: "doseValue"
     with:
-      fhir: "$fhirRoot.doseAndRate.rate"
-      openehr: "$archetype/items[at0134]"
+      fhir: "$fhirRoot.doseAndRate.dose.as(Quantity)"
+      openehr: "$archetype.dosis" # todo: quantity_value vs just |magnitude... how do you know which? maybe aql paths will fix this issue
+      type: "QUANTITY"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "dosis.quantity_value" #todo: how do you know which of these two to take when going fhir->openehr?
+      operator: "empty"
 
 #  - name: "duration"
 #    with:
