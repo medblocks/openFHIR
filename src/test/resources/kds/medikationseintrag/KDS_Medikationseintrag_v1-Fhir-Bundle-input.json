@@ -1,7 +1,11 @@
 {
   "resourceType": "Bundle",
   "id": "b15bb2cd-b8b7-4a69-a7d3-bb659003594e",
-  "meta": {"profile": ["KDS_Medikationseintrag_v1"]},
+  "meta": {
+    "profile": [
+      "KDS_Medikationseintrag_v1"
+    ]
+  },
   "type": "transaction",
   "entry": [
     {
@@ -98,7 +102,8 @@
         "effectivePeriod": {
           "start": "2024-07-15",
           "end": "2024-08-01"
-        },        "reasonCode": [
+        },
+        "reasonCode": [
           {
             "coding": [
               {
@@ -217,7 +222,7 @@
               "coding": [
                 {
                   "system": "http://snomed.info/sct",
-                  "code": "26643006",
+                  "code": "26643007",
                   "display": "Oral route"
                 }
               ]

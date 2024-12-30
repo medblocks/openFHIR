@@ -15,6 +15,7 @@ import com.medblocks.openfhir.util.FhirInstanceCreator;
 import com.medblocks.openfhir.util.FhirInstanceCreatorUtility;
 import com.medblocks.openfhir.util.FhirInstancePopulator;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
+import com.medblocks.openfhir.util.OpenEhrConditionEvaluator;
 import com.medblocks.openfhir.util.OpenEhrPopulator;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
@@ -74,7 +75,8 @@ public abstract class GenericTest {
                                           new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
                                           fhirInstanceCreatorUtility,
                                           fhirPath,
-                                          new IntermediateCacheProcessing(openFhirStringUtils));
+                                          new IntermediateCacheProcessing(openFhirStringUtils),
+                                          new OpenEhrConditionEvaluator(openFhirStringUtils));
         fhirToOpenEhr = new FhirToOpenEhr(fhirPath,
                                           new OpenFhirStringUtils(),
                                           new FlatJsonUnmarshaller(),

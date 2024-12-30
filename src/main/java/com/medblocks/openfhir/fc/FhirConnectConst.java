@@ -28,6 +28,8 @@ public class FhirConnectConst {
     public static final String IDENTIFIER = "IDENTIFIER";
     public static final String UNIDIRECTIONAL_TOFHIR = "openEHR->fhir";
     public static final String UNIDIRECTIONAL_TOOPENEHR = "fhir->openehr";
+    public static final String CONDITION_OPERATOR_ONE_OF = "one of";
+    public static final String CONDITION_OPERATOR_EMPTY = "empty";
 
 
 }

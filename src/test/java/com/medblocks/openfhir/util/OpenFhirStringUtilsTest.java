@@ -1,6 +1,12 @@
 package com.medblocks.openfhir.util;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.medblocks.openfhir.fc.schema.model.Condition;
+import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,6 +34,178 @@ public class OpenFhirStringUtilsTest {
                             new OpenFhirStringUtils().prepareParentOpenEhrPath(
                                     "person.personendaten.person.geburtsname",
                                     "person/personendaten/person/geburtsname:0/vollständiger_name"));
+
+    }
+
+
+    @Test
+    public void joinValuesThatAreOne_oneContainsTheOther() {
+        final List<String> toJoin = Arrays.asList(
+                "diagnose/diagnose:0/klinisch_relevanter_zeitraum_zeitpunkt_der_genesung",
+                "diagnose/diagnose:0/klinischer_status/diagnostic_status|code",
+                "diagnose/diagnose:0/klinischer_status/diagnostic_status|terminology",
+                "diagnose/diagnose:0/klinischer_status/diagnostic_status|value",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status|terminology",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status|code",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status|value",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status2|value",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status2|terminology",
+                "diagnose/diagnose:0/klinischer_status/klinischer_status2|code",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle|code",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle|terminology",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle|value",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle2|value",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle2|code",
+                "diagnose/diagnose:0/klinischer_status/diagnoserolle2|terminology",
+                "diagnose/diagnose:0/diagnosesicherheit|value",
+                "diagnose/diagnose:0/diagnosesicherheit|terminology",
+                "diagnose/diagnose:0/diagnosesicherheit|code",
+                "diagnose/diagnose:0/diagnosesicherheit2|value",
+                "diagnose/diagnose:0/diagnosesicherheit2|code",
+                "diagnose/diagnose:0/diagnosesicherheit2|terminology",
+                "diagnose/diagnose:0/diagnoseerläuterung",
+                "diagnose/diagnose:0/letztes_dokumentationsdatum",
+                "diagnose/diagnose:0/language|code",
+                "diagnose/diagnose:0/language|terminology"
+        );
+        final Map<String, List<String>> stringListMap = new OpenEhrToFhir(null, null, null,
+                                                                          null, null, null,
+                                                                          null, null, null, null,
+                                                                          null, null, null).joinValuesThatAreOne(
+                toJoin);
+        Assert.assertEquals(3, stringListMap.get("diagnose/diagnose:0/klinischer_status/klinischer_status").size());
+
+        final JsonObject flatJsonObject = new JsonObject();
+        toJoin.forEach(tj -> flatJsonObject.add(tj, new JsonPrimitive("random")));
+
+        flatJsonObject.add("diagnose/diagnose:0/lebensphase/ende|code", new JsonPrimitive("44"));
+        flatJsonObject.add("diagnose/diagnose:0/lebensphase/ende|value", new JsonPrimitive(
+                "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de' available"));
+        flatJsonObject.add("diagnose/diagnose:0/lebensphase/ende|terminology", new JsonPrimitive(
+                "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"));
+        flatJsonObject.add("diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|value",
+                           new JsonPrimitive("†"));
+        flatJsonObject.add("diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|code",
+                           new JsonPrimitive("at0002"));
+        flatJsonObject.add("diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|terminology",
+                           new JsonPrimitive("local"));
+        flatJsonObject.add("diagnose/diagnose:0/klinisch_relevanter_zeitraum_zeitpunkt_der_genesung",
+                           new JsonPrimitive("2022-02-03T04:05:06"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnostic_status|code", new JsonPrimitive("at0016"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnostic_status|terminology",
+                           new JsonPrimitive("local"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnostic_status|value",
+                           new JsonPrimitive("Preliminary"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status|terminology",
+                           new JsonPrimitive("local"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status|code", new JsonPrimitive("at0026"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status|value",
+                           new JsonPrimitive("Active"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status2|value",
+                           new JsonPrimitive("Active"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status2|terminology",
+                           new JsonPrimitive("local"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/klinischer_status2|code",
+                           new JsonPrimitive("at0026"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle|code", new JsonPrimitive("42"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle|terminology", new JsonPrimitive(
+                "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/diagnosis-role"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle|value", new JsonPrimitive(
+                "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/diagnosis-role' available"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle2|value", new JsonPrimitive(
+                "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/diagnosis-role' available"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle2|code", new JsonPrimitive("42"));
+        flatJsonObject.add("diagnose/diagnose:0/klinischer_status/diagnoserolle2|terminology", new JsonPrimitive(
+                "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/diagnosis-role"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit|value", new JsonPrimitive(
+                "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT' available"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit|terminology", new JsonPrimitive(
+                "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit|code", new JsonPrimitive("42"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit2|value", new JsonPrimitive(
+                "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT' available"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit2|code", new JsonPrimitive("42"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnosesicherheit2|terminology", new JsonPrimitive(
+                "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT"));
+        flatJsonObject.add("diagnose/diagnose:0/diagnoseerläuterung", new JsonPrimitive("Lorem ipsum"));
+        flatJsonObject.add("diagnose/diagnose:0/letztes_dokumentationsdatum", new JsonPrimitive("2022-02-03T04:05:06"));
+        flatJsonObject.add("diagnose/diagnose:0/language|code", new JsonPrimitive("en"));
+
+        final List<String> matchingEntries = new OpenFhirStringUtils().getAllEntriesThatMatch(
+                new OpenFhirStringUtils().addRegexPatternToSimplifiedFlatFormat(
+                        "diagnose/diagnose/klinischer_status/klinischer_status"),
+                flatJsonObject);
+        Assert.assertEquals(3, matchingEntries.size());
+    }
+
+    @Test
+    public void getAllEntriesThatMatchIgnoringPipe() {
+        final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
+
+        final List<String> toJoin = Arrays.asList(
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|value",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|code",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|terminology",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|terminology",
+                "stationärer_versorgungsfall/aufnahmedaten/abc|abc",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|value",
+                "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|code",
+                "stationärer_versorgungsfall/aufnahmedaten/kennung_vor_der_aufnahme",
+                "stationärer_versorgungsfall/aufnahmedaten/datum_uhrzeit_der_aufnahme",
+                "stationärer_versorgungsfall/aufnahmedaten/vorheriger_patientenstandort_vor_aufnahme/campus"
+        );
+
+        final JsonObject flatJsonObject = new JsonObject();
+        toJoin.forEach(tj -> flatJsonObject.add(tj, new JsonPrimitive(tj)));
+
+        Assert.assertEquals("stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|terminology",
+                            openFhirStringUtils.getAllEntriesThatMatchIgnoringPipe(
+                                    "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|terminology",
+                                    flatJsonObject).get(0));
+        Assert.assertEquals("stationärer_versorgungsfall/aufnahmedaten/abc|abc",
+                            openFhirStringUtils.getAllEntriesThatMatchIgnoringPipe(
+                                    "stationärer_versorgungsfall/aufnahmedaten/abc", flatJsonObject).get(0));
+        Assert.assertTrue(openFhirStringUtils.getAllEntriesThatMatchIgnoringPipe(
+                "stationärer_versorgungsfall/aufnahmedaten/abc/cde", flatJsonObject).isEmpty());
+    }
+
+    @Test
+    public void joinValuesThatAreOne_dots() {
+        final List<String> toJoin = Arrays.asList("stationärer_versorgungsfall/context/start_time",
+                                                  "stationärer_versorgungsfall/context/setting|terminology",
+                                                  "stationärer_versorgungsfall/context/setting|code",
+                                                  "stationärer_versorgungsfall/context/setting|value",
+                                                  "stationärer_versorgungsfall/context/_end_time",
+                                                  "stationärer_versorgungsfall/context/_health_care_facility|name",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|terminology",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|code",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_1._und_2._stelle|value",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|terminology",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|value",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_3._stelle|code",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|value",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|code",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmegrund_-_4._stelle|terminology",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|terminology",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|value",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/aufnahmeanlass|code",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/kennung_vor_der_aufnahme",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/datum_uhrzeit_der_aufnahme",
+                                                  "stationärer_versorgungsfall/aufnahmedaten/vorheriger_patientenstandort_vor_aufnahme/campus"
+        );
+
+        final JsonObject flatJsonObject = new JsonObject();
+        toJoin.forEach(tj -> flatJsonObject.add(tj, new JsonPrimitive("random")));
+
+        final String testingPath = "$archetype.aufnahmedaten.aufnahmegrund_-_1\\._und_2\\._stelle";
+
+        final String prepared = new OpenFhirStringUtils().prepareOpenEhrSyntax(testingPath,
+                                                                               "stationärer_versorgungsfall");
+
+        final String withRegex = new OpenFhirStringUtils().addRegexPatternToSimplifiedFlatFormat(prepared);
+        final List<String> matchingEntries = new OpenFhirStringUtils().getAllEntriesThatMatch(withRegex,
+                                                                                              flatJsonObject);
+        Assert.assertEquals(3, matchingEntries.size());
 
     }
 

@@ -247,11 +247,13 @@ public class FhirToOpenEhr {
                 final FhirToOpenEhrHelper cloned = fhirToOpenEhrHelper.doClone();
                 if (fhirToOpenEhrHelper.getMultiple() && (mainMultiple == null || fhirToOpenEhrHelper.getOpenEhrPath()
                         .startsWith(mainMultiple))) {
-                    mainMultiple = fhirToOpenEhrHelper.getOpenEhrPath().split(RECURRING_SYNTAX_ESCAPED)[0];
+
+                    final String openEhrPath = fhirToOpenEhrHelper.getOpenEhrPath();
+                    mainMultiple = openEhrPath.contains("context") ? null : openEhrPath.split(RECURRING_SYNTAX_ESCAPED)[0];
                     cloned.setOpenEhrPath(
                             fhirToOpenEhrHelper.getOpenEhrPath().replaceFirst(RECURRING_SYNTAX_ESCAPED, ":" + i));
 
-                    fixAllChildrenRecurringElements(cloned, fhirToOpenEhrHelper.getOpenEhrPath(),
+                    fixAllChildrenRecurringElements(cloned,
                                                     cloned.getOpenEhrPath());
                 }
                 int previousFinalFlatSize = finalFlat.size();
@@ -381,7 +383,7 @@ public class FhirToOpenEhr {
                     if (copy.getOpenEhrPath().startsWith(helper.getOpenEhrPath())) {
                         final String newOne = copy.getOpenEhrPath().replace(helper.getOpenEhrPath(), thePath);
 
-                        fixAllChildrenRecurringElements(copy, helper.getOpenEhrPath(), newOne);
+                        fixAllChildrenRecurringElements(copy, newOne);
 
                         evaluated = addDataPoints(copy, flatComposition, result);
                     } else {
@@ -404,8 +406,9 @@ public class FhirToOpenEhr {
     /**
      * Adds proper recurring index to all child elements if parent is the recurring one
      */
-    void fixAllChildrenRecurringElements(final FhirToOpenEhrHelper helper, final String parent, final String newOne) {
-        if (stringUtils.childStartsWithParent(helper.getOpenEhrPath(), parent)) {
+    void fixAllChildrenRecurringElements(final FhirToOpenEhrHelper helper, final String newOne) {
+        final boolean hasParentRecurring = stringUtils.childHasParentRecurring(helper.getOpenEhrPath(), newOne);
+        if (hasParentRecurring) {
             final String replaced = stringUtils.replacePattern(helper.getOpenEhrPath(), newOne);
             helper.setOpenEhrPath(replaced);
         }
@@ -413,7 +416,7 @@ public class FhirToOpenEhr {
             return;
         }
         for (FhirToOpenEhrHelper fhirToOpenEhrHelper : helper.getFhirToOpenEhrHelpers()) {
-            fixAllChildrenRecurringElements(fhirToOpenEhrHelper, parent, newOne);
+            fixAllChildrenRecurringElements(fhirToOpenEhrHelper, newOne);
         }
     }
 

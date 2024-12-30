@@ -1,18 +1,27 @@
 package com.medblocks.openfhir.util;
 
+import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.medblocks.openfhir.fc.FhirConnectConst;
 import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhrHelper;
-import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.r4.model.Coding;
-import org.springframework.stereotype.Component;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
+import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.r4.model.Coding;
+import org.springframework.stereotype.Component;
 
 @Component
 public class OpenFhirStringUtils {
@@ -43,7 +52,8 @@ public class OpenFhirStringUtils {
     }
 
     /**
-     * When writing simplified openEHR flat path in FHIR Connect mappings, you may need to escape dots if they are a part
+     * When writing simplified openEHR flat path in FHIR Connect mappings, you may need to escape dots if they are a
+     * part
      * of the archetype name. Before we adjust openEHR paths to the actual ones based on RM, this needs to be removed
      * which is what this method does.
      */
@@ -83,7 +93,7 @@ public class OpenFhirStringUtils {
      * replaces dots in a simplified openEHR path with / and replaces FHIR Connect reference to openEHR archetype with
      * the actual one
      *
-     * @param openEhr            simplified openEHR path
+     * @param openEhr simplified openEHR path
      * @param openEhrArchetypeId archetype ID of the mapping archetype
      * @return prepared openehr path
      */
@@ -92,7 +102,8 @@ public class OpenFhirStringUtils {
             return null;
         }
         return openEhr
-                .replaceAll("(?<!\\\\)\\.", "/") // This is the negative lookbehind. It ensures that the dot (.) is not preceded by two backslashes (\\). The backslashes are escaped, so \\\\ means "two literal backslashes."
+                .replaceAll("(?<!\\\\)\\.",
+                            "/") // This is the negative lookbehind. It ensures that the dot (.) is not preceded by two backslashes (\\). The backslashes are escaped, so \\\\ means "two literal backslashes."
                 .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, openEhrArchetypeId);
     }
 
@@ -224,11 +235,12 @@ public class OpenFhirStringUtils {
     public String fixFhirPath(final String fhirPath) {
         return fhirPath
                 .replace("." + FHIR_ROOT_FC, "")
-                .replace( FHIR_ROOT_FC, "");
+                .replace(FHIR_ROOT_FC, "");
     }
 
     /**
-     * fixes fhirPath casting, as BooleanType is not a valid FHIR path, but boolean is.. similar to StringType > String, ..
+     * fixes fhirPath casting, as BooleanType is not a valid FHIR path, but boolean is.. similar to StringType > String,
+     * ..
      *
      * @param originalFhirPath path as it exists up until now
      * @return fhir path with casting
@@ -267,13 +279,15 @@ public class OpenFhirStringUtils {
      * FHIR path amended in a way that condition becomes a part of it
      *
      * @param originalFhirPath original fhir path without conditions as it exists within a model mapper
-     * @param conditions       conditions defined within a model mapper
-     * @param resource         fhir resource being used as a base
+     * @param conditions conditions defined within a model mapper
+     * @param resource fhir resource being used as a base
      * @return fhir path with condition elemenets included in the fhir path itself
-     * deprecated: use getFhirPathWithConditions instead! this method should be removed as soon as possible to clear up
-     * the code base and remove redundant ones
+     *         deprecated: use getFhirPathWithConditions instead! this method should be removed as soon as possible to
+     *         clear up
+     *         the code base and remove redundant ones
      */
-    public String amendFhirPath(final String originalFhirPath, final List<Condition> conditions, final String resource) {
+    public String amendFhirPath(final String originalFhirPath, final List<Condition> conditions,
+                                final String resource) {
         String fhirPath = originalFhirPath.replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
         if (fhirPath.contains(FhirConnectConst.FHIR_ROOT_FC)) {
             fhirPath = fhirPath.replace("." + FhirConnectConst.FHIR_ROOT_FC, "")
@@ -300,13 +314,18 @@ public class OpenFhirStringUtils {
                 base = fhirPath;
             }
             stringJoiner.add(base
-                    .replace(condition.getTargetRoot(), condition.getTargetRoot() + ".where(" + targetAttribute + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))").replace(FhirConnectConst.FHIR_RESOURCE_FC, resource));
+                                     .replace(condition.getTargetRoot(),
+                                              condition.getTargetRoot() + ".where(" + targetAttribute
+                                                      + ".toString().contains('" + getStringFromCriteria(
+                                                      condition.getCriteria()).getCode() + "'))")
+                                     .replace(FhirConnectConst.FHIR_RESOURCE_FC, resource));
 
         }
         return stringJoiner.toString();
     }
 
-    public String getFhirPathWithoutConditions(final String originalFhirPath, final Condition condition, final String resource) {
+    public String getFhirPathWithoutConditions(final String originalFhirPath, final Condition condition,
+                                               final String resource) {
         if (condition == null || condition.getTargetAttribute() == null) {
             return originalFhirPath.replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
         }
@@ -316,7 +335,60 @@ public class OpenFhirStringUtils {
 
     public String extractWhereCondition(final String path) {
         return extractWhereCondition(path, false);
+    }
 
+
+    /**
+     * Gets all entries from the flat path that match simplified openehr path with regex pattern
+     *
+     * @param withRegex simplified openehr path with regex pattern
+     * @param compositionFlatPath composition in a flat path format
+     * @return a list of Strings that match the given flat path with regex pattern
+     */
+    public List<String> getAllEntriesThatMatch(final String withRegex, final JsonObject compositionFlatPath) {
+        Pattern compiledPattern = Pattern.compile(withRegex);
+        final List<String> match = new ArrayList<>();
+        for (Map.Entry<String, JsonElement> flatEntry : compositionFlatPath.entrySet()) {
+            final Matcher matcher = compiledPattern.matcher(flatEntry.getKey());
+
+            final List<String> matches = new ArrayList<>();
+
+            while (matcher.find() && !isNotSame(flatEntry.getKey(), matcher.group())) {
+                matches.add(matcher.group());
+            }
+            if (matches.isEmpty()) {
+                continue;
+            }
+            match.addAll(matches);
+        }
+        return match;
+    }
+
+    /**
+     * Will return all entries from compositionFlatPath where key starts with path. However all up until the pipe
+     * need to match
+     */
+    public List<String> getAllEntriesThatMatchIgnoringPipe(final String path, final JsonObject compositionFlatPath) {
+        final List<String> match = new ArrayList<>();
+        for (final Map.Entry<String, JsonElement> flatEntry : compositionFlatPath.entrySet()) {
+            if (flatEntry.getKey().split("\\|")[0].equals(path.split("\\|")[0])) {
+                match.add(flatEntry.getValue().getAsString());
+            }
+        }
+        return match;
+    }
+
+
+    /**
+     * If the only difference is a digit, for example
+     * diagnose/diagnose:0/klinischer_status/klinischer_status2
+     * matching
+     * diagnose/diagnose:0/klinischer_status/klinischer_status
+     * then we need to make sure it's actually not a match
+     */
+    private boolean isNotSame(final String lookingFor, final String found) {
+        final String diff = lookingFor.replace(found, "");
+        return StringUtils.isNotBlank(diff) && Character.isDigit(diff.charAt(0));
     }
 
     public String extractWhereCondition(final String path, final boolean last) {
@@ -383,12 +455,14 @@ public class OpenFhirStringUtils {
         // append parent's where path first
         String withParentsWhereInPlace;
         final String remainingItems;
-        final String actualConditionTargetRoot = condition.getTargetRoot().replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
+        final String actualConditionTargetRoot = condition.getTargetRoot()
+                .replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
         if (originalFhirPath.startsWith(actualConditionTargetRoot)) {
             // then we use target root as the base path
             withParentsWhereInPlace = setParentsWherePathToTheCorrectPlace(actualConditionTargetRoot, parentPath);
             final String addedWhere = parentPath == null ? "" : extractWhereCondition(parentPath, true);
-            final String remainingFromCondition = actualConditionTargetRoot.replace(withParentsWhereInPlace.replace("." + addedWhere, ""), "");
+            final String remainingFromCondition = actualConditionTargetRoot.replace(
+                    withParentsWhereInPlace.replace("." + addedWhere, ""), "");
             if (!withParentsWhereInPlace.equals(remainingFromCondition)) {
                 withParentsWhereInPlace += remainingFromCondition;
             }
@@ -400,19 +474,26 @@ public class OpenFhirStringUtils {
 
         if (actualConditionTargetRoot.startsWith(resource) && withParentsWhereInPlace.equals(originalFhirPath)) {
             // find the right place first
-            final String commonPath = setParentsWherePathToTheCorrectPlace(originalFhirPath, actualConditionTargetRoot); // path right before the condition should start
+            final String commonPath = setParentsWherePathToTheCorrectPlace(originalFhirPath,
+                                                                           actualConditionTargetRoot); // path right before the condition should start
             final String remainingToEndUpInWhere = actualConditionTargetRoot
                     .replace(commonPath + ".", "")
                     .replace(commonPath, "");
-            final String remainingToAdd = StringUtils.isBlank(remainingToEndUpInWhere) ? "" : (remainingToEndUpInWhere + ".");
-            final String whereClause = ".where(" + remainingToAdd + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
+            final String remainingToAdd =
+                    StringUtils.isBlank(remainingToEndUpInWhere) ? "" : (remainingToEndUpInWhere + ".");
+            final String whereClause =
+                    ".where(" + remainingToAdd + condition.getTargetAttribute() + ".toString().contains('"
+                            + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
             final String remainingItemsFromParent = originalFhirPath.replace(commonPath, "");
             return commonPath + whereClause + remainingItemsFromParent;
         } else {
             // then do your own where path
-            final String whereClause = ".where(" + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
+            final String whereClause =
+                    ".where(" + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(
+                            condition.getCriteria()).getCode() + "'))";
             // then suffix with whatever is left from the children's path
-            return withParentsWhereInPlace + whereClause + (StringUtils.isBlank(remainingItems) ? "" : (remainingItems.startsWith(".") ? remainingItems : ("." + remainingItems)));
+            return withParentsWhereInPlace + whereClause + (StringUtils.isBlank(remainingItems) ? ""
+                    : (remainingItems.startsWith(".") ? remainingItems : ("." + remainingItems)));
         }
     }
 
@@ -421,9 +502,9 @@ public class OpenFhirStringUtils {
      * path from Condition and add that to the original fhir path
      *
      * @param originalFhirPath original fhir path that will be amended with conditions
-     * @param condition        condition we'll use when constructing a .where clause
-     * @param resource         resource type
-     * @param parentPath       parent fhir path, if one exists
+     * @param condition condition we'll use when constructing a .where clause
+     * @param resource resource type
+     * @param parentPath parent fhir path, if one exists
      * @return fhir path amended with the .where clause as constructed from the given Condition
      */
     public String getFhirPathWithConditions(String originalFhirPath,
@@ -462,7 +543,8 @@ public class OpenFhirStringUtils {
                 final String string = parents[parentIndex];
                 if (string.startsWith(WHERE)) {
                     // a where follows
-                    final String firstWhereCondition = extractWhereCondition(parent.substring(parentSubstringCount - 1));
+                    final String firstWhereCondition = extractWhereCondition(
+                            parent.substring(parentSubstringCount - 1));
                     childPathJoiner.add(firstWhereCondition);
                     childPathJoiner.add(childPath);
                     parentIndex += (int) (firstWhereCondition.chars().filter(ch -> ch == '.').count() + 1);
@@ -483,7 +565,8 @@ public class OpenFhirStringUtils {
         if (criteria == null) {
             return null;
         }
-        final String[] criterias = criteria.replace("[", "") // todo: crazy stuff in the FHIR Connect spec...... criteria is a string array, $loinc, ...
+        final String[] criterias = criteria.replace("[",
+                                                    "") // todo: crazy stuff in the FHIR Connect spec...... criteria is a string array, $loinc, ...
                 .replace("]", "").split(",");
         // todo: should be an OR inbetween these separate criterias.. right now it just takes the first
         final String codingCode = criterias[0]
@@ -495,7 +578,8 @@ public class OpenFhirStringUtils {
         } else if (criteria.contains("$snomed")) {
             system = "http://snomed.info/sct";
         } else {
-            system = criteria.replace("[", "") // // todo: crazy stuff in the FHIR Connect spec...... criteria is a string array, $loinc, ...
+            system = criteria.replace("[",
+                                      "") // // todo: crazy stuff in the FHIR Connect spec...... criteria is a string array, $loinc, ...
                     .replace("]", "").split("\\.")[0];
         }
         return new Coding(system, codingCode, null);
@@ -534,8 +618,9 @@ public class OpenFhirStringUtils {
             return null;
         }
         return switch (val) {
-            case "QUANTITY" ->
-                    new HashSet<>(Arrays.asList(FhirConnectConst.DV_QUANTITY, FhirConnectConst.DV_COUNT, FhirConnectConst.DV_ORDINAL, FhirConnectConst.DV_PROPORTION));
+            case "QUANTITY" -> new HashSet<>(
+                    Arrays.asList(FhirConnectConst.DV_QUANTITY, FhirConnectConst.DV_COUNT, FhirConnectConst.DV_ORDINAL,
+                                  FhirConnectConst.DV_PROPORTION));
             case "DATETIME" -> Collections.singleton(FhirConnectConst.DV_DATE_TIME);
             case "TIME" -> Collections.singleton(FhirConnectConst.DV_TIME);
             case "DATE" -> Collections.singleton(FhirConnectConst.DV_DATE);
@@ -553,13 +638,17 @@ public class OpenFhirStringUtils {
     /**
      * Replaces parts of the original string with parts from the replacement string, based on specific patterns.
      * <p>
-     * The original and replacement strings are split by "/" and processed part by part. The following rules are applied:
-     * - If a replacement part contains a numeric suffix in the format "part:number", the corresponding part from the replacement is used.
-     * - If a replacement part contains a suffix in the format "part[n]", the original structure of the part is retained.
-     * - If no special pattern is found, the replacement part is used, unless it's significantly different from the original part, in which case the original part is kept.
+     * The original and replacement strings are split by "/" and processed part by part. The following rules are
+     * applied:
+     * - If a replacement part contains a numeric suffix in the format "part:number", the corresponding part from the
+     * replacement is used.
+     * - If a replacement part contains a suffix in the format "part[n]", the original structure of the part is
+     * retained.
+     * - If no special pattern is found, the replacement part is used, unless it's significantly different from the
+     * original part, in which case the original part is kept.
      * - The method returns the new string with appropriate replacements and maintains the "/" as the separator.
      *
-     * @param original    the original string to be processed (parts separated by "/")
+     * @param original the original string to be processed (parts separated by "/")
      * @param replacement the replacement string to be used (parts separated by "/")
      * @return a new string where parts from the original are replaced with parts from the replacement
      */
@@ -580,8 +669,12 @@ public class OpenFhirStringUtils {
                 result.append(originalParts[i]);
             } else if (i < replacementParts.length) {
                 // Use the original part
-                final String orig = originalParts[i].contains(RECURRING_SYNTAX) ? replaceLastIndexOf(originalParts[i], RECURRING_SYNTAX, "") : originalParts[i];
-                final String repl = replacementParts[i].contains(":") ? replacementParts[i].replace(":", "").replace(String.valueOf(getLastIndex(replacementParts[i])), "") : replacementParts[i];
+                final String orig = originalParts[i].contains(RECURRING_SYNTAX) ? replaceLastIndexOf(originalParts[i],
+                                                                                                     RECURRING_SYNTAX,
+                                                                                                     "")
+                        : originalParts[i];
+                final String repl = replacementParts[i].contains(":") ? replacementParts[i].replace(":", "")
+                        .replace(String.valueOf(getLastIndex(replacementParts[i])), "") : replacementParts[i];
                 if (!orig.startsWith(repl)) { // means it's a completely different one, need to take original
                     result.append(originalParts[i]);
                 } else {
@@ -617,6 +710,33 @@ public class OpenFhirStringUtils {
                 childPath = childPath.split("\\|")[0];
             }
             if (!childPath.equals(parentSplit.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean childHasParentRecurring(final String child, final String parent) {
+        final List<String> childSplit = Arrays.asList(child.split("/"));
+        final List<String> parentSplit = Arrays.asList(parent.split("/"));
+
+        for (int i = 0; i < childSplit.size(); i++) {
+            String childPath = childSplit.get(i);
+            if (i >= parentSplit.size()) {
+                return true;
+            }
+            if (childPath.contains("|")) {
+                childPath = childPath.split("\\|")[0];
+            }
+            final String parentPath = parentSplit.get(i);
+            if (childPath.endsWith("[n]") && parentPath.contains(":")) {
+                final String baseChildPath = childPath.replace("[n]", "");
+                final String baseParentPath = parentPath.substring(0, parentPath.indexOf(":"));
+                if (baseChildPath.equals(baseParentPath)) {
+                    return true;
+                }
+            }
+            if (!childPath.equals(parentPath)) {
                 return false;
             }
         }

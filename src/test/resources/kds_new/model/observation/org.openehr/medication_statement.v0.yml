@@ -1,0 +1,173 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: OBSERVATION.medication_statement.v0
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-OBSERVATION.medication_statement.v0
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/MedicationStatement
+
+mappings:
+
+#  - name: "hierarchyMappings" # is defined by the
+#    with:
+#      fhir: "$resource.dosage"
+#      openEHR: "$archetype/data[at0001]/events[at0002]"
+#  #    type: "HIERARCHY"
+#    hierarchy:
+#      fhirCreate: "resource"
+#      openehrCreate: "event"
+#      uniqueValueFHIR: "[route, timing.event]" # if route value is different per dosage slice make a new event
+#      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
+
+
+  - name: "healthcareFacility"
+    with:
+      fhir: "$resource.informationSource.as(Reference).display"
+      openehr: "$archetype.context._health_care_facility|name"
+      type: "STRING"
+
+  - name: "dateAsserted"
+    with:
+      fhir: "$resource.dateAsserted"
+      openehr: "$archetype.context.start_time"
+      type: "DATETIME"
+
+## todo: overrides the informationSource above?
+#  - name: "provider"
+#    with:
+#      fhir: "$resource.informationSource"
+#      openehr: "$archetype/provider"
+
+#  - name: "composer"
+#    with:
+#      fhir: "$resource.informationSource"
+#      openehr: "$archetype/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
+
+#todo: from which openehr path??
+#  - name: "eventTime"
+#    with:
+#      fhir: "$resource.effective.as(Period)"
+#      openEHR: "$archetype/data[at0001]/events[at0002]" #todo: when dynamic mapping period -> interval event, datetime to pointInTime event
+
+  - name: "reasonCode"
+    with:
+      fhir: "$resource.reasonCode.text"
+      openehr: "$archetype.medikationseintrag.behandlungsgrund"
+      type: "STRING"
+
+  - name: "note"
+    with:
+      fhir: "$resource.note.text"
+      openehr: "$archetype.medikationseintrag.hinweis"
+      type: "STRING"
+
+  - name: "dosage"
+    with:
+      fhir: "$resource.dosage"
+      openehr: "$archetype.medikationseintrag.dosierung2"
+    slotArchetype: "CLUSTER.dosage.v2.dosage-to-dosage"
+    followedBy:
+      mappings:
+        - name: "route"
+          with:
+            fhir: "route"
+            openehr: "$archetype.medikationseintrag.verabreichungsweg"
+            type: "CODEABLECONCEPT"
+
+  - name: "unstructuredDosage"
+    with:
+      fhir: "$resource.dosage.text"
+      openehr: "$archetype.medikationseintrag.dosierung"
+      type: "STRING"
+
+  - name: "medication"
+    with:
+      fhir: "$resource.medication"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Medication"
+      mappings:
+        - name: "medicationReference"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetype.medikationseintrag.arzneimittel"
+            type: "NONE"
+          slotArchetype: "CLUSTER.medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
+
+
+  - name: "medicationCode"
+    with:
+      fhir: "$resource.medication.as(CodeableConcept).text"
+      openehr: "$archetype.medikationseintrag.arzneimittel.arzneimittel-name"
+      type: "STRING"
+    openehrCondition:
+      targetRoot: "$archetype.medikationseintrag.arzneimittel"
+      targetAttributes:
+        - "darreichungsform"
+        - "wirkstärke_konzentration"
+      operator: "empty"
+
+
+##todo: is already defined above
+#  - name: "reasonCode"
+#    with:
+#      fhir: "$resource.reasonCode"
+#      openehr: "/data[at0001]/events[at0002]/data[at0003]/items[at0023]"
+
+  - name: "reasonReference"
+    with:
+      fhir: "$resource.reasonReference.as(Reference).identifier.value"
+      openehr: "$archetype.medikationseintrag.behandlungsgrund"
+      type: "STRING"
+
+#  - name: "partOf"
+#    with:
+#      fhir: "$resource.partOf.reference"
+#      openehr: "$reference"
+#    reference:
+#      mappings:
+#        - name: "partOfReference"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "what the medication is part of"
+#              type: "partOf"
+
+#  - name: "basedOn"
+#    with:
+#      fhir: "$resource.basedOn.reference"
+#      openehr: "$reference"
+#    reference:
+#      mappings:
+#        - name: "partOfReference"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "what the medication is based on"
+#              type: "basedOn"
+
+#  - name: "derivedFrom"
+#    with:
+#      fhir: "$resource.basedOn.reference"
+#      openehr: "$reference"
+#    reference:
+#      mappings:
+#        - name: "partOfReference"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "what the medication is derived from"
+#              type: "derivedFrom"
+

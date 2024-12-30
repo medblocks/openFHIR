@@ -51,6 +51,11 @@ public class OpenEhrToFhirHelper {
     private Condition condition;
 
     /**
+     * openEHR Condition
+     */
+    private Condition openehrCondition;
+
+    /**
      * if this specific mapping is followed my another mapping (true if its a followedBy or if it's a slot)
      */
     private boolean isFollowedBy;

@@ -13,10 +13,23 @@ import com.medblocks.openfhir.kds.ehrbase.EhrBaseTestClient;
 import com.medblocks.openfhir.tofhir.IntermediateCacheProcessing;
 import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
-import com.medblocks.openfhir.util.*;
+import com.medblocks.openfhir.util.FhirConnectModelMerger;
+import com.medblocks.openfhir.util.FhirInstanceCreator;
+import com.medblocks.openfhir.util.FhirInstanceCreatorUtility;
+import com.medblocks.openfhir.util.FhirInstancePopulator;
+import com.medblocks.openfhir.util.OpenEhrCachedUtils;
+import com.medblocks.openfhir.util.OpenEhrConditionEvaluator;
+import com.medblocks.openfhir.util.OpenEhrPopulator;
+import com.medblocks.openfhir.util.OpenFhirMapperUtils;
+import com.medblocks.openfhir.util.OpenFhirStringUtils;
+import com.medblocks.openfhir.util.OpenFhirTestUtility;
 import com.nedap.archie.rm.composition.Composition;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
@@ -32,13 +45,7 @@ import org.junit.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 import org.springframework.http.ResponseEntity;
-import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Map;
 
 @Slf4j
 public abstract class KdsBidirectionalTest {
@@ -80,29 +87,31 @@ public abstract class KdsBidirectionalTest {
             }
         });
 
-        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(openFhirStringUtils);
+        final FhirInstanceCreatorUtility fhirInstanceCreatorUtility = new FhirInstanceCreatorUtility(
+                openFhirStringUtils);
         openEhrToFhir = new OpenEhrToFhir(new FlatJsonMarshaller(),
-                repo,
-                new OpenEhrCachedUtils(null),
-                new Gson(),
-                openFhirStringUtils,
-                new OpenEhrRmWorker(openFhirStringUtils),
-                new OpenFhirMapperUtils(),
-                new FhirInstancePopulator(),
-                new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
-                fhirInstanceCreatorUtility,
-                fhirPath,
-                new IntermediateCacheProcessing(openFhirStringUtils));
+                                          repo,
+                                          new OpenEhrCachedUtils(null),
+                                          new Gson(),
+                                          openFhirStringUtils,
+                                          new OpenEhrRmWorker(openFhirStringUtils),
+                                          new OpenFhirMapperUtils(),
+                                          new FhirInstancePopulator(),
+                                          new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
+                                          fhirInstanceCreatorUtility,
+                                          fhirPath,
+                                          new IntermediateCacheProcessing(openFhirStringUtils),
+                                          new OpenEhrConditionEvaluator(openFhirStringUtils));
         fhirToOpenEhr = new FhirToOpenEhr(fhirPath,
-                new OpenFhirStringUtils(),
-                new FlatJsonUnmarshaller(),
-                new Gson(),
-                new OpenEhrRmWorker(openFhirStringUtils),
-                openFhirStringUtils,
-                repo,
-                new OpenEhrCachedUtils(null),
-                new OpenFhirMapperUtils(),
-                new OpenEhrPopulator(new OpenFhirMapperUtils()));
+                                          new OpenFhirStringUtils(),
+                                          new FlatJsonUnmarshaller(),
+                                          new Gson(),
+                                          new OpenEhrRmWorker(openFhirStringUtils),
+                                          openFhirStringUtils,
+                                          repo,
+                                          new OpenEhrCachedUtils(null),
+                                          new OpenFhirMapperUtils(),
+                                          new OpenEhrPopulator(new OpenFhirMapperUtils()));
 
         prepareState();
     }
@@ -111,14 +120,15 @@ public abstract class KdsBidirectionalTest {
     public void toOpenEhrTest() {
         final JsonObject flatPaths = toOpenEhr();
 
-        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(new Gson().toJson(flatPaths), webTemplate);
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(new Gson().toJson(flatPaths),
+                                                                                     webTemplate);
         fhirToOpenEhr.enrichComposition(compositionFromFlat);
 
 
         if (testAgainstEhrBase()) {
             final ResponseEntity<String> result = new EhrBaseTestClient(EHRBASE_HOST,
-                    EHRBASE_BASIC_USERNAME,
-                    EHRBASE_BASIC_PASSWORD)
+                                                                        EHRBASE_BASIC_USERNAME,
+                                                                        EHRBASE_BASIC_PASSWORD)
                     .createComposition(compositionFromFlat, operationaltemplateSerialized);
             final int resultCode = result.getStatusCode().value();
             if (resultCode != 204) {

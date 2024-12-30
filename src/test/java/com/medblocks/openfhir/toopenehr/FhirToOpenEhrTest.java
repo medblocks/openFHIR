@@ -140,6 +140,20 @@ public class FhirToOpenEhrTest {
         Assert.assertEquals("kds_prozedur/procedure[n]/seitenlokalisation[n]", s1);
     }
 
+    @Test
+    public void childHasParentRecurring() {
+        final String child = "medikamentenliste/medikationseintrag[n]/verabreichungsweg[n]";
+        final String parent = "medikamentenliste/medikationseintrag:0/dosierung2[n]";
+        Assert.assertTrue(openFhirStringUtils.childHasParentRecurring(child, parent));
+
+        final String child2 = "medikamentenliste/medikationseintrag[n]/dosierung2[n]";
+        final String parent2 = "medikamentenliste/medikationseintrag:0/dosierung2[n]";
+        Assert.assertTrue(openFhirStringUtils.childHasParentRecurring(child2, parent2));
+
+        final String child1 = "medikamentenliste/medikatiNOonseintrag[n]/verabreichungsweg[n]";
+        final String parent1 = "medikamentenliste/medikationseintrag:0/dosierung2[n]";
+        Assert.assertFalse(openFhirStringUtils.childHasParentRecurring(child1, parent1));
+    }
 
     @Test
     public void replaceMultipleOccurrenceSyntax_singles() {
