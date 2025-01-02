@@ -23,7 +23,6 @@ mappings:
       uniqueValueFHIR: "[route, timing.event]" # if route value is different per dosage slice make a new event
       uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
 
-
   - name: "healthcareFacility"
     with:
       fhir: "$resource.informationSource.as(Organization)"

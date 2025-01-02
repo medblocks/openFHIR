@@ -8,22 +8,15 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.address.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Address
 
 mappings:
   - name: "streetaddress"
     with:
       fhir: "$fhirRoot.address"
       openehr: "$archetype"
-    manual:
-      - name: "type"
-        fhir:
-          path: "$fhirRoot.type"
-          value: "both"
-    fhirCondition:
-      targetRoot: "$fhirRoot.address"
-      targetAttribute: "type"
-      operator: "one of"
-      criteria: "[both]"
+    type: "NONE"
     followedBy:
       mappings:
         - name: "city"
@@ -50,6 +43,42 @@ mappings:
           with:
             fhir: "type"
             openehr: "/items[at0010]"
+          manual:
+            - name: "physical"
+              openehr:
+                - path: "terminology_id/value"
+                  value: "local"
+                - path: "code_string"
+                  value: "at0011"
+                - path: "../value"
+                  value: "Physical"
+              fhir:
+                - path: "code"
+                  value: "physical"
+
+            - name: "postal"
+              openehr:
+                - path: "terminology_id/value"
+                  value: "local"
+                - path: "code_string"
+                  value: "at0012"
+                - path: "../value"
+                  value: "Postal"
+              fhir:
+                - path: "code"
+                  value: "postal"
+
+            - name: "both"
+              openehr:
+                - path: "terminology_id/value"
+                  value: "local"
+                - path: "code_string"
+                  value: "at0013"
+                - path: "../value"
+                  value: "Both"
+              fhir:
+                - path: "code"
+                  value: "both"
 
         - name: "line"
           with:

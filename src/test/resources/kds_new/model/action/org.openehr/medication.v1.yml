@@ -8,12 +8,14 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ACTION.medication.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/MedicationAdministration
 
 mappings:
   - name: "hierarchyMappings" # is defined by the
     with:
       fhir: "$resource.dosage"
-      openEHR: "$archetype
+      openEHR: "$archetype"
     #    type: "HIERARCHY"
     hierarchy:
       fhirCreate: "resource"
@@ -23,7 +25,7 @@ mappings:
 
   - name: "healthcareFacility"
     with:
-      fhir: "$resource.requester.as(Organization)"
+      fhir: "$resource.request.requester.as(Organization)"
       openehr: "$composition/context/health_care_facility"
 
   - name: "contextStart"

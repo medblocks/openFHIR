@@ -125,7 +125,7 @@ mappings:
                       - path: "url"
                         value: "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen"
 
-        - name: "bodySiteCluster" # is here added too, in case the icd-10 is present in fhir so we map the localization
+        - name: "bodySiteClusterIcd10" # is here added too, in case the icd-10 is present in fhir so we map the localization
           with:
             fhir: "extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"

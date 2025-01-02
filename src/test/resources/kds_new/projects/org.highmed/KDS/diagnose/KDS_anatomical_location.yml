@@ -10,7 +10,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 
 mappings:
   - name: "seitenlokalisation"
+    extension: "add"
     with:
       fhir: "$fhirRoot.valueCoding"
       openehr: "/items[at0002]"
-

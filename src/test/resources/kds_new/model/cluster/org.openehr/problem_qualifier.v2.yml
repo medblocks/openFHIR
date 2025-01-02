@@ -105,11 +105,11 @@ mappings:
 
   - name: "statusEnteredInError"
     with:
-      fhir: "$resource.verificationStatus"
+      fhir: "$resource.verificationStatus.coding"
       openehr: "$archetype/items[at0004]"
     fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "verificationStatus.coding.code"
+      targetRoot: "$resource.verificationStatus.coding.code"
+      targetAttribute: "value"
       operator: "one of"
       criteria: "[entered-in-error]"
     manual:

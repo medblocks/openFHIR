@@ -9,7 +9,7 @@ spec:
   openEhrConfig:
     archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
   fhirConfig:
-    structureDefinition: Condition
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Condition
 
 mappings:
 

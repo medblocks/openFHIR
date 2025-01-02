@@ -31,7 +31,7 @@ mappings:
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     manual:
       - name: "maindiagnose"
-        openEHR:
+        openehr:
           - path: "terminology_id/value"
             value: "local"
           - path: "code_string"
@@ -56,7 +56,7 @@ mappings:
       criteria: "at0066"
     manual:
       - name: "maindiagnose"
-        openEHR:
+        openehr:
           - path: "terminology_id/value"
             value: "local"
           - path: "code_string"
