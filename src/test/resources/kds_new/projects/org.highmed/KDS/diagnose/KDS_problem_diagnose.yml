@@ -38,12 +38,6 @@ mappings:
               meaning: "the case this composition relates to"
               type: "case"
 
-  - name: "status"
-    extension: "add"
-    with:
-      fhir: "$resource.verificationStatus"
-      openehr: "$composition/context/other_context[at0001]/items[at0005]"
-
   - name: "date"
     extension: "add"
     with:
@@ -108,28 +102,88 @@ mappings:
                     fhir:
                       - path: "url"
                         value: "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit"
+
         - name: "multipleCoding"
           with:
             fhir: "extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]"
           slotArchetype: "CLUSTER.multiple_coding_icd10gm.v1"
+          fhirCondition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen]"
+          followedBy:
+            mappings:
+              - name: "extension"
+                with:
+                  fhir: "$fhirRoot" #since we want to access extension here
+                  openehr: "$reference"
+                manual:
+                  - name: "extensionUrl"
+                    fhir:
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen"
 
         - name: "bodySiteCluster" # is here added too, in case the icd-10 is present in fhir so we map the localization
           with:
             fhir: "extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
           slotArchetype: "CLUSTER.anatomical_location.v1"
-
-  - name: "lebensphase"
-    extension: "append"
-    appendTo: "dateTime"
+          fhirCondition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/seitenlokalisation]"
+          followedBy:
+            mappings:
+              - name: "extension"
+                with:
+                  fhir: "$fhirRoot" #since we want to access extension here
+                  openehr: "$reference"
+                manual:
+                  - name: "extensionUrl"
+                    fhir:
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/seitenlokalisation"
+  - name: "dateTime"
+    extension: "overwrite"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype"
+    type: "NONE"
     followedBy:
       mappings:
-        - name: "lebensphaseCluster"
+        - name: "period"
           with:
-            fhir: "$fhirRoot"
-            openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
-          slotArchetype: "CLUSTER.lebensphase.v0"
+            fhir: "onset.as(Period)"
+            openehr: "/data[at0001]"
+            type: "NONE"
+          openehrCondition:
+            targetRoot: "$archetype/data[at0001]"
+            targetAttribute: "/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
+            operator: "not empty"
+          followedBy:
+            mappings:
+              - name: "start"
+                with:
+                  fhir: "start"
+                  openehr: "/items[at0077]"
+
+              - name: "lebensphaseCluster"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
+                slotArchetype: "CLUSTER.lebensphase.v0"
+
+        - name: "dateTime"
+          with:
+            fhir: "onset.as(DateTime)"
+            openehr: "/data[at0001]/items[at0077]"
+          openehrCondition:
+            targetRoot: "$archetype/data[at0001]"
+            targetAttribute: "/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
+            operator: "empty"
 
   - name: "problemQualifier"
     extension: "add"

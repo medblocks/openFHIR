@@ -14,12 +14,53 @@ spec:
 mappings:
   - name: "mehrfachcodierung"
     with:
-      fhir: "$fhirRoot.value.as(CodeableConcept).coding"
-      openehr: "$archetype/items[at0001]"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttribute: "url"
-      operator: "one of"
-      criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen]"
+      fhir: "$fhirRoot.valueCoding"
+      openehr: "$archetype/items[at0001]/value/defining_code"
+    manual:
+      - name: "manifestation"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0003"
+          - path: "../value"
+            value: "*"
+        fhir:
+          - path: "code"
+            value: "*"
+          - path: "display"
+            value: "*"
+          - path: "system"
+            value: "http://fhir.de/ValueSet/icd-10-gm-mehrfachcodierungs-kennzeichen"
 
-            
+      - name: "ätiology"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0002"
+          - path: "../value"
+            value: "†"
+        fhir:
+          - path: "code"
+            value: "†"
+          - path: "display"
+            value: "†"
+          - path: "system"
+            value: "http://fhir.de/ValueSet/icd-10-gm-mehrfachcodierungs-kennzeichen"
+
+      - name: "additionalInformation"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0004"
+          - path: "../value"
+            value: "!"
+        fhir:
+          - path: "code"
+            value: "!"
+          - path: "display"
+            value: "!"
+          - path: "system"
+            value: "http://fhir.de/ValueSet/icd-10-gm-mehrfachcodierungs-kennzeichen"

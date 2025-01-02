@@ -17,7 +17,7 @@ mappings:
       fhir: "$fhirRoot.value"
       openehr: "$archetype/items[at0001]"
     fhirCondition:
-      targetRoot: "$fhirRoot.type"
+      targetRoot: "$fhirRoot.type.coding"
       targetAttribute: "code"
       operator: "one of"
       criteria: "[VN]" # visit number

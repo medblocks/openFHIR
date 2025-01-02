@@ -8,7 +8,9 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.anatomical_location.v1
-    
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/CodeableConcept
+
 mappings:
   - name: "bodySiteText"
     with:

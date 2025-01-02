@@ -9,6 +9,6 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.lebensphase.v0
   fhirConfig:
-    structureDefinition: http://hl7.org/fhir/StructureDefinition/Condition
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/CodeableConcept
 
 mappings:

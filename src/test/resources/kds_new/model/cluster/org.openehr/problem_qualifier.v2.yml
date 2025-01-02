@@ -12,6 +12,116 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Condition
 
 mappings:
-    # highly specific therefore only profile to template exists
 
+  - name: "statusCoded"
+    with:
+      fhir: "$resource.verificationStatus.coding"
+      openehr: "$archetype/items[at0004]/value/defining_code"
+    fhirCondition:
+      targetRoot: "$resource.verificationStatus.coding.code"
+      targetAttribute: "value"
+      operator: "not of"
+      criteria: "[entered-in-error]"
+    manual:
+      - name: "provisional"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0017"
+          - path: "../value"
+            value: "Working"
+        fhir:
+          - path: "code"
+            value: "provisional"
+          - path: "display"
+            value: "Provisional"
+          - path: "system"
+            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+
+      - name: "differential"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0017"
+          - path: "../value"
+            value: "Working"
+        fhir:
+          - path: "code"
+            value: "differential"
+          - path: "display"
+            value: "Differential"
+          - path: "system"
+            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+
+      - name: "preliminary"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0016"
+          - path: "../value"
+            value: "Preliminary"
+        fhir:
+          - path: "code"
+            value: "unconfirmed"
+          - path: "display"
+            value: "Unconfirmed"
+          - path: "system"
+            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+
+      - name: "established"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0018"
+          - path: "../value"
+            value: "Established"
+        fhir:
+          - path: "code"
+            value: "confirmed"
+          - path: "display"
+            value: "Confirmed"
+          - path: "system"
+            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+
+      - name: "refuted"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0088"
+          - path: "../value"
+            value: "Refuted"
+        fhir:
+          - path: "code"
+            value: "refuted"
+          - path: "display"
+            value: "Refuted"
+          - path: "system"
+            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+
+  - name: "statusEnteredInError"
+    with:
+      fhir: "$resource.verificationStatus"
+      openehr: "$archetype/items[at0004]"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttribute: "verificationStatus.coding.code"
+      operator: "one of"
+      criteria: "[entered-in-error]"
+    manual:
+      - name: "entered-in-error"
+        openehr:
+          - path: "/value"
+            value: "entered-in-error"
+        fhir:
+          - path: "code"
+            value: "entered-in-error"
+          - path: "display"
+            value: "Entered in Error"
+          - path: "system"
+            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
 
