@@ -187,40 +187,57 @@ mappings:
                      - path: "url"
                        value: "http://fhir.de/StructureDefinition/Entlassungsgrund"
 
-  - name: "problemDiagnose"
+
+# This way we maintain the entire condition + we set only the coding,
+  #TODO quite sure needs to be reworked ! duplication prevention etc. !
+  - name: "problemDiagnose" # return entire condition not just this three fields, that why we sloted no cluster here.
     extension: "add"
     with:
       fhir: "$resource.diagnosis"
       openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
-    slotArchetype: "EVALUATION.problem_diagnosis.v1"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "referencedDiagnose" # condition reference
+          with:
+            fhir: "condition.reference"
+            openehr: "$reference"
+          reference:
+            resourceType: "Condition"
+            mappings:
+              - name: "referencedDiagnose"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "/data[at0001]/links"
+                  type: "REFERENCED_MAPPING"
+                  openehrLink:
+                    meaning: "link to the diagnosis composition"
+                    type: "diagnose"
+                followedBy:
+                  mappings:
+                    - name: "diagnoseName" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
+                      with:
+                        unidirectional: "fhir->openehr" # since the condition is mapped from the reference.
+                        fhir: "condition.code"
+                        openehr: "/data[at0001]/items[at0002]"
 
+                    - name: "diagnoseTyp"
+                      with:
+                        fhir: "^^.use.coding.code"
+                        openehr: "/data[at0001]/items[at0009]"
+                      fhirCondition:
+                        targetRoot: "use.coding.code"
+                        targetAttribute: "value"
+                        operator: "one of"
+                        criteria: "[referral-diagnosis, treatment-diagnosis]"
 
+                    - name: "diagnoseSubtyp"
+                      with:
+                        fhir: "^^.use.coding.code"
+                        openehr: "/data[at0001]/items[at0079]"
+                      fhirCondition:
+                        targetRoot: "use.coding.code"
+                        targetAttribute: "value"
+                        operator: "one of"
+                        criteria: "[surgery-diagnosis, department-main-diagnosis, cause-of-death, infection-control-diagnosis, AD, DD]"
 
-#      - name: "problemDiagnoseUse"
-#          with:
-#            fhir: "use"
-#            openehr: "$archetype"
-#          followedBy:
-#            mappings:
-#              #todo: these have to be here, they can not be in the slot archetype because they're mapping to the DiagnosisComponent and not on Condition (resolved reference)
-#              - name: "diagnoseTyp"
-#                with:
-#                  fhir: "coding"
-#                  openehr: "$archetype.problem_diagnose.diagnosetyp"
-#                  type: "CODING"
-#                fhirCondition:
-#                  targetRoot: "coding"
-#                  targetAttribute: "system"
-#                  operator: "one of"
-#                  criteria: "[http://fhir.de/CodeSystem/dki-diagnosetyp]"
-#
-#              - name: "diagnoseSubtyp"
-#                with:
-#                  fhir: "coding"
-#                  openehr: "$archetype.problem_diagnose.diagnosesubtyp"
-#                  type: "CODING"
-#                fhirCondition:
-#                  targetRoot: "coding"
-#                  targetAttribute: "system"
-#                  operator: "one of"
-#                  criteria: "[http://fhir.de/CodeSystem/dki-diagnosesubtyp]"
