@@ -13,7 +13,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$fhirRoot"
-      openehr: "laterality"
+      openehr: "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002, 'Laterality']"
       type: "CODEABLECONCEPT"
     fhirCondition:
       targetRoot: "$fhirRoot"

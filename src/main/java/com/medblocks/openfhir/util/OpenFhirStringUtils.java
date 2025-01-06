@@ -102,8 +102,8 @@ public class OpenFhirStringUtils {
             return null;
         }
         return openEhr
-                .replaceAll("(?<!\\\\)\\.",
-                            "/") // This is the negative lookbehind. It ensures that the dot (.) is not preceded by two backslashes (\\). The backslashes are escaped, so \\\\ means "two literal backslashes."
+//                .replaceAll("(?<!\\\\)\\.",
+//                            "/") // This is the negative lookbehind. It ensures that the dot (.) is not preceded by two backslashes (\\). The backslashes are escaped, so \\\\ means "two literal backslashes."
                 .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, openEhrArchetypeId);
     }
 

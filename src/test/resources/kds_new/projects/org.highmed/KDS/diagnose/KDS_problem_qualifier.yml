@@ -9,13 +9,11 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   extends: CLUSTER.problem_qualifier.v2
 
 mappings:
-
-
   - name: "clinicalStatus"
     extension: "add"
     with:
       fhir: "$fhirRoot.clinicalStatus"
-      openehr: "klinischer_status"
+      openehr: "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2, 'Klinischer Status']/items[at0003, 'Klinischer Status']"
       type: "CODEABLECONCEPT"
 
 #  - name: "referenzPrimaerdiagnose"

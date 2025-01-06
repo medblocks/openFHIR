@@ -33,6 +33,7 @@ public class OpenEhrRmWorker {
      */
     public void fixFlatWithOccurrences(final List<FhirToOpenEhrHelper> helpers, final WebTemplate webTemplate) {
         for (final FhirToOpenEhrHelper fhirToOpenEhrHelper : helpers) {
+
             final String openEhrKey = fhirToOpenEhrHelper.getOpenEhrPath();
 
             final Set<String> forcedTypes = openFhirStringUtils.getPossibleRmTypeValue(fhirToOpenEhrHelper.getOpenEhrType());
@@ -42,23 +43,23 @@ public class OpenEhrRmWorker {
             final String flat = hasSuffix ? openEhrKey.substring(0, openEhrKey.indexOf("|")) : openEhrKey;
             final String[] split = flat.substring(flat.indexOf("/") + 1).split("/"); // we want to remove the first path, as it's the template itself
             final WebTemplateNode tree = webTemplate.getTree();
-
             final StringJoiner constructing = new StringJoiner("/");
+            final String pathToFindSuffix="/";
 
             // walk through all web template nodes and enrich them with types and occurrence indexes
-            walkThroughNodes(tree.getChildren(), String.join("/", split), constructing, forcedTypes, fhirToOpenEhrHelper);
+            walkThroughNodes(tree.getChildren(), String.join("/", split), constructing, forcedTypes, fhirToOpenEhrHelper,pathToFindSuffix);
 
 
             fhirToOpenEhrHelper.setOpenEhrPath(tree.getId() + "/" + fhirToOpenEhrHelper.getOpenEhrPath() + (hasSuffix ? suffix : ""));
 
             // we compare so that we can see if if was found within the template; if not, we don't want for it to end up in the flat json
             final String initialOpenEhrPathWithProperTreeId = tree.getId() + "/" + flat.substring(flat.indexOf("/") + 1);
-            if (fhirToOpenEhrHelper.getOpenEhrPath().length() < initialOpenEhrPathWithProperTreeId.length()) {
-                // means it didn't find it fully.. so it probably doesn't exist
-                if (!FhirConnectConst.DV_MULTIMEDIA.equals(fhirToOpenEhrHelper.getOpenEhrType())) { // multimedia and its 'content' is a tad bit special...
-                    fhirToOpenEhrHelper.setOpenEhrType(OPENEHR_TYPE_NONE);
-                }
-            }
+//            if (fhirToOpenEhrHelper.getOpenEhrPath().length() < initialOpenEhrPathWithProperTreeId.length()) {
+//                // means it didn't find it fully.. so it probably doesn't exist
+//                if (!FhirConnectConst.DV_MULTIMEDIA.equals(fhirToOpenEhrHelper.getOpenEhrType())) { // multimedia and its 'content' is a tad bit special...
+//                    fhirToOpenEhrHelper.setOpenEhrType(OPENEHR_TYPE_NONE);
+//                }
+//            }
 
             if (fhirToOpenEhrHelper.getFhirToOpenEhrHelpers() != null) {
                 fixFlatWithOccurrences(fhirToOpenEhrHelper.getFhirToOpenEhrHelpers(), webTemplate);
@@ -75,7 +76,7 @@ public class OpenEhrRmWorker {
      * @param constructing     string being constructed from the path elements, however here already including recurring indexes notation, i.e. medikationseintrag[n]
      * @param forcedTypes      if openEHR type is being "forced" by a fhir connect mapping definition, this is the one we'll try to find within the template
      */
-    public void walkThroughNodes(final List<WebTemplateNode> webTemplateNodes, final String path, final StringJoiner constructing, final Set<String> forcedTypes, final FhirToOpenEhrHelper fhirToOpenEhrHelper) {
+    public void walkThroughNodes(final List<WebTemplateNode> webTemplateNodes, final String path, final StringJoiner constructing, final Set<String> forcedTypes, final FhirToOpenEhrHelper fhirToOpenEhrHelper, String pathToFindSuffix) {
         if (StringUtils.isBlank(path)) {
             // everything has been resolved
             fhirToOpenEhrHelper.setOpenEhrPath(constructing.toString());
@@ -83,24 +84,24 @@ public class OpenEhrRmWorker {
         }
         final List<String> remainingPaths;
         final String[] splitOpenEhrPath = path.split("/");
-        final String pathToFind = splitOpenEhrPath[0];
+        final String pathToFind = pathToFindSuffix + splitOpenEhrPath[0].replace(", "," and name/value=");
         if (pathToFind.startsWith("_")) {
             // we don't bother with this, can't be multiple occurrences
             constructing.add(pathToFind);
             remainingPaths = Arrays.asList(splitOpenEhrPath).subList(1, splitOpenEhrPath.length);
             walkThroughNodes(webTemplateNodes, String.join("/", remainingPaths),
-                    constructing, forcedTypes, fhirToOpenEhrHelper);
+                    constructing, forcedTypes, fhirToOpenEhrHelper, pathToFindSuffix);
             return;
         }
 
 
         final WebTemplateNode findingTheOne = webTemplateNodes.stream()
-                .filter(ch -> pathToFind.equals(ch.getId()))
+                .filter(ch -> pathToFind.equals(ch.getAqlPath()))
                 .findAny()
                 .orElse(null);
         if (findingTheOne == null) {
             for (WebTemplateNode itemTree : webTemplateNodes) {
-                walkThroughNodes(itemTree.getChildren(), path, constructing, forcedTypes, fhirToOpenEhrHelper);
+                walkThroughNodes(itemTree.getChildren(), path, constructing, forcedTypes, fhirToOpenEhrHelper,pathToFindSuffix);
             }
             fhirToOpenEhrHelper.setOpenEhrPath(constructing.toString());
             return;
@@ -108,15 +109,19 @@ public class OpenEhrRmWorker {
         remainingPaths = Arrays.asList(splitOpenEhrPath).subList(1, splitOpenEhrPath.length);
         if (findingTheOne.isMulti()) {
             // is multiple occurrences
-            constructing.add(pathToFind + RECURRING_SYNTAX);
+            if(!FhirConnectConst.OPENEHR_INVALID_IDENTIFIER.contains(findingTheOne.getId())) {
+                constructing.add(findingTheOne.getId() + RECURRING_SYNTAX);
+            }
             fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne));
         } else {
-            constructing.add(pathToFind);
+            if(!FhirConnectConst.OPENEHR_INVALID_IDENTIFIER.contains(findingTheOne.getId())) {
+                constructing.add(findingTheOne.getId());
+            }
             fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne));
         }
 
         walkThroughNodes(findingTheOne.getChildren(), String.join("/", remainingPaths),
-                constructing, forcedTypes, fhirToOpenEhrHelper);
+                constructing, forcedTypes, fhirToOpenEhrHelper, pathToFind+"/");
     }
 
     private String getCorrectOpenEhrType(final Set<String> forcedTypes,
