@@ -60,13 +60,6 @@ mappings:
               meaning: "the case this composition relates to"
               type: "case"
 
-  - name: "status" # needs to be corrected in the template
-    extension: "add"
-    with:
-      fhir: "$resource.status"
-      openehr: "$composition/context/other_context[at0001]/items[at0005]"
-
-
   - name: "status" #TODO @deprecated needs to go once mapping is updated
     extension: "overwrite"
     with:

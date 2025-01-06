@@ -103,25 +103,37 @@ mappings:
           - path: "system"
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
 
+
   - name: "statusEnteredInError"
     with:
       fhir: "$resource.verificationStatus.coding"
-      openehr: "$archetype/items[at0004]"
+      openehr: "$archetype"
+    terminate: "archetype" #either archetype or composition
     fhirCondition:
-      targetRoot: "$resource.verificationStatus.coding.code"
-      targetAttribute: "value"
+      targetRoot: "$resource.verificationStatus"
+      targetAttribute: "coding"
       operator: "one of"
       criteria: "[entered-in-error]"
-    manual:
-      - name: "entered-in-error"
-        openehr:
-          - path: "/value"
-            value: "entered-in-error"
-        fhir:
-          - path: "code"
-            value: "entered-in-error"
-          - path: "display"
-            value: "Entered in Error"
-          - path: "system"
-            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+
+#  - name: "statusEnteredInError"
+#    with:
+#      fhir: "$resource.verificationStatus.coding"
+#      openehr: "$archetype/items[at0004]"
+#    fhirCondition:
+#      targetRoot: "$resource.verificationStatus.coding.code"
+#      targetAttribute: "value"
+#      operator: "one of"
+#      criteria: "[entered-in-error]"
+#    manual:
+#      - name: "entered-in-error"
+#        openehr:
+#          - path: "/value"
+#            value: "entered-in-error"
+#        fhir:
+#          - path: "code"
+#            value: "entered-in-error"
+#          - path: "display"
+#            value: "Entered in Error"
+#          - path: "system"
+#            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
 

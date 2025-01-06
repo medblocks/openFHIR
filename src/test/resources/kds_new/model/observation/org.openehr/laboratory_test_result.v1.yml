@@ -56,11 +56,10 @@ mappings:
       openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0005]" # if there are several events add it to all of them
       # Backwards map all the values back, if they overlap ?!?!?!?
 
-
-  - name: "status" #deprecated needs to go once mapping is updated
+  - name: "status"
     with:
       fhir: "$resource"
-      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value/defining_code"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value/defining_code" #TODO GASPER: where is this being mapped to in openehr? I can't find this aql path Severin: checkout the archetype its not in the template yet
     manual:
       - name: "registered"
         fhir:
@@ -276,8 +275,6 @@ mappings:
           targetAttribute: "status"
           operator: "one of"
           criteria: "[unknown]"
-
-
 
   - name: "conclusion"
     with:

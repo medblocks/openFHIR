@@ -112,4 +112,85 @@ mappings:
     with:
       fhir: "$resource.status"
       openehr: "archetypePath/items[at0041]" #adequacy for testing
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "status"
+      operator: "not of"
+      criteria: "[entered-in-error]"
+    manual:
+      - name: "available"
+        fhir:
+          path: "status"
+          value: "available"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0062]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0062" # Zufriedenstellend
+          - path: "../value"
+            value: "Satisfactory "
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[available]"
 
+      - name: "unavailable"
+        fhir:
+          path: "status"
+          value: "unavailable"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0064]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0064"
+          - path: "../value"
+            value: "Unsatisfactory - not analysed"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[unavailable]"
+
+      - name: "unsatisfactory"
+        fhir:
+          path: "status"
+          value: "unsatisfactory"
+        openehrCondition:
+          targetRoot: "defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0064]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "at0064"
+          - path: "../value"
+            value: "Unsatisfactory - not analysed"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[unsatisfactory]"
+
+  - name: "status"
+    with:
+      fhir: "$resource.status"
+      openehr: "$archetype"
+    terminate: "archetype" #either archetype or composition
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[entered-in-error]"
