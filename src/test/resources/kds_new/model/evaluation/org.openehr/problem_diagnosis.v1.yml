@@ -58,7 +58,7 @@ mappings:
               - name: "problemDiagnoseNameCode"
                 with:
                   fhir: "code"
-                  openehr: "content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Diagnose']/data[at0001]/items[at0002 and name/value='Kodierte Diagnose']"
+                  openehr: "data[at0001]/items[at0002, 'Kodierte Diagnose']"
 #                  openehr: "kodierte_diagnose"
         - name: "problemDiagnoseText"
           with:
