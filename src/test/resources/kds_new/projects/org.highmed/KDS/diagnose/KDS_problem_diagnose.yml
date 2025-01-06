@@ -13,7 +13,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.encounter.as(Reference).identifier"
-      openehr: "$archetype.context.case_identification"
+      openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
     slotArchetype: "CLUSTER.case_identification.v0"
 
 #--------------------------------
@@ -44,14 +44,14 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.verificationStatus.text"
-      openehr: "$archetype.context.status"
+      openehr: "$archetype/context/other_context[at0001]/items[at0005]"
       type: "STRING"
 
   - name: "date"
     extension: "add"
     with:
       fhir: "$resource.extension.value.as(DateTimeType)"
-      openehr: "$archetype.diagnose.feststellungsdatum"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0003, 'Feststellungsdatum']"
       type: "DATETIME"
     fhirCondition:
       targetRoot: "$resource.extension"
@@ -63,7 +63,7 @@ mappings:
     extension: "overwrite"
     with:
       fhir: "$resource"
-      openehr: "$archetype.diagnose.anatomical_location"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
       unidirectional: "fhir->openehr" # only if importing, for fhir export openEHR wont check for icd-10 and will just use the archetypes where the icd-10 was mapped to.
     slotArchetype: "CLUSTER.anatomical_location.v1"
     fhirCondition:
@@ -116,27 +116,27 @@ mappings:
         - name: "start"
           with:
             fhir: "$fhirRoot.start"
-            openehr: "$archetype.diagnose.klinisch_relevanter_zeitraum_zeitpunkt_des_auftretens"
+            openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0077, 'Klinisch relevanter Zeitraum (Zeitpunkt des Auftretens)']"
             type: "DATETIME"
 
         - name: "lebensphaseCluster"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype.diagnose.lebensphase"
+            openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
           slotArchetype: "CLUSTER.lebensphase.v0"
 #
   - name: "problemQualifier"
     extension: "add"
     with:
       fhir: "$resource"
-      openehr: "$archetype.diagnose.klinischer_status"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2, 'Klinischer Status']"
     slotArchetype: "CLUSTER.problem_qualifier.v2"
 
   - name: "primärdiagnose"
     extension: "add"
     with:
       fhir: "$resource.extension"
-      openehr: "$archetype.diagnose"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']"
       type: "NONE"
     fhirCondition:
       targetRoot: "$resource.extension"
