@@ -34,5 +34,5 @@ public class FhirConnectConst {
     public static final String UNIDIRECTIONAL_TOOPENEHR = "fhir->openehr";
     public static final String CONDITION_OPERATOR_ONE_OF = "one of";
     public static final String CONDITION_OPERATOR_EMPTY = "empty";
-    public static final List<String> OPENEHR_INVALID_IDENTIFIER = Arrays.asList("structure", "tree", "Value3");
+    public static final List<String> OPENEHR_INVALID_IDENTIFIER = Arrays.asList("structure", "tree", "event_series", "jedes_ereignis");
 }
