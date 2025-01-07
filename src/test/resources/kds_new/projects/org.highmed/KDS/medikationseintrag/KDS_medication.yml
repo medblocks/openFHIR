@@ -20,6 +20,17 @@ mappings:
       targetAttribute: "url"
       operator: "one of"
       criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp]"
+    followedBy:
+      mappings:
+        - name: "extension"
+          with:
+            fhir: "^" #since we want to access extension here
+            openehr: "$reference"
+          manual:
+            - name: "extensionUrl"
+              fhir:
+                - path: "url"
+                  value: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp"
 
   - name: "wirkstoffrelation"
     extension: "append"
@@ -34,6 +45,16 @@ mappings:
       criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstoffrelation]"
     followedBy:
       mappings:
+        - name: "extension"
+          with:
+            fhir: "$fhirRoot" #since we want to access extension here
+            openehr: "$reference"
+          manual:
+            - name: "extensionUrl"
+              fhir:
+                - path: "url"
+                  value: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstoffrelation"
+
         - name: "ingriedientsReference"
           with:
             fhir: "extension"
@@ -57,6 +78,18 @@ mappings:
                         fhir: "$fhirRoot"
                         openehr: "$openehrRoot/items[openEHR-EHR-CLUSTER.medication.v2]"
                       slotArchetype: "CLUSTER.medication.v2.medication-to-medication"
+                  followedBy:
+                    mappings:
+                      - name: "extension"
+                        with:
+                          fhir: "$fhirRoot" #since we want to access extension here
+                          openehr: "$reference"
+                        manual:
+                          - name: "extensionUrl"
+                            fhir:
+                              - path: "url"
+                                value: "ingredientReference"
+
               - name: "substanceRelation"
                 with:
                   fhir: "extension.reference.as(Substance)"
@@ -79,3 +112,14 @@ mappings:
             targetAttribute: "url"
             operator: "one of"
             criteria: "[ingredientUri]"
+          followedBy:
+            mappings:
+              - name: "extension"
+                with:
+                  fhir: "^^" #since we want to access extension here
+                  openehr: "$reference"
+                manual:
+                  - name: "extensionUrl"
+                    fhir:
+                      - path: "url"
+                        value: "ingredientReference"
