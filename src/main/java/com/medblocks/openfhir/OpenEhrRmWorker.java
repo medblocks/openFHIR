@@ -54,12 +54,12 @@ public class OpenEhrRmWorker {
 
             // we compare so that we can see if if was found within the template; if not, we don't want for it to end up in the flat json
             final String initialOpenEhrPathWithProperTreeId = tree.getId() + "/" + flat.substring(flat.indexOf("/") + 1);
-//            if (fhirToOpenEhrHelper.getOpenEhrPath().length() < initialOpenEhrPathWithProperTreeId.length()) {
-//                // means it didn't find it fully.. so it probably doesn't exist
-//                if (!FhirConnectConst.DV_MULTIMEDIA.equals(fhirToOpenEhrHelper.getOpenEhrType())) { // multimedia and its 'content' is a tad bit special...
-//                    fhirToOpenEhrHelper.setOpenEhrType(OPENEHR_TYPE_NONE);
-//                }
-//            }
+            if (fhirToOpenEhrHelper.getOpenEhrPath().endsWith("/")) {
+                // means it didn't find it fully.. so it probably doesn't exist
+                if (!FhirConnectConst.DV_MULTIMEDIA.equals(fhirToOpenEhrHelper.getOpenEhrType())) { // multimedia and its 'content' is a tad bit special...
+                    fhirToOpenEhrHelper.setOpenEhrType(OPENEHR_TYPE_NONE);
+                }
+            }
 
             if (fhirToOpenEhrHelper.getFhirToOpenEhrHelpers() != null) {
                 fixFlatWithOccurrences(fhirToOpenEhrHelper.getFhirToOpenEhrHelpers(), webTemplate);
@@ -84,7 +84,7 @@ public class OpenEhrRmWorker {
         }
         final List<String> remainingPaths;
         final String[] splitOpenEhrPath = path.split("/");
-        final String pathToFind = pathToFindSuffix + splitOpenEhrPath[0].replace(", "," and name/value=");
+        final String pathToFind = pathToFindSuffix + splitOpenEhrPath[0].replace(", "," and name/value=").replace(","," and name/value=");
         if (pathToFind.startsWith("_")) {
             // we don't bother with this, can't be multiple occurrences
             constructing.add(pathToFind);
@@ -93,12 +93,18 @@ public class OpenEhrRmWorker {
                     constructing, forcedTypes, fhirToOpenEhrHelper, pathToFindSuffix);
             return;
         }
-
-
-        final WebTemplateNode findingTheOne = webTemplateNodes.stream()
-                .filter(ch -> pathToFind.equals(ch.getAqlPath()))
-                .findAny()
-                .orElse(null);
+        final WebTemplateNode findingTheOne;
+        if(pathToFind.contains("_value")){
+            findingTheOne = webTemplateNodes.stream()
+                    .filter(ch -> path.equals(ch.getId()))
+                    .findAny()
+                    .orElse(null);
+        }else{
+            findingTheOne = webTemplateNodes.stream()
+                    .filter(ch -> pathToFind.equals(ch.getAqlPath()))
+                    .findAny()
+                    .orElse(null);
+        }
         if (findingTheOne == null) {
             for (WebTemplateNode itemTree : webTemplateNodes) {
                 walkThroughNodes(itemTree.getChildren(), path, constructing, forcedTypes, fhirToOpenEhrHelper,pathToFindSuffix);
