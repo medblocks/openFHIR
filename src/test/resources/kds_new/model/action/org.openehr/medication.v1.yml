@@ -52,83 +52,85 @@ mappings:
     with:
       fhir: "$resource.category"
       openehr: "$archetype/context/setting"
-    manual: #TODO replace with FHIR concept maps
+    manual:
       - name: "outpatient"
-        openEHR:
-          type: "DV_CODED_TEXT"
-          value:
-            term_mapping: "$resource.category"
-            code_string: "225"
-            terminology_id: "local"
-            value: "home"
-          fhirCondition:
-            targetRoot: "$resource.category"
-            targetAttribute: "code"
-            operator: "not of"
-            criteria: "[outpatient]"
         fhir:
-          path: "$resource.category"
-          value:
-            code: "outpatient"
-            system: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
-            display: "Outpatient"
-          fhirCondition:
-            targetRoot: "/setting"
-            targetAttribute: "/defining_code/code_string"
-            operator: "one of"
-            criteria: "[225]"
+          - path: "code"
+            value: "outpatient"
+          - path: "system"
+            value: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
+          - path: "display"
+            value: "Outpatient"
+        openehrCondition:
+          targetRoot: "/defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[225]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "225"
+          - path: "../value"
+            value: "Outpatient"
+        fhirCondition:
+          targetRoot: "$resource.category"
+          targetAttribute: "code"
+          operator: "one of"
+          criteria: "[outpatient]"
 
       - name: "inpatient"
-        openEHR:
-          path: "/setting" # the terminology should be set automatically since its local ?!
-          type: "DV_CODED_TEXT"
-          value:
-            term_mapping: "$resource.category"
-            code_string: "228"
-            terminology_id: "local"
-            value: "primary medical care"
-          fhirCondition:
-            targetRoot: "$resource.category"
-            targetAttribute: "code"
-            operator: "one of"
-            criteria: "[inpatient]"
         fhir:
-          path: "$resource.category"
-          value:
-            code: "inpatient"
-            system: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
-            display: "Inpatient"
-          openehrCondition:
-            targetRoot: "/setting"
-            targetAttribute: "/defining_code/code_string"
-            operator: "one of"
-            criteria: "[228]"
+          - path: "code"
+            value: "inpatient"
+          - path: "system"
+            value: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
+          - path: "display"
+            value: "Inpatient"
+        openehrCondition:
+          targetRoot: "/defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[228]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "228"
+          - path: "../value"
+            value: "Inpatient"
+        fhirCondition:
+          targetRoot: "$resource.category"
+          targetAttribute: "code"
+          operator: "one of"
+          criteria: "[inpatient]"
 
       - name: "community"
-        openEHR:
-          path: "/setting" # the terminology should be set automatically since its local ?!
-          type: "DV_CODED_TEXT"
-          value:
-            term_mapping: "$resource.category"
-            code_string: "238"
-            terminology_id: "local"
-            value: "other care"
-          fhirCondition:
-            targetRoot: "$resource.category"
-            targetAttribute: "code"
-            operator: "not of"
-            criteria: "[outpatient]"
         fhir:
-          path: "$resource.category"
-          value:
-            code: "community"
-            system: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
-            display: "Community"
-          openehrCondition:
-            targetRoot: "/setting"
-            targetAttribute: "/defining_code/code_string"
-            operator: "one of"
-            criteria: "[238]"
+          - path: "code"
+            value: "community"
+          - path: "system"
+            value: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
+          - path: "display"
+            value: "Community"
+        openehrCondition:
+          targetRoot: "/defining_code"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[238]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "local"
+          - path: "code_string"
+            value: "238"
+          - path: "../value"
+            value: "Community"
+        fhirCondition:
+          targetRoot: "$resource.category"
+          targetAttribute: "code"
+          operator: "one of"
+          criteria: "[community]"
+
 
   - name: "note"
     with:
@@ -236,3 +238,76 @@ mappings:
             openehrLink:
               meaning: "the medication request for this medication"
               type: "medicationRequest"
+
+  - name: "ISMTransition"
+    with:
+      fhir: "$resource" #there needs to be a mapping table
+      openehr: "$archetype/ism_transition"
+    manual:
+      manual:
+        - name: "active"
+          fhir:
+            - path: "status"
+              value: "active"
+          openehrCondition:
+            targetRoot: "defining_code"
+            targetAttribute: "code_string"
+            operator: "one of"
+            criteria: "[245]"
+          openehr:
+            - path: "terminology_id/value"
+              value: "openehr"
+            - path: "code_string"
+              value: "245"
+            - path: "../value"
+              value: "Active"
+          fhirCondition:
+            targetRoot: "$fhirRoot"
+            targetAttribute: "status"
+            operator: "one of"
+            criteria: "[active]"
+
+        - name: "inactive"
+          fhir:
+            - path: "status"
+              value: "inactive"
+          openehrCondition:
+            targetRoot: "defining_code"
+            targetAttribute: "code_string"
+            operator: "one of"
+            criteria: "[532]"
+          openehr:
+            - path: "terminology_id/value"
+              value: "openehr"
+            - path: "code_string"
+              value: "532"
+            - path: "../value"
+              value: "Completed"
+          fhirCondition:
+            targetRoot: "$fhirRoot"
+            targetAttribute: "status"
+            operator: "one of"
+            criteria: "[inactive]"
+
+        - name: "entered-in-error"
+          fhir:
+            - path: "status"
+              value: "entered-in-error"
+          openehrCondition:
+            targetRoot: "defining_code"
+            targetAttribute: "code_string"
+            operator: "one of"
+            criteria: "[528]"
+          openehr:
+            - path: "terminology_id/value"
+              value: "openehr"
+            - path: "code_string"
+              value: "528"
+            - path: "../value"
+              value: "Cancelled"
+          fhirCondition:
+            targetRoot: "$fhirRoot"
+            targetAttribute: "status"
+            operator: "one of"
+            criteria: "[entered-in-error]"
+

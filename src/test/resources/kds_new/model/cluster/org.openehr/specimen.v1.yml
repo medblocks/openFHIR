@@ -10,6 +10,11 @@ spec:
     archetype: openEHR-EHR-CLUSTER.specimen.v1
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Specimen
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[entered-in-error]" # exclude all conditions with entered-in-error, since there is no mapping for this code
 
 mappings:
   - name: "identifier"
@@ -183,14 +188,3 @@ mappings:
           targetAttribute: "status"
           operator: "one of"
           criteria: "[unsatisfactory]"
-
-  - name: "status"
-    with:
-      fhir: "$resource.status"
-      openehr: "$archetype"
-    terminate: "archetype" #either archetype or composition
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "status"
-      operator: "one of"
-      criteria: "[entered-in-error]"

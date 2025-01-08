@@ -10,6 +10,11 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     archetype: openEHR-EHR-CLUSTER.problem_qualifier.v2
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Condition
+    fhirCondition:
+      targetRoot: "$resource.verificationStatus" # exclude all conditions with entered-in-error, since there is no mapping for this code
+      targetAttribute: "coding"
+      operator: "one of"
+      criteria: "[entered-in-error]"
 
 mappings:
 
@@ -102,18 +107,6 @@ mappings:
             value: "Refuted"
           - path: "system"
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
-
-
-  - name: "statusEnteredInError"
-    with:
-      fhir: "$resource.verificationStatus.coding"
-      openehr: "$archetype"
-    terminate: "archetype" #either archetype or composition
-    fhirCondition:
-      targetRoot: "$resource.verificationStatus"
-      targetAttribute: "coding"
-      operator: "one of"
-      criteria: "[entered-in-error]"
 
 #  - name: "statusEnteredInError"
 #    with:

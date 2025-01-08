@@ -15,12 +15,6 @@ mappings:
       fhir: "$resource.identifier"
       openehr: "$composition/context/other_context[at0001]/items[at0002]"
 
-  - name: "status"
-    extension: "add"
-    with:
-      fhir: "$resource.status"
-      openehr: "$composition/context/other_context[at0001]/items[at0005]"
-
   - name: "fallIdentifikationIdentifier"
     extension: "add"
     with:
