@@ -15,7 +15,7 @@ mappings:
   - name: "identifier"
     with:
       fhir: "$resource.identifier"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0088]" #external identifier
+      openehr: "$archetype/items[at0088]" #external identifier
       type: "IDENTIFIER"
 
   - name: "collection"
@@ -28,31 +28,31 @@ mappings:
         - name: "collected"
           with:
             fhir: "collected.as(DateTimeType)" # same as onset; try to provide both and use the one that's present
-            openehr: "content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0015]/date_time_value"
+            openehr: "items[at0015]/date_time_value"
             type: "DATETIME"
 
         - name: "collector"
           with:
             fhir: "collector.as(Reference).identifier" # explicitly cast to Reference to avoid adding a Resource
-            openehr: "content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0070]" #TODO should in the best case pinpoint to a resource via link, dunno where to put this in openEHR currently
+            openehr: "items[at0070]" #TODO should in the best case pinpoint to a resource via link, dunno where to put this in openEHR currently
             type: "IDENTIFIER"
 
         - name: "specimenCollectionMethod"
           with:
             fhir: "method.text"
-            openehr: "content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0007]"
+            openehr: "items[at0007]"
             type: "STRING"
 
         - name: "specimenCollectionBodySite"
           with:
             fhir: "bodySite.text"
-            openehr: "content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0087, 'Körperstelle']"
+            openehr: "items[at0087, 'Körperstelle']"
             type: "STRING"
 
         - name: "samplingContext"
           with:
             fhir: "fastingStatus.as(CodeableConcept).text"
-            openehr: "content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0008]" #Sampling context
+            openehr: "items[at0008]" #Sampling context
             type: "STRING"
 
 #        - name: "collector"
@@ -77,31 +77,31 @@ mappings:
   - name: "type"
     with:
       fhir: "$resource.type"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0029]" # specimen type
+      openehr: "$archetype/items[at0029]" # specimen type
       type: "CODEABLECONCEPT"
 
   - name: "note"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0045]" # comment
+      openehr: "$archetype/items[at0045]" # comment
       type: "STRING"
 
   - name: "descriptionOfSpecimen"
     with:
       fhir: "$resource.condition"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0097]" #specimen description
+      openehr: "$archetype/items[at0097]" #specimen description
       type: "CODEABLECONCEPT"
 
   - name: "identifierOfSpecimen"
     with:
       fhir: "$resource.accessionIdentifier"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0001]" #Laboratory specimen identifier
+      openehr: "$archetype/items[at0001]" #Laboratory specimen identifier
       type: "IDENTIFIER"
 
   - name: "dateReceived"
     with:
       fhir: "$resource.receivedTime"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0034]" #Date/Time received
+      openehr: "$archetype/items[at0034]" #Date/Time received
       type: "DATETIME"
 
 #  - name: "parent"
@@ -127,6 +127,6 @@ mappings:
   - name: "status"
     with:
       fhir: "$resource.status"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1, 'Probenmaterial']/items[at0041]" #adequacy for testing
+      openehr: "$archetype/items[at0041]" #adequacy for testing
       type: "STRING"
 

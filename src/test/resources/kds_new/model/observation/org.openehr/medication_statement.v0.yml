@@ -28,13 +28,13 @@ mappings:
   - name: "healthcareFacility"
     with:
       fhir: "$resource.informationSource.as(Reference).display"
-      openehr: "$archetype.context._health_care_facility|name"
+      openehr: "$archetype/context/_health_care_facility|name"
       type: "STRING"
 
   - name: "dateAsserted"
     with:
       fhir: "$resource.dateAsserted"
-      openehr: "$archetype.context.start_time"
+      openehr: "$archetype/context/start_time"
       type: "DATETIME"
 
 ## todo: overrides the informationSource above?

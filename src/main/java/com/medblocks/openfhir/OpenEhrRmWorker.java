@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
@@ -34,7 +35,14 @@ public class OpenEhrRmWorker {
     public void fixFlatWithOccurrences(final List<FhirToOpenEhrHelper> helpers, final WebTemplate webTemplate) {
         for (final FhirToOpenEhrHelper fhirToOpenEhrHelper : helpers) {
 
-            final String openEhrKey = fhirToOpenEhrHelper.getOpenEhrPath();
+            final String openEhrKey = Pattern.compile("\\[(.*?)]")
+                    .matcher(fhirToOpenEhrHelper.getOpenEhrPath())
+                    .replaceAll(match -> {
+                        // Get the content inside brackets
+                        String content = match.group(1);
+                        // Replace `/` with `-`
+                        return "[" + content.replace("/", "*") + "]";
+                    });
 
             final Set<String> forcedTypes = openFhirStringUtils.getPossibleRmTypeValue(fhirToOpenEhrHelper.getOpenEhrType());
 
@@ -54,7 +62,7 @@ public class OpenEhrRmWorker {
 
             // we compare so that we can see if if was found within the template; if not, we don't want for it to end up in the flat json
             final String initialOpenEhrPathWithProperTreeId = tree.getId() + "/" + flat.substring(flat.indexOf("/") + 1);
-            if (fhirToOpenEhrHelper.getOpenEhrPath().endsWith("/")) {
+            if (fhirToOpenEhrHelper.getOpenEhrPath().endsWith("/") || fhirToOpenEhrHelper.getOpenEhrPath().endsWith("[n]")) {
                 // means it didn't find it fully.. so it probably doesn't exist
                 if (!FhirConnectConst.DV_MULTIMEDIA.equals(fhirToOpenEhrHelper.getOpenEhrType())) { // multimedia and its 'content' is a tad bit special...
                     fhirToOpenEhrHelper.setOpenEhrType(OPENEHR_TYPE_NONE);
@@ -84,10 +92,11 @@ public class OpenEhrRmWorker {
         }
         final List<String> remainingPaths;
         final String[] splitOpenEhrPath = path.split("/");
-        final String pathToFind = pathToFindSuffix + splitOpenEhrPath[0].replace(", "," and name/value=").replace(","," and name/value=");
-        if (pathToFind.startsWith("_")) {
+        final String pathToFind;
+        pathToFind = pathToFindSuffix + splitOpenEhrPath[0].replace(", ", " and name/value=").replace(",", " and name/value=").replace("*","/");
+        if (splitOpenEhrPath[0].startsWith("_")) {
             // we don't bother with this, can't be multiple occurrences
-            constructing.add(pathToFind);
+            constructing.add(splitOpenEhrPath[0]);
             remainingPaths = Arrays.asList(splitOpenEhrPath).subList(1, splitOpenEhrPath.length);
             walkThroughNodes(webTemplateNodes, String.join("/", remainingPaths),
                     constructing, forcedTypes, fhirToOpenEhrHelper, pathToFindSuffix);
