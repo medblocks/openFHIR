@@ -354,20 +354,20 @@ public class OpenFhirMapperUtils {
                 continue;
             }
             if (FhirConnectConst.OPENEHR_ARCHETYPE_FC.equals(slotArchetypeMappersMapping.getWith().getOpenehr())) {
-                slotArchetypeMappersMapping.getWith().setOpenehr(openEhrPath.replaceAll("/", "."));
+                slotArchetypeMappersMapping.getWith().setOpenehr(openEhrPath);
             } else if (slotArchetypeMappersMapping.getWith().getOpenehr()
                     .startsWith(FhirConnectConst.OPENEHR_ARCHETYPE_FC)) {
                 slotArchetypeMappersMapping.getWith().setOpenehr(slotArchetypeMappersMapping.getWith().getOpenehr()
                                                                          .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC,
-                                                                                  openEhrPath.replaceAll("/", ".")));
+                                                                                  openEhrPath));
             } else if (slotArchetypeMappersMapping.getWith().getOpenehr().startsWith(FhirConnectConst.REFERENCE)) {
                 slotArchetypeMappersMapping.getWith().setOpenehr(
-                        slotArchetypeMappersMapping.getWith().getOpenehr() + "." + openEhrPath.replaceAll("/", "."));
+                        slotArchetypeMappersMapping.getWith().getOpenehr() + "/" + openEhrPath);
             } else {
                 // prefix with parent
                 final String suff = StringUtils.isBlank(slotArchetypeMappersMapping.getWith().getOpenehr()) ? ""
-                        : ("." + slotArchetypeMappersMapping.getWith().getOpenehr());
-                slotArchetypeMappersMapping.getWith().setOpenehr(openEhrPath.replaceAll("/", ".") + suff);
+                        : ("/" + slotArchetypeMappersMapping.getWith().getOpenehr());
+                slotArchetypeMappersMapping.getWith().setOpenehr(openEhrPath + suff);
             }
         }
     }

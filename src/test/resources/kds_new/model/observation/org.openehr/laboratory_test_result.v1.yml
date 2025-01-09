@@ -17,7 +17,7 @@ mappings:
   - name: "healthCareFacility"
     with:
       fhir: "$resource.performer.as(Reference).display"
-      openehr: "$archetype/context/health_care_facility|name"
+      openehr: "$archetype/context/_health_care_facility|name"
       type: "STRING"
 
   #  - name: "participations"
