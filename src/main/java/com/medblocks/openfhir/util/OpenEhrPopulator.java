@@ -95,7 +95,7 @@ public class OpenEhrPopulator {
                 if(addedCodeText) {
                     return;
                 }
-            case FhirConnectConst.IDENTIFIER:
+            case FhirConnectConst.DV_IDENTIFIER:
                 final boolean addedIdentifier = handleIdentifier(openEhrPath, extractedValue, constructingFlat);
                 if(addedIdentifier) {
                     return;

@@ -43,7 +43,6 @@ public class OpenEhrRmWorker {
                         // Replace `/` with `-`
                         return "[" + content.replace("/", "*") + "]";
                     });
-
             final Set<String> forcedTypes = openFhirStringUtils.getPossibleRmTypeValue(fhirToOpenEhrHelper.getOpenEhrType());
 
             final boolean hasSuffix = openEhrKey.contains("|");
@@ -62,7 +61,7 @@ public class OpenEhrRmWorker {
 
             // we compare so that we can see if if was found within the template; if not, we don't want for it to end up in the flat json
             final String initialOpenEhrPathWithProperTreeId = tree.getId() + "/" + flat.substring(flat.indexOf("/") + 1);
-            if (fhirToOpenEhrHelper.getOpenEhrPath().endsWith("/") || fhirToOpenEhrHelper.getOpenEhrPath().endsWith("[n]")) {
+            if (fhirToOpenEhrHelper.getOpenEhrPath().endsWith("/") ) {
                 // means it didn't find it fully.. so it probably doesn't exist
                 if (!FhirConnectConst.DV_MULTIMEDIA.equals(fhirToOpenEhrHelper.getOpenEhrType())) { // multimedia and its 'content' is a tad bit special...
                     fhirToOpenEhrHelper.setOpenEhrType(OPENEHR_TYPE_NONE);
@@ -92,8 +91,7 @@ public class OpenEhrRmWorker {
         }
         final List<String> remainingPaths;
         final String[] splitOpenEhrPath = path.split("/");
-        final String pathToFind;
-        pathToFind = pathToFindSuffix + splitOpenEhrPath[0].replace(", ", " and name/value=").replace(",", " and name/value=").replace("*","/");
+        final String pathToFind = pathToFindSuffix + splitOpenEhrPath[0].replace(", ", " and name/value=").replace(",", " and name/value=").replace("*","/");
         if (splitOpenEhrPath[0].startsWith("_")) {
             // we don't bother with this, can't be multiple occurrences
             constructing.add(splitOpenEhrPath[0]);
@@ -102,18 +100,10 @@ public class OpenEhrRmWorker {
                     constructing, forcedTypes, fhirToOpenEhrHelper, pathToFindSuffix);
             return;
         }
-        final WebTemplateNode findingTheOne;
-        if(pathToFind.contains("_value")){
-            findingTheOne = webTemplateNodes.stream()
-                    .filter(ch -> path.equals(ch.getId()))
-                    .findAny()
-                    .orElse(null);
-        }else{
-            findingTheOne = webTemplateNodes.stream()
-                    .filter(ch -> pathToFind.equals(ch.getAqlPath()))
-                    .findAny()
-                    .orElse(null);
-        }
+        final WebTemplateNode findingTheOne = webTemplateNodes.stream()
+                .filter(ch -> pathToFind.equals(ch.getAqlPath()))
+                .findAny()
+                .orElse(null);
         if (findingTheOne == null) {
             for (WebTemplateNode itemTree : webTemplateNodes) {
                 walkThroughNodes(itemTree.getChildren(), path, constructing, forcedTypes, fhirToOpenEhrHelper,pathToFindSuffix);
@@ -127,12 +117,12 @@ public class OpenEhrRmWorker {
             if(!FhirConnectConst.OPENEHR_INVALID_IDENTIFIER.contains(findingTheOne.getId())) {
                 constructing.add(findingTheOne.getId() + RECURRING_SYNTAX);
             }
-            fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne));
+            fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne,constructing));
         } else {
             if(!FhirConnectConst.OPENEHR_INVALID_IDENTIFIER.contains(findingTheOne.getId())) {
                 constructing.add(findingTheOne.getId());
             }
-            fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne));
+            fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne,constructing));
         }
 
         walkThroughNodes(findingTheOne.getChildren(), String.join("/", remainingPaths),
@@ -140,19 +130,40 @@ public class OpenEhrRmWorker {
     }
 
     private String getCorrectOpenEhrType(final Set<String> forcedTypes,
-                                         final WebTemplateNode relevantTemplateNode) {
-        if (forcedTypes.size() == 1) {
+                                         final WebTemplateNode relevantTemplateNode, StringJoiner constructing) {
+
+        if (forcedTypes.size() == 1 && relevantTemplateNode.getChildren().size() <=3) {
             return new ArrayList<>(forcedTypes).get(0);
         }
+
+        List<String> formatTypes = new ArrayList<>();
+        formatTypes.add("text_value");
+        formatTypes.add("coded_text_value");
+        formatTypes.add("null_flavour");
+        formatTypes.add("feeder_audit");
+
+        List<String> relevantTemplateNodeTypes = getchildrenRmTypes(relevantTemplateNode);
         if (relevantTemplateNode.getRmType().equals("ELEMENT")) { // need to look deeper
             return relevantTemplateNode.getChildren().stream()
-                    .filter(el -> "value".equals(el.getId()))
-                    .map(WebTemplateNode::getRmType)
+                    .filter(el -> el.getId().contains("value") && forcedTypes.contains(el.getRmType()))
+                    .map(webTemplateNode -> {
+                        if(webTemplateNode.getId().equals("value") || Collections.indexOfSubList(formatTypes, relevantTemplateNodeTypes) != -1){
+                            return webTemplateNode.getRmType();
+                        }
+                        else{
+                            constructing.add(webTemplateNode.getId());
+                            return webTemplateNode.getRmType();
+                        }
+                    })
                     .findAny()
                     .orElse(null);
         }
+
         final List<String> matchedByType = forcedTypes.stream()
                 .filter(ft -> ft.equals(relevantTemplateNode.getRmType())).toList();
         return matchedByType.isEmpty() ? new ArrayList<>(forcedTypes).get(0) : matchedByType.get(0); // is this ok??
+    }
+    private List<String> getchildrenRmTypes(WebTemplateNode webTemplateNode){
+        return webTemplateNode.getChildren().stream().map(WebTemplateNode::getId).toList();
     }
 }
