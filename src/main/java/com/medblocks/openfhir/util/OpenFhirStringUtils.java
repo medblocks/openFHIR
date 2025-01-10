@@ -628,7 +628,7 @@ public class OpenFhirStringUtils {
             case "CODING" -> Collections.singleton(FhirConnectConst.CODE_PHRASE);
             case "STRING" -> Collections.singleton(FhirConnectConst.DV_TEXT);
             case "BOOL" -> Collections.singleton(FhirConnectConst.DV_BOOL);
-            case "IDENTIFIER" -> Collections.singleton(FhirConnectConst.IDENTIFIER);
+            case "IDENTIFIER" -> Collections.singleton(FhirConnectConst.DV_IDENTIFIER);
             case "MEDIA" -> Collections.singleton(FhirConnectConst.DV_MULTIMEDIA);
             case "PROPORTION" -> Collections.singleton(FhirConnectConst.DV_PROPORTION);
             default -> Collections.singleton(val);

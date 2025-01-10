@@ -29,7 +29,7 @@ mappings:
   - name: "analyteMeasurement"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype/items[at0001,'Messwert']/quantity_value"
+      openehr: "$archetype/items[at0001,'Messwert']"
       type: "QUANTITY"
 
   - name: "analyteName"

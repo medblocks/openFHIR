@@ -333,7 +333,7 @@ mappings:
         - name: "identifierInReference"
           with:
             fhir: "identifier"
-            openehr: "$archetypelaborbefund/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Laborbefund']/protocol[at0004]/items[at0094]/items[at0063,'Identifikation der Laboranforderung']"
+            openehr: "laborbefund/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Laborbefund']/protocol[at0004]/items[at0094]/items[at0063,'Identifikation der Laboranforderung']"
             type: "IDENTIFIER"
 #        - name: "basedOnLink"
 #          with:

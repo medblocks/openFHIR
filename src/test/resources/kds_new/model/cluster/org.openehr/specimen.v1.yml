@@ -28,7 +28,7 @@ mappings:
         - name: "collected"
           with:
             fhir: "collected.as(DateTimeType)" # same as onset; try to provide both and use the one that's present
-            openehr: "items[at0015]/date_time_value"
+            openehr: "items[at0015]"
             type: "DATETIME"
 
         - name: "collector"
@@ -127,6 +127,6 @@ mappings:
   - name: "status"
     with:
       fhir: "$resource.status"
-      openehr: "$archetype/items[at0041]" #adequacy for testing
+      openehr: "$archetype/items[at0041]|code" #adequacy for testing
       type: "STRING"
 
