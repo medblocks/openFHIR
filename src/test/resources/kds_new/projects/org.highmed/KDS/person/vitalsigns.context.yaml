@@ -9,16 +9,11 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 
 context:
   profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
-  templateId: "KDS_Person"
+  templateId: "KDS_Vitalstatus"
   archetypes:
-    - "EVALUATION.gender.v1"
-    - "ADMIN_ENTRY.person_data.v0"
-    - "CLUSTER.person.v1"
-    - "CLUSTER.structured_name.v1"
-    - "CLUSTER.address.v1"
-    - "CLUSTER.person_birth_data_iso.v0"
-    - "CLUSTER.death_details.v1"
     - "EVALUATION.vital_status.v1"
+    - "CLUSTER.case_identification.v0"
     - "CLUSTER.observation_status_fhir.v1"
   extensions:
+    - "KDS_vital_status"
   start: "EVALUATION.vital_status.v1"

@@ -8,6 +8,8 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ADMIN_ENTRY.versicherungsinformationen.v0
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Identifier
 
 mappings:
   - name: "versicherungsId"
@@ -23,14 +25,21 @@ mappings:
       mappings:
         - name: "typeString"
           with:
-            fhir: "type"
+            fhir: "type.coding"
             openehr: "$reference"
           manual:
             - name: "type"
               fhir:
-                path: "type"
-                # TODO We could also allow json strings that would make a lot of things easier ?
-                # value: "{\"coding\: [{\"system\": \"http://fhir.de/CodeSystem/identifier-type-de-basis\",\"code\": \"KVZ10\"}}"
-                value:
-                  coding.system: "http://fhir.de/CodeSystem/identifier-type-de-basis"
-                  coding.value: "KVZ10"
+                - path: "system"
+                  value: "http://fhir.de/CodeSystem/identifier-type-de-basis"
+                - path: "value"
+                  value: "KVZ10"
+        - name: "staticUrl"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$reference"
+          manual:
+            - name: "system"
+              fhir:
+                - path: "system"
+                  value: "http://fhir.de/sid/gkv/kvid-10"

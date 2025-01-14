@@ -8,6 +8,8 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ADMIN_ENTRY.person_data.v0
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Patient
 
 mappings:
   - name: "personData"
@@ -26,12 +28,9 @@ mappings:
       fhir: "$resource.deceased.as(DateTime)"
       openehr: "$resource/data[at0001]/items[at0024]"
     manual:
-      - name: "maindiagnose"
-        openEHR:
-          path: "/items[at0025]"
-          type: "DV_BOOLEAN"
-          value:
-            value: "True"
+      openehr:
+        - path: "/items[at0025]/value" #TODO @Gasper is this working or how would you address 2 elements ?
+          value: "True"
     fhirCondition:
       targetRoot: "$resource"
       targetAttribute: "deceased"

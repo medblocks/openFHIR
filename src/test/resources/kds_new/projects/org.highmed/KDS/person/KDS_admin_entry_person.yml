@@ -38,14 +38,7 @@ mappings:
     extension: "overwrite"
     with:
       fhir: "$resource"
-      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Person']"
-    slotArchetype: "CLUSTER.person.v1"
-
-  - name: "contactPerson"
-    extension: "add"
-    with:
-      fhir: "$resource.contact"
-      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Kontaktperson']"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]"
     slotArchetype: "CLUSTER.person.v1"
 
   - name: "versicherungsInformationen"

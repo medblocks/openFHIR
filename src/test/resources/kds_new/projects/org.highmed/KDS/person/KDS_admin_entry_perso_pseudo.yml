@@ -23,30 +23,21 @@ mappings:
       mappings:
         - name: "typeString"
           with:
-            fhir: "type"
+            fhir: "type.coding"
             openehr: "$reference"
           manual:
             - name: "type"
               fhir:
-                path: "type.coding"
-                # TODO We could also allow json strings that would make a lot of things easier ?
-                # value: "{\"coding\: [{\"system\": \"http://fhir.de/CodeSystem/identifier-type-de-basis\",\"code\": \"KVZ10\"}}"
-                value:
-                  system: "http://terminology.hl7.org/CodeSystem/v2-0203"
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/v2-0203"
+                - path: "value"
                   value: "MR"
 
   - name: "personData"
     extension: "overwrite"
     with:
       fhir: "$resource"
-      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Person']"
-    slotArchetype: "CLUSTER.person.v1"
-
-  - name: "contactPerson"
-    extension: "add"
-    with:
-      fhir: "$resource.contact"
-      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Kontaktperson']"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]"
     slotArchetype: "CLUSTER.person.v1"
 
   - name: "gender"

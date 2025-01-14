@@ -1,0 +1,47 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_vital_status
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-EVALUATION.vital_status.v1
+  extends: EVALUATION.vital_status.v1
+
+mappings:
+  - name: "encounter"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.encounter.identifier"
+      openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+    slotArchetype: "CLUSTER.case_identification.v0"
+
+  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+    extension: "add"
+    with:
+      fhir: "$resource.encounter.reference"
+      openehr: "$reference"
+    reference: #type None
+      resourceType: "Encounter"
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.identifier"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+          slotArchetype: "CLUSTER.case_identification.v0"
+        - name: "encounterMapping"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+            openehrLink:
+              meaning: "the case this composition relates to"
+              type: "case"
+
+  - name: "status"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.observation_status_fhir.v1]"
+    slotArchetype: "CLUSTER.observation_status_fhir.v1"

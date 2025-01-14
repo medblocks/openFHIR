@@ -50,6 +50,18 @@ mappings:
       fhir: "$resource.value"
       openehr: "$archetype/data[at0001]/items[at0006]"
 
+  - name: "category"
+    with:
+      fhir: "$resource.category"
+      openehr: "$reference"
+    manual:
+      - name: "survey"
+        fhir:
+          - path: "code" #TODO @Gasper is this working or how would you address 2 elements ?
+            value: "survey"
+          - path: "system"
+            value: "http://terminology.hl7.org/CodeSystem/observation-category"
+
   - name: "note"
     with:
       fhir: "$resource.note.text"

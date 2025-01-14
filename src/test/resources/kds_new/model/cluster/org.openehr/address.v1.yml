@@ -19,6 +19,11 @@ mappings:
     type: "NONE"
     followedBy:
       mappings:
+        - name: "line"
+          with:
+            fhir: "line"
+            openehr: "/items[at0001]"
+
         - name: "city"
           with:
             fhir: "city"
@@ -79,9 +84,4 @@ mappings:
               fhir:
                 - path: "code"
                   value: "both"
-
-        - name: "line"
-          with:
-            fhir: "line"
-            openehr: "/items[at0001]"
 

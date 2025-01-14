@@ -27,5 +27,5 @@ mappings:
     extension: "overwrite"
     with:
       fhir: "$resource"
-      openehr: "$archetype/items[openEHR-EHR-CLUSTER.address.v1 and name/value='Straßenanschrift']"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.address.v1]"
     slotArchetype: "CLUSTER.address.v1"

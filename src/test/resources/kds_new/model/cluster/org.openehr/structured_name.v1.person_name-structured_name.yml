@@ -8,6 +8,8 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.structured_name.v1
+  fhirConfig:
+    structureDefinition:
 
 mappings:
   - name: "name"
