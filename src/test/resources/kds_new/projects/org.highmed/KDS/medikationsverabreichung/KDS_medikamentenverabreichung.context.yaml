@@ -14,7 +14,7 @@ context:
     - "ACTION.medication.v1"
     - "CLUSTER.medication.v2.medication-to-medication"
     - "CLUSTER.medication.v2.substance-to-medication"
-    - "CLUSTER.dosage.v2.dosage-to-dosage"
+    - "CLUSTER.dosage.v2"
   extensions:
     - "KDS_medication"
     - "KDS_medikamentenverabreichung"

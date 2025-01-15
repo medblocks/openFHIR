@@ -319,3 +319,7 @@ mappings:
               meaning: "the identifier which it derived from"
               type: "based on"
 
+  - name: "eventTime"
+    with:
+      fhir: "$resource.effective"
+      openEHR: "$archetype/data[at0001]/events[at0002]" # period -> interval event, datetime to pointInTime event

@@ -57,9 +57,15 @@ mappings:
                   value: "at0011"
                 - path: "../value"
                   value: "Physical"
+
               fhir:
                 - path: "code"
                   value: "physical"
+              openehrCondition:
+                targetRoot: "defining_code"
+                targetAttribute: "code_string"
+                operator: "one of"
+                criteria: "[at0011]"
 
             - name: "postal"
               openehr:

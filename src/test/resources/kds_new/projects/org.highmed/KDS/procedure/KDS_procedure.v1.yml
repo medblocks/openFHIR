@@ -10,7 +10,6 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 
 mappings:
    # Dokumentationsdatum
-   # durchfuehrungsabsicht
 
   - name: "fallIdentifikationIdentifier"
     extension: "add"
@@ -42,11 +41,13 @@ mappings:
               type: "case"
 
   - name: "identifier"
+    extension: "add"
     with:
       fhir: "$resource.identifier"
       openehr: "$composition/context/other_context[at0001]/items[at0002]"
 
   - name: "durchführungsabsicht"
+    extension: "add"
     with:
       fhir: "$resource.extension"
       openehr: "$archetype/description[at0001]/items[at0014]"
@@ -66,3 +67,25 @@ mappings:
               fhir:
                 path: "url"
                 value: "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht"
+
+  - name: "contextStartTime"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.extension"
+      openehr: "$composition/context/start_time"
+    fhirCondition:
+      targetRoot: "$resource.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum]"
+    followedBy:
+      mappings:
+        - name: "staticUrl"
+          with:
+            fhir: "url"
+            openehr: "$reference"
+          manual:
+            - name: "manualUrl"
+              fhir:
+                path: "url"
+                value: "http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum"

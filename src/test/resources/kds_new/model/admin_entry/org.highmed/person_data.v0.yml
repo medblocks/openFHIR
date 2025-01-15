@@ -26,10 +26,10 @@ mappings:
   - name: "deathDateTime"
     with:
       fhir: "$resource.deceased.as(DateTime)"
-      openehr: "$resource/data[at0001]/items[at0024]"
+      openehr: "$archetype/data[at0001]/items[at0024]"
     manual:
       openehr:
-        - path: "/items[at0025]/value" #TODO @Gasper is this working or how would you address 2 elements ?
+        - path: "/items[at0025]/value"
           value: "True"
     fhirCondition:
       targetRoot: "$resource"

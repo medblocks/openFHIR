@@ -9,6 +9,8 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   openEhrConfig:
     archetype: openEHR-EHR-OBSERVATION.medication_statement.v0
     revision: 0.0.1a
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/MedicationStatement
 
 mappings:
 

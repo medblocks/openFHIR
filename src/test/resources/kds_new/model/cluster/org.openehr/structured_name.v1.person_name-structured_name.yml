@@ -9,7 +9,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.structured_name.v1
   fhirConfig:
-    structureDefinition:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/HumanName
 
 mappings:
   - name: "name"

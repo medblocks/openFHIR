@@ -260,6 +260,11 @@ mappings:
             value: "at0022"
           - path: "../value"
             value: "Entered in error"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[entered-in-error]"
 
   - name: "issued"
     with:

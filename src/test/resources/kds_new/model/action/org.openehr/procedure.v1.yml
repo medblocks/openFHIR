@@ -8,6 +8,8 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ACTION.procedure.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Procedure
 
 mappings:
   - name: "participations"
@@ -31,6 +33,11 @@ mappings:
     with:
       fhir: "$resource.performed"
       openehr: "$composition/context/start_time"
+
+  - name: "actionPerformed"
+    with:
+      fhir: "$resource.performed"
+      openehr: "$archetype/time" # this field is more fiting then start_time thats why it overwrites the initial performed in fhir.
 
   - name: "contextEndTime"
     with:

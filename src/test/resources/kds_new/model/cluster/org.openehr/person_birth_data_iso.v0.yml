@@ -8,6 +8,8 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.person_birth_data_iso.v0
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/date
 
 mappings:
   - name: "birthdate"

@@ -25,6 +25,11 @@ mappings:
             value: "at0003"
           - path: "../value"
             value: "*"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "code"
+          operator: "one of"
+          criteria: "[*]"
         fhir:
           - path: "code"
             value: "*"
@@ -32,6 +37,11 @@ mappings:
             value: "*"
           - path: "system"
             value: "http://fhir.de/ValueSet/icd-10-gm-mehrfachcodierungs-kennzeichen"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0003]"
 
       - name: "ätiology"
         openehr:
@@ -41,6 +51,11 @@ mappings:
             value: "at0002"
           - path: "../value"
             value: "†"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "code"
+          operator: "one of"
+          criteria: "[†]"
         fhir:
           - path: "code"
             value: "†"
@@ -48,6 +63,11 @@ mappings:
             value: "†"
           - path: "system"
             value: "http://fhir.de/ValueSet/icd-10-gm-mehrfachcodierungs-kennzeichen"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0002]"
 
       - name: "additionalInformation"
         openehr:
@@ -57,6 +77,11 @@ mappings:
             value: "at0004"
           - path: "../value"
             value: "!"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "code"
+          operator: "one of"
+          criteria: "[!]"
         fhir:
           - path: "code"
             value: "!"
@@ -64,3 +89,8 @@ mappings:
             value: "!"
           - path: "system"
             value: "http://fhir.de/ValueSet/icd-10-gm-mehrfachcodierungs-kennzeichen"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[at0004]"
