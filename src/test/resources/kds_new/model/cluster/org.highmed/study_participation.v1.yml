@@ -21,16 +21,16 @@ mappings:
         - name: "start"
           with:
             fhir: "start"
-            openehr: "beginn_der_teilnahme"
+            openehr: "items[at0003]"
             type: "DATETIME"
         - name: "end"
           with:
             fhir: "end"
-            openehr: "ende_der_teilnahme"
+            openehr: "items[at0004]"
             type: "DATETIME"
 
   - name: "details"
     with:
       fhir: "$fhirRoot"
-      openehr: "$archetype.studie_prüfung"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.study_details.v1]"
     slotArchetype: "CLUSTER.study_details.v1"

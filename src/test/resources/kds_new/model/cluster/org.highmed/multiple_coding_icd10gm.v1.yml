@@ -15,7 +15,7 @@ mappings:
   - name: "mehrfachcodierung"
     with:
       fhir: "$fhirRoot"
-      openehr: "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]/items[at0001]"
+      openehr: "items[at0001]"
       type: "CODEABLECONCEPT"
     fhirCondition:
       targetRoot: "$fhirRoot"

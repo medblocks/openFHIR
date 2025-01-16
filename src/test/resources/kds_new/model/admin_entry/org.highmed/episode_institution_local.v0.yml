@@ -16,13 +16,13 @@ mappings:
   - name: "healthcareFacility"
     with:
       fhir: "$resource.serviceProvider.as(Reference).display"
-      openehr: "$archetype.context._health_care_facility|name"
+      openehr: "$archetype/context/_health_care_facility|name"
       type: "STRING"
 
   - name: "contextPeriod"
     with:
       fhir: "$resource.period"
-      openehr: "$archetype.context"
+      openehr: "$archetype/context"
       type: "NONE"
     followedBy:
       mappings:
@@ -41,7 +41,7 @@ mappings:
   - name: "composer"
     with:
       fhir: "$resource.serviceProvider.as(Reference).display"
-      openehr: "$composition.composer|name"
+      openehr: "$composition/composer|name"
       type: "STRING"
 
   # todo ??? no such 'provider' exists, or does it?
@@ -62,18 +62,18 @@ mappings:
         - name: "admissionDate"
           with:
             fhir: "start"
-            openehr: "$archetype.institutionsaufenthalt.aufnahmedatum"
+            openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0004]"
             type: "DATETIME"
         - name: "seperationDate"
           with:
             fhir: "end"
-            openehr: "$archetype.institutionsaufenthalt.entlassungsdatum"
+            openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0002]"
             type: "DATETIME"
 
   - name: "room"
     with:
       fhir: "$resource.location.location.as(Reference).identifier.value"
-      openehr: "$archetype.institutionsaufenthalt.standort.zimmer"
+      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0018]/items[at0023]"
     fhirCondition:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
@@ -89,7 +89,7 @@ mappings:
   - name: "bed"
     with:
       fhir: "$resource.location.location.as(Reference).identifier.value"
-      openehr: "$archetype.institutionsaufenthalt.standort.bett"
+      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0018]/items[at0024]"
     fhirCondition:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
@@ -105,7 +105,7 @@ mappings:
   - name: "station"
     with:
       fhir: "$resource.location.location.as(Reference).identifier.value"
-      openehr: "$archetype.institutionsaufenthalt.standort.station"
+      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0018]/items[at0022]"
     fhirCondition:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"

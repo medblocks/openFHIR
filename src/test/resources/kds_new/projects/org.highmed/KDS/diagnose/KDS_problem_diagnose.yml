@@ -85,7 +85,7 @@ mappings:
         - name: "codeIcd10Diagnosesicherheit"
           with:
             fhir: "extension"
-            openehr: "diagnosesicherheit"
+            openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0073, 'Diagnosesicherheit']"
             type: "CODEABLECONCEPT"
           fhirCondition:
             targetRoot: "extension"
@@ -96,13 +96,13 @@ mappings:
         - name: "multipleCoding"
           with:
             fhir: "extension"
-            openehr: "multiple_coding_icd-10-gm"
+            openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]"
           slotArchetype: "CLUSTER.multiple_coding_icd10gm.v1"
   #
         - name: "bodySiteClusterIcd10" # is here added too, in case the icd-10 is present in fhir so we map the localization
           with:
             fhir: "extension"
-            openehr: "anatomical_location"
+            openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
           slotArchetype: "CLUSTER.anatomical_location.v1"
 
   - name: "dateTime"

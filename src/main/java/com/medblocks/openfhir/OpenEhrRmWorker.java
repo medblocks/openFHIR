@@ -35,14 +35,7 @@ public class OpenEhrRmWorker {
     public void fixFlatWithOccurrences(final List<FhirToOpenEhrHelper> helpers, final WebTemplate webTemplate) {
         for (final FhirToOpenEhrHelper fhirToOpenEhrHelper : helpers) {
 
-            final String openEhrKey = Pattern.compile("\\[(.*?)]")
-                    .matcher(fhirToOpenEhrHelper.getOpenEhrPath())
-                    .replaceAll(match -> {
-                        // Get the content inside brackets
-                        String content = match.group(1);
-                        // Replace `/` with `-`
-                        return "[" + content.replace("/", "*") + "]";
-                    });
+            final String openEhrKey = fhirToOpenEhrHelper.getOpenEhrPath();
             final Set<String> forcedTypes = openFhirStringUtils.getPossibleRmTypeValue(fhirToOpenEhrHelper.getOpenEhrType());
 
             final boolean hasSuffix = openEhrKey.contains("|");
@@ -60,8 +53,8 @@ public class OpenEhrRmWorker {
             fhirToOpenEhrHelper.setOpenEhrPath(tree.getId() + "/" + fhirToOpenEhrHelper.getOpenEhrPath() + (hasSuffix ? suffix : ""));
 
             // we compare so that we can see if if was found within the template; if not, we don't want for it to end up in the flat json
-            final String initialOpenEhrPathWithProperTreeId = tree.getId() + "/" + flat.substring(flat.indexOf("/") + 1);
-            if (fhirToOpenEhrHelper.getOpenEhrPath().endsWith("/") ) {
+            final int initialOpenEhrPathWithProperTreeLength = split.length + 1;
+            if (fhirToOpenEhrHelper.getOpenEhrPath().split("/").length < initialOpenEhrPathWithProperTreeLength ) {
                 // means it didn't find it fully.. so it probably doesn't exist
                 if (!FhirConnectConst.DV_MULTIMEDIA.equals(fhirToOpenEhrHelper.getOpenEhrType())) { // multimedia and its 'content' is a tad bit special...
                     fhirToOpenEhrHelper.setOpenEhrType(OPENEHR_TYPE_NONE);
@@ -71,6 +64,9 @@ public class OpenEhrRmWorker {
             if (fhirToOpenEhrHelper.getFhirToOpenEhrHelpers() != null) {
                 fixFlatWithOccurrences(fhirToOpenEhrHelper.getFhirToOpenEhrHelpers(), webTemplate);
             }
+
+            removeInvalidOpenEhrPath(fhirToOpenEhrHelper);
+
         }
     }
 
@@ -106,7 +102,7 @@ public class OpenEhrRmWorker {
                 .orElse(null);
         if (findingTheOne == null) {
             for (WebTemplateNode itemTree : webTemplateNodes) {
-                walkThroughNodes(itemTree.getChildren(), path, constructing, forcedTypes, fhirToOpenEhrHelper,pathToFindSuffix);
+                walkThroughNodes(itemTree.getChildren(), path, constructing, forcedTypes, fhirToOpenEhrHelper, pathToFindSuffix);
             }
             fhirToOpenEhrHelper.setOpenEhrPath(constructing.toString());
             return;
@@ -114,12 +110,16 @@ public class OpenEhrRmWorker {
         remainingPaths = Arrays.asList(splitOpenEhrPath).subList(1, splitOpenEhrPath.length);
         if (findingTheOne.isMulti()) {
             // is multiple occurrences
-            if(!FhirConnectConst.OPENEHR_INVALID_IDENTIFIER.contains(findingTheOne.getId())) {
+            if(FhirConnectConst.OPENEHR_INVALID_PATH_RM_TYPES.contains(findingTheOne.getRmType())) {
+                constructing.add(findingTheOne.getRmType());
+            }else {
                 constructing.add(findingTheOne.getId() + RECURRING_SYNTAX);
             }
             fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne,constructing));
         } else {
-            if(!FhirConnectConst.OPENEHR_INVALID_IDENTIFIER.contains(findingTheOne.getId())) {
+            if(FhirConnectConst.OPENEHR_INVALID_PATH_RM_TYPES.contains(findingTheOne.getRmType())) {
+                constructing.add(findingTheOne.getRmType());
+            }else {
                 constructing.add(findingTheOne.getId());
             }
             fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne,constructing));
@@ -132,22 +132,16 @@ public class OpenEhrRmWorker {
     private String getCorrectOpenEhrType(final Set<String> forcedTypes,
                                          final WebTemplateNode relevantTemplateNode, StringJoiner constructing) {
 
-        if (forcedTypes.size() == 1 && relevantTemplateNode.getChildren().size() <=3) {
+        if ((forcedTypes.size() == 1 && relevantTemplateNode.getChildren().size() <= 3) || (forcedTypes.size() == 1 && forcedTypes.contains("CODE_PHRASE"))) {
             return new ArrayList<>(forcedTypes).get(0);
         }
-
-        List<String> formatTypes = new ArrayList<>();
-        formatTypes.add("text_value");
-        formatTypes.add("coded_text_value");
-        formatTypes.add("null_flavour");
-        formatTypes.add("feeder_audit");
 
         List<String> relevantTemplateNodeTypes = getchildrenRmTypes(relevantTemplateNode);
         if (relevantTemplateNode.getRmType().equals("ELEMENT")) { // need to look deeper
             return relevantTemplateNode.getChildren().stream()
                     .filter(el -> el.getId().contains("value") && forcedTypes.contains(el.getRmType()))
                     .map(webTemplateNode -> {
-                        if(webTemplateNode.getId().equals("value") || Collections.indexOfSubList(formatTypes, relevantTemplateNodeTypes) != -1){
+                        if(webTemplateNode.getId().equals("value") || Collections.indexOfSubList(FhirConnectConst.OPENEHR_CONSISTENT_LIST, relevantTemplateNodeTypes) != -1){
                             return webTemplateNode.getRmType();
                         }
                         else{
@@ -164,6 +158,17 @@ public class OpenEhrRmWorker {
         return matchedByType.isEmpty() ? new ArrayList<>(forcedTypes).get(0) : matchedByType.get(0); // is this ok??
     }
     private List<String> getchildrenRmTypes(WebTemplateNode webTemplateNode){
-        return webTemplateNode.getChildren().stream().map(WebTemplateNode::getId).toList();
+        return webTemplateNode.getChildren().stream().map(WebTemplateNode::getId).sorted().toList();
+    }
+
+    private void removeInvalidOpenEhrPath(final FhirToOpenEhrHelper fhirToOpenEhrHelper){
+        String[] openEhrPathParts = fhirToOpenEhrHelper.getOpenEhrPath().split("/");
+        List<String> filteredParts = new ArrayList<>();
+        for (String openEhrPathPart : openEhrPathParts) {
+            if (!FhirConnectConst.OPENEHR_INVALID_PATH_RM_TYPES.contains(openEhrPathPart)) {
+                filteredParts.add(openEhrPathPart);
+            }
+        }
+        fhirToOpenEhrHelper.setOpenEhrPath(String.join("/", filteredParts));
     }
 }
