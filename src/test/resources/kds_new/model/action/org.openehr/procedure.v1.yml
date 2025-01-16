@@ -52,7 +52,7 @@ mappings:
   - name: "ISMTransition"
     with:
       fhir: "$resource" #there needs to be a mapping table
-      openehr: "$archetype/ism_transition/defining_code"
+      openehr: "$archetype/ism_transition/current_state/defining_code"
     manual:
       - name: "initial"
         fhir:

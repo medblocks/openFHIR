@@ -25,134 +25,140 @@ mappings:
 
   - name: "ISMTransition"
     with:
-      fhir: "$resource" #there needs to be a mapping table
-      openehr: "$archetype/ism_transition"
+      fhir: "$resource" # there needs to be a mapping table
+      openehr: "$archetype/ism_transition/current_state/defining_code"
     manual:
       - name: "draft"
         openehr:
-          path: "current_state"
-          value:
+          - path: "terminology_id/value"
+            value: "openehr"
+          - path: "../value"
+            value: "Initial"
+          - path: "code_string"
             value: "524"
-            terminology_id: "openehr"
-            code_string: "Initial"
-          fhirCondition:
-            targetRoot: "state"
-            targetAttribute: "value"
-            operator: "one of"
-            criteria: "[draft]"
-        fhir:
-          path: "status"
-          value: "draft"
-        openehrCondition:
-          targetRoot: "current_state"
+        fhirCondition:
+          targetRoot: "status"
           targetAttribute: "value"
           operator: "one of"
-          criteria: "524"
+          criteria: "[draft]"
+        fhir:
+          - path: "status"
+            value: "draft"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[524]"
 
       - name: "proposed"
         openehr:
-          path: "current_state"
-          value:
+          - path: "terminology_id/value"
+            value: "openehr"
+          - path: "../value"
+            value: "Planned"
+          - path: "code_string"
             value: "526"
-            terminology_id: "openehr"
-            code_string: "Planned"
-          fhirCondition:
-            targetRoot: "state"
-            targetAttribute: "value"
-            operator: "one of"
-            criteria: "[proposed]"
-        fhir:
-          path: "status"
-          value: "proposed"
-        openehrCondition:
-          targetRoot: "current_state"
+        fhirCondition:
+          targetRoot: "status"
           targetAttribute: "value"
           operator: "one of"
-          criteria: "526"
+          criteria: "[proposed]"
+        fhir:
+          - path: "status"
+            value: "proposed"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[526]"
 
       - name: "active"
         openehr:
-          path: "current_state"
-          value:
+          - path: "terminology_id/value"
+            value: "openehr"
+          - path: "../value"
+            value: "Active"
+          - path: "code_string"
             value: "245"
-            terminology_id: "openehr"
-            code_string: "Active"
-          fhirCondition:
-            targetRoot: "state"
-            targetAttribute: "value"
-            operator: "one of"
-            criteria: "[active]"
-        fhir:
-          path: "status"
-          value: "active"
-        openehrCondition:
-          targetRoot: "current_state"
+        fhirCondition:
+          targetRoot: "status"
           targetAttribute: "value"
           operator: "one of"
-          criteria: "245"
+          criteria: "[[active]]"
+        fhir:
+          - path: "status"
+            value: "active"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[245]"
 
       - name: "rejected"
         openehr:
-          path: "current_state"
-          value:
+          - path: "terminology_id/value"
+            value: "openehr"
+          - path: "../value"
+            value: "Cancelled"
+          - path: "code_string"
             value: "528"
-            terminology_id: "openehr"
-            code_string: "Cancelled"
-          fhirCondition:
-            targetRoot: "state"
-            targetAttribute: "value"
-            operator: "one of"
-            criteria: "[rejected]"
-        fhir:
-          path: "status"
-          value: "rejected"
-        openehrCondition:
-          targetRoot: "current_state"
+        fhirCondition:
+          targetRoot: "status"
           targetAttribute: "value"
           operator: "one of"
-          criteria: "528"
+          criteria: "[rejected]"
+        fhir:
+          - path: "status"
+            value: "rejected"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[528]"
 
       - name: "inactive"
         openehr:
-          path: "current_state"
-          value:
+          - path: "terminology_id/value"
+            value: "openehr"
+          - path: "../value"
+            value: "Completed"
+          - path: "code_string"
             value: "532"
-            terminology_id: "openehr"
-            code_string: "Completed"
-          fhirCondition:
-            targetRoot: "state"
-            targetAttribute: "value"
-            operator: "one of"
-            criteria: "[inactive]"
+        fhirCondition:
+          targetRoot: "status"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "[[inactive]]"
         fhir:
-          path: "status"
-          value: "inactive"
-          openehrCondition:
-            targetRoot: "current_state"
-            targetAttribute: "value"
-            operator: "one of"
-            criteria: "532"
+          - path: "status"
+            value: "inactive"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[532]"
 
       - name: "entered-in-error"
         openehr:
-          path: "current_state"
-          value:
+          - path: "terminology_id/value"
+            value: "openehr"
+          - path: "../value"
+            value: "Cancelled"
+          - path: "code_string"
             value: "528"
-            terminology_id: "openehr"
-            code_string: "Cancelled"
-          fhirCondition:
-            targetRoot: "state"
-            targetAttribute: "value"
-            operator: "one of"
-            criteria: "[entered-in-error]"
-        fhir:
-          path: "status"
-          value: "entered-in-error"
-        openehrCondition:
-          targetRoot: "current_state"
+        fhirCondition:
+          targetRoot: "status"
           targetAttribute: "value"
           operator: "one of"
-          criteria: "528"
+          criteria: "[entered-in-error]"
+        fhir:
+          - path: "status"
+            value: "entered-in-error"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[528]"
 
 
   - name: "period"
