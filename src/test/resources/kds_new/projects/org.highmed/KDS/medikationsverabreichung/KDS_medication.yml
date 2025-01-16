@@ -6,7 +6,7 @@ metadata:
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
-  extends: CLUSTER.medication.v2.medication-to-medication
+  extends: CLUSTER.medication.v2
 
 mappings:
   - name: "wirkstofftyp"
@@ -77,7 +77,7 @@ mappings:
                       with:
                         fhir: "$fhirRoot"
                         openehr: "$openehrRoot/items[openEHR-EHR-CLUSTER.medication.v2]"
-                      slotArchetype: "CLUSTER.medication.v2.medication-to-medication"
+                      slotArchetype: "CLUSTER.medication.v2"
                   followedBy:
                     mappings:
                       - name: "extension"

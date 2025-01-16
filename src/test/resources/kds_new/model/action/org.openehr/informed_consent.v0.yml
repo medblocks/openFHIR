@@ -30,7 +30,7 @@ mappings:
     manual:
       - name: "draft"
         openehr:
-          path: "/current_state"
+          path: "current_state"
           value:
             value: "524"
             terminology_id: "openehr"
@@ -51,7 +51,7 @@ mappings:
 
       - name: "proposed"
         openehr:
-          path: "/current_state"
+          path: "current_state"
           value:
             value: "526"
             terminology_id: "openehr"
@@ -72,7 +72,7 @@ mappings:
 
       - name: "active"
         openehr:
-          path: "/current_state"
+          path: "current_state"
           value:
             value: "245"
             terminology_id: "openehr"
@@ -93,7 +93,7 @@ mappings:
 
       - name: "rejected"
         openehr:
-          path: "/current_state"
+          path: "current_state"
           value:
             value: "528"
             terminology_id: "openehr"
@@ -114,7 +114,7 @@ mappings:
 
       - name: "inactive"
         openehr:
-          path: "/current_state"
+          path: "current_state"
           value:
             value: "532"
             terminology_id: "openehr"
@@ -135,7 +135,7 @@ mappings:
 
       - name: "entered-in-error"
         openehr:
-          path: "/current_state"
+          path: "current_state"
           value:
             value: "528"
             terminology_id: "openehr"

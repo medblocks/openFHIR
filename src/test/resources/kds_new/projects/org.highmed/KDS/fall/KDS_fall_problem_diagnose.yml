@@ -36,12 +36,12 @@ mappings:
         - name: "diagnoseName" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
           with:
             fhir: "condition.code" #TODO @Gasper is this correctly how i can access the code in the Condition reference FHIR
-            openehr: "/data[at0001]/items[at0002]"
+            openehr: "data[at0001]/items[at0002]"
 
         - name: "diagnoseTyp" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
           with:
             fhir: "use.coding.code"
-            openehr: "/data[at0001]/items[at0009]"
+            openehr: "data[at0001]/items[at0009]"
           fhirCondition:
             targetRoot: "use.coding.code"
             targetAttribute: "value"
@@ -51,7 +51,7 @@ mappings:
         - name: "diagnoseSubtyp" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
           with:
             fhir: "use.coding.code"
-            openehr: "/data[at0001]/items[at0079]"
+            openehr: "data[at0001]/items[at0079]"
           fhirCondition:
             targetRoot: "use.coding.code"
             targetAttribute: "value"

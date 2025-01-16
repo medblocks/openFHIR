@@ -29,7 +29,7 @@ mappings:
       openehr: "$archetype/data[at0001]/items[at0024]"
     manual:
       openehr:
-        - path: "/items[at0025]/value"
+        - path: "items[at0025]/value"
           value: "True"
     fhirCondition:
       targetRoot: "$resource"

@@ -19,11 +19,11 @@ mappings:
         - name: "start"
           with:
             fhir: "start"
-            openehr: "/items[at0003]"
+            openehr: "items[at0003]"
         - name: "end"
           with:
             fhir: "end"
-            openehr: "/items[at0004]"
+            openehr: "items[at0004]"
 
   - name: "details"
     with:

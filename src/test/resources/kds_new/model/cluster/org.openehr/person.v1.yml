@@ -17,7 +17,7 @@ mapping:
     with:
       fhir: "$resource"
       openehr: "$archetype/items[openEHR-EHR-CLUSTER.structured_name.v1]"
-    slotArchetype: "CLUSTER.structured_name.v1.person_name-structured_name"
+    slotArchetype: "CLUSTER.structured_name.v1"
 
   - name: "address"
     with:

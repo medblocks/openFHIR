@@ -51,7 +51,7 @@ mappings:
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     openehrCondition:
       targetRoot: "$archetype/items[at0063]/value/defining_code"
-      targetAttribute: "/code_string"
+      targetAttribute: "code_string"
       operator: "one of"
       criteria: "at0066"
     manual:

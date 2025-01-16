@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name:  CLUSTER.structured_name.v1.person_name-structured_name
+  name:  CLUSTER.structured_name.v1
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
@@ -22,19 +22,19 @@ mappings:
         - name: "typeOfName"
           with:
             fhir: "use"
-            openehr: "/items[at0001]"
+            openehr: "items[at0001]"
 
         - name: "firstName"
           with:
             fhir: "given"
-            openehr: "/items[at0002]"
+            openehr: "items[at0002]"
 
         - name: "prefix"
           with:
             fhir: "prefix"
-            openehr: "/items[at0006]"
+            openehr: "items[at0006]"
 
         - name: "familyName"
           with:
             fhir: "family"
-            openehr: "/items[at0005]"
+            openehr: "items[at0005]"

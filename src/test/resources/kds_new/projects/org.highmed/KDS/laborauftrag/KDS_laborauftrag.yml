@@ -49,7 +49,7 @@ mappings:
         - name: "specimenIdentifier"
           with:
             fhir: "identifier"
-            openehr: "/items[openEHR-EHR-CLUSTER.specimen.v1]/items[at0001]"
+            openehr: "items[openEHR-EHR-CLUSTER.specimen.v1]/items[at0001]"
           fhirCondition:
             targetRoot: "$fhirRoot"
             targetAttribute: "reference" #TODO in the future we should try to resolve, if fails take identifier
@@ -64,7 +64,7 @@ mappings:
               - name: "specimenReference"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "/items[openEHR-EHR-CLUSTER.specimen.v1]"
+                  openehr: "items[openEHR-EHR-CLUSTER.specimen.v1]"
                 slotArchetype: "CLUSTER.specimen.v1"
 
   - name: "organisation" #Deprecated has to go with the update of teh template, since its the composer

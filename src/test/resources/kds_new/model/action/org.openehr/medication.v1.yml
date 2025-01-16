@@ -51,7 +51,7 @@ mappings:
   - name: "category"
     with:
       fhir: "$resource.category"
-      openehr: "$archetype/context/setting"
+      openehr: "$archetype/context/setting/defining_code"
     manual:
       - name: "outpatient"
         fhir:
@@ -62,7 +62,7 @@ mappings:
           - path: "display"
             value: "Outpatient"
         openehrCondition:
-          targetRoot: "/defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[225]"
@@ -88,7 +88,7 @@ mappings:
           - path: "display"
             value: "Inpatient"
         openehrCondition:
-          targetRoot: "/defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[228]"
@@ -114,7 +114,7 @@ mappings:
           - path: "display"
             value: "Community"
         openehrCondition:
-          targetRoot: "/defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[238]"
@@ -141,7 +141,7 @@ mappings:
     with:
       fhir: "$resource.dosage"
       openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.dosage.v2]"
-    slotArchetype: "CLUSTER.dosage.v2.BackboneElement-to-dosage"
+    slotArchetype: "CLUSTER.dosage.v2.BackboneElement"
 
   - name: "medication"
     with:

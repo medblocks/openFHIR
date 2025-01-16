@@ -13,4 +13,4 @@ mappings:
     extension: "add"
     with:
       fhir: "$fhirRoot.valueCoding"
-      openehr: "/items[at0002]"
+      openehr: "items[at0002]"

@@ -32,19 +32,19 @@ mappings:
         - name: "collectionDateTime"
           with:
             fhir: "collected" # same as onset; try to provide both and use the one that's present
-            openehr: "/items[at0015]"
+            openehr: "items[at0015]"
         - name: "collector"
           with:
             fhir: "collector.as(Reference).identifier" # explicitly cast to Reference to avoid adding a Resource
-            openehr: "/items[at0070]" #TODO should in the best case pinpoint to a resource via link, dunno where to put this in openEHR currently
+            openehr: "items[at0070]" #TODO should in the best case pinpoint to a resource via link, dunno where to put this in openEHR currently
         - name: "specimenCollectionMethod"
           with:
             fhir: "method"
-            openehr: "/items[at0007]"
+            openehr: "items[at0007]"
         - name: "specimenCollectionBodySite"
           with:
             fhir: "bodySite"
-            openehr: "/items[at0087]"
+            openehr: "items[at0087]"
         - name: "samplingContext"
           with:
             fhir: "fastingStatus"
@@ -116,7 +116,7 @@ mappings:
   - name: "status"
     with:
       fhir: "$resource.status"
-      openehr: "archetypePath/items[at0041]" #adequacy for testing
+      openehr: "archetypePath/items[at0041]/defining_code" #adequacy for testing
     fhirCondition:
       targetRoot: "$fhirRoot"
       targetAttribute: "status"
@@ -128,7 +128,7 @@ mappings:
           path: "status"
           value: "available"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0062]"
@@ -150,7 +150,7 @@ mappings:
           path: "status"
           value: "unavailable"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0064]"
@@ -172,7 +172,7 @@ mappings:
           path: "status"
           value: "unsatisfactory"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0064]"

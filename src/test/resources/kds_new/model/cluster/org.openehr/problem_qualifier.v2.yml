@@ -120,7 +120,7 @@ mappings:
 #    manual:
 #      - name: "entered-in-error"
 #        openehr:
-#          - path: "/value"
+#          - path: "value"
 #            value: "entered-in-error"
 #        fhir:
 #          - path: "code"

@@ -53,7 +53,7 @@ mappings:
   - name: "reasonCode"
     with:
       fhir: "$resource.reasonCode"
-      openehr: "/data[at0001]/events[at0002]/data[at0003]/items[at0023]"
+      openehr: "data[at0001]/events[at0002]/data[at0003]/items[at0023]"
 
   - name: "note"
     with:
@@ -77,7 +77,7 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
-          slotArchetype: "CLUSTER.medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
+          slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
 
   - name: "medicationCode"
     with:
@@ -91,12 +91,12 @@ mappings:
   - name: "route"
     with:
       fhir: "$resource.dosage.route"
-      openehr: "/data[at0001]/events[at0002]/data[at0003]/items[at0030]"
+      openehr: "data[at0001]/events[at0002]/data[at0003]/items[at0030]"
 
   - name: "reasonCode"
     with:
       fhir: "$resource.reasonCode"
-      openehr: "/data[at0001]/events[at0002]/data[at0003]/items[at0023]"
+      openehr: "data[at0001]/events[at0002]/data[at0003]/items[at0023]"
 
   - name: "reasonReference"
     with:

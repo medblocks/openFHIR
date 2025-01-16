@@ -42,7 +42,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.extension.value.as(DateTimeType)"
-      openehr: "/data[at0001]/items[at0003]"
+      openehr: "data[at0001]/items[at0003]"
     fhirCondition:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
@@ -157,18 +157,18 @@ mappings:
         - name: "period"
           with:
             fhir: "onset.as(Period)"
-            openehr: "/data[at0001]"
+            openehr: "data[at0001]"
             type: "NONE"
           openehrCondition:
             targetRoot: "$archetype/data[at0001]"
-            targetAttribute: "/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
+            targetAttribute: "items[openEHR-EHR-CLUSTER.lebensphase.v0]"
             operator: "not empty"
           followedBy:
             mappings:
               - name: "start"
                 with:
                   fhir: "start"
-                  openehr: "/items[at0077]"
+                  openehr: "items[at0077]"
 
               - name: "lebensphaseCluster"
                 with:
@@ -179,10 +179,10 @@ mappings:
         - name: "dateTime"
           with:
             fhir: "onset.as(DateTime)"
-            openehr: "/data[at0001]/items[at0077]"
+            openehr: "data[at0001]/items[at0077]"
           openehrCondition:
             targetRoot: "$archetype/data[at0001]"
-            targetAttribute: "/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
+            targetAttribute: "items[openEHR-EHR-CLUSTER.lebensphase.v0]"
             operator: "empty"
 
   - name: "problemQualifier"
@@ -214,7 +214,7 @@ mappings:
           slotArchetype: "EVALUATION.problem_diagnosis.v1"
           openehrCondition:
             targetRoot: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
-            targetAttribute: "/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/defining_code/code_string"
+            targetAttribute: "data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/defining_code/code_string"
             operator: "one of"
             criteria: "[at0064]"
           followedBy:

@@ -52,14 +52,14 @@ mappings:
   - name: "ISMTransition"
     with:
       fhir: "$resource" #there needs to be a mapping table
-      openehr: "$archetype/ism_transition"
+      openehr: "$archetype/ism_transition/defining_code"
     manual:
       - name: "initial"
         fhir:
           - path: "state"
             value: "unknown"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[524]"
@@ -81,7 +81,7 @@ mappings:
           - path: "state"
             value: "preparation"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[526]"
@@ -103,7 +103,7 @@ mappings:
           - path: "state"
             value: "not-done"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[527]"
@@ -125,7 +125,7 @@ mappings:
           - path: "state"
             value: "preparation"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[529]"
@@ -147,7 +147,7 @@ mappings:
           - path: "state"
             value: "entered-in-error"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[528]"
@@ -169,7 +169,7 @@ mappings:
           - path: "state"
             value: "in-progress"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[245]"
@@ -191,7 +191,7 @@ mappings:
           - path: "state"
             value: "on-hold"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[530]"
@@ -213,7 +213,7 @@ mappings:
           - path: "state"
             value: "stopped"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[531]"
@@ -235,7 +235,7 @@ mappings:
           - path: "state"
             value: "completed"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[532]"
@@ -257,7 +257,7 @@ mappings:
           - path: "state"
             value: "unknown"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[533]"
@@ -286,7 +286,7 @@ mappings:
         - name: "Name"
           with:
             fhir: "code"
-            openehr: "/description[at0001]/items[at0002]"
+            openehr: "description[at0001]/items[at0002]"
           fhirCondition:
             targetRoot: "coding"
             targetAttribute: "system"
@@ -312,3 +312,8 @@ mappings:
     with:
       fhir: "$resource.bodySite"
       openehr: "$archetype/description[at0001]/items[at0063]"
+
+  - name: "performedEnd"
+    with:
+      fhir: "$resource.performed.end" # better fiting then performed end from context since this covers all procedures
+      openehr: "$archetype/description[at0001]/items[at0060]"

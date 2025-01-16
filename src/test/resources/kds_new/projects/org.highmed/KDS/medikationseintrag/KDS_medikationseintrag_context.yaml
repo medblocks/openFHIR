@@ -12,13 +12,12 @@ context:
   templateId: "KDS_Medikationseintrag_v1"
   archetypes:
     - "OBSERVATION.medication_statement.v0"
-    - "CLUSTER.medication.v2.medication-to-medication"
+    - "CLUSTER.medication.v2"
     - "CLUSTER.medication.v2.substance-to-medication"
     - "CLUSTER.dosage.v2"
     - "CLUSTER.timing_daily.v1"
     - "CLUSTER.timing_nondaily.v1"
     - "CLUSTER.medication_status_fhir.v0"
-    - "CLUSTER.organisation_cc.v0"
     - "CLUSTER.entry_category.v0"
     - "CLUSTER.identifier_fhir.v0"
   extensions:

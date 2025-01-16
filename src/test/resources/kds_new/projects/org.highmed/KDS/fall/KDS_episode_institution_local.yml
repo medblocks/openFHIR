@@ -95,7 +95,7 @@ mappings:
         - name: "ersteUndZweiteStelle"
           with:
             fhir: "extension.value" # since its two extensions nested
-            openehr: "/items[at0008 and name/value='Aufnahmegrund - ErsteUndZweiteStelle']"
+            openehr: "items[at0008 and name/value='Aufnahmegrund - ErsteUndZweiteStelle']"
           fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
@@ -116,7 +116,7 @@ mappings:
         - name: "dritteStelle"
           with:
             fhir: "extension.value"
-            openehr: "/items[at0008 and name/value='Aufnahmegrund - Dritte Stelle']"
+            openehr: "items[at0008 and name/value='Aufnahmegrund - Dritte Stelle']"
           fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
@@ -137,7 +137,7 @@ mappings:
         - name: "vierteStelle"
           with:
             fhir: "extension.value"
-            openehr: "/items[at0008 and name/value='Aufnahmegrund - Vierte Stelle']"
+            openehr: "items[at0008 and name/value='Aufnahmegrund - Vierte Stelle']"
           fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
@@ -165,11 +165,11 @@ mappings:
        - name: "aufnahmeategorie"
          with:
            fhir: "admitSource"
-           openehr: "/data[at0001]/items[at0009]"
+           openehr: "data[at0001]/items[at0009]"
        - name: "entlassungsgrund"
          with:
            fhir: "dischargeDisposition.extension.extension.value"
-           openehr: "/data[at0001]/items[at0006]"
+           openehr: "data[at0001]/items[at0006]"
          fhirCondition:
            targetRoot: "dischargeDisposition.extension"
            targetAttribute: "url"
@@ -208,7 +208,7 @@ mappings:
               - name: "referencedDiagnose"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "/data[at0001]/links"
+                  openehr: "data[at0001]/links"
                   type: "REFERENCED_MAPPING"
                   openehrLink:
                     meaning: "link to the diagnosis composition"
@@ -219,12 +219,12 @@ mappings:
                       with:
                         unidirectional: "fhir->openehr" # since the condition is mapped from the reference.
                         fhir: "condition.code"
-                        openehr: "/data[at0001]/items[at0002]"
+                        openehr: "data[at0001]/items[at0002]"
 
                     - name: "diagnoseTyp"
                       with:
                         fhir: "^^.use.coding.code"
-                        openehr: "/data[at0001]/items[at0009]"
+                        openehr: "data[at0001]/items[at0009]"
                       fhirCondition:
                         targetRoot: "use.coding.code"
                         targetAttribute: "value"
@@ -234,7 +234,7 @@ mappings:
                     - name: "diagnoseSubtyp"
                       with:
                         fhir: "^^.use.coding.code"
-                        openehr: "/data[at0001]/items[at0079]"
+                        openehr: "data[at0001]/items[at0079]"
                       fhirCondition:
                         targetRoot: "use.coding.code"
                         targetAttribute: "value"

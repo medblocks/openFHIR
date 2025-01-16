@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name:  CLUSTER.medication.v2.substance-to-medication
+  name:  CLUSTER.medication.v2.substance
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
@@ -27,7 +27,7 @@ mappings:
         - name: "ingredient"
           with:
             fhir: "substance.as(CodeableConcept)"
-            openehr: "/items[at0132]"
+            openehr: "items[at0132]"
         - name: "substanceSubstance"
           with:
             fhir: "substance.reference.as(Substance)"
@@ -38,23 +38,23 @@ mappings:
               - name: "medicationSubstanceReference"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "/items[openEHR-EHR-CLUSTER.medication.v2]"
-                slotArchetype: "CLUSTER.medication.v2.substance-to-medication" # depending on the resourceType picks the correct one
+                  openehr: "items[openEHR-EHR-CLUSTER.medication.v2]"
+                slotArchetype: "CLUSTER.medication.v2.substance" # depending on the resourceType picks the correct one
         - name: "quantity"
           with:
             fhir: "quantity"
-            openehr: "/items[at0152]"
+            openehr: "items[at0152]"
             type: "NONE"
           followedBy:
             mappings:
               - name: "zahler"
                 with:
                   fhir: "numerator"
-                  openehr: "/items[at0152]/items[at0153]"
+                  openehr: "items[at0152]/items[at0153]"
               - name: "nenner"
                 with:
                   fhir: "denominator"
-                  openehr: "/items[at0152]/items[at0157]"
+                  openehr: "items[at0152]/items[at0157]"
 
   - name: "instance"
     with:

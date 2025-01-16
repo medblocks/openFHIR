@@ -15,14 +15,14 @@ mappings:
   - name: "status"
     with:
       fhir: "$resource"
-      openehr: "$archetype/items[at0005]"
+      openehr: "$archetype/items[at0005]/defining_code"
     manual:
       - name: "registered"
         fhir:
           - path: "status"
             value: "registered"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0015]"
@@ -44,7 +44,7 @@ mappings:
           - path: "status"
             value: "partial"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0016]"
@@ -54,7 +54,7 @@ mappings:
           - path: "status"
             value: "preliminary"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0017]"
@@ -76,7 +76,7 @@ mappings:
           - path: "status"
             value: "final"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0018]"
@@ -98,7 +98,7 @@ mappings:
           - path: "status"
             value: "amended"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0020]"
@@ -120,7 +120,7 @@ mappings:
           - path: "status"
             value: "corrected"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0019]"
@@ -142,7 +142,7 @@ mappings:
           - path: "status"
             value: "appended"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0021]"
@@ -164,7 +164,7 @@ mappings:
           - path: "status"
             value: "cancelled"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0023]"
@@ -186,7 +186,7 @@ mappings:
           - path: "status"
             value: "entered-in-error"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0022]"
@@ -249,7 +249,7 @@ mappings:
           path: "status"
           value: "entered-in-error"
         openehrCondition:
-          targetRoot: "defining_code"
+          targetRoot: "$openehrRoot"
           targetAttribute: "code_string"
           operator: "one of"
           criteria: "[at0022]"

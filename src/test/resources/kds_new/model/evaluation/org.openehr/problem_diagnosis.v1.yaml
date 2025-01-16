@@ -50,11 +50,11 @@ mappings:
         - name: "problemDiagnoseName"
           with:
             fhir: "coding"
-            openehr: "/data[at0001]/items[at0002]"
+            openehr: "data[at0001]/items[at0002]"
         - name: "problemDiagnoseText"
           with:
             fhir: "text"
-            openehr: "/data[at0001]/items[at0009]"
+            openehr: "data[at0001]/items[at0009]"
 
   - name: "note"
     with:
@@ -64,7 +64,7 @@ mappings:
   - name: "dateTime"
     with:
       fhir: "$resource.onset"
-      openehr: "/data[at0001]/items[at0077]"
+      openehr: "data[at0001]/items[at0077]"
 
   - name: "bodySite"
     with:

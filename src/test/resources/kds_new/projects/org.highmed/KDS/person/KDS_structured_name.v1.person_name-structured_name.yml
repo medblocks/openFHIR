@@ -6,7 +6,7 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  extends: CLUSTER.structured_name.v1.person_name-structured_name
+  extends: CLUSTER.structured_name.v1
 
 mappings:
   - name: "name.prefix" #TODO is wrong in the template only qualifier is displayed has to be fixed.
@@ -38,7 +38,7 @@ mappings:
         - name: "familiennameZusatz"
           with:
             fhir: "extension"
-            openehr: "/items[at0005 and name/value='Familienname-Namenszusatz']"
+            openehr: "items[at0005 and name/value='Familienname-Namenszusatz']"
           fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
@@ -60,7 +60,7 @@ mappings:
         - name: "nachnameOhneZusätze"
           with:
             fhir: "extension"
-            openehr: "/items[at0005 and name/value='Familienname-Nachname']"
+            openehr: "items[at0005 and name/value='Familienname-Nachname']"
           fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"
@@ -81,7 +81,7 @@ mappings:
         - name: "vorsatzwort"
           with:
             fhir: "extension"
-            openehr: "/items[at0005 and name/value='Familienname-Vorsatzwort']"
+            openehr: "items[at0005 and name/value='Familienname-Vorsatzwort']"
           fhirCondition:
             targetRoot: "extension"
             targetAttribute: "url"

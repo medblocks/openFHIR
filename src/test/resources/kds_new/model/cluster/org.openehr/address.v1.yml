@@ -22,32 +22,32 @@ mappings:
         - name: "line"
           with:
             fhir: "line"
-            openehr: "/items[at0001]"
+            openehr: "items[at0001]"
 
         - name: "city"
           with:
             fhir: "city"
-            openehr: "/items[at0002]"
+            openehr: "items[at0002]"
 
         - name: "state"
           with:
             fhir: "state"
-            openehr: "/items[at0004]"
+            openehr: "items[at0004]"
 
         - name: "postalCode"
           with:
             fhir: "postalCode"
-            openehr: "/items[at0005]"
+            openehr: "items[at0005]"
 
         - name: "country"
           with:
             fhir: "country"
-            openehr: "/items[at0006]"
+            openehr: "items[at0006]"
 
         - name: "type"
           with:
             fhir: "type"
-            openehr: "/items[at0010]"
+            openehr: "items[at0010]/defining_code"
           manual:
             - name: "physical"
               openehr:
@@ -57,12 +57,17 @@ mappings:
                   value: "at0011"
                 - path: "../value"
                   value: "Physical"
+              fhirCondition:
+                targetRoot: "$fhirRoot"
+                targetAttribute: "code"
+                operator: "one of"
+                criteria: "[physical]"
 
               fhir:
                 - path: "code"
                   value: "physical"
               openehrCondition:
-                targetRoot: "defining_code"
+                targetRoot: "$openehrRoot"
                 targetAttribute: "code_string"
                 operator: "one of"
                 criteria: "[at0011]"
@@ -75,9 +80,19 @@ mappings:
                   value: "at0012"
                 - path: "../value"
                   value: "Postal"
+              fhirCondition:
+                targetRoot: "$fhirRoot"
+                targetAttribute: "code"
+                operator: "one of"
+                criteria: "[postal]"
               fhir:
                 - path: "code"
                   value: "postal"
+              openehrCondition:
+                targetRoot: "$openehrRoot"
+                targetAttribute: "code_string"
+                operator: "one of"
+                criteria: "[at0012]"
 
             - name: "both"
               openehr:
@@ -87,7 +102,16 @@ mappings:
                   value: "at0013"
                 - path: "../value"
                   value: "Both"
+              fhirCondition:
+                targetRoot: "$fhirRoot"
+                targetAttribute: "code"
+                operator: "one of"
+                criteria: "[both]"
               fhir:
                 - path: "code"
                   value: "both"
-
+              openehrCondition:
+                targetRoot: "$openehrRoot"
+                targetAttribute: "code_string"
+                operator: "one of"
+                criteria: "[at0013]"

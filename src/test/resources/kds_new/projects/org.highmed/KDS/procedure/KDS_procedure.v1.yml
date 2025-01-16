@@ -68,8 +68,8 @@ mappings:
                 path: "url"
                 value: "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht"
 
-  - name: "contextStartTime"
-    extension: "overwrite"
+  - name: "contextStartDokumentationsdatum" # if provided overwrite start_time of context provided in performed, if not take performed
+    extension: "add"
     with:
       fhir: "$resource.extension"
       openehr: "$composition/context/start_time"

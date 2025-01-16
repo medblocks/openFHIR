@@ -27,6 +27,6 @@ mappings:
       openehr: "$archetype/items[at0001]" #Name of body site
     openehrCondition:
       targetRoot: "$archetype"
-      targetAttribute: "/items[at0001]"
+      targetAttribute: "items[at0001]"
       operator: "type"
       criteria: ["DV_CODED_TEXT"]

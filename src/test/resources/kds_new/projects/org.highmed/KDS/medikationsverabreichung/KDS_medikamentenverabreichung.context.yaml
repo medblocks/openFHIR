@@ -12,7 +12,7 @@ context:
   templateId: "KDS_Medikamentenverabreichungen"
   archetypes:
     - "ACTION.medication.v1"
-    - "CLUSTER.medication.v2.medication-to-medication"
+    - "CLUSTER.medication.v2"
     - "CLUSTER.medication.v2.substance-to-medication"
     - "CLUSTER.dosage.v2"
   extensions:
