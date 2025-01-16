@@ -33,19 +33,19 @@ mappings:
   - name: "performed"
     with:
       fhir: "$resource.performed.as(Period)"
-      openehr: "$archetype.context"
+      openehr: "$archetype/context"
     followedBy:
       mappings:
         - name: "contextStart"
           with:
             fhir: "start"
-            openehr: "$archetype.context.start_time"
+            openehr: "$archetype/context/start_time"
             type: "DATETIME"
 
         - name: "contextEnd"
           with:
             fhir: "end"
-            openehr: "$archetype.context._end_time"
+            openehr: "$archetype/context/end_time"
             type: "DATETIME"
 
 #  - name: "composer"
@@ -56,20 +56,20 @@ mappings:
   - name: "ISMTransition"
     with:
       fhir: "$resource.status" #todo there needs to be a mapping table
-      openehr: "$archetype.prozedur.ism_transition.current_state"
+      openehr: "$archetype/content[openEHR-EHR-ACTION.procedure.v1]/ism_transition/current_state"
       type: "STRING"
 
 
   - name: "name"
     with:
       fhir: "$resource.code"
-      openehr: "$archetype.prozedur"
+      openehr: "$archetype/content[openEHR-EHR-ACTION.procedure.v1]"
     followedBy:
       mappings:
         - name: "Name"
           with:
             fhir: "coding"
-            openehr: "name_der_prozedur"
+            openehr: "$archetype/content[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0002]"
             type: "CODING"
           fhirCondition:
             targetRoot: "coding"
@@ -80,23 +80,23 @@ mappings:
         - name: "freetext"
           with:
             fhir: "text"
-            openehr: "freitextbeschreibung"
+            openehr: "$archetype/content[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0049, 'Freitextbeschreibung']"
             type: "STRING"
 
   - name: "comment"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype.prozedur.kommentar"
+      openehr: "$archetype/content[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0005]"
       type: "STRING"
 
   - name: "category"
     with:
       fhir: "$resource.category"
-      openehr: "$archetype.prozedur.kategorie_der_prozedur"
+      openehr: "$archetype/content[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0067, 'Kategorie der Prozedur']"
       type: "CODEABLECONCEPT"
 
   - name: "bodySite"
     with:
       fhir: "$resource.bodySite"
-      openehr: "$archetype.prozedur.körperstelle"
+      openehr: "$archetype/content[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0063, 'Körperstelle']"
       type: "CODEABLECONCEPT"

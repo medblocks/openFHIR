@@ -17,7 +17,7 @@ mappings:
     extension: "overwrite"
     with:
       fhir: "$fhirRoot.identifier"
-      openehr: "identifier.identifier_value"
+      openehr: "$archetype/items[at0003]"
       type: "IDENTIFIER"
 
   - name: "orgaKey" #is populated from the institution mapping

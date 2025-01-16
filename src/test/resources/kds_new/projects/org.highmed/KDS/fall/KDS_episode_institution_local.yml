@@ -13,28 +13,28 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.type"
-      openehr: "$archetype.context.falltyp"
+      openehr: "$archetype/context/other_context[at0001]/items[at0005]"
       type: "CODEABLECONCEPT"
 
   - name: "fallklasse"
     extension: "add"
     with:
       fhir: "$resource.class"
-      openehr: "$archetype.context.fallklasse"
+      openehr: "$archetype/context/other_context[at0001]/items[at0004]"
       type: "CODING"
 
   - name: "fallart"
     extension: "add"
     with:
       fhir: "$resource.status"
-      openehr: "$archetype.context.fallart"
+      openehr: "$archetype/context/other_context[at0001]/items[at0010 and name/value='Fallart']"
       type: "CODING"
 
   - name: "fallId"
     extension: "add"
     with:
       fhir: "$resource.identifier.value"
-      openehr: "$archetype.context.fall-id"
+      openehr: "$archetype/context/other_context[at0001]/items[at0003]"
       type: "STRING"
     fhirCondition:
       targetRoot: "$resource.identifier"
@@ -53,14 +53,14 @@ mappings:
         - name: "organization"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype.institutionsaufenthalt.überweiser"
+            openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.organisation.v1 and name/value='Überweiser']"
           slotArchetype: "CLUSTER.organisation.v1"
 
   - name: "aufnahmegrundExtension"
     extension: "add"
     with:
       fhir: "$resource.extension"
-      openehr: "$archetype.institutionsaufenthalt"
+      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]"
       type: "NONE"
     fhirCondition:
       targetRoot: "$resource.extension"
@@ -72,7 +72,7 @@ mappings:
         - name: "ersteUndZweiteStelle"
           with:
             fhir: "extension.value" # since its two extensions nested
-            openehr: "aufnahmegrund_-_ersteundzweitestelle"
+            openehr: "data[at0001]/items[at0008 and name/value='Aufnahmegrund - ErsteUndZweiteStelle']"
             type: "CODING"
           fhirCondition:
             targetRoot: "extension"
@@ -83,7 +83,7 @@ mappings:
         - name: "dritteStelle"
           with:
             fhir: "extension.value"
-            openehr: "aufnahmegrund_-_dritte_stelle"
+            openehr: "data[at0001]/items[at0008 and name/value='Aufnahmegrund - Dritte Stelle']"
             type: "CODING"
           fhirCondition:
             targetRoot: "extension"
@@ -95,7 +95,7 @@ mappings:
         - name: "vierteStelle"
           with:
             fhir: "extension.value"
-            openehr: "aufnahmegrund_-_vierte_stelle"
+            openehr: "data[at0001]/items[at0008 and name/value='Aufnahmegrund - Vierte Stelle']"
             type: "CODING"
           fhirCondition:
             targetRoot: "extension"
@@ -115,13 +115,13 @@ mappings:
         - name: "aufnahmekategorie"
           with:
             fhir: "admitSource.coding"
-            openehr: "institutionsaufenthalt.aufnahmekategorie"
+            openehr: "content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0009]"
             type: "CODING"
 
         - name: "entlassungsgrund"
           with:
             fhir: "dischargeDisposition.extension"
-            openehr: "institutionsaufenthalt.outcome"
+            openehr: "content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0006]"
             type: "CODING"
           fhirCondition:
             targetRoot: "dischargeDisposition.extension"
@@ -133,13 +133,13 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.diagnosis"
-      openehr: "$archetype.problem_diagnose"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
     followedBy:
       mappings:
         - name: "problemDiagnose"
           with:
             fhir: "condition"
-            openehr: "$archetype.problem_diagnose"
+            openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
           slotArchetype: "EVALUATION.problem_diagnosis.v1"
 
         - name: "problemDiagnoseUse"
@@ -152,7 +152,7 @@ mappings:
               - name: "diagnoseTyp"
                 with:
                   fhir: "coding"
-                  openehr: "$archetype.problem_diagnose.diagnosetyp"
+                  openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]/data[at0001]/items[at0009 and name/value='Diagnosetyp']"
                   type: "CODING"
                 fhirCondition:
                   targetRoot: "coding"
@@ -163,7 +163,7 @@ mappings:
               - name: "diagnoseSubtyp"
                 with:
                   fhir: "coding"
-                  openehr: "$archetype.problem_diagnose.diagnosesubtyp"
+                  openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]/data[at0001]/items[at0079 and name/value='Diagnosesubtyp']"
                   type: "CODING"
                 fhirCondition:
                   targetRoot: "coding"

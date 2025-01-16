@@ -3,6 +3,7 @@ package com.medblocks.openfhir.fc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Utility class containing all constants defined by the FHIR Connect specification
@@ -35,5 +36,6 @@ public class FhirConnectConst {
     public static final String UNIDIRECTIONAL_TOOPENEHR = "fhir->openehr";
     public static final String CONDITION_OPERATOR_ONE_OF = "one of";
     public static final String CONDITION_OPERATOR_EMPTY = "empty";
-    public static final List<String> OPENEHR_INVALID_IDENTIFIER = Arrays.asList("structure", "tree", "event_series", "jedes_ereignis");
+    public static final List<String> OPENEHR_INVALID_PATH_RM_TYPES = Arrays.asList("HISTORY","EVENT","ITEM_TREE","");
+    public static final List<String> OPENEHR_CONSISTENT_LIST = Stream.of("text_value", "coded_text_value", "null_flavour", "feeder_audit").sorted().toList();
 }

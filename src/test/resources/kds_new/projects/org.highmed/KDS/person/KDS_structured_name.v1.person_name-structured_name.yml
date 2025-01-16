@@ -27,7 +27,7 @@ mappings:
         - name: "family"
           with:
             fhir: "family.extension.value"
-            openehr: "familienname-nachname"
+            openehr: "items[at0005, 'Familienname-Nachname']"
             type: "STRING"
           fhirCondition:
             targetRoot: "family.extension"
@@ -38,7 +38,7 @@ mappings:
         - name: "namens zusatz"
           with:
             fhir: "family.extension.value"
-            openehr: "familienname-namenszusatz"
+            openehr: "items[at0005, 'Familienname-Namenszusatz']"
             type: "STRING"
           fhirCondition:
             targetRoot: "family.extension"
@@ -49,7 +49,7 @@ mappings:
         - name: "familienname vorsatzwort"
           with:
             fhir: "family.extension.value"
-            openehr: "familienname-vorsatzwort"
+            openehr: "items[at0005, 'Familienname-Vorsatzwort']"
             type: "STRING"
           fhirCondition:
             targetRoot: "family.extension"

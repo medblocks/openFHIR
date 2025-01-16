@@ -15,4 +15,4 @@ mappings:
   - name: "birthdate"
     with:
       fhir: "$fhirRoot"
-      openehr: "$archetype.geburtsdatum"
+      openehr: "$archetype/items[at0001]"

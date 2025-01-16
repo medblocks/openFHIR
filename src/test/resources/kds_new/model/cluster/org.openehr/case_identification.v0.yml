@@ -15,7 +15,7 @@ mappings:
   - name: "identifierCase"
     with:
       fhir: "$fhirRoot.value"
-      openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/items[at0001]"
+      openehr: "$archetype/items[at0001]"
       type: "STRING"
     fhirCondition:
       targetRoot: "$fhirRoot"

@@ -13,7 +13,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$fhirRoot.start.extension"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]/items[at0001]"
+      openehr: "$archetype/items[at0001]"
       type: "CODEABLECONCEPT"
     fhirCondition:
       targetRoot: "$fhirRoot.start.extension" #parent selector from jsonpath-plus its like ..
@@ -25,7 +25,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$fhirRoot.end.extension"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]/items[at0002]"
+      openehr: "$archetype/items[at0002]"
       type: "CODEABLECONCEPT"
     fhirCondition:
       targetRoot: "$fhirRoot.end.extension" #parent selector from jsonpath-plus

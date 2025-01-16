@@ -13,7 +13,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$fhirRoot.clinicalStatus"
-      openehr: "/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2, 'Klinischer Status']/items[at0003, 'Klinischer Status']"
+      openehr: "$archetype/items[at0003, 'Klinischer Status']"
       type: "CODEABLECONCEPT"
 
 #  - name: "referenzPrimaerdiagnose"
