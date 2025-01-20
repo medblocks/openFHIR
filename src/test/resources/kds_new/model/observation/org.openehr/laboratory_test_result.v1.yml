@@ -54,13 +54,13 @@ mappings:
         - name: "effectiveEnd"
           with:
             fhir: "end"
-            openehr: "$archetype/context/end_time"
+            openehr: "context/_end_time"
             type: "DATETIME"
 
         - name: "effectiveStart"
           with:
             fhir: "start"
-            openehr: "$archetype/context/start_time"
+            openehr: "context/start_time"
             type: "DATETIME"
 
 
@@ -333,7 +333,7 @@ mappings:
         - name: "identifierInReference"
           with:
             fhir: "identifier"
-            openehr: "laborbefund/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Laborbefund']/protocol[at0004]/items[at0094]/items[at0063,'Identifikation der Laboranforderung']"
+            openehr: "content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1,'Laborbefund']/protocol[at0004]/items[at0094]/items[at0063,'Identifikation der Laboranforderung']"
             type: "IDENTIFIER"
 #        - name: "basedOnLink"
 #          with:

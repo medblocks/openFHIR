@@ -162,6 +162,6 @@ mappings:
                 slotArchetype: "EVALUATION.problem_diagnosis.v1"
                 openehrCondition:
                   targetRoot: "$archetype.diagnose" # beacuse based on this we're then determining what needs to be excluded from mapping
-                  targetAttribute: "klinischer_status.diagnoserolle|code"
+                  targetAttribute: "items[openEHR-EHR-CLUSTER.problem_qualifier.v2, 'Klinischer Status']/items[at0063, 'Diagnoserolle']|code"
                   operator: "one of"
                   criteria: "[at0064]"

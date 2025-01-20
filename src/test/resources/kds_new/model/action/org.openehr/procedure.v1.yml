@@ -45,7 +45,7 @@ mappings:
         - name: "contextEnd"
           with:
             fhir: "end"
-            openehr: "$archetype/context/end_time"
+            openehr: "$archetype/context/_end_time"
             type: "DATETIME"
 
 #  - name: "composer"
@@ -69,7 +69,7 @@ mappings:
         - name: "Name"
           with:
             fhir: "coding"
-            openehr: "$archetype/content[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0002]"
+            openehr: "description[at0001]/items[at0002]"
             type: "CODING"
           fhirCondition:
             targetRoot: "coding"
@@ -80,7 +80,7 @@ mappings:
         - name: "freetext"
           with:
             fhir: "text"
-            openehr: "$archetype/content[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0049, 'Freitextbeschreibung']"
+            openehr: "description[at0001]/items[at0049, 'Freitextbeschreibung']"
             type: "STRING"
 
   - name: "comment"

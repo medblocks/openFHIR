@@ -22,11 +22,11 @@ mappings:
         - name: "coding"
           with:
             fhir: "coding"
-            openehr: "$archetype/items[at0002 and name/value='Kategorie der Medikation']"
+            openehr: "items[at0002 and name/value='Kategorie der Medikation']"
             type: "CODING"
         - name: "comment"
           with:
             fhir: "text"
-            openehr: "$archetype/items[at0003]"
+            openehr: "items[at0003]"
             type: "STRING"
 
