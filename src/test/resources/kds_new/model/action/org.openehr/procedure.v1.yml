@@ -39,13 +39,13 @@ mappings:
         - name: "contextStart"
           with:
             fhir: "start"
-            openehr: "$archetype/context/start_time"
+            openehr: "start_time"
             type: "DATETIME"
 
         - name: "contextEnd"
           with:
             fhir: "end"
-            openehr: "$archetype/context/_end_time"
+            openehr: "_end_time"
             type: "DATETIME"
 
 #  - name: "composer"
