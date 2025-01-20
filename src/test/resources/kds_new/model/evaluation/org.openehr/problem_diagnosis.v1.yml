@@ -58,23 +58,23 @@ mappings:
               - name: "problemDiagnoseNameCode"
                 with:
                   fhir: "code"
-                  openehr: "data[at0001]/items[at0002, 'Kodierte Diagnose']"
+                  openehr: "data[at0001]/items[at0002]"
 #                  openehr: "kodierte_diagnose"
         - name: "problemDiagnoseText"
           with:
             fhir: "text"
-            openehr: "content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0009, 'Freitextbeschreibung']"
+            openehr: "content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0009]"
 
   - name: "note"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0069, 'Diagnoseerläuterung']"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0069]"
       type: "STRING"
 
   - name: "dateTime"
     with:
       fhir: "$resource.onset"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0077, 'Klinisch relevanter Zeitraum (Zeitpunkt des Auftretens)']"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0077]"
       type: "DATETIME"
 
   - name: "bodySite"
@@ -92,7 +92,7 @@ mappings:
   - name: "severity"
     with:
       fhir: "$resource.severity"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0005, 'Severity']"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0005]"
       type: "CODEABLECONCEPT"
 
 

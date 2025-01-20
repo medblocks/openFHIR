@@ -47,6 +47,51 @@ mappings:
       openehr: "$archetype/context/other_context[at0001]/items[at0005]"
       type: "STRING"
 
+  - name: "problemDiagnose"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.code"
+      openehr: "$archetype"
+    followedBy:
+      mappings:
+        - name: "problemDiagnoseName"
+          with:
+            fhir: "coding"
+            openehr: "content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']"
+            type: "CODING"
+          followedBy:
+            mappings:
+              - name: "problemDiagnoseNameCode"
+                with:
+                  fhir: "code"
+                  openehr: "data[at0001]/items[at0002, 'Kodierte Diagnose']"
+        #                  openehr: "kodierte_diagnose"
+        - name: "problemDiagnoseText"
+          with:
+            fhir: "text"
+            openehr: "content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0009, 'Freitextbeschreibung']"
+
+  - name: "note"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.note.text"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0069, 'Diagnoseerläuterung']"
+      type: "STRING"
+
+  - name: "dateTime"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.onset"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0077, 'Klinisch relevanter Zeitraum (Zeitpunkt des Auftretens)']"
+      type: "DATETIME"
+
+  - name: "severity"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.severity"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0005, 'Severity']"
+      type: "CODEABLECONCEPT"
+
   - name: "date"
     extension: "add"
     with:
