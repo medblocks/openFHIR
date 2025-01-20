@@ -31,12 +31,12 @@ mappings:
         - name: "conditionCode"
           with:
             fhir: "$fhirRoot.code"
-            openehr: "$archetype/items[at0003]"
+            openehr: "items[at0003]"
         - name: "conditionCategory"
           with:
             fhir: "$fhirRoot.note.text"
-            openehr: "$archetype/items[at0004]"
+            openehr: "items[at0004]"
         - name: "date"
           with:
             fhir: "$fhirRoot.recordedDate"
-            openehr: "$archetype/items[at0001]"
+            openehr: "items[at0001]"

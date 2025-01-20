@@ -39,13 +39,13 @@ mappings:
         - name: "id"
           with:
             fhir: "lotNumber"
-            openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Bestandteil']/items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Wirkstoffrelation']/items[at0150]"
+            openehr: "items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Bestandteil']/items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Wirkstoffrelation']/items[at0150]"
             type: "STRING"
 
         - name: "expirationDate"
           with:
             fhir: "expirationDate"
-            openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Bestandteil']/items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Wirkstoffrelation']/items[at0003]"
+            openehr: "items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Bestandteil']/items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Wirkstoffrelation']/items[at0003]"
             type: "DATETIME"
 
   - name: "ingredients"

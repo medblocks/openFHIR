@@ -62,12 +62,12 @@ mappings:
         - name: "admissionDate"
           with:
             fhir: "start"
-            openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0004]"
+            openehr: "content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0004]"
             type: "DATETIME"
         - name: "seperationDate"
           with:
             fhir: "end"
-            openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0002]"
+            openehr: "content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0002]"
             type: "DATETIME"
 
   - name: "room"

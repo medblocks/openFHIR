@@ -46,7 +46,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.identifier.value"
-      openehr: "$archetype/context/bericht_id"
+      openehr: "$archetype/context/other_context[at0001]/items[at0002]"
       type: "STRING"
 
   - name: "durchführungsabsicht"
