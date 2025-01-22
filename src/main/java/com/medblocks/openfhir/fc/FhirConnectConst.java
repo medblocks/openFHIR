@@ -36,6 +36,6 @@ public class FhirConnectConst {
     public static final String UNIDIRECTIONAL_TOOPENEHR = "fhir->openehr";
     public static final String CONDITION_OPERATOR_ONE_OF = "one of";
     public static final String CONDITION_OPERATOR_EMPTY = "empty";
-    public static final List<String> OPENEHR_INVALID_PATH_RM_TYPES = Arrays.asList("HISTORY","EVENT","ITEM_TREE","");
+    public static final List<String> OPENEHR_INVALID_PATH_RM_TYPES = Arrays.asList("HISTORY","EVENT","ITEM_TREE");
     public static final List<String> OPENEHR_CONSISTENT_LIST = Stream.of("text_value", "coded_text_value", "null_flavour", "feeder_audit").sorted().toList();
 }

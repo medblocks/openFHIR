@@ -84,7 +84,7 @@ mappings:
               - name: "medicationMedicationReference"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Bestandteil']"
+                  openehr: "$archetype"
                 slotArchetype: "CLUSTER.medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
 
         - name: "medicationSubstance"
@@ -98,7 +98,7 @@ mappings:
               - name: "medicationSubstanceReference"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "$archetype$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Bestandteil']"
+                  openehr: "$archetype"
                 slotArchetype: "CLUSTER.medication.v2.substance-to-medication" # depending on the resourceType picks the correct one
 
         - name: "strength"
