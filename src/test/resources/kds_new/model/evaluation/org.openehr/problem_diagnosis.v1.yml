@@ -45,13 +45,13 @@ mappings:
   - name: "problemDiagnose"
     with:
       fhir: "$resource.code"
-      openehr: "$archetype"
+      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']"
     followedBy:
       mappings:
         - name: "problemDiagnoseName"
           with:
             fhir: "coding"
-            openehr: "content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']"
+            openehr: "$archetype"
             type: "CODING"
           followedBy:
             mappings:
@@ -63,7 +63,7 @@ mappings:
         - name: "problemDiagnoseText"
           with:
             fhir: "text"
-            openehr: "content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0009]"
+            openehr: "data[at0001]/items[at0009]"
 
   - name: "note"
     with:
