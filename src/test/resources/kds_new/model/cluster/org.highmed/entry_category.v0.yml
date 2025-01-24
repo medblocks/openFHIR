@@ -22,7 +22,7 @@ mappings:
         - name: "coding"
           with:
             fhir: "coding"
-            openehr: "items[at0002 and name/value='Kategorie der Medikation']"
+            openehr: "items[at0002]"
             type: "CODING"
         - name: "comment"
           with:

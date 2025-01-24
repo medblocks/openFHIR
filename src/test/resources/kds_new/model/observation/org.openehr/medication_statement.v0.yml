@@ -57,13 +57,13 @@ mappings:
   - name: "reasonCode"
     with:
       fhir: "$resource.reasonCode.text"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0023 and name/value='Behandlungsgrund']"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0023]"
       type: "STRING"
 
   - name: "note"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0029 and name/value='Hinweis']"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0029]"
       type: "STRING"
 
   - name: "dosage"
@@ -104,7 +104,7 @@ mappings:
   - name: "medicationCode"
     with:
       fhir: "$resource.medication.as(CodeableConcept).text"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132 and name/value='Arzneimittel-Name']"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
       type: "STRING"
     openehrCondition:
       targetRoot: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
@@ -123,7 +123,7 @@ mappings:
   - name: "reasonReference"
     with:
       fhir: "$resource.reasonReference.as(Reference).identifier.value"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0023 and name/value='Behandlungsgrund']"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0023]"
       type: "STRING"
 
 #  - name: "partOf"
