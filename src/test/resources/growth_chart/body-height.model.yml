@@ -26,7 +26,7 @@ mappings:
   - name: "height"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype.height_length.any_event.height_length"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.height.v2]/data[at0001]/events[at0002]/data[at0003]/items[at0004]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource"

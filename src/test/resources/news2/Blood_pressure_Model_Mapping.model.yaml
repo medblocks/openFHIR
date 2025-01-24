@@ -33,7 +33,7 @@ mappings:
   - name: "component systolic"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype.blood_pressure.any_event.systolic"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0004]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"
@@ -44,7 +44,7 @@ mappings:
   - name: "component diastolic"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype.blood_pressure.any_event.diastolic"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0005]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"
@@ -55,11 +55,11 @@ mappings:
   - name: "body site, location of measurement"
     with:
       fhir: "$resource.bodySite"
-      openehr: "$archetype.blood_pressure.location_of_measurement"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/protocol[at0011]/items[at0014]"
       type: "CODEABLECONCEPT"
 
   - name: "clinical interpretation"
     with:
       fhir: "$resource.component.interpretation.text"
-      openehr: "$archetype.blood_pressure.any_event.clinical_interpretation"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at1059]"
       type: "STRING"

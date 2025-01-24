@@ -28,5 +28,5 @@ mappings:
   - name: "value"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype.respiration.any_event.rate"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.respiration.v2]/data[at0001]/events[at0002]/data[at0003]/items[at0004]"
       type: "QUANTITY"
