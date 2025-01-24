@@ -875,7 +875,7 @@ public class OpenEhrToFhir {
                 .openEhrType(rmType)
                 .build();
         openEhrRmWorker.fixFlatWithOccurrences(Collections.singletonList(getTypeHelper), webTemplate);
-        if(getTypeHelper.getOpenEhrType().equals(OPENEHR_TYPE_NONE) && openEhrPath.split("/").length != getTypeHelper.getOpenEhrPath().split("/").length){
+        if(getTypeHelper.getOpenEhrType()!=null && getTypeHelper.getOpenEhrType().equals(OPENEHR_TYPE_NONE) && openEhrPath.split("/").length != getTypeHelper.getOpenEhrPath().split("/").length){
             return "INVALID_DATA_POINT";
         }
         return getTypeHelper.getOpenEhrPath();

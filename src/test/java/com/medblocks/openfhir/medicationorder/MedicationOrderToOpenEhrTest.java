@@ -57,11 +57,11 @@ public class MedicationOrderToOpenEhrTest extends GenericTest {
                 .get(0);
         fhirToOpenEhr.createHelpers(mapper.getOpenEhrConfig().getArchetype(), mapper, templateId, templateId,
                                     mapper.getMappings(), null, helpers, coverHelpers, true, false, false);
-        Assert.assertEquals("medication_order/medication_order/order/medication_item",
+        Assert.assertEquals("medication_order/content[openEHR-EHR-INSTRUCTION.medication_order.v2]/activities[at0001]/description[at0002]/items[at0070]",
                             findOpenEhrPathByFhirPath(new ArrayList<>(helpers),
                                                       "MedicationRequest.medication.resolve().code.text"));
         Assert.assertEquals(
-                "medication_order/medication_order/order/therapeutic_direction/dosage/dose_amount/quantity_value",
+                "medication_order/content[openEHR-EHR-INSTRUCTION.medication_order.v2]/activities[at0001]/description[at0002]/items[openEHR-EHR-CLUSTER.therapeutic_direction.v1]/items[openEHR-EHR-CLUSTER.dosage.v1]/items[at0144]",
                 findOpenEhrPathByFhirPath(new ArrayList<>(helpers),
                                           "MedicationRequest.dosageInstruction.doseAndRate.dose"));
     }

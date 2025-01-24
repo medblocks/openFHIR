@@ -27,25 +27,25 @@ mappings:
         - name: "medication-item"
           with:
             fhir: "code.text"
-            openehr: "$archetype.medication_order.order.medication_item"
+            openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.medication_order.v2]/activities[at0001]/description[at0002]/items[at0070]"
             type: "STRING"
 
   - name: note
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype.medication_order.order.additional_instruction"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.medication_order.v2]/activities[at0001]/description[at0002]/items[at0044]"
       type: "STRING"
 
   - name: time
     with:
       fhir: "$resource.authoredOn"
-      openehr: "$archetype.medication_order.order.order_details.order_start_date_time"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.medication_order.v2]/activities[at0001]/description[at0002]/items[at0113]/items[at0012]"
       type: "DATETIME"
 
   # openEHR data is linking to another Archetype (Cluster Slot)
   - name: "therapeutic-direction"
     with:
       fhir: "$resource" # Only forwarding the root resource, as attributes will be handled on following mappings.
-      openehr: "$archetype.medication_order.order.therapeutic_direction"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.medication_order.v2]/activities[at0001]/description[at0002]/items[openEHR-EHR-CLUSTER.therapeutic_direction.v1]"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.therapeutic_direction.v1"   # acts as link to Model Mapping of given Archetype

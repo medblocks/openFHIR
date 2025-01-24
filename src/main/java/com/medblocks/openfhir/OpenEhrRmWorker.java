@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
@@ -110,11 +111,7 @@ public class OpenEhrRmWorker {
         remainingPaths = Arrays.asList(splitOpenEhrPath).subList(1, splitOpenEhrPath.length);
         if (findingTheOne.isMulti()) {
             // is multiple occurrences
-            if(FhirConnectConst.OPENEHR_INVALID_PATH_RM_TYPES.contains(findingTheOne.getRmType())) {
-                constructing.add(findingTheOne.getRmType());
-            }else {
-                constructing.add(findingTheOne.getId() + RECURRING_SYNTAX);
-            }
+            constructing.add(findingTheOne.getId() + RECURRING_SYNTAX);
             fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne,constructing));
         } else {
             if(FhirConnectConst.OPENEHR_INVALID_PATH_RM_TYPES.contains(findingTheOne.getRmType())) {
@@ -132,16 +129,17 @@ public class OpenEhrRmWorker {
     private String getCorrectOpenEhrType(final Set<String> forcedTypes,
                                          final WebTemplateNode relevantTemplateNode, StringJoiner constructing) {
 
-        if ((forcedTypes.size() == 1 && relevantTemplateNode.getChildren().size() <= 3) || (forcedTypes.size() == 1 && forcedTypes.contains("CODE_PHRASE"))) {
+        if ((forcedTypes.size() == 1 && relevantTemplateNode.getChildren().size() <= 3) || (forcedTypes.size() == 1 && relevantTemplateNode.getChildren().size() <= 5 && forcedTypes.contains("CODE_PHRASE"))) {
             return new ArrayList<>(forcedTypes).get(0);
         }
 
-        List<String> relevantTemplateNodeTypes = getchildrenRmTypes(relevantTemplateNode);
+        HashSet<String> relevantTemplateNodeTypes = getchildrenRmTypes(relevantTemplateNode);
         if (relevantTemplateNode.getRmType().equals("ELEMENT")) { // need to look deeper
             return relevantTemplateNode.getChildren().stream()
-                    .filter(el -> el.getId().contains("value") && forcedTypes.contains(el.getRmType()))
+                    .filter(el -> el.getId().contains("value"))
                     .map(webTemplateNode -> {
-                        if(webTemplateNode.getId().equals("value") || Collections.indexOfSubList(FhirConnectConst.OPENEHR_CONSISTENT_LIST, relevantTemplateNodeTypes) != -1){
+                        if(webTemplateNode.getId().equals("value") || FhirConnectConst.OPENEHR_CONSISTENT_SET.containsAll(relevantTemplateNodeTypes)){
+//                        if(webTemplateNode.getId().equals("value") || !relevantTemplateNode.isRelativePathNameDependent(webTemplateNode)){
                             return webTemplateNode.getRmType();
                         }
                         else{
@@ -157,8 +155,8 @@ public class OpenEhrRmWorker {
                 .filter(ft -> ft.equals(relevantTemplateNode.getRmType())).toList();
         return matchedByType.isEmpty() ? new ArrayList<>(forcedTypes).get(0) : matchedByType.get(0); // is this ok??
     }
-    private List<String> getchildrenRmTypes(WebTemplateNode webTemplateNode){
-        return webTemplateNode.getChildren().stream().map(WebTemplateNode::getId).sorted().toList();
+    private HashSet<String> getchildrenRmTypes(WebTemplateNode webTemplateNode){
+        return new HashSet<>(webTemplateNode.getChildren().stream().map(WebTemplateNode::getRmType).sorted().toList());
     }
 
     private void removeInvalidOpenEhrPath(final FhirToOpenEhrHelper fhirToOpenEhrHelper){
