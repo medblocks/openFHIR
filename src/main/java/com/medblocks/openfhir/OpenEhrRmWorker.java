@@ -138,14 +138,10 @@ public class OpenEhrRmWorker {
             return relevantTemplateNode.getChildren().stream()
                     .filter(el -> el.getId().contains("value"))
                     .map(webTemplateNode -> {
-                        if(webTemplateNode.getId().equals("value") || FhirConnectConst.OPENEHR_CONSISTENT_SET.containsAll(relevantTemplateNodeTypes)){
-//                        if(webTemplateNode.getId().equals("value") || !relevantTemplateNode.isRelativePathNameDependent(webTemplateNode)){
-                            return webTemplateNode.getRmType();
-                        }
-                        else{
+                        if (!webTemplateNode.getId().equals("value") && !FhirConnectConst.OPENEHR_CONSISTENT_SET.containsAll(relevantTemplateNodeTypes)) {
                             constructing.add(webTemplateNode.getId());
-                            return webTemplateNode.getRmType();
                         }
+                        return webTemplateNode.getRmType();
                     })
                     .findAny()
                     .orElse(null);
