@@ -4,6 +4,7 @@ import com.medblocks.openfhir.fc.FhirConnectConst;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhrHelper;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +89,7 @@ public class OpenEhrRmWorker {
         }
         final List<String> remainingPaths;
         final String[] splitOpenEhrPath = path.split("/");
-        final String pathToFind = pathToFindSuffix + splitOpenEhrPath[0].replace(", ", " and name/value=").replace(",", " and name/value=").replace("*","/");
+        final String pathToFind = pathToFindSuffix + splitOpenEhrPath[0].replace("*","/");
         if (splitOpenEhrPath[0].startsWith("_")) {
             // we don't bother with this, can't be multiple occurrences
             constructing.add(splitOpenEhrPath[0]);
@@ -97,8 +98,13 @@ public class OpenEhrRmWorker {
                     constructing, forcedTypes, fhirToOpenEhrHelper, pathToFindSuffix);
             return;
         }
+        AqlPath aqlPath = AqlPath.parse(pathToFind);
+        Set<String> aqlPathNodes = webTemplateNodes.stream()
+                .filter(node -> aqlPath.format(false).equals(node.getAqlPath(false)))
+                .map(node-> node.getId(false))
+                .collect(Collectors.toSet());
         final WebTemplateNode findingTheOne = webTemplateNodes.stream()
-                .filter(ch -> pathToFind.equals(ch.getAqlPath()))
+                .filter(ch -> aqlPath.format(true).equals(ch.getAqlPath(true)) || (aqlPath.format(false).equals(ch.getAqlPath(false)) && aqlPathNodes.size()<=1))
                 .findAny()
                 .orElse(null);
         if (findingTheOne == null) {
@@ -121,9 +127,16 @@ public class OpenEhrRmWorker {
             }
             fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne,constructing));
         }
-
-        walkThroughNodes(findingTheOne.getChildren(), String.join("/", remainingPaths),
-                constructing, forcedTypes, fhirToOpenEhrHelper, pathToFind+"/");
+        String remainingPathsStr = String.join("/", remainingPaths);
+        AqlPath remainingsAqlPath = AqlPath.parse(remainingPathsStr);
+        if(!remainingsAqlPath.format(false).equals(remainingPathsStr)) {
+            walkThroughNodes(findingTheOne.getChildren(), String.join("/", remainingPaths),
+                    constructing, forcedTypes, fhirToOpenEhrHelper, findingTheOne.getAqlPath(true) + "/");
+        }
+        else{
+            walkThroughNodes(findingTheOne.getChildren(), String.join("/", remainingPaths),
+                    constructing, forcedTypes, fhirToOpenEhrHelper, findingTheOne.getAqlPath(false) + "/");
+        }
     }
 
     private String getCorrectOpenEhrType(final Set<String> forcedTypes,

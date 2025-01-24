@@ -15,13 +15,13 @@ mappings:
   - name: "dosageInstructionText"
     with:
       fhir: "$fhirRoot.text"
-      openehr: "$archetype/items[at0178 and name/value='Dosierung Freitext']"
+      openehr: "$archetype/items[at0178]"
       type: "STRING"
 
   - name: "asNeeded"
     with:
       fhir: "$fhirRoot.asNeeded.as(BooleanType)"
-      openehr: "$archetype/items[openEHR-EHR-CLUSTER.timing_daily.v1 and name/value='Tägliche Dosierung']/items[at0024]"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.timing_daily.v1]/items[at0024]"
       type: "BOOL"
 
 

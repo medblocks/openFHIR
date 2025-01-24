@@ -15,13 +15,13 @@ mappings:
   - name: "name"
     with:
       fhir: "$resource.code.text"
-      openehr: "$archetype/items[at0132 and name/value='Arzneimittel-Name']"
+      openehr: "$archetype/items[at0132]"
       type: "STRING"
 
   - name: "ingredients"
     with:
       fhir: "$resource.ingredient"
-      openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Bestandteil']" # cluster in cluster
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
       type: "NONE"
     followedBy:
       mappings:
@@ -34,13 +34,13 @@ mappings:
               - name: "item text"
                 with:
                   fhir: "text"
-                  openehr: "items[at0132 and name/value='Bestandteil']"
+                  openehr: "items[at0132]"
                   type: "STRING"
 
               - name: "wirkstofftyp"
                 with:
                   fhir: "coding"
-                  openehr: "items[at0142 and name/value='Wirkstofftyp']"
+                  openehr: "items[at0142]"
                   type: "CODING"
 
         - name: "substanceSubstance"
@@ -53,29 +53,29 @@ mappings:
               - name: "medicationSubstanceReference"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Bestandteil']"
+                  openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[openEHR-EHR-CLUSTER.medication.v2]"
                 slotArchetype: "CLUSTER.medication.v2.substance-to-medication" # depending on the resourceType picks the correct one
 
         - name: "quantity"
           with:
             fhir: "quantity"
-            openehr: "items[at0152 and name/value='Bestandteil-Menge']"
+            openehr: "items[at0152]"
             type: "NONE"
           followedBy:
             mappings:
               - name: "zahler"
                 with:
                   fhir: "numerator"
-                  openehr: "items[at0153 and name/value='Zähler']"
+                  openehr: "items[at0153]"
                   type: "QUANTITY"
               - name: "nenner"
                 with:
                   fhir: "denominator"
-                  openehr: "items[at0157 and name/value='Nenner']"
+                  openehr: "items[at0157]"
                   type: "QUANTITY"
 
   - name: "instance"
     with:
       fhir: "$resource.instance.quantity"
-      openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2 and name/value='Wirkstoffrelation']/items[at0115]"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0115]"
       type: "QUANTITY"

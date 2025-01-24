@@ -29,7 +29,7 @@ mappings:
   - name: "analyteMeasurement"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype/items[at0001,'Messwert']"
+      openehr: "$archetype/items[at0001]"
       type: "QUANTITY"
 
   - name: "analyteName"
@@ -41,7 +41,7 @@ mappings:
   - name: "interpretation"
     with:
       fhir: "$resource.interpretation"
-      openehr: "$archetype/items[at0004, 'Interpretation']"
+      openehr: "$archetype/items[at0004]"
       type: "CODEABLECONCEPT"
 
   - name: "testmethod"
@@ -53,7 +53,7 @@ mappings:
   - name: "specimen"
     with:
       fhir: "$resource.specimen.as(Reference).identifier"
-      openehr: "$archetype/items[at0026,'Probe ID']"
+      openehr: "$archetype/items[at0026]"
       type: "IDENTIFIER"
 #    reference:
 #      resourceType: "Specimen"

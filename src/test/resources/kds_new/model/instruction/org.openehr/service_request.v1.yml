@@ -38,37 +38,37 @@ mappings:
   - name: "identifier"
     with:
       fhir: "$resource.identifier"
-      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1,'Laborleistung']/protocol[at0008]/items[at0010,'Auftrags-ID des anfordernden/einsendenden Systems (PLAC)']"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/protocol[at0008]/items[at0010]"
       type: IDENTIFIER
 
   - name: "status"
     with:
       fhir: "$resource.status"
-      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1,'Laborleistung']/protocol[at0008]/items[at0127]"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/protocol[at0008]/items[at0127]"
       type: CODING
 
   - name: "code"
     with:
       fhir: "$resource.code"
-      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1,'Laborleistung']/activities[at0001]/description[at0009]/items[at0121,'Name der Laborleistung']"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/activities[at0001]/description[at0009]/items[at0121]"
       type: "CODEABLECONCEPT"
 
   - name: "category"
     with:
       fhir: "$resource.category"
-      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1,'Laborleistung']/activities[at0001]/description[at0009]/items[at0148,'Art der Laborleistung (Kategorie)']"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/activities[at0001]/description[at0009]/items[at0148]"
       type: "CODEABLECONCEPT"
 
   - name: "intent"
     with:
       fhir: "$resource.intent"
-      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1,'Laborleistung']/activities[at0001]/description[at0009]/items[at0065]"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/activities[at0001]/description[at0009]/items[at0065]"
       type: "CODING"
 
   - name: "note"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1,'Laborleistung']/activities[at0001]/description[at0009]/items[at0150]"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/activities[at0001]/description[at0009]/items[at0150]"
       type: "STRING"
 
   - name: "organisation"
@@ -82,7 +82,7 @@ mappings:
         - name: "organization"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1,'Laborleistung']/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1,'Einsender']"
+            openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
           slotArchetype: "CLUSTER.organisation.v1"
 
 
