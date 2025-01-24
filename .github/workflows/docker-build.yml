@@ -4,12 +4,12 @@ on:
   push:
     branches:
       - main
+      - docker-build-actions
     tags:
       - "v*"
   pull_request:
     branches:
       - main
-  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
