@@ -1,17 +1,21 @@
-version: '3'
+version: "3"
 services:
   openfhir:
     build: .
     ports:
-      - "8080:8080"
+      - "8081:8080"
     depends_on:
       - db
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/openfhir
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+    volumes:
+      - ./bootstrap:/app/bootstrap
   db:
     image: postgres:15
+    ports:
+      - "5431:5432"
     environment:
       POSTGRES_DB: openfhir
       POSTGRES_USER: postgres
