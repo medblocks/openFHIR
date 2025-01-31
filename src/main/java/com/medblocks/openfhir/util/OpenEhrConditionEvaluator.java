@@ -168,6 +168,7 @@ public class OpenEhrConditionEvaluator {
                                            final JsonObject fullFlatPath) {
         final String openEhrPath = openFhirStringUtils.prepareOpenEhrSyntax(openEhrCondition.getTargetRoot(),
                                                                             firstFlatPath);
+
         final String withRegex = openFhirStringUtils.addRegexPatternToSimplifiedFlatFormat(openEhrPath);
         return openFhirStringUtils.getAllEntriesThatMatch(withRegex, fullFlatPath).stream().distinct().collect(
                 Collectors.toList());

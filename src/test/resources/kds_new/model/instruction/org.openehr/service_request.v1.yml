@@ -22,53 +22,53 @@ mappings:
   - name: "authoredOn"
     with:
       fhir: "$resource.authoredOn"
-      openehr: "$archetype.context.start_time"
+      openehr: "$archetype/context/start_time"
       type: DATE
 
   - name: "composer"
     with:
       fhir: "$resource.requester.as(Reference).display"
-      openehr: "$archetype.composer|name" #take the first one if its 0..n ?!
+      openehr: "$archetype/composer|name" #take the first one if its 0..n ?!
 
   - name: "provider"
     with:
       fhir: "$resource.requester" # mapping is twice, entry level will overwrite the composer from above if not changed in the extension mapping
-      openehr: "$archetype.provider"
+      openehr: "$archetype/provider"
 
   - name: "identifier"
     with:
       fhir: "$resource.identifier"
-      openehr: "$archetype.laborleistung.auftrags-id_des_anfordernden_einsendenden_systems_plac"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/protocol[at0008]/items[at0010]"
       type: IDENTIFIER
 
   - name: "status"
     with:
       fhir: "$resource.status"
-      openehr: "$archetype.laborleistung.status_der_anfrage"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/protocol[at0008]/items[at0127]"
       type: CODING
 
   - name: "code"
     with:
       fhir: "$resource.code"
-      openehr: "$archetype.laborleistung.aktuelle_aktivität.name_der_laborleistung"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/activities[at0001]/description[at0009]/items[at0121]"
       type: "CODEABLECONCEPT"
 
   - name: "category"
     with:
       fhir: "$resource.category"
-      openehr: "$archetype.laborleistung.aktuelle_aktivität.art_der_laborleistung_kategorie"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/activities[at0001]/description[at0009]/items[at0148]"
       type: "CODEABLECONCEPT"
 
   - name: "intent"
     with:
       fhir: "$resource.intent"
-      openehr: "$archetype.laborleistung.aktuelle_aktivität.intention"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/activities[at0001]/description[at0009]/items[at0065]"
       type: "CODING"
 
   - name: "note"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype.laborleistung.aktuelle_aktivität.kommentar"
+      openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/activities[at0001]/description[at0009]/items[at0150]"
       type: "STRING"
 
   - name: "organisation"
@@ -82,7 +82,7 @@ mappings:
         - name: "organization"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype.laborleistung.einsender"
+            openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1]/protocol[at0008]/items[openEHR-EHR-CLUSTER.organisation.v1]"
           slotArchetype: "CLUSTER.organisation.v1"
 
 

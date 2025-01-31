@@ -24,7 +24,7 @@ mappings:
   - name: "bodySiteCoded"
     with:
       fhir: "$fhirRoot"
-      openehr: "body_site_name" #Name of body site
+      openehr: "$archetype/items[at0001]" #Name of body site
       type: "CODEABLECONCEPT"
 #    openehrCondition:
 #      targetRoot: "$archetype"

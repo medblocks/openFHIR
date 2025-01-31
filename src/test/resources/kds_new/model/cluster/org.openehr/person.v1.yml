@@ -16,13 +16,13 @@ mappings:
   - name: "name"
     with:
       fhir: "$resource.name"
-      openehr: "$archetype.name"
+      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.person_data.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]/items[openEHR-EHR-CLUSTER.structured_name.v1, 'Name']"
     slotArchetype: "CLUSTER.structured_name.v1.person_name-structured_name"
 
   - name: "address"
     with:
       fhir: "$resource.address"
-      openehr: "$archetype.straßenanschrift_postfach"
+      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.person_data.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]/items[openEHR-EHR-CLUSTER.address.v1, 'Straßenanschrift / Postfach']"
     slotArchetype: "CLUSTER.address.v1"
 
   - name: "organizationReference"
@@ -35,7 +35,7 @@ mappings:
         - name: "organization"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype.verwaltungsorganisation"
+            openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.person_data.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]/items[openEHR-EHR-CLUSTER.organisation.v1, 'Verwaltungsorganisation']"
           slotArchetype: "CLUSTER.organisation.v1"
           #todo: identifier_value would need to be overwritten in a KDS organisation if we wanted to map that one
 

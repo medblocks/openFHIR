@@ -15,11 +15,11 @@ mappings:
   - name: "orgName"
     with:
       fhir: "$fhirRoot.name"
-      openehr: "namenszeile"
+      openehr: "items[at0001]"
       type: "TEXT"
 
   - name: "orgId"
     with:
       fhir: "$fhirRoot.identifier"
-      openehr: "identifier"
+      openehr: "items[at0003]"
       type: "IDENTIFIER"

@@ -13,14 +13,14 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.identifier.value"
-      openehr: "$archetype.context.bericht_id"
+      openehr: "$archetype/context/other_context[at0001]/items[at0002]"
       type: "STRING"
 
   - name: "status"
     extension: "add"
     with:
       fhir: "$resource.status"
-      openehr: "$archetype.context.status|code"
+      openehr: "$archetype/context/other_context[at0001]/items[at0005]|code"
       type: "STRING"
 
 #  - name: "fallIdentifikationIdentifier"

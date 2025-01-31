@@ -14,19 +14,19 @@ mappings:
   - name: "name"
     with:
       fhir: "$resource.code.text"
-      openehr: "$archetype.arzneimittel-name"
+      openehr: "$archetype/items[at0132]"
       type: "STRING"
 
   - name: "form"
     with:
       fhir: "$resource.form"
-      openehr: "$archetype.darreichungsform"
+      openehr: "$archetype/items[at0071]"
       type: "CODEABLECONCEPT"
 
   - name: "amount"
     with:
       fhir: "$resource.amount"
-      openehr: "$archetype.wirkstärke_konzentration"
+      openehr: "$archetype/items[at0115]"
       type: "QUANTITY"
 
   - name: "batch"
@@ -39,19 +39,19 @@ mappings:
         - name: "id"
           with:
             fhir: "lotNumber"
-            openehr: "$archetype.bestandteil.wirkstoffrelation.batch_id.text_value"
+            openehr: "items[openEHR-EHR-CLUSTER.medication.v2]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0150]"
             type: "STRING"
 
         - name: "expirationDate"
           with:
             fhir: "expirationDate"
-            openehr: "$archetype.bestandteil.wirkstoffrelation.verfallsdatum"
+            openehr: "items[openEHR-EHR-CLUSTER.medication.v2]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0003]"
             type: "DATETIME"
 
   - name: "ingredients"
     with:
       fhir: "$resource.ingredient"
-      openehr: "$archetype.bestandteil" # cluster in cluster
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
     followedBy:
       mappings:
         - name: "ingredient"
@@ -65,13 +65,13 @@ mappings:
               - name: "itemtext"
                 with:
                   fhir: "text"
-                  openehr: "bestandteil"
+                  openehr: "items[at0132]"
                   type: "STRING"
 
               - name: "wirkstofftyp"
                 with:
                   fhir: "coding"
-                  openehr: "wirkstofftyp"
+                  openehr: "items[at0142]"
                   type: "CODING"
 
         - name: "medication"
@@ -84,7 +84,7 @@ mappings:
               - name: "medicationMedicationReference"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "$archetype.bestandteil"
+                  openehr: "$archetype"
                 slotArchetype: "CLUSTER.medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
 
         - name: "medicationSubstance"
@@ -98,24 +98,24 @@ mappings:
               - name: "medicationSubstanceReference"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "$archetype.bestandteil"
+                  openehr: "$archetype"
                 slotArchetype: "CLUSTER.medication.v2.substance-to-medication" # depending on the resourceType picks the correct one
 
         - name: "strength"
           with:
             fhir: "strength"
-            openehr: "bestandteil-menge"
+            openehr: "items[at0152]"
             type: "NONE"
           followedBy:
             mappings:
               - name: "zahler"
                 with:
                   fhir: "numerator"
-                  openehr: "zähler"
+                  openehr: "items[at0153]"
                   type: "QUANTITY"
               - name: "nenner"
                 with:
                   fhir: "denominator"
-                  openehr: "nenner"
+                  openehr: "items[at0157]"
                   type: "QUANTITY"
 

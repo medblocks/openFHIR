@@ -13,7 +13,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$fhirRoot"
-      openehr: "laterality"
+      openehr: "items[at0002, 'Laterality']"
       type: "CODEABLECONCEPT"
     fhirCondition:
       targetRoot: "$fhirRoot"

@@ -28,19 +28,19 @@ mappings:
   - name: "National Early Warning Score 2 (NEWS2)"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype.national_early_warning_score_2_news2.total_score"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.news2.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0028]"
       type: "QUANTITY"
 
   - name: "time"
     with:
       fhir: "$resource.effective"
-      openehr: "$archetype.national_early_warning_score_2_news2.time"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.news2.v1]/data[at0001]/events[at0002]/time"
       type: "DATETIME"
 
   - name: "Respiration Rate Score"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype.national_early_warning_score_2_news2.respiration_rate"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.news2.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0006]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"
@@ -51,7 +51,7 @@ mappings:
   - name: "SPO Scale 1"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype.national_early_warning_score_2_news2.spo_scale_1"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.news2.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0029]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"
@@ -73,7 +73,7 @@ mappings:
   - name: "air or oxygen score"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype.national_early_warning_score_2_news2.air_or_oxygen"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.news2.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0034]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"
@@ -84,7 +84,7 @@ mappings:
   - name: "systolic"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype.national_early_warning_score_2_news2.systolic_blood_pressure"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.news2.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0004]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"
@@ -95,7 +95,7 @@ mappings:
   - name: "consciousness"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype.national_early_warning_score_2_news2.consciousness"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.news2.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0008]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"
@@ -106,7 +106,7 @@ mappings:
   - name: "temperature"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype.national_early_warning_score_2_news2.temperature"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.news2.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0007]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"
@@ -117,7 +117,7 @@ mappings:
   - name: "pulse"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype.national_early_warning_score_2_news2.pulse"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.news2.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0005]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"

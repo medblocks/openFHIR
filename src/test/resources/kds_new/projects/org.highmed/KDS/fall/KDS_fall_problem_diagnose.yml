@@ -36,7 +36,7 @@ mappings:
         - name: "diagnoseName" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
           with:
             fhir: "$fhirRoot.code.coding"
-            openehr: "$archetype.name_des_problems_der_diagnose"
+            openehr: "$archetype/data[at0001]/items[at0002]"
             type: "CODING"
 
 

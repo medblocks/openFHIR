@@ -27,7 +27,7 @@ mappings:
   - name: "weight"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype.body_weight.any_event.weight"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource"
@@ -38,10 +38,10 @@ mappings:
   - name: "time"
     with:
       fhir: "$resource.effective"
-      openehr: "$archetype.body_weight.any_event.time"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0003]/time"
       type: "DATETIME"
   - name: "comment"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype.body_weight.any_event.comment"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0024]"
       type: "STRING"

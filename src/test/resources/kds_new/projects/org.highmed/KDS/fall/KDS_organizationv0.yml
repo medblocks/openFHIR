@@ -17,7 +17,7 @@ mappings:
     extension: "overwrite"
     with:
       fhir: "$fhirRoot.identifier"
-      openehr: "identifier.identifier_value"
+      openehr: "$archetype/items[at0003]"
       type: "IDENTIFIER"
 
   - name: "orgaKey" #is populated from the institution mapping
@@ -32,7 +32,7 @@ mappings:
       criteria: "[http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel]"
     followedBy:
       mappings:
-        - name: "fachabteilungsschluessel"
+        - name: "$archetype/items[at0024]"
           with:
             fhir: "coding" # goes on element back to extension
             openehr: "$reference"
