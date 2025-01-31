@@ -38,6 +38,7 @@ public class OpenEhrCachedUtils {
         if (webTemplates.containsKey(operationaltemplate.getTemplateId().getValue())) {
             return webTemplates.get(operationaltemplate.getTemplateId().getValue());
         }
+
         final WebTemplate parser = createParser(operationaltemplate);
         webTemplates.put(operationaltemplate.getTemplateId().getValue(), parser);
         return parser;

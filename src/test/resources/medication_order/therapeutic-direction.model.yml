@@ -16,11 +16,11 @@ mappings:
   - name: "dosage"
     with:
       fhir: "$fhirRoot.dosageInstruction"
-      openehr: "$archetype.dosage"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.dosage.v1]"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.dosage.v1"
   - name: "direction_duration"
     with:
       fhir: "$fhirRoot.dosageInstruction.additionalInstruction.coding"
-      openehr: "$archetype.direction_duration.coded_text_value"
+      openehr: "$archetype/items[at0066]"
       type: "CODING"

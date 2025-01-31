@@ -16,7 +16,7 @@ mappings:
   - name: "identifier"
     with:
       fhir: "$fhirRoot"
-      openehr: "$archetype.externer_identifier"
+      openehr: "$archetype/items[at0001]"
       type: "IDENTIFIER"
     fhirCondition:
       targetRoot: "$fhirRoot" # fhirRoot is already an Identifier

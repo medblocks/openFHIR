@@ -15,7 +15,7 @@ mappings:
   - name: "mehrfachcodierung"
     with:
       fhir: "$fhirRoot"
-      openehr: "multiple_coding_identifier"
+      openehr: "items[at0001]"
       type: "CODEABLECONCEPT"
     fhirCondition:
       targetRoot: "$fhirRoot"

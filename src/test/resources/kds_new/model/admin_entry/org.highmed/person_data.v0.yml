@@ -15,7 +15,7 @@ mappings:
   - name: "personData"
     with:
       fhir: "$resource"
-      openehr: "$archetype.personendaten.person"
+      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.person_data.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]"
     slotArchetype: "CLUSTER.person.v1"
 
 #  - name: "deathBoolean" #todo: where in a template is this?
@@ -49,7 +49,7 @@ mappings:
   - name: "personBirthDate"
     with:
       fhir: "$resource.birthDate"
-      openehr: "$archetype.personendaten.daten_zur_geburt"
+      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.person_data.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.person_birth_data_iso.v0]"
     slotArchetype: "CLUSTER.person_birth_data_iso.v0"
 
 #  - name: "link"

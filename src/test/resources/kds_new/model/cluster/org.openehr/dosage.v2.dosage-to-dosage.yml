@@ -15,13 +15,13 @@ mappings:
   - name: "dosageInstructionText"
     with:
       fhir: "$fhirRoot.text"
-      openehr: "$archetype.dosierung_freitext"
+      openehr: "$archetype/items[at0178]"
       type: "STRING"
 
   - name: "asNeeded"
     with:
       fhir: "$fhirRoot.asNeeded.as(BooleanType)"
-      openehr: "$archetype.tägliche_dosierung.bei_bedarf"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.timing_daily.v1]/items[at0024]"
       type: "BOOL"
 
 
@@ -39,7 +39,7 @@ mappings:
   - name: "doseQuantityValue"
     with:
       fhir: "$fhirRoot.doseAndRate.dose.as(Quantity)"
-      openehr: "$archetype.dosis.quantity_value" # todo: quantity_value vs just |magnitude... how do you know which? maybe aql paths will fix this issue
+      openehr: "$archetype/items[at0144]" # todo: quantity_value vs just |magnitude... how do you know which? maybe aql paths will fix this issue
       type: "QUANTITY"
     openehrCondition:
       targetRoot: "$archetype"
@@ -50,7 +50,7 @@ mappings:
   - name: "doseValue"
     with:
       fhir: "$fhirRoot.doseAndRate.dose.as(Quantity)"
-      openehr: "$archetype.dosis" # todo: quantity_value vs just |magnitude... how do you know which? maybe aql paths will fix this issue
+      openehr: "$archetype/items[at0144]" # todo: quantity_value vs just |magnitude... how do you know which? maybe aql paths will fix this issue
       type: "QUANTITY"
     openehrCondition:
       targetRoot: "$archetype"
@@ -68,5 +68,5 @@ mappings:
   - name: "sequence"
     with:
       fhir: "$fhirRoot.sequence"
-      openehr: "$archetype.dosierungsreihenfolge"
+      openehr: "$archetype/items[at0164]"
       type: "QUANTITY"

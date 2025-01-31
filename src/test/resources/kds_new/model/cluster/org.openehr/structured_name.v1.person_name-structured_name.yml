@@ -26,12 +26,12 @@ mappings:
         - name: "firstName"
           with:
             fhir: "given"
-            openehr: "vorname"
+            openehr: "items[at0002]"
             type: "STRING"
 
         - name: "familyName"
           with:
             fhir: "family"
-            openehr: "familienname"
+            openehr: "items[at0005, 'Familienname']"
             type: "STRING"
 

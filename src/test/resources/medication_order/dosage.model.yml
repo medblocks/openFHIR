@@ -23,5 +23,5 @@ mappings:
         - name: "doseQuantityValue"
           with:
             fhir: "doseAndRate.dose"
-            openehr: "dose_amount.quantity_value"
+            openehr: "items[at0144]"
             type: "QUANTITY"

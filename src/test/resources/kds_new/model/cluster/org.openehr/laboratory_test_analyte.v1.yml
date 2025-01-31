@@ -17,43 +17,43 @@ mappings:
   - name: "status"
     with:
       fhir: "$resource.status"
-      openehr: "$archetype.ergebnis-status|code"
+      openehr: "$archetype/items[at0005]|code"
       type: "STRING"
 
   - name: "issued"
     with:
       fhir: "$resource.issued"
-      openehr: "$archetype.zeitpunkt_ergebnis-status"
+      openehr: "$archetype/items[at0006]"
       type: "DATETIME"
 
   - name: "analyteMeasurement"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype.messwert.quantity_value"
+      openehr: "$archetype/items[at0001]"
       type: "QUANTITY"
 
   - name: "analyteName"
     with:
       fhir: "$resource.code"
-      openehr: "$archetype.bezeichnung_des_analyts"
+      openehr: "$archetype/items[at0024]"
       type: "CODEABLECONCEPT"
 
   - name: "interpretation"
     with:
       fhir: "$resource.interpretation"
-      openehr: "$archetype.interpretation"
+      openehr: "$archetype/items[at0004]"
       type: "CODEABLECONCEPT"
 
   - name: "testmethod"
     with:
       fhir: "$resource.method.text"
-      openehr: "$archetype.testmethode|other"
+      openehr: "$archetype/items[at0028]|other"
       type: "STRING"
 
   - name: "specimen"
     with:
       fhir: "$resource.specimen.as(Reference).identifier"
-      openehr: "$archetype.probe_id.identifier_value"
+      openehr: "$archetype/items[at0026]"
       type: "IDENTIFIER"
 #    reference:
 #      resourceType: "Specimen"
@@ -74,7 +74,7 @@ mappings:
   - name: "comment"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype.kommentar"
+      openehr: "$archetype/items[at0003]"
 
 
 

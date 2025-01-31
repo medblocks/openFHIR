@@ -33,7 +33,7 @@ mappings:
   - name: "systolic"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype.blood_pressure.any_event.systolic"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0004]"
       type: "QUANTITY"
     fhirCondition:
       # One of the codings has to be the matching LOINC or SNOMED code.
@@ -51,7 +51,7 @@ mappings:
   - name: "diastolic"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype.blood_pressure.any_event.diastolic"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0005]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"                       # Scope of object for 'condition'
@@ -62,24 +62,24 @@ mappings:
   - name: "clinical interpretation"
     with:
       fhir: "$resource.component.interpretation.text"
-      openehr: "$archetype.blood_pressure.any_event.clinical_interpretation"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at1059]"
       type: "STRING"
 
   - name: "description"
     with:
       fhir: "$resource.code.text"
-      openehr: "$archetype.blood_pressure.any_event.comment"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0033]"
       type: "STRING"
 
   - name: "position hardcoded to openehr"
     with:
-      openehr: "$archetype.blood_pressure.a24_hour_average.position|code"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at1042]/state[at0007]/items[at0008]|code"
       value: "at1000"
       type: "STRING"
 
   - name: "confounding_factors hardcoded to openehr"
     with:
-      openehr: "$archetype.blood_pressure.a24_hour_average.confounding_factors"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at1042]/state[at0007]/items[at1052]"
       value: "confounding factor"
       type: "STRING"
 
@@ -92,7 +92,7 @@ mappings:
   - name: "location"
     with:
       fhir: "$resource.bodySite.coding"
-      openehr: "$archetype.blood_pressure.location_of_measurement"
+      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/protocol[at0011]/items[at0014]"
       type: "CODING"
     fhirCondition:
       targetRoot: "$resource.bodySite"

@@ -233,8 +233,6 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("2025-02-03T05:05:06", jsonObject.get("diagnose/diagnose:0/feststellungsdatum").getAsString());
         Assert.assertEquals("active", jsonObject.get("diagnose/diagnose:0/klinischer_status/klinischer_status|code").getAsString());
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/condition-clinical", jsonObject.get("diagnose/diagnose:0/klinischer_status/klinischer_status|terminology").getAsString());
-
-
     }
 
     public JsonObject toOpenEhr() {

@@ -24,25 +24,25 @@ mappings:
         - name: "city"
           with:
             fhir: "city"
-            openehr: "stadt"
+            openehr: "items[at0002, 'Stadt']"
             type: "STRING"
 
         - name: "state"
           with:
             fhir: "state"
-            openehr: "bundesland|code"
+            openehr: "items[at0004, 'Bundesland']|code"
             type: "STRING"
 
         - name: "postalCode"
           with:
             fhir: "postalCode"
-            openehr: "postleitzahl"
+            openehr: "items[at0005]"
             type: "STRING"
 
         - name: "country"
           with:
             fhir: "country"
-            openehr: "land|code" #todo: map
+            openehr: "items[at0006]|code" #todo: map
             type: "STRING"
 
 #        - name: "type" todo: are we hardcoding  (above with condition) or are we mapping?
@@ -54,6 +54,6 @@ mappings:
         - name: "line"
           with:
             fhir: "line"
-            openehr: "straße"
+            openehr: "items[at0001, 'Straße']"
             type: "STRING"
 
