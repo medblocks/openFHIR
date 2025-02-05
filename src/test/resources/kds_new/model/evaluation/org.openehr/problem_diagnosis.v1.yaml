@@ -64,7 +64,7 @@ mappings:
   - name: "dateTime"
     with:
       fhir: "$resource.onset"
-      openehr: "data[at0001]/items[at0077]"
+      openehr: "$archetype/data[at0001]/items[at0077]"
 
   - name: "bodySite"
     with:
