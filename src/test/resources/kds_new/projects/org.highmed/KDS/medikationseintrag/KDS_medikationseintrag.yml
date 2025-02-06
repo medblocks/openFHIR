@@ -43,20 +43,20 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.identifier"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/protocol[at0004]/items[openEHR-EHR-CLUSTER.identifier_fhir.v0]"
+      openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.identifier_fhir.v0]"
     slotArchetype: "CLUSTER.identifier_fhir.v0"
 
   - name: "category"
     extension: "add"
     with:
       fhir: "$resource.category"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/protocol[at0004]/items[openEHR-EHR-CLUSTER.entry_category.v0]"
+      openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.entry_category.v0]"
     slotArchetype: "CLUSTER.entry_category.v0"
 
   - name: "status"
     extension: "add"
     with:
       fhir: "$resource"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.medication_statement.v0]/protocol[at0004]/items[openEHR-EHR-CLUSTER.medication_status_fhir.v0 and name/value='Status']"
+      openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.medication_status_fhir.v0 and name/value='Status']"
     slotArchetype: "CLUSTER.medication_status_fhir.v0"
 

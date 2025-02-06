@@ -16,13 +16,13 @@ mappings:
   - name: "healthcareFacility"
     with:
       fhir: "$resource.serviceProvider.as(Reference).display"
-      openehr: "$archetype/context/_health_care_facility|name"
+      openehr: "$composition/context/_health_care_facility|name"
       type: "STRING"
 
   - name: "contextPeriod"
     with:
       fhir: "$resource.period"
-      openehr: "$archetype/context"
+      openehr: "$composition/context"
       type: "NONE"
     followedBy:
       mappings:
@@ -62,18 +62,18 @@ mappings:
         - name: "admissionDate"
           with:
             fhir: "start"
-            openehr: "content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0004]"
+            openehr: "data[at0001]/items[at0004]"
             type: "DATETIME"
         - name: "seperationDate"
           with:
             fhir: "end"
-            openehr: "content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0002]"
+            openehr: "data[at0001]/items[at0002]"
             type: "DATETIME"
 
   - name: "room"
     with:
       fhir: "$resource.location.location.as(Reference).identifier.value"
-      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0018]/items[at0023]"
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0023]"
     fhirCondition:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
@@ -89,7 +89,7 @@ mappings:
   - name: "bed"
     with:
       fhir: "$resource.location.location.as(Reference).identifier.value"
-      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0018]/items[at0024]"
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0024]"
     fhirCondition:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
@@ -105,7 +105,7 @@ mappings:
   - name: "station"
     with:
       fhir: "$resource.location.location.as(Reference).identifier.value"
-      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0018]/items[at0022]"
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0022]"
     fhirCondition:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"

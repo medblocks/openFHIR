@@ -28,5 +28,5 @@ mappings:
   - name: "value"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.pulse_oximetry.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0006]"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0006]"
       type: "PROPORTION"

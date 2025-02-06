@@ -237,7 +237,8 @@ public class OpenFhirStringUtils {
                                  final String mainOpenEhrPath) {
         return openEhrPath
                 .replace(FhirConnectConst.REFERENCE + "/", "")
-                .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + "/", mainOpenEhrPath + "/");
+                .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, mainOpenEhrPath)
+                .replace(FhirConnectConst.OPENEHR_COMPOSITION_FC, mainOpenEhrPath);
     }
 
     public String fixFhirPath(final String fhirPath) {

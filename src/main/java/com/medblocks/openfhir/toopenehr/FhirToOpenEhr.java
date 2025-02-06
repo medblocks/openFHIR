@@ -442,6 +442,9 @@ public class FhirToOpenEhr {
             }
             for (OpenFhirFhirConnectModelMapper mapperForResource : mapperForResources) {
                 final String mainArchetype = mapperForResource.getOpenEhrConfig().getArchetype();
+                if(!mapperForResource.getOpenEhrConfig().getArchetype().contains("CLUSTER")){
+                    openFhirMapperUtils.fixStartingArchetypeMappings(mapperForResource.getMappings(),mapperForResource.getOpenEhrConfig().getArchetype());
+                }
                 createHelpers(mainArchetype, mapperForResource, templateId, templateId, mapperForResource.getMappings(),
                               parentCondition, helpers, coverHelpers, bundle,
                               mapperForResource.getFhirConfig().getMultiple(), false);
@@ -534,7 +537,7 @@ public class FhirToOpenEhr {
             } else {
                 final String openehr = createMainMapping(mapping, fhirConnectMapper, initialHelper, mainOpenEhrPath,
                                                          fhirPath, multiple,
-                                                         needsToBeAddedToParentHelpers, helpers, coverHelpers);
+                                                         needsToBeAddedToParentHelpers, helpers, coverHelpers,templateId);
 
                 // inner helpers are those that follow a parent one (when mapping is followedBy or slot archetype)
                 final List<FhirToOpenEhrHelper> innerHelpers = new ArrayList<>();
@@ -564,7 +567,7 @@ public class FhirToOpenEhr {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
                 continue;
             }
-            if (!with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_ARCHETYPE_FC)) {
+            if (!with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_ARCHETYPE_FC) && !with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_COMPOSITION_FC)) {
                 final String followedByOpenEhrPath = with.getOpenehr();
                 final String delimeter = followedByOpenEhrPath.startsWith("|") ? "" : "/";
                 with.setOpenehr(
@@ -708,7 +711,8 @@ public class FhirToOpenEhr {
                                      final String mainOpenEhrPath, final String fhirPath, final boolean multiple,
                                      final boolean needsToBeAddedToParentHelpers,
                                      final List<FhirToOpenEhrHelper> helpers,
-                                     final List<FhirToOpenEhrHelper> coverHelpers) {
+                                     final List<FhirToOpenEhrHelper> coverHelpers,
+                                     final String templateId) {
         String openehr = stringUtils.prepareOpenEhrSyntax(mapping.getWith().getOpenehr(), mainOpenEhrPath);
         if (mapping.getWith().getType() == null) {
             // when type is not explicitly defined in the fhir connect model mapper, we assume a string
@@ -722,6 +726,8 @@ public class FhirToOpenEhr {
         if (!OPENEHR_TYPE_NONE.equals(mapping.getWith().getType())) {
             initialHelper.setOpenEhrPath(
                     openehr.replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + "/", mainOpenEhrPath + "/"));
+            initialHelper.setOpenEhrPath(
+                    openehr.replace(FhirConnectConst.OPENEHR_COMPOSITION_FC , templateId));
             final String replacedFhirRoot = fhirPath.replace("." + FHIR_ROOT_FC, "")
                     .replace(FHIR_ROOT_FC, "");
             initialHelper.setFhirPath(replacedFhirRoot);

@@ -27,7 +27,7 @@ mappings:
         - name: "synopsis"
           with:
             fhir: "item.answer.value"
-            openehr: "$archetype/content[openEHR-EHR-EVALUATION.clinical_synopsis.v1]/data[at0001]/items[at0002]"
+            openehr: "$archetype/data[at0001]/items[at0002]"
             type: "STRING"
           fhirCondition:
             targetRoot: "item"
@@ -38,7 +38,7 @@ mappings:
   - name: "signatories"
     with:
       fhir: "$resource.item.answer"
-      openehr: "$archetype/context/_participation[n]"
+      openehr: "$composition/context/_participation[n]"
       type: "NONE"
     fhirCondition:
       targetRoot: "$resource.item"

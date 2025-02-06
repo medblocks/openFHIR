@@ -21,7 +21,7 @@ mappings:
   - name: "treatment"
     with:
       fhir: "$resource.extension"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.advance_intervention_decisions.v1]/data[at0001]/items[at0014]/items[at0015]"
+      openehr: "$archetype/data[at0001]/items[at0014]/items[at0015]"
       type: "CODEABLECONCEPT"
     fhirCondition:
       targetRoot: "$resource.extension"
@@ -32,7 +32,7 @@ mappings:
   - name: "decision"
     with:
       fhir: "$resource.modifierExtension"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.advance_intervention_decisions.v1]/data[at0001]/items[at0014]/items[at0034]"
+      openehr: "$archetype/data[at0001]/items[at0014]/items[at0034]"
       type: "CODEABLECONCEPT"
     fhirCondition:
       targetRoot: "$resource.modifierExtension"
@@ -43,7 +43,7 @@ mappings:
   - name: "comment"
     with:
       fhir: "$resource.extension"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.advance_intervention_decisions.v1]/data[at0001]/items[at0014]/items[at0040]"
+      openehr: "$archetype/data[at0001]/items[at0014]/items[at0040]"
       type: "TEXT"
     fhirCondition:
       targetRoot: "$resource.extension"

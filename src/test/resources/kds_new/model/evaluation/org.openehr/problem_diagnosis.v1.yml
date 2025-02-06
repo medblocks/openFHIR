@@ -16,7 +16,7 @@ mappings:
   - name: "contextStartTime"
     with:
       fhir: "$resource.recordedDate"
-      openehr: "$archetype/context/start_time"
+      openehr: "$composition/context/start_time"
       type: "DATETIME"
 #
 #  - name: "participations"
@@ -45,7 +45,7 @@ mappings:
   - name: "problemDiagnose"
     with:
       fhir: "$resource.code"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']"
+      openehr: "$archetype"
     followedBy:
       mappings:
         - name: "problemDiagnoseName"
@@ -68,31 +68,31 @@ mappings:
   - name: "note"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0069]"
+      openehr: "$archetype/data[at0001]/items[at0069]"
       type: "STRING"
 
   - name: "dateTime"
     with:
       fhir: "$resource.onset"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0077]"
+      openehr: "$archetype/data[at0001]/items[at0077]"
       type: "DATETIME"
 
   - name: "bodySite"
     with:
       fhir: "$resource.bodySite"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0001]"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0001]"
       type: "CODEABLECONCEPT"
 
   - name: "bodySiteCluster"
     with:
       fhir: "$resource.bodySite"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
     slotArchetype: "CLUSTER.anatomical_location.v1"
 
   - name: "severity"
     with:
       fhir: "$resource.severity"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1, 'Diagnose']/data[at0001]/items[at0005]"
+      openehr: "$archetype/data[at0001]/items[at0005]"
       type: "CODEABLECONCEPT"
 
 
