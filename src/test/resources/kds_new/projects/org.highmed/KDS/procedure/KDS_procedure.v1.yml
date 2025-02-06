@@ -46,14 +46,14 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.identifier.value"
-      openehr: "$archetype/context/other_context[at0001]/items[at0002]"
+      openehr: "$composition/context/other_context[at0001]/items[at0002]"
       type: "STRING"
 
   - name: "durchführungsabsicht"
     extension: "add"
     with:
       fhir: "$resource.extension"
-      openehr: "$archetype/content[openEHR-EHR-ACTION.procedure.v1]/description[at0001]/items[at0014, 'Durchführungsabsicht']"
+      openehr: "$archetype/description[at0001]/items[at0014, 'Durchführungsabsicht']"
       type: "CODING"
     fhirCondition:
       targetRoot: "$resource.extension"
