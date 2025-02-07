@@ -55,7 +55,13 @@ public class MedicationOrderToOpenEhrTest extends GenericTest {
         final OpenFhirFhirConnectModelMapper mapper = repo.getMapperForArchetype("medication order",
                                                                                  "openEHR-EHR-INSTRUCTION.medication_order.v2")
                 .get(0);
-        fhirToOpenEhr.createHelpers(mapper.getOpenEhrConfig().getArchetype(), mapper, templateId, templateId,
+        String mainArchetypePath;
+        if(!mapper.getOpenEhrConfig().getArchetype().contains("CLUSTER")){
+            mainArchetypePath = templateId + "/content["+mapper.getOpenEhrConfig().getArchetype()+"]";
+        } else {
+            mainArchetypePath = templateId;
+        }
+        fhirToOpenEhr.createHelpers(mapper.getOpenEhrConfig().getArchetype(), mapper, templateId, mainArchetypePath,
                                     mapper.getMappings(), null, helpers, coverHelpers, true, false, false);
         Assert.assertEquals("medication_order/content[openEHR-EHR-INSTRUCTION.medication_order.v2]/activities[at0001]/description[at0002]/items[at0070]",
                             findOpenEhrPathByFhirPath(new ArrayList<>(helpers),

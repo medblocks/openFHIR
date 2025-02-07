@@ -1,6 +1,7 @@
 package com.medblocks.openfhir.util;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_ARCHETYPE_FC;
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_COMPOSITION_FC;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
 
 import com.medblocks.openfhir.fc.FhirConnectConst;
@@ -311,26 +312,6 @@ public class OpenFhirMapperUtils {
         prepareForwardingSlotArchetypeMappingsConditions(forwardMappers, fhirPath, fhirPrefixing);
     }
 
-    public void fixStartingArchetypeMappings(final List<Mapping> mappings, final String mainArchetype){
-        for (Mapping mapping : mappings){
-            String openehrPath = mapping.getWith().getOpenehr();
-
-            if(openehrPath != null && !openehrPath.contains(mainArchetype)){
-                mapping.getWith().setOpenehr(openehrPath.replace(OPENEHR_ARCHETYPE_FC, OPENEHR_ARCHETYPE_FC+"/content["+mainArchetype+"]"));
-            }
-            if(mapping.getOpenehrCondition()!= null && !mapping.getOpenehrCondition().getTargetRoot().contains(mainArchetype)){
-                String openehrConditionTargetRoot = mapping.getOpenehrCondition().getTargetRoot();
-                mapping.getOpenehrCondition().setTargetRoot(openehrConditionTargetRoot.replace(OPENEHR_ARCHETYPE_FC, OPENEHR_ARCHETYPE_FC+"/content["+mainArchetype+"]"));
-            }
-            if(mapping.getFollowedBy()!=null){
-                fixStartingArchetypeMappings(mapping.getFollowedBy().getMappings(),mainArchetype);
-            }
-            if(mapping.getReference() !=null){
-                fixStartingArchetypeMappings(mapping.getReference().getMappings(),mainArchetype);
-            }
-        }
-    }
-
     private void fixFhirForwardingPaths(final List<Mapping> forwardMappers,
                                         final String fhirPath,
                                         boolean fhirPrefixing) {
@@ -385,7 +366,7 @@ public class OpenFhirMapperUtils {
                     .startsWith(FhirConnectConst.OPENEHR_COMPOSITION_FC)){
                 slotArchetypeMappersMapping.getWith().setOpenehr(slotArchetypeMappersMapping.getWith().getOpenehr()
                         .replace(FhirConnectConst.OPENEHR_COMPOSITION_FC,
-                                openEhrPath));
+                                openEhrPath.split("/")[0]));
             } else if (slotArchetypeMappersMapping.getWith().getOpenehr().startsWith(FhirConnectConst.REFERENCE)) {
                 slotArchetypeMappersMapping.getWith().setOpenehr(
                         slotArchetypeMappersMapping.getWith().getOpenehr() + "/" + openEhrPath);

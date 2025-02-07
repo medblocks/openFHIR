@@ -54,7 +54,7 @@ mappings:
   - name: "media"
     with:
       fhir: "$resource.source.as(Attachment)"
-      openehr: "$archetype.advance_care_directive.media_file.content"
+      openehr: "$archetype/protocol[at0010]/items[openEHR-EHR-CLUSTER.media_file.v1]"
       type: "NONE"
     slotArchetype: "openEHR-EHR-CLUSTER.media_file.v1"
     followedBy:
