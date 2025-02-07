@@ -1,11 +1,5 @@
 package com.medblocks.openfhir.toopenehr;
 
-import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
-import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX_ESCAPED;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.medblocks.openfhir.OpenEhrRmWorker;
@@ -25,25 +19,22 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
-import org.hl7.fhir.r4.model.Base;
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.*;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.*;
 
 @Slf4j
 @Component
@@ -442,10 +433,13 @@ public class FhirToOpenEhr {
             }
             for (OpenFhirFhirConnectModelMapper mapperForResource : mapperForResources) {
                 final String mainArchetype = mapperForResource.getOpenEhrConfig().getArchetype();
-                if(!mapperForResource.getOpenEhrConfig().getArchetype().contains("CLUSTER")){
-                    openFhirMapperUtils.fixStartingArchetypeMappings(mapperForResource.getMappings(),mapperForResource.getOpenEhrConfig().getArchetype());
+                String mainArchetypePath;
+                if(!mainArchetype.contains("CLUSTER")){
+                    mainArchetypePath = templateId + "/content["+mainArchetype+"]";
+                } else {
+                    mainArchetypePath = templateId;
                 }
-                createHelpers(mainArchetype, mapperForResource, templateId, templateId, mapperForResource.getMappings(),
+                createHelpers(mainArchetype, mapperForResource, templateId, mainArchetypePath, mapperForResource.getMappings(),
                               parentCondition, helpers, coverHelpers, bundle,
                               mapperForResource.getFhirConfig().getMultiple(), false);
             }
@@ -500,6 +494,7 @@ public class FhirToOpenEhr {
             return;
         }
         for (final Mapping mapping : mappings) {
+
             final With with = mapping.getWith();
             if (with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR

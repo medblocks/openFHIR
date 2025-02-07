@@ -1,10 +1,6 @@
 package com.medblocks.openfhir.tofhir;
 
-import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_ARCHETYPE_FC;
-import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_MEDIA;
-import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
-import static com.medblocks.openfhir.fc.FhirConnectConst.THIS;
-import static com.medblocks.openfhir.fc.FhirConnectConst.UNIDIRECTIONAL_TOOPENEHR;
+import static com.medblocks.openfhir.fc.FhirConnectConst.*;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX_ESCAPED;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.WHERE;
@@ -210,9 +206,9 @@ public class OpenEhrToFhir {
                 // if fhir config is null, it means it's a slot mapper and it can't be a first-level Composition.content one
                 continue;
             }
-            if (!theMapper.getOpenEhrConfig().getArchetype().contains("CLUSTER")) {
-                openFhirMapperUtils.fixStartingArchetypeMappings(theMapper.getMappings(),theMapper.getOpenEhrConfig().getArchetype());
-            }
+//            if (!theMapper.getOpenEhrConfig().getArchetype().contains("CLUSTER")) {
+//                openFhirMapperUtils.fixStartingArchetypeMappings(theMapper.getMappings(),theMapper.getOpenEhrConfig().getArchetype());
+//            }
             final Boolean existingEntry = isMultipleByResourceType.getOrDefault(theMapper.getFhirConfig().getResource(),
                     true);
 
@@ -227,10 +223,16 @@ public class OpenEhrToFhir {
 
             // helper POJOs that help for openEHR to FHIR mappings
             final List<OpenEhrToFhirHelper> helpers = new ArrayList<>();
+            String firstFlatPath;
+            if(!theMapper.getOpenEhrConfig().getArchetype().contains("CLUSTER")){
+                firstFlatPath = webTemplate.getTree().getId()+"/content["+theMapper.getOpenEhrConfig().getArchetype()+"]";
+            }else{
+                firstFlatPath = webTemplate.getTree().getId();
+            }
 
             prepareOpenEhrToFhirHelpers(theMapper,
                     theMapper.getFhirConfig().getResource(),
-                    webTemplate.getTree().getId(),
+                    firstFlatPath,
                     theMapper.getMappings(),
                     helpers,
                     webTemplate,
@@ -238,7 +240,7 @@ public class OpenEhrToFhir {
                     false,
                     null,
                     null,
-                    webTemplate.getTree().getId(),
+                    firstFlatPath,
                     false);
 
             // within helpers, you should have everything you need to create a FHIR Resource now
@@ -778,6 +780,7 @@ public class OpenEhrToFhir {
             return;
         }
         for (final Mapping mapping : mappings) {
+
             final With with = mapping.getWith();
             final String hardcodedValue = with.getValue();
             if (with.getFhir() == null) {
@@ -795,7 +798,8 @@ public class OpenEhrToFhir {
                 continue;
             }
             final String definedMappingWithOpenEhr = with.getOpenehr();
-            String openehrAqlPath = getOpenEhrKey(definedMappingWithOpenEhr, parentFollowedByOpenEhr, firstFlatPath);
+            String fixedOpenEhr = definedMappingWithOpenEhr.replace(OPENEHR_ARCHETYPE_FC, firstFlatPath).replace(OPENEHR_COMPOSITION_FC, webTemplate.getTree().getId());
+            String openehrAqlPath = getOpenEhrKey(fixedOpenEhr, parentFollowedByOpenEhr, firstFlatPath);
             String openehr =getPathFromAqlPath(openehrAqlPath, webTemplate,mapping.getWith().getType());
             String parentFollowedByOpenEhrWithOutAqlPath = null;
             if(parentFollowedByOpenEhr!=null) {
@@ -964,7 +968,8 @@ public class OpenEhrToFhir {
                                    final String definedMappingWithOpenEhr, final String fhirPath,
                                    final List<OpenEhrToFhirHelper> helpers, final WebTemplate webTemplate,
                                    final JsonObject flatJsonObject,
-                                   final String slotContext, final String openehr, final boolean breakRecursion) {
+                                   final String slotContext, final String openehr, final boolean breakRecursion
+                                   ) {
         final String templateId = webTemplate.getTemplateId();
 
         final List<OpenFhirFhirConnectModelMapper> slotArchetypeMapperss = openFhirTemplateRepo.getMapperForArchetype(
@@ -985,7 +990,7 @@ public class OpenEhrToFhir {
             }
 
             openFhirMapperUtils.prepareForwardingSlotArchetypeMapper(slotArchetypeMappers, theMapper, fhirPath,
-                    definedMappingWithOpenEhr);
+                    getOpenEhrKey(definedMappingWithOpenEhr, null, firstFlatPath));
 
             // recursively prepare all slot archetype mappers
             final String childWithParentFhirPath = openFhirStringUtils.setParentsWherePathToTheCorrectPlace(fhirPath,

@@ -36,5 +36,5 @@ mappings:
   - name: "time"
     with:
       fhir: "$resource.effective"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.head_circumference.v1]/data[at0001]/events[at0010]/time"
+      openehr: "$archetype/data[at0001]/events[at0010]/time"
       type: "DATETIME"
