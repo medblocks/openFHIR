@@ -1,13 +1,17 @@
 package com.medblocks.openfhir.fc;
 
+import java.util.*;
+import java.util.stream.Stream;
+
 /**
  * Utility class containing all constants defined by the FHIR Connect specification
  */
 public class FhirConnectConst {
-    public static final String FHIR_RESOURCE_FC = "$fhirResource";
+    public static final String FHIR_RESOURCE_FC = "$resource";
     public static final String FHIR_ROOT_FC = "$fhirRoot";
     public static final String THIS = "$this";
-    public static final String OPENEHR_ARCHETYPE_FC = "$openEhrArchetype";
+    public static final String OPENEHR_ARCHETYPE_FC = "$archetype";
+    public static final String OPENEHR_COMPOSITION_FC = "$composition";
     public static final String OPENEHR_CONTEXT_FC = "$openEhrContext";
     public static final String OPENEHR_TYPE_NONE = "NONE";
     public static final String OPENEHR_TYPE_MEDIA = "MEDIA";
@@ -26,6 +30,11 @@ public class FhirConnectConst {
     public static final String DV_TEXT = "DV_TEXT";
     public static final String DV_BOOL = "BOOLEAN";
     public static final String IDENTIFIER = "IDENTIFIER";
-
-
+    public static final String DV_IDENTIFIER = "DV_IDENTIFIER";
+    public static final String UNIDIRECTIONAL_TOFHIR = "openEHR->fhir";
+    public static final String UNIDIRECTIONAL_TOOPENEHR = "fhir->openehr";
+    public static final String CONDITION_OPERATOR_ONE_OF = "one of";
+    public static final String CONDITION_OPERATOR_EMPTY = "empty";
+    public static final List<String> OPENEHR_INVALID_PATH_RM_TYPES = Arrays.asList("HISTORY","EVENT","ITEM_TREE","POINT_EVENT","POINT_INTERVAL");
+    public static final Set<String> OPENEHR_CONSISTENT_SET = Set.of(DV_TEXT, DV_CODED_TEXT,"FEEDER_AUDIT");
 }

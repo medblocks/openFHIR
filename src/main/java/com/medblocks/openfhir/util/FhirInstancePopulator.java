@@ -1,11 +1,6 @@
 package com.medblocks.openfhir.util;
 
 import com.medblocks.openfhir.tofhir.OpenEhrToFhirHelper;
-import lombok.extern.slf4j.Slf4j;
-import org.hl7.fhir.instance.model.api.IBaseDatatype;
-import org.hl7.fhir.r4.model.*;
-import org.springframework.stereotype.Component;
-
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +8,26 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.hl7.fhir.instance.model.api.IBaseDatatype;
+import org.hl7.fhir.r4.model.Attachment;
+import org.hl7.fhir.r4.model.Base;
+import org.hl7.fhir.r4.model.BooleanType;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.DateType;
+import org.hl7.fhir.r4.model.Enumeration;
+import org.hl7.fhir.r4.model.Extension;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.InstantType;
+import org.hl7.fhir.r4.model.IntegerType;
+import org.hl7.fhir.r4.model.PrimitiveType;
+import org.hl7.fhir.r4.model.Quantity;
+import org.hl7.fhir.r4.model.Ratio;
+import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.TimeType;
+import org.springframework.stereotype.Component;
 
 /**
  * Used for populating a FHIR Base
@@ -23,7 +38,7 @@ public class FhirInstancePopulator {
 
     /**
      * data can be anything from OpenEhrToFhir.valueToDataPoint, a limited set of things.
-     *
+     * <p>
      * Populates an element with the data. Population logic depends on the type of toPopulate object
      */
     public void populateElement(Object toPopulate, final OpenEhrToFhirHelper.DataWithIndex dataH) {
@@ -102,6 +117,8 @@ public class FhirInstancePopulator {
     private void populateDateTime(Object toPopulate, DateTimeType data) {
         if (toPopulate instanceof DateTimeType) {
             ((DateTimeType) toPopulate).setValue(data.getValue());
+        } else if (toPopulate instanceof InstantType) {
+            ((InstantType) toPopulate).setValue(data.getValue());
         }
     }
 
@@ -110,7 +127,8 @@ public class FhirInstancePopulator {
             ((TimeType) toPopulate).setValue(data.getValue());
         } else if (toPopulate instanceof DateTimeType) {
             LocalDateTime localDateTime = LocalDateTime.of(LocalDate.now(),
-                    LocalTime.of(data.getHour(), data.getMinute(), (int) data.getSecond()));
+                                                           LocalTime.of(data.getHour(), data.getMinute(),
+                                                                        (int) data.getSecond()));
             ((DateTimeType) toPopulate).setValue(Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()));
         }
     }

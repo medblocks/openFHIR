@@ -1,0 +1,42 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_fall_problem_diagnose
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  extends: EVALUATION.problem_diagnosis.v1
+
+mappings:
+  - name: "problemDiagnose"
+    extension: "overwrite"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$archetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+#        - name: "referencedDiagnose" # condition reference
+#          with:
+#            fhir: "condition.reference"
+#            openehr: "$reference"
+#          reference:
+#            resourceType: "Condition"
+#            mappings:
+#              - name: "referencedDiagnose"
+#                with:
+#                  fhir: "$fhirRoot"
+#                  openehr: "$archetype/data[at0001]/links"
+#                  type: "REFERENCED_MAPPING"
+#                  openehrLink:
+#                    meaning: "link to the diagnosis composition"
+#                    type: "diagnose"
+
+        - name: "diagnoseName" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
+          with:
+            fhir: "$fhirRoot.code.coding"
+            openehr: "$archetype/data[at0001]/items[at0002]"
+            type: "CODING"
+
+

@@ -1,0 +1,18 @@
+engine: FHIRConnect/v0.0.1
+type: context
+metadata:
+  name: "medication order"
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+
+context:
+  profileUrl: "MedicationRequest"
+  templateId: "medication order"
+  archetypes:
+    # This list could be computed by the (GUI) tooling, which will help to create these mappings.
+    - "openEHR-EHR-INSTRUCTION.medication_order.v2"
+    - "openEHR-EHR-CLUSTER.therapeutic_direction.v1"
+    - "openEHR-EHR-CLUSTER.dosage.v1"
+  start: "openEHR-EHR-INSTRUCTION.medication_order.v2"

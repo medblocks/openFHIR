@@ -1,0 +1,167 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  ACTION.medication.v1
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-ACTION.medication.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/MedicationAdministration
+
+mappings:
+#  - name: "hierarchyMappings" # is defined by the
+#    with:
+#      fhir: "$resource.dosage"
+#      openEHR: "$archetype
+#    #    type: "HIERARCHY"
+#    hierarchy:
+#      fhirCreate: "resource"
+#      openehrCreate: "archetype"
+#      uniqueValueFHIR: "[route, site]" # if route value is different per dosage slice make a new archetype
+#      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
+
+#  - name: "healthcareFacility"
+#    with:
+#      fhir: "$resource.requester.as(Organization).display" #todo: no such fhir attribute
+#      openehr: "$archetype.context._health_care_facility|name"
+#      type: "STRING"
+
+  - name: "context"
+    with:
+      fhir: "$resource.effective.as(Period)"
+      openehr: "$composition/context"
+    followedBy:
+      mappings:
+        - name: "contextStart"
+          with:
+            fhir: "start"
+            openehr: "start_time"
+            type: "DATETIME"
+
+        - name: "contextEnd"
+          with:
+            fhir: "end"
+            openehr: "_end_time"
+            type: "DATETIME"
+
+
+
+#  - name: "composer" #TODO introduce unidirectional mapping or just take the last one ?!
+#    with:
+#      fhir: "$resource.request.requester" # take identifier
+#      openehr: "$archetype/composer"
+#
+#  - name: "provider"
+#    with:
+#      fhir: "$resource.actor.performer"
+#      openehr: "$archetype/provider"
+
+  - name: "category"
+    with:
+      fhir: "$resource.category"
+      openehr: "$composition/context/setting"
+      type: "CODEABLECONCEPT" #todo: add terminlogy mapping
+
+
+  - name: "note"
+    with:
+      fhir: "$resource.note.text"
+      openehr: "$archetype/description[at0017]/items[at0024]"
+      type: "STRING"
+
+  - name: "dosage"
+    with:
+      fhir: "$resource.dosage"
+      openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.dosage.v2]"
+    slotArchetype: "CLUSTER.dosage.v2.BackboneElement-to-dosage" #todo: why CLUSTER.dosage.v2.BackboneElement-to-dosage and not CLUSTER.dosage.v2.dosage-to-dosage
+    followedBy:
+      mappings:
+        - name: "route"
+          with:
+            fhir: "route"
+            openehr: "$archetype/description[at0017]/items[at0140]/items[at0147]"
+            type: "CODEABLECONCEPT"
+
+        - name: "bodySite"
+          with:
+            fhir: "site"
+            openehr: "$archetype/description[at0017]/items[at0140]/items[at0141]"
+            type: "CODEABLECONCEPT"
+
+        - name: "method"
+          with:
+            fhir: "method"
+            openehr: "$archetype/description[at0017]/items[at0140]/items[at0143]"
+            type: "CODEABLECONCEPT"
+
+  - name: "medication"
+    with:
+      fhir: "$resource.medication"
+      openehr: "$reference"
+    reference:
+      resourceType: "Medication"
+      mappings:
+        - name: "medicationReference"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]"
+          slotArchetype: "CLUSTER.medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
+
+
+  - name: "medicationCode"
+    with:
+      fhir: "$resource.medication.as(CodeableConcept).text"
+      openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
+      type: "STRING"
+    openehrCondition:
+      targetRoot: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]"
+      targetAttributes:
+        - "darreichungsform"
+        - "wirkstärke_konzentration"
+      operator: "empty"
+
+
+  - name: "klinischeIndikation"
+    with:
+      fhir: "$resource.reasonCode.text"
+      openehr: "$archetype/description[at0017]/items[at0156]"
+      type: "STRING"
+
+#  - name: "partOf"
+#    with:
+#      fhir: "$resource.partOf.reference"
+#      openehr: "$reference"
+#    reference:
+#      mappings:
+#        - name: "partOfReference"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "part of a other medication administration"
+#              type: "partOf"
+
+#  - name: "request" # always the last one is executed for the mapping back.
+#    extension: "add"
+#    with:
+#      fhir: "$resource.request.reference"
+#      openehr: "$reference"
+#    reference:
+#      resourceType: "MedicationRequest"
+#      mappings:
+#        - name: "identifierInReference"
+#          with:
+#            fhir: "$fhirRoot.identifier"
+#            openehr: "$archetype/protocol[at0030]/items[at0103]"
+#        - name: "encounterMapping"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/protocol[at0030]/items[at0103]/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI if there is any
+#            openehrLink:
+#              meaning: "the medication request for this medication"
+#              type: "medicationRequest"

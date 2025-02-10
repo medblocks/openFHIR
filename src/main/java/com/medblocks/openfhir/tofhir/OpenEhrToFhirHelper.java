@@ -1,6 +1,6 @@
 package com.medblocks.openfhir.tofhir;
 
-import com.medblocks.openfhir.fc.model.Condition;
+import com.medblocks.openfhir.fc.schema.model.Condition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,6 +49,11 @@ public class OpenEhrToFhirHelper {
      * FHIR Condition
      */
     private Condition condition;
+
+    /**
+     * openEHR Condition
+     */
+    private Condition openehrCondition;
 
     /**
      * if this specific mapping is followed my another mapping (true if its a followedBy or if it's a slot)

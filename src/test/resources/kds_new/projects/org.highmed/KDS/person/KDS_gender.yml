@@ -1,0 +1,22 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_gender.v1
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  extends: EVALUATION.gender.v1
+
+mappings:
+  - name: "other-amtlich"
+    extension: "add"
+    with:
+      fhir: "$fhirRoot.extension"
+      openehr: "$archetype/items[at0014, 'Anderes Geschlecht amtlich']|code"
+      type: "STRING"
+    fhirCondition:
+      targetRoot: "$fhirRoot.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://fhir.de/StructureDefinition/gender-amtlich-de]"

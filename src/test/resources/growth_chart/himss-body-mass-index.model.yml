@@ -1,0 +1,36 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: "openEHR-EHR-OBSERVATION.body_mass_index.v2"
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: "openEHR-EHR-OBSERVATION.body_mass_index.v2"
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Observation
+    condition:
+      - targetRoot: "$resource"
+        targetAttribute: "category.coding.code"
+        operator: "one of"
+        criteria: "[bmi]"
+
+
+mappings:
+  - name: "bmi"
+    with:
+      fhir: "$resource.value"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0004]"
+      type: "QUANTITY"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttribute: "code.coding.code"
+      operator: "one of"
+      criteria: "[$loinc.39156-5]"
+
+  - name: "time"
+    with:
+      fhir: "$resource.effective"
+      openehr: "$archetype/data[at0001]/events[at0002]/time"
+      type: "DATETIME"

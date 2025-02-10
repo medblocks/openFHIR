@@ -1,0 +1,36 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: CLUSTER.study_participation.v1
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.study_participation.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
+
+mappings:
+  - name: "period"
+    with:
+      fhir: "$fhirRoot.provision.period"
+      openehr: "$archetype"
+    followedBy:
+      mappings:
+        - name: "start"
+          with:
+            fhir: "start"
+            openehr: "items[at0003]"
+            type: "DATETIME"
+        - name: "end"
+          with:
+            fhir: "end"
+            openehr: "items[at0004]"
+            type: "DATETIME"
+
+  - name: "details"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.study_details.v1]"
+    slotArchetype: "CLUSTER.study_details.v1"
