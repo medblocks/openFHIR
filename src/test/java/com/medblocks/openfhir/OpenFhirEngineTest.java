@@ -21,11 +21,11 @@ public class OpenFhirEngineTest {
                 null,
                 null,
                 new Gson());
-        final String flatJson = IOUtils.toString(getClass().getResourceAsStream("/growth_chart_flat.json"));
+        final String flatJson = IOUtils.toString(getClass().getResourceAsStream("/growth_chart/growth_chart_flat.json"));
         final String templateIdFromOpenEhr = openFhirEngine.getTemplateIdFromOpenEhr(flatJson);
         Assert.assertEquals("growth_chart", templateIdFromOpenEhr);
 
-        final String composition = IOUtils.toString(getClass().getResourceAsStream("/growth_chart_composition.json"));
+        final String composition = IOUtils.toString(getClass().getResourceAsStream("/growth_chart/growth_chart_composition.json"));
         final String templateIdFromCompositionOpenEhr = openFhirEngine.getTemplateIdFromOpenEhr(composition);
         Assert.assertEquals("Growth chart", templateIdFromCompositionOpenEhr);
     }

@@ -1,0 +1,346 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: OBSERVATION.laboratory_test_result.v1
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/DiagnosticReport
+    multiple: false # whether output of openEHR -> FHIR should return multiple Resources or a single one.
+
+mappings:
+
+  - name: "healthCareFacility"
+    with:
+      fhir: "$resource.performer.as(Reference).display"
+      openehr: "$composition/context/_health_care_facility|name"
+      type: "STRING"
+
+  #  - name: "participations"
+  #    with:
+  #      fhir: "$resource.resultsInterpreter"
+  #      openehr: "$archetype/context/participations"
+  #    participationsFunction: "results Interpreter"
+
+  # todo: this is overriding itself below?
+  - name: "composer"
+    with:
+      fhir: "$resource.performer.as(Reference).display"
+      openehr: "$composition/composer|name" #take the first one if its 0..n ?!
+      type: "STRING"
+
+  - name: "performer"
+    with:
+      fhir: "$resource.performer.as(Reference).display"
+      openehr: "$composition/perfomer"
+      type: "STRING"
+
+  #  - name: "otherParticipants"
+  #    with:
+  #      fhir: "$resource.resultsInterpreter"
+  #      openehr: "$archetype/other_participations"
+  #    participationsFunction: "results Interpreter"
+
+  - name: "effective"
+    with:
+      fhir: "$resource.effective.as(Period)"
+      openehr: "$composition"
+    followedBy:
+      mappings:
+        - name: "effectiveEnd"
+          with:
+            fhir: "end"
+            openehr: "context/_end_time"
+            type: "DATETIME"
+
+        - name: "effectiveStart"
+          with:
+            fhir: "start"
+            openehr: "context/start_time"
+            type: "DATETIME"
+
+
+
+  - name: "category"
+    with:
+      fhir: "$resource.category"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0005]" # if there are several events add it to all of them
+      type: "CODEABLECONCEPT"
+      # Backwards map all the values back, if they overlap ?!?!?!?
+
+
+  - name: "status" #deprecated needs to go once mapping is updated
+    with:
+      fhir: "$resource.status"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0073]/value/defining_code" # todo where is this being mapped to in openehr? I can't find this aql path
+  #    # todo: add terminology mapping
+  #    manual:
+  #      - name: "registered"
+  #        fhir:
+  #          path: "status"
+  #          value: "registered"
+  #        openehrCondition:
+  #          targetRoot: "defining_code"
+  #          targetAttribute: "code_string"
+  #          operator: "one of"
+  #          criteria: "[at0107]"
+  #        openehr:
+  #          - path: "terminology_id/value"
+  #            value: "local"
+  #          - path: "code_string"
+  #            value: "at0107"
+  #          - path: "../value"
+  #            value: "registered"
+  #        fhirCondition:
+  #          targetRoot: "$fhirRoot"
+  #          targetAttribute: "status"
+  #          operator: "one of"
+  #          criteria: "[registered]"
+  #
+  #      - name: "partial"
+  #        fhir:
+  #          path: "status"
+  #          value: "partial"
+  #        openehrCondition:
+  #          targetRoot: "defining_code"
+  #          targetAttribute: "code_string"
+  #          operator: "one of"
+  #          criteria: "[at0037]"
+  #        openehr:
+  #          - path: "terminology_id/value"
+  #            value: "local"
+  #          - path: "code_string"
+  #            value: "at0037"
+  #          - path: "../value"
+  #            value: "partial"
+  #        fhirCondition:
+  #          targetRoot: "$fhirRoot"
+  #          targetAttribute: "status"
+  #          operator: "one of"
+  #          criteria: "[partial]"
+  #
+  #      - name: "preliminary"
+  #        fhir:
+  #          path: "status"
+  #          value: "preliminary"
+  #        openehrCondition:
+  #          targetRoot: "defining_code"
+  #          targetAttribute: "code_string"
+  #          operator: "one of"
+  #          criteria: "[at0120]"
+  #        openehr:
+  #          - path: "terminology_id/value"
+  #            value: "local"
+  #          - path: "code_string"
+  #            value: "at0120"
+  #          - path: "../value"
+  #            value: "preliminary"
+  #        fhirCondition:
+  #          targetRoot: "$fhirRoot"
+  #          targetAttribute: "status"
+  #          operator: "one of"
+  #          criteria: "[preliminary]"
+  #
+  #      - name: "final"
+  #        fhir:
+  #          path: "status"
+  #          value: "final"
+  #        openehrCondition:
+  #          targetRoot: "defining_code"
+  #          targetAttribute: "code_string"
+  #          operator: "one of"
+  #          criteria: "[at0038]"
+  #        openehr:
+  #          - path: "terminology_id/value"
+  #            value: "local"
+  #          - path: "code_string"
+  #            value: "at0038"
+  #          - path: "../value"
+  #            value: "final"
+  #        fhirCondition:
+  #          targetRoot: "$fhirRoot"
+  #          targetAttribute: "status"
+  #          operator: "one of"
+  #          criteria: "[final]"
+  #
+  #      - name: "amended"
+  #        fhir:
+  #          path: "status"
+  #          value: "amended"
+  #        openehrCondition:
+  #          targetRoot: "defining_code"
+  #          targetAttribute: "code_string"
+  #          operator: "one of"
+  #          criteria: "[at0040]"
+  #        openehr:
+  #          - path: "terminology_id/value"
+  #            value: "local"
+  #          - path: "code_string"
+  #            value: "at0040"
+  #          - path: "../value"
+  #            value: "amended"
+  #        fhirCondition:
+  #          targetRoot: "$fhirRoot"
+  #          targetAttribute: "status"
+  #          operator: "one of"
+  #          criteria: "[amended]"
+  #
+  #      - name: "corrected"
+  #        fhir:
+  #          path: "status"
+  #          value: "corrected"
+  #        openehrCondition:
+  #          targetRoot: "defining_code"
+  #          targetAttribute: "code_string"
+  #          operator: "one of"
+  #          criteria: "[at0115]"
+  #        openehr:
+  #          - path: "terminology_id/value"
+  #            value: "local"
+  #          - path: "code_string"
+  #            value: "at0115"
+  #          - path: "../value"
+  #            value: "corrected"
+  #        fhirCondition:
+  #          targetRoot: "$fhirRoot"
+  #          targetAttribute: "status"
+  #          operator: "one of"
+  #          criteria: "[corrected]"
+  #
+  #      - name: "appended"
+  #        fhir:
+  #          path: "status"
+  #          value: "appended"
+  #        openehrCondition:
+  #          targetRoot: "defining_code"
+  #          targetAttribute: "code_string"
+  #          operator: "one of"
+  #          criteria: "[at0119]"
+  #        openehr:
+  #          - path: "terminology_id/value"
+  #            value: "local"
+  #          - path: "code_string"
+  #            value: "at0119"
+  #          - path: "../value"
+  #            value: "appended"
+  #        fhirCondition:
+  #          targetRoot: "$fhirRoot"
+  #          targetAttribute: "status"
+  #          operator: "one of"
+  #          criteria: "[appended]"
+  #
+  #      - name: "cancelled"
+  #        fhir:
+  #          path: "status"
+  #          value: "cancelled"
+  #        openehrCondition:
+  #          targetRoot: "defining_code"
+  #          targetAttribute: "code_string"
+  #          operator: "one of"
+  #          criteria: "[at0074]"
+  #        openehr:
+  #          - path: "terminology_id/value"
+  #            value: "local"
+  #          - path: "code_string"
+  #            value: "at0074"
+  #          - path: "../value"
+  #            value: "cancelled"
+  #        fhirCondition:
+  #          targetRoot: "$fhirRoot"
+  #          targetAttribute: "status"
+  #          operator: "one of"
+  #          criteria: "[cancelled]"
+  #
+  #      - name: "entered-in-error"
+  #        fhir:
+  #          path: "status"
+  #          value: "entered-in-error"
+  #        openehrCondition:
+  #          targetRoot: "defining_code"
+  #          targetAttribute: "code_string"
+  #          operator: "one of"
+  #          criteria: "[at0116]"
+  #        openehr:
+  #          - path: "terminology_id/value"
+  #            value: "local"
+  #          - path: "code_string"
+  #            value: "at0116"
+  #          - path: "../value"
+  #            value: "entered-in-error"
+  #        fhirCondition:
+  #          targetRoot: "$fhirRoot"
+  #          targetAttribute: "status"
+  #          operator: "one of"
+  #          criteria: "[entered-in-error]"
+  #
+  #      - name: "unknown"
+  #        fhir:
+  #          path: "status"
+  #          value: "unknown"
+  #        openehrCondition: # free Text, maybe this should be a Nullflavour
+  #          targetRoot: "../"
+  #          targetAttribute: "value"
+  #          operator: "one of"
+  #          criteria: "[unknown]"
+  #        openehr:
+  #          - path: "../value"
+  #            value: "unknown"
+  #        fhirCondition:
+  #          targetRoot: "$fhirRoot"
+  #          targetAttribute: "status"
+  #          operator: "one of"
+  #          criteria: "[unknown]"
+
+
+
+  - name: "conclusion"
+    with:
+      fhir: "$resource.conclusion"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0057]"
+      type: "STRING"
+
+  - name: "issued"
+    with:
+      fhir: "$resource.issued"
+      openehr: "$archetype/data[at0001]/events[at0002]/time"
+      type: "DATETIME"
+
+  - name: "specimen"
+    with:
+      fhir: "$resource.specimen"
+      openehr: "$reference"
+      type: "NONE"
+    reference:
+      resourceType: "Specimen"
+      mappings:
+        - name: "specimenReference"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1]"
+          slotArchetype: "CLUSTER.specimen.v1"
+
+  - name: "basedOn"
+    extension: "add"
+    with:
+      fhir: "$resource.basedOn.as(Reference)"
+      openehr: "$archetype"
+    followedBy: # type automatic since not provided, if no profile url is registered skip mapping
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "identifier"
+            openehr: "protocol[at0004]/items[at0094]/items[at0063]"
+            type: "IDENTIFIER"
+#        - name: "basedOnLink"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/protocol[at0004]/items[at0094]/items[at0063]/links"
+#            type: "REFERENCED_MAPPING"
+#            openehrLink:
+#              meaning: "the identifier which it derived from"
+#              type: "based on"
+

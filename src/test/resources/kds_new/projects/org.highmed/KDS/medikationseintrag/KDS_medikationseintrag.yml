@@ -1,0 +1,62 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name:  KDS_medikamentenstatement
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  extends: OBSERVATION.medication_statement.v0
+
+mappings:
+  #todo: where is this supposed to be mapped to? No encounter on MedicationStatement
+#  - name: "fallIdentifikationIdentifier"
+#    extension: "add"
+#    with:
+#      fhir: "$resource.encounter.identifier"
+#      openehr: "$composition/context/other_context[at0005]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+#    slotArchetype: "CLUSTER.case_identification.v0"
+
+#  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+#    extension: "add"
+#    with:
+#      fhir: "$resource.encounter.reference"
+#      openehr: "$reference"
+#    reference:
+#      resourceType: "Encounter"
+#      mappings:
+#        - name: "identifierInReference"
+#          with:
+#            fhir: "$fhirRoot.identifier"
+#            openehr: "$composition/context/other_context[at0005]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+#          slotArchetype: "CLUSTER.case_identification.v0"
+#        - name: "encounterMapping"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$composition/context/other_context[at0005]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+#            openehrLink:
+#              meaning: "the case this composition relates to"
+#              type: "case"
+
+  - name: "externalIdentifier"
+    extension: "add"
+    with:
+      fhir: "$resource.identifier"
+      openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.identifier_fhir.v0]"
+    slotArchetype: "CLUSTER.identifier_fhir.v0"
+
+  - name: "category"
+    extension: "add"
+    with:
+      fhir: "$resource.category"
+      openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.entry_category.v0]"
+    slotArchetype: "CLUSTER.entry_category.v0"
+
+  - name: "status"
+    extension: "add"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.medication_status_fhir.v0 and name/value='Status']"
+    slotArchetype: "CLUSTER.medication_status_fhir.v0"
+

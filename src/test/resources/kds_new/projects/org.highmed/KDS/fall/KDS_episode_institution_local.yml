@@ -1,0 +1,174 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_episode_institution_local
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  extends: ADMIN_ENTRY.episode_institution_local.v0
+
+mappings:
+  - name: "falltyp"
+    extension: "add"
+    with:
+      fhir: "$resource.type"
+      openehr: "$composition/context/other_context[at0001]/items[at0005]"
+      type: "CODEABLECONCEPT"
+
+  - name: "fallklasse"
+    extension: "add"
+    with:
+      fhir: "$resource.class"
+      openehr: "$composition/context/other_context[at0001]/items[at0004]"
+      type: "CODING"
+
+  - name: "fallart"
+    extension: "add"
+    with:
+      fhir: "$resource.status"
+      openehr: "$composition/context/other_context[at0001]/items[at0010 and name/value='Fallart']"
+      type: "CODING"
+
+  - name: "fallId"
+    extension: "add"
+    with:
+      fhir: "$resource.identifier.value"
+      openehr: "$composition/context/other_context[at0001]/items[at0003]"
+      type: "STRING"
+    fhirCondition:
+      targetRoot: "$resource.identifier"
+      targetAttribute: "type.coding.code"
+      operator: "one of"
+      criteria: "[VN]"
+
+  - name: "serviceProvider" # TODO deprecated needs to be deleted
+    extension: "add"
+    with:
+      fhir: "$resource.serviceProvider.as(Organization)"
+      openehr: "$reference"
+    reference:
+      resourceType: "Organization"
+      mappings:
+        - name: "organization"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.organisation.v1 and name/value='Überweiser']"
+          slotArchetype: "CLUSTER.organisation.v1"
+
+  - name: "aufnahmegrundExtension"
+    extension: "add"
+    with:
+      fhir: "$resource.extension"
+      openehr: "$archetype"
+      type: "NONE"
+    fhirCondition:
+      targetRoot: "$resource.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://fhir.de/StructureDefinition/Aufnahmegrund]"
+    followedBy:
+      mappings:
+        - name: "ersteUndZweiteStelle"
+          with:
+            fhir: "extension.value" # since its two extensions nested
+            openehr: "data[at0001]/items[at0008 and name/value='Aufnahmegrund - ErsteUndZweiteStelle']"
+            type: "CODING"
+          fhirCondition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[ErsteUndZweiteStelle]"
+
+        - name: "dritteStelle"
+          with:
+            fhir: "extension.value"
+            openehr: "data[at0001]/items[at0008 and name/value='Aufnahmegrund - Dritte Stelle']"
+            type: "CODING"
+          fhirCondition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[DritteStelle]"
+
+
+        - name: "vierteStelle"
+          with:
+            fhir: "extension.value"
+            openehr: "data[at0001]/items[at0008 and name/value='Aufnahmegrund - Vierte Stelle']"
+            type: "CODING"
+          fhirCondition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[VierteStelle]"
+
+
+  - name: "recordingDismissal"
+    extension: "add"
+    with:
+      fhir: "$resource.hospitalization"
+      openehr: "$archetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "aufnahmekategorie"
+          with:
+            fhir: "admitSource.coding"
+            openehr: "data[at0001]/items[at0009]"
+            type: "CODING"
+
+        - name: "entlassungsgrund"
+          with:
+            fhir: "dischargeDisposition.extension"
+            openehr: "data[at0001]/items[at0006]"
+            type: "CODING"
+          fhirCondition:
+            targetRoot: "dischargeDisposition.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
+
+  - name: "problemDiagnoseParent"
+    extension: "add"
+    with:
+      fhir: "$resource.diagnosis"
+      openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
+    followedBy:
+      mappings:
+        - name: "problemDiagnose"
+          with:
+            fhir: "condition"
+            openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
+          slotArchetype: "EVALUATION.problem_diagnosis.v1"
+
+        - name: "problemDiagnoseUse"
+          with:
+            fhir: "use"
+            openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
+          followedBy:
+            mappings:
+              #todo: these have to be here, they can not be in the slot archetype because they're mapping to the DiagnosisComponent and not on Condition (resolved reference)
+              - name: "diagnoseTyp"
+                with:
+                  fhir: "coding"
+                  openehr: "data[at0001]/items[at0009 and name/value='Diagnosetyp']"
+                  type: "CODING"
+                fhirCondition:
+                  targetRoot: "coding"
+                  targetAttribute: "system"
+                  operator: "one of"
+                  criteria: "[http://fhir.de/CodeSystem/dki-diagnosetyp]"
+
+              - name: "diagnoseSubtyp"
+                with:
+                  fhir: "coding"
+                  openehr: "data[at0001]/items[at0079 and name/value='Diagnosesubtyp']"
+                  type: "CODING"
+                fhirCondition:
+                  targetRoot: "coding"
+                  targetAttribute: "system"
+                  operator: "one of"
+                  criteria: "[http://fhir.de/CodeSystem/dki-diagnosesubtyp]"
+
+

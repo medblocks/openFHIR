@@ -1,77 +1,61 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://schema.better.care/fhirconnect/contextual/0.2.0/contextual-mapping-schema",
-  "description": "Contextual Mapping schema for file format v0.2.0",
-  "title": "Contextual Mapping",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FHIRConnect Context Schema",
   "type": "object",
   "properties": {
-    "format": {
-      "type": "string"
+    "engine": {
+      "type": "string",
+      "pattern": "^FHIRConnect/v[0-9]+\\.[0-9]+\\.[0-9]+$"
     },
-    "openEHR": {
-      "$ref": "#/$defs/openEHR"
-    },
-    "fhir": {
-      "$ref": "#/$defs/fhir"
-    }
-  },
-  "required": [
-    "fhir",
-    "format",
-    "openEHR"
-  ],
-  "additionalProperties": false,
-  "$defs": {
-    "condition": {
-      "type": [
-        "object",
-        "null"
-      ],
-      "properties": {
-        "targetRoot": {
-          "type": "string"
-        },
-        "targetAttribute": {
-          "type": "string"
-        },
-        "operator": {
-          "type": "string"
-        },
-        "criteria": {
-          "type": "string"
-        },
-        "identifying": {
-          "type": "boolean"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "targetRoot",
-        "targetAttribute",
-        "operator",
-        "criteria"
+    "type": {
+      "type": "string",
+      "enum": [
+        "context"
       ]
     },
-    "fhir": {
+    "metadata": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "resourceType": {
+        "name": {
           "type": "string"
         },
-        "condition": {
-          "$ref": "#/$defs/condition"
+        "version": {
+          "type": "string"
         }
       },
       "required": [
-        "resourceType"
-      ],
-      "title": "FHIR"
+        "name",
+        "version"
+      ]
     },
-    "openEHR": {
+    "spec": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
+        "system": {
+          "type": "string",
+          "enum": [
+            "FHIR"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "enum": [
+            "R4"
+          ]
+        }
+      },
+      "required": [
+        "system",
+        "version"
+      ]
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "profileUrl": {
+          "type": "string",
+          "format": "uri"
+        },
         "templateId": {
           "type": "string"
         },
@@ -80,13 +64,30 @@
           "items": {
             "type": "string"
           }
+        },
+        "extensions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "start": {
+          "type": "string"
         }
       },
       "required": [
+        "profileUrl",
+        "templateId",
         "archetypes",
-        "templateId"
-      ],
-      "title": "openEHR"
+        "start"
+      ]
     }
-  }
+  },
+  "required": [
+    "engine",
+    "type",
+    "metadata",
+    "spec",
+    "context"
+  ]
 }

@@ -1,0 +1,23 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  EVALUATION.gender.v1
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-EVALUATION.gender.v1
+
+mappings:
+
+  - name: "gender"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$archetype/data[at0002]/items[at0022]|code"
+      type: "STRING"
+#
+#  - name: "sex"
+#    with:
+#      fhir: "$resource.gender?"
+#      openehr: "$archetype/data[at0002]/items[at0019]"

@@ -1,23 +1,24 @@
-
-
-format: "0.0.2"
-version: "0.2.0"
-
-fhirConfig:
-  resource: "QuestionnaireResponse"
-  multiple: false
-
-openEhrConfig:
-  archetype: "openEHR-EHR-EVALUATION.clinical_synopsis.v1"
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: "openEHR-EHR-EVALUATION.clinical_synopsis.v1"
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: "openEHR-EHR-EVALUATION.clinical_synopsis.v1"
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse
 
 mappings:
   - name: "groupMdtConclusion"
     with:
-      fhir: "$fhirResource.item"
-      openehr: "$openEhrArchetype"
+      fhir: "$resource.item"
+      openehr: "$archetype"
       type: "NONE"
-    condition:
-      targetRoot: "$fhirResource.item"
+    fhirCondition:
+      targetRoot: "$resource.item"
       targetAttribute: "linkId"
       operator: "one of"
       criteria: "[groupMdtConclusion]"
@@ -26,9 +27,9 @@ mappings:
         - name: "synopsis"
           with:
             fhir: "item.answer.value"
-            openehr: "$openEhrArchetype.clinical_synopsis.synopsis"
+            openehr: "$archetype/data[at0001]/items[at0002]"
             type: "STRING"
-          condition:
+          fhirCondition:
             targetRoot: "item"
             targetAttribute: "linkId"
             operator: "one of"
@@ -36,11 +37,11 @@ mappings:
 
   - name: "signatories"
     with:
-      fhir: "$fhirResource.item.answer"
-      openehr: "$openEhrArchetype.context._participation[n]"
+      fhir: "$resource.item.answer"
+      openehr: "$composition/context/_participation[n]"
       type: "NONE"
-    condition:
-      targetRoot: "$fhirResource.item"
+    fhirCondition:
+      targetRoot: "$resource.item"
       targetAttribute: "linkId"
       operator: "one of"
       criteria: "[signatories]"
