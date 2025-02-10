@@ -206,9 +206,7 @@ public class OpenEhrToFhir {
                 // if fhir config is null, it means it's a slot mapper and it can't be a first-level Composition.content one
                 continue;
             }
-//            if (!theMapper.getOpenEhrConfig().getArchetype().contains("CLUSTER")) {
-//                openFhirMapperUtils.fixStartingArchetypeMappings(theMapper.getMappings(),theMapper.getOpenEhrConfig().getArchetype());
-//            }
+
             final Boolean existingEntry = isMultipleByResourceType.getOrDefault(theMapper.getFhirConfig().getResource(),
                     true);
 
