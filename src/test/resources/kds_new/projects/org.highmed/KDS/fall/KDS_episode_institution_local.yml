@@ -13,28 +13,28 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.type"
-      openehr: "$archetype/context/other_context[at0001]/items[at0005]"
+      openehr: "$composition/context/other_context[at0001]/items[at0005]"
       type: "CODEABLECONCEPT"
 
   - name: "fallklasse"
     extension: "add"
     with:
       fhir: "$resource.class"
-      openehr: "$archetype/context/other_context[at0001]/items[at0004]"
+      openehr: "$composition/context/other_context[at0001]/items[at0004]"
       type: "CODING"
 
   - name: "fallart"
     extension: "add"
     with:
       fhir: "$resource.status"
-      openehr: "$archetype/context/other_context[at0001]/items[at0010 and name/value='Fallart']"
+      openehr: "$composition/context/other_context[at0001]/items[at0010 and name/value='Fallart']"
       type: "CODING"
 
   - name: "fallId"
     extension: "add"
     with:
       fhir: "$resource.identifier.value"
-      openehr: "$archetype/context/other_context[at0001]/items[at0003]"
+      openehr: "$composition/context/other_context[at0001]/items[at0003]"
       type: "STRING"
     fhirCondition:
       targetRoot: "$resource.identifier"
@@ -53,14 +53,14 @@ mappings:
         - name: "organization"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.organisation.v1 and name/value='Überweiser']"
+            openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.organisation.v1 and name/value='Überweiser']"
           slotArchetype: "CLUSTER.organisation.v1"
 
   - name: "aufnahmegrundExtension"
     extension: "add"
     with:
       fhir: "$resource.extension"
-      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]"
+      openehr: "$archetype"
       type: "NONE"
     fhirCondition:
       targetRoot: "$resource.extension"
@@ -115,13 +115,13 @@ mappings:
         - name: "aufnahmekategorie"
           with:
             fhir: "admitSource.coding"
-            openehr: "content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0009]"
+            openehr: "data[at0001]/items[at0009]"
             type: "CODING"
 
         - name: "entlassungsgrund"
           with:
             fhir: "dischargeDisposition.extension"
-            openehr: "content[openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0]/data[at0001]/items[at0006]"
+            openehr: "data[at0001]/items[at0006]"
             type: "CODING"
           fhirCondition:
             targetRoot: "dischargeDisposition.extension"
@@ -133,19 +133,19 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.diagnosis"
-      openehr: "$archetype/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
+      openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
     followedBy:
       mappings:
         - name: "problemDiagnose"
           with:
             fhir: "condition"
-            openehr: "$archetype"
+            openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
           slotArchetype: "EVALUATION.problem_diagnosis.v1"
 
         - name: "problemDiagnoseUse"
           with:
             fhir: "use"
-            openehr: "$archetype"
+            openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
           followedBy:
             mappings:
               #todo: these have to be here, they can not be in the slot archetype because they're mapping to the DiagnosisComponent and not on Condition (resolved reference)

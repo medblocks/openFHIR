@@ -21,7 +21,7 @@ mappings:
   - name: "bmi"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.body_mass_index.v2]/data[at0001]/events[at0002]/data[at0003]/items[at0004]"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0004]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource"
@@ -32,5 +32,5 @@ mappings:
   - name: "time"
     with:
       fhir: "$resource.effective"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.body_mass_index.v2]/data[at0001]/events[at0002]/time"
+      openehr: "$archetype/data[at0001]/events[at0002]/time"
       type: "DATETIME"

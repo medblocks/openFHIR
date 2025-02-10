@@ -52,7 +52,7 @@ mappings:
         - name: "specimenRecurring"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype/content[openEHR-EHR-INSTRUCTION.service_request.v1,'Laborleistung']/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]" # you need to do this because specimen is recurring element in openehr
+            openehr: "$archetype/activities[at0001]/description[at0009]/items[openEHR-EHR-CLUSTER.specimen.v1]" # you need to do this because specimen is recurring element in openehr
           slotArchetype: "CLUSTER.specimen.v1"
           followedBy:
             mappings:

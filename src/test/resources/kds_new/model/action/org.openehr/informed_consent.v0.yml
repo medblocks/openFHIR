@@ -17,13 +17,13 @@ mappings:
   - name: "contextStartTime"
     with:
       fhir: "$resource.dateTime"
-      openehr: "$archetype/context/start_time"
+      openehr: "$composition/context/start_time"
       type: "DATETIME"
 
   - name: "healthCareFacility"
     with:
       fhir: "$resource.organization"
-      openehr: "$archetype/context/_health_care_facility|name"
+      openehr: "$composition/context/_health_care_facility|name"
       type: "STRING"
 
 #  - name: "ISMTransition"
@@ -35,7 +35,7 @@ mappings:
   - name: "studie"
     with:
       fhir: "$resource"
-      openehr: "$archetype/content[openEHR-EHR-ACTION.informed_consent.v0]/description[at0001]/items[openEHR-EHR-CLUSTER.study_participation.v1]"
+      openehr: "$archetype/description[at0001]/items[openEHR-EHR-CLUSTER.study_participation.v1]"
     slotArchetype: "CLUSTER.study_participation.v1"
 
 

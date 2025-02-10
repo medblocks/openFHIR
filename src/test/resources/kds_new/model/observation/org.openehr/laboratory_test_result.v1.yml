@@ -17,7 +17,7 @@ mappings:
   - name: "healthCareFacility"
     with:
       fhir: "$resource.performer.as(Reference).display"
-      openehr: "$archetype/context/_health_care_facility|name"
+      openehr: "$composition/context/_health_care_facility|name"
       type: "STRING"
 
   #  - name: "participations"
@@ -30,13 +30,13 @@ mappings:
   - name: "composer"
     with:
       fhir: "$resource.performer.as(Reference).display"
-      openehr: "$archetype/composer|name" #take the first one if its 0..n ?!
+      openehr: "$composition/composer|name" #take the first one if its 0..n ?!
       type: "STRING"
 
   - name: "performer"
     with:
       fhir: "$resource.performer.as(Reference).display"
-      openehr: "$archetype/perfomer"
+      openehr: "$composition/perfomer"
       type: "STRING"
 
   #  - name: "otherParticipants"
@@ -48,7 +48,7 @@ mappings:
   - name: "effective"
     with:
       fhir: "$resource.effective.as(Period)"
-      openehr: "$archetype"
+      openehr: "$composition"
     followedBy:
       mappings:
         - name: "effectiveEnd"
@@ -68,7 +68,7 @@ mappings:
   - name: "category"
     with:
       fhir: "$resource.category"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0005]" # if there are several events add it to all of them
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0005]" # if there are several events add it to all of them
       type: "CODEABLECONCEPT"
       # Backwards map all the values back, if they overlap ?!?!?!?
 
@@ -300,13 +300,13 @@ mappings:
   - name: "conclusion"
     with:
       fhir: "$resource.conclusion"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0057]"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0057]"
       type: "STRING"
 
   - name: "issued"
     with:
       fhir: "$resource.issued"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/time"
+      openehr: "$archetype/data[at0001]/events[at0002]/time"
       type: "DATETIME"
 
   - name: "specimen"
@@ -320,7 +320,7 @@ mappings:
         - name: "specimenReference"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1]"
+            openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.specimen.v1]"
           slotArchetype: "CLUSTER.specimen.v1"
 
   - name: "basedOn"
@@ -333,7 +333,7 @@ mappings:
         - name: "identifierInReference"
           with:
             fhir: "identifier"
-            openehr: "content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1]/protocol[at0004]/items[at0094]/items[at0063]"
+            openehr: "protocol[at0004]/items[at0094]/items[at0063]"
             type: "IDENTIFIER"
 #        - name: "basedOnLink"
 #          with:

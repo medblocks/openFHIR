@@ -1,6 +1,7 @@
 package com.medblocks.openfhir.util;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_ARCHETYPE_FC;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -237,7 +238,8 @@ public class OpenFhirStringUtils {
                                  final String mainOpenEhrPath) {
         return openEhrPath
                 .replace(FhirConnectConst.REFERENCE + "/", "")
-                .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + "/", mainOpenEhrPath + "/");
+                .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, mainOpenEhrPath)
+                .replace(FhirConnectConst.OPENEHR_COMPOSITION_FC, mainOpenEhrPath);
     }
 
     public String fixFhirPath(final String fhirPath) {

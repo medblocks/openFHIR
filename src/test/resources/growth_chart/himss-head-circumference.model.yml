@@ -25,7 +25,7 @@ mappings:
   - name: "head-circumference"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.head_circumference.v1]/data[at0001]/events[at0010]/data[at0003]/items[at0004]"
+      openehr: "$archetype/data[at0001]/events[at0010]/data[at0003]/items[at0004]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource"
@@ -36,5 +36,5 @@ mappings:
   - name: "time"
     with:
       fhir: "$resource.effective"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.head_circumference.v1]/data[at0001]/events[at0010]/time"
+      openehr: "$archetype/data[at0001]/events[at0010]/time"
       type: "DATETIME"
