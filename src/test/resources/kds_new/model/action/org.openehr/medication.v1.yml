@@ -32,19 +32,19 @@ mappings:
   - name: "context"
     with:
       fhir: "$resource.effective.as(Period)"
-      openehr: "$archetype/context"
+      openehr: "$composition/context"
     followedBy:
       mappings:
         - name: "contextStart"
           with:
             fhir: "start"
-            openehr: "$archetype/context/start_time"
+            openehr: "start_time"
             type: "DATETIME"
 
         - name: "contextEnd"
           with:
             fhir: "end"
-            openehr: "$archetype/context/_end_time"
+            openehr: "_end_time"
             type: "DATETIME"
 
 
@@ -62,39 +62,39 @@ mappings:
   - name: "category"
     with:
       fhir: "$resource.category"
-      openehr: "$archetype/context/setting"
+      openehr: "$composition/context/setting"
       type: "CODEABLECONCEPT" #todo: add terminlogy mapping
 
 
   - name: "note"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype/content[openEHR-EHR-ACTION.medication.v1]/description[at0017]/items[at0024]"
+      openehr: "$archetype/description[at0017]/items[at0024]"
       type: "STRING"
 
   - name: "dosage"
     with:
       fhir: "$resource.dosage"
-      openehr: "$archetype/content[openEHR-EHR-ACTION.medication.v1]/description[at0017]/items[openEHR-EHR-CLUSTER.dosage.v2]"
+      openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.dosage.v2]"
     slotArchetype: "CLUSTER.dosage.v2.BackboneElement-to-dosage" #todo: why CLUSTER.dosage.v2.BackboneElement-to-dosage and not CLUSTER.dosage.v2.dosage-to-dosage
     followedBy:
       mappings:
         - name: "route"
           with:
             fhir: "route"
-            openehr: "$archetype/content[openEHR-EHR-ACTION.medication.v1]/description[at0017]/items[at0140]/items[at0147]"
+            openehr: "$archetype/description[at0017]/items[at0140]/items[at0147]"
             type: "CODEABLECONCEPT"
 
         - name: "bodySite"
           with:
             fhir: "site"
-            openehr: "$archetype/content[openEHR-EHR-ACTION.medication.v1]/description[at0017]/items[at0140]/items[at0141]"
+            openehr: "$archetype/description[at0017]/items[at0140]/items[at0141]"
             type: "CODEABLECONCEPT"
 
         - name: "method"
           with:
             fhir: "method"
-            openehr: "$archetype/content[openEHR-EHR-ACTION.medication.v1]/description[at0017]/items[at0140]/items[at0143]"
+            openehr: "$archetype/description[at0017]/items[at0140]/items[at0143]"
             type: "CODEABLECONCEPT"
 
   - name: "medication"
@@ -107,17 +107,17 @@ mappings:
         - name: "medicationReference"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype/content[openEHR-EHR-ACTION.medication.v1]/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]"
+            openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]"
           slotArchetype: "CLUSTER.medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
 
 
   - name: "medicationCode"
     with:
       fhir: "$resource.medication.as(CodeableConcept).text"
-      openehr: "$archetype/content[openEHR-EHR-ACTION.medication.v1]/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
+      openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
       type: "STRING"
     openehrCondition:
-      targetRoot: "$archetype/content[openEHR-EHR-ACTION.medication.v1]/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]"
+      targetRoot: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]"
       targetAttributes:
         - "darreichungsform"
         - "wirkstärke_konzentration"
@@ -127,7 +127,7 @@ mappings:
   - name: "klinischeIndikation"
     with:
       fhir: "$resource.reasonCode.text"
-      openehr: "$archetype/content[openEHR-EHR-ACTION.medication.v1]/description[at0017]/items[at0156]"
+      openehr: "$archetype/description[at0017]/items[at0156]"
       type: "STRING"
 
 #  - name: "partOf"

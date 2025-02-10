@@ -7,7 +7,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
   openEhrConfig:
-    archetype: "openEHR-EHR-OBSERVATION.height.v2"
+    archetype: "openEHR-EHR-OBSERVATION.blood_pressure.v2"
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Observation
     condition:
@@ -33,7 +33,7 @@ mappings:
   - name: "component systolic"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0004]"
+      openehr: "$archetype/data[at0001]/events[at0006]/data[at0003]/items[at0004]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"
@@ -44,7 +44,7 @@ mappings:
   - name: "component diastolic"
     with:
       fhir: "$resource.component.value"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0005]"
+      openehr: "$archetype/data[at0001]/events[at0006]/data[at0003]/items[at0005]"
       type: "QUANTITY"
     fhirCondition:
       targetRoot: "$resource.component"
@@ -55,11 +55,11 @@ mappings:
   - name: "body site, location of measurement"
     with:
       fhir: "$resource.bodySite"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/protocol[at0011]/items[at0014]"
+      openehr: "$archetype/protocol[at0011]/items[at0014]"
       type: "CODEABLECONCEPT"
 
   - name: "clinical interpretation"
     with:
       fhir: "$resource.component.interpretation.text"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at1059]"
+      openehr: "$archetype/data[at0001]/events[at0006]/data[at0003]/items[at1059]"
       type: "STRING"

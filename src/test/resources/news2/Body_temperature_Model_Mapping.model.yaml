@@ -28,5 +28,5 @@ mappings:
   - name: "value"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]"
+      openehr: "$archetype/data[at0002]/events[at0003]/data[at0001]/items[at0004]"
       type: "QUANTITY"

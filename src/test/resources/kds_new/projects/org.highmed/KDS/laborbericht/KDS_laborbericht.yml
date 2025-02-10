@@ -28,7 +28,7 @@ mappings:
         - name: "observationRecurring"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1, 'Laborbefund']/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1, 'Pro Laboranalyt']"
+            openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1, 'Pro Laboranalyt']"
           slotArchetype: "CLUSTER.laboratory_test_analyte.v1"
 
   #  - name: "fallIdentifikationIdentifier"
@@ -73,13 +73,13 @@ mappings:
     extension: "overwrite"
     with:
       fhir: "$resource.status"
-      openehr: "$archetype/context/other_context[at0001, 'Tree']/items[at0005]"
+      openehr: "$composition/context/other_context[at0001, 'Tree']/items[at0005]"
 
   - name: "berichtIdParent"
     extension: "add"
     with:
       fhir: "$resource.identifier"
-      openehr: "$archetype/context/other_context[at0001, 'Tree']/items[at0002, 'Bericht ID']"
+      openehr: "$composition/context/other_context[at0001, 'Tree']/items[at0002, 'Bericht ID']"
     fhirCondition:
       targetRoot: "$resource.identifier"
       targetAttribute: "type.coding.code"
@@ -91,7 +91,7 @@ mappings:
           extension: "add"
           with:
             fhir: "value"
-            openehr: "$archetype/context/other_context[at0001, 'Tree']/items[at0002, 'Bericht ID']"
+            openehr: "$composition/context/other_context[at0001, 'Tree']/items[at0002, 'Bericht ID']"
             type: "STRING"
         - name: "typeSystem"
           with:

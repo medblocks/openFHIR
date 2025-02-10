@@ -1,6 +1,7 @@
 package com.medblocks.openfhir.util;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_ARCHETYPE_FC;
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_COMPOSITION_FC;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
 
 import com.medblocks.openfhir.fc.FhirConnectConst;
@@ -179,7 +180,7 @@ public class OpenFhirMapperUtils {
             if (!followedByMapping.getWith().getFhir().startsWith(FhirConnectConst.FHIR_RESOURCE_FC)) {
                 followedByMapping.getWith().setFhir(fhirPath + "." + followedByMapping.getWith().getFhir());
             }
-            if (!followedByMapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_ARCHETYPE_FC)) {
+            if (!followedByMapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_ARCHETYPE_FC) && !followedByMapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_COMPOSITION_FC)) {
 
                 if (followedByMapping.getWith().getOpenehr().startsWith(FhirConnectConst.REFERENCE)) {
                     final String openEhrWithReference = followedByMapping.getWith().getOpenehr()
@@ -278,6 +279,7 @@ public class OpenFhirMapperUtils {
         }
     }
 
+
     /**
      * Forwarding slot archetype mappings are adjusted in fhir and openehr paths as well as conditions that are being
      * passed down the line to "child" mappings.
@@ -360,6 +362,11 @@ public class OpenFhirMapperUtils {
                 slotArchetypeMappersMapping.getWith().setOpenehr(slotArchetypeMappersMapping.getWith().getOpenehr()
                                                                          .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC,
                                                                                   openEhrPath));
+            } else if (slotArchetypeMappersMapping.getWith().getOpenehr()
+                    .startsWith(FhirConnectConst.OPENEHR_COMPOSITION_FC)){
+                slotArchetypeMappersMapping.getWith().setOpenehr(slotArchetypeMappersMapping.getWith().getOpenehr()
+                        .replace(FhirConnectConst.OPENEHR_COMPOSITION_FC,
+                                openEhrPath.split("/")[0]));
             } else if (slotArchetypeMappersMapping.getWith().getOpenehr().startsWith(FhirConnectConst.REFERENCE)) {
                 slotArchetypeMappersMapping.getWith().setOpenehr(
                         slotArchetypeMappersMapping.getWith().getOpenehr() + "/" + openEhrPath);
