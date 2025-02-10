@@ -532,7 +532,7 @@ public class FhirToOpenEhr {
             } else {
                 final String openehr = createMainMapping(mapping, fhirConnectMapper, initialHelper, mainOpenEhrPath,
                                                          fhirPath, multiple,
-                                                         needsToBeAddedToParentHelpers, helpers, coverHelpers,templateId);
+                                                         needsToBeAddedToParentHelpers, helpers, coverHelpers, templateId);
 
                 // inner helpers are those that follow a parent one (when mapping is followedBy or slot archetype)
                 final List<FhirToOpenEhrHelper> innerHelpers = new ArrayList<>();
