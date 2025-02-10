@@ -1,10 +1,5 @@
 package com.medblocks.openfhir.tofhir;
 
-import static com.medblocks.openfhir.fc.FhirConnectConst.*;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX_ESCAPED;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.WHERE;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.medblocks.openfhir.OpenEhrRmWorker;
@@ -17,26 +12,9 @@ import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.fc.schema.model.Mapping;
 import com.medblocks.openfhir.fc.schema.model.With;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhrHelper;
-import com.medblocks.openfhir.util.FhirInstanceCreator;
-import com.medblocks.openfhir.util.FhirInstanceCreatorUtility;
-import com.medblocks.openfhir.util.FhirInstancePopulator;
-import com.medblocks.openfhir.util.OpenEhrCachedUtils;
-import com.medblocks.openfhir.util.OpenEhrConditionEvaluator;
-import com.medblocks.openfhir.util.OpenFhirMapperUtils;
-import com.medblocks.openfhir.util.OpenFhirStringUtils;
+import com.medblocks.openfhir.util.*;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.ContentItem;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -44,22 +22,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
-import org.hl7.fhir.r4.model.Attachment;
-import org.hl7.fhir.r4.model.Base;
-import org.hl7.fhir.r4.model.BooleanType;
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.CodeableConcept;
-import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.r4.model.DateType;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Quantity;
-import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.StringType;
-import org.hl7.fhir.r4.model.TimeType;
+import org.hl7.fhir.r4.model.*;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.medblocks.openfhir.fc.FhirConnectConst.*;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.*;
 
 /**
  * Engine doing translation from openEHR to FHIR according to the openFHIR state configuration
@@ -966,8 +939,7 @@ public class OpenEhrToFhir {
                                    final String definedMappingWithOpenEhr, final String fhirPath,
                                    final List<OpenEhrToFhirHelper> helpers, final WebTemplate webTemplate,
                                    final JsonObject flatJsonObject,
-                                   final String slotContext, final String openehr, final boolean breakRecursion
-                                   ) {
+                                   final String slotContext, final String openehr, final boolean breakRecursion) {
         final String templateId = webTemplate.getTemplateId();
 
         final List<OpenFhirFhirConnectModelMapper> slotArchetypeMapperss = openFhirTemplateRepo.getMapperForArchetype(
