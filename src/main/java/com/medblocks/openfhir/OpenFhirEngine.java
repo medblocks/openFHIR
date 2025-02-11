@@ -3,10 +3,10 @@ package com.medblocks.openfhir;
 import ca.uhn.fhir.parser.JsonParser;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.medblocks.openfhir.db.entity.FhirConnectContextEntity;
 import com.medblocks.openfhir.db.repository.FhirConnectContextRepository;
 import com.medblocks.openfhir.fc.FhirConnectConst;
-import com.medblocks.openfhir.fc.schema.model.CompositionAdditionalConfig;
 import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
@@ -178,7 +178,7 @@ public class OpenFhirEngine {
 
         prodOpenFhirMappingContext.initMappingCache(fhirConnectContext.getFhirConnectContext(), operationalTemplate, webTemplate);
 
-        CompositionAdditionalConfig compositionAdditionalData = gson.fromJson(additionalParams, CompositionAdditionalConfig.class);
+        Map<String, String> compositionAdditionalData = gson.fromJson(additionalParams, new TypeToken<Map<String, String>>() {}.getType());
 
         if (flat != null && flat) {
             final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(fhirConnectContext.getFhirConnectContext(),
