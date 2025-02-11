@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.medblocks.openfhir.db.entity.FhirConnectContextEntity;
 import com.medblocks.openfhir.db.repository.FhirConnectContextRepository;
 import com.medblocks.openfhir.fc.FhirConnectConst;
+import com.medblocks.openfhir.fc.schema.model.CompositionAdditionalConfig;
 import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.tofhir.OpenEhrToFhir;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
@@ -158,7 +159,7 @@ public class OpenFhirEngine {
      * providing a templateId as an invoker though would mean performance optimization, although I am not sure
      * if the caller will always know which template to use?
      */
-    public String toOpenEhr(final String incomingFhirResource, final String incomingTemplateId, final Boolean flat, final String composer) {
+    public String toOpenEhr(final String incomingFhirResource, final String incomingTemplateId, final Boolean flat, final String additionalParams) {
         // get context and operational template
         final Resource resource = parseIncomingFhirResource(incomingFhirResource);
         final FhirConnectContextEntity fhirConnectContext = getContextForFhir(incomingTemplateId, incomingFhirResource);
@@ -177,20 +178,23 @@ public class OpenFhirEngine {
 
         prodOpenFhirMappingContext.initMappingCache(fhirConnectContext.getFhirConnectContext(), operationalTemplate, webTemplate);
 
+        CompositionAdditionalConfig compositionAdditionalData = gson.fromJson(additionalParams, CompositionAdditionalConfig.class);
+
         if (flat != null && flat) {
             final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(fhirConnectContext.getFhirConnectContext(),
                     resource,
                     operationalTemplate);
-            if(composer!=null){
-                fhirToOpenEhr.enrichFlatComposition(jsonObject,webTemplate.getTree().getId(), composer);
+            if(compositionAdditionalData != null) {
+                fhirToOpenEhr.enrichFlatComposition(jsonObject, webTemplate.getTree().getId(), compositionAdditionalData);
             }
+
             return gson.toJson(jsonObject);
         } else {
             final Composition composition = fhirToOpenEhr.fhirToCompositionRm(fhirConnectContext.getFhirConnectContext(),
                     resource,
                     operationalTemplate);
-            if(composer != null) {
-                fhirToOpenEhr.enrichCompositionComposer(composition, composer);
+            if(compositionAdditionalData != null) {
+                fhirToOpenEhr.enrichCompositionWithAdditionalConfig(composition, compositionAdditionalData);
             }
             return new CanonicalJson().marshal(composition);
         }

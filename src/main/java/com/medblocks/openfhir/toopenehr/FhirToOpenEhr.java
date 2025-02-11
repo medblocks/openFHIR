@@ -8,6 +8,7 @@ import com.medblocks.openfhir.OpenFhirMappingContext;
 import com.medblocks.openfhir.fc.FhirConnectConst;
 import com.medblocks.openfhir.fc.OpenFhirFhirConfig;
 import com.medblocks.openfhir.fc.OpenFhirFhirConnectModelMapper;
+import com.medblocks.openfhir.fc.schema.model.CompositionAdditionalConfig;
 import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.fc.schema.model.Mapping;
@@ -16,8 +17,11 @@ import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenEhrPopulator;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
+import com.nedap.archie.rm.archetyped.FeederAudit;
+import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvIdentifier;
 import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
@@ -187,13 +191,32 @@ public class FhirToOpenEhr {
      * of the mapping logic itself.
      *
      * @param composition enriched with metadata that wasn't mapped
-     * @param composer to be enriched with metadata composer
+     * @param compositionAdditionalConfig enriched with metadata of composition
      */
-    public void enrichCompositionComposer(final Composition composition, final String composer) {
-        if (composition.getComposer() == null) {
+    public void enrichCompositionWithAdditionalConfig(final Composition composition, final CompositionAdditionalConfig compositionAdditionalConfig) {
+        if (compositionAdditionalConfig.getComposer() != null ) {
             PartyIdentified partyIdentified = new PartyIdentified();
-            partyIdentified.setName(composer);
+            partyIdentified.setName(compositionAdditionalConfig.getComposer());
             composition.setComposer(partyIdentified);
+        }
+        if(compositionAdditionalConfig.getSystemId() != null){
+            FeederAudit feederAudit = new FeederAudit();
+
+            if( feederAudit.getOriginatingSystemAudit() == null) {
+
+                FeederAuditDetails originatingFeederAuditDetails =  new FeederAuditDetails();
+                originatingFeederAuditDetails.setSystemId("creatingSystemId"); // Todo: need to ensure this is populated with correct value
+                feederAudit.setOriginatingSystemAudit(originatingFeederAuditDetails);
+            }
+
+            List<DvIdentifier> feederSystemItemIds = new ArrayList<>();
+            DvIdentifier dvIdentifier = new DvIdentifier();
+//            dvIdentifier.setIssuer(source);
+            dvIdentifier.setId(compositionAdditionalConfig.getSystemId());
+            feederSystemItemIds.add(dvIdentifier);
+
+            feederAudit.setFeederSystemItemIds(feederSystemItemIds);
+            composition.setFeederAudit(feederAudit);
         }
     }
 
@@ -204,12 +227,17 @@ public class FhirToOpenEhr {
      * @param finalFlat - enriched with metadata that wasn't mapped
      * @param templateId - identifier to the template
      */
-    public void enrichFlatComposition(final JsonObject finalFlat, final String templateId, final String composer) {
+    public void enrichFlatComposition(final JsonObject finalFlat, final String templateId, final CompositionAdditionalConfig compositionAdditionalConfig) {
         if(!finalFlat.keySet().contains(templateId + "/context/start_time")){
             finalFlat.add(templateId + "/context/start_time", new JsonPrimitive(getUpdatedDateTime().toString()));
         }
-        if(!finalFlat.keySet().contains(templateId + "/composer|name")){
-            finalFlat.add(templateId + "/composer|name", new JsonPrimitive(composer));
+        if(!finalFlat.keySet().contains(templateId + "/composer|name") && compositionAdditionalConfig.getComposer() != null){
+            finalFlat.add(templateId + "/composer|name", new JsonPrimitive(compositionAdditionalConfig.getComposer()));
+        }
+        if(compositionAdditionalConfig.getSystemId()!=null){
+            finalFlat.add(templateId+"/_feeder_audit/originating_system_audit|system_id", new JsonPrimitive(compositionAdditionalConfig.getSystemId())); // todo: need to map with suitable value
+            finalFlat.add(templateId+"/_feeder_audit/feeder_system_item_id:0|system_id", new JsonPrimitive(compositionAdditionalConfig.getSystemId()));
+            finalFlat.add(templateId+"/_feeder_audit/feeder_system_item_id:0|issuer", new JsonPrimitive(compositionAdditionalConfig.getSystemId())); // todo: need to map with suitable value
         }
     }
 
