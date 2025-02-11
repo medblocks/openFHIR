@@ -158,7 +158,7 @@ public class OpenFhirEngine {
      * providing a templateId as an invoker though would mean performance optimization, although I am not sure
      * if the caller will always know which template to use?
      */
-    public String toOpenEhr(final String incomingFhirResource, final String incomingTemplateId, final Boolean flat) {
+    public String toOpenEhr(final String incomingFhirResource, final String incomingTemplateId, final Boolean flat, final String composer) {
         // get context and operational template
         final Resource resource = parseIncomingFhirResource(incomingFhirResource);
         final FhirConnectContextEntity fhirConnectContext = getContextForFhir(incomingTemplateId, incomingFhirResource);
@@ -181,11 +181,17 @@ public class OpenFhirEngine {
             final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(fhirConnectContext.getFhirConnectContext(),
                     resource,
                     operationalTemplate);
+            if(composer!=null){
+                fhirToOpenEhr.enrichFlatComposition(jsonObject,webTemplate.getTree().getId(), composer);
+            }
             return gson.toJson(jsonObject);
         } else {
             final Composition composition = fhirToOpenEhr.fhirToCompositionRm(fhirConnectContext.getFhirConnectContext(),
                     resource,
                     operationalTemplate);
+            if(composer != null) {
+                fhirToOpenEhr.enrichCompositionComposer(composition, composer);
+            }
             return new CanonicalJson().marshal(composition);
         }
     }

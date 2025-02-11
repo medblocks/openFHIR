@@ -2,6 +2,7 @@ package com.medblocks.openfhir.toopenehr;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.OpenFhirMappingContext;
 import com.medblocks.openfhir.fc.FhirConnectConst;
@@ -17,6 +18,7 @@ import com.medblocks.openfhir.util.OpenFhirMapperUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,9 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -176,6 +181,45 @@ public class FhirToOpenEhr {
             composition.setComposer(new PartySelf());
         }
     }
+
+    /**
+     * Method that adds all required metadata to a Composition, but only if this was not already set as part
+     * of the mapping logic itself.
+     *
+     * @param composition enriched with metadata that wasn't mapped
+     * @param composer to be enriched with metadata composer
+     */
+    public void enrichCompositionComposer(final Composition composition, final String composer) {
+        if (composition.getComposer() == null) {
+            PartyIdentified partyIdentified = new PartyIdentified();
+            partyIdentified.setName(composer);
+            composition.setComposer(partyIdentified);
+        }
+    }
+
+    /**
+     * Method that adds all required metadata to a Composition, but only if this was not already set as part
+     * of the mapping logic itself.
+     *
+     * @param finalFlat - enriched with metadata that wasn't mapped
+     * @param templateId - identifier to the template
+     */
+    public void enrichFlatComposition(final JsonObject finalFlat, final String templateId, final String composer) {
+        if(!finalFlat.keySet().contains(templateId + "/context/start_time")){
+            finalFlat.add(templateId + "/context/start_time", new JsonPrimitive(getUpdatedDateTime().toString()));
+        }
+        if(!finalFlat.keySet().contains(templateId + "/composer|name")){
+            finalFlat.add(templateId + "/composer|name", new JsonPrimitive(composer));
+        }
+    }
+
+    private static LocalDateTime getUpdatedDateTime() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+        ZonedDateTime utcDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
+        return utcDateTime.toLocalDateTime();
+    }
+
 
     /**
      * Given FhirToOpenEhrHelpers, this method creates the actual json flat structure based on them. It evaluates
