@@ -205,13 +205,12 @@ public class FhirToOpenEhr {
             if( feederAudit.getOriginatingSystemAudit() == null) {
 
                 FeederAuditDetails originatingFeederAuditDetails =  new FeederAuditDetails();
-                originatingFeederAuditDetails.setSystemId("creatingSystemId"); // Todo: need to ensure this is populated with correct value
+                originatingFeederAuditDetails.setSystemId(compositionAdditionalConfig.get("systemId")); // Todo: need to ensure this is populated with correct value
                 feederAudit.setOriginatingSystemAudit(originatingFeederAuditDetails);
             }
 
             List<DvIdentifier> feederSystemItemIds = new ArrayList<>();
             DvIdentifier dvIdentifier = new DvIdentifier();
-//            dvIdentifier.setIssuer(source); //Todo: need to check what needs to be mapped
             dvIdentifier.setId(compositionAdditionalConfig.get("systemId"));
             feederSystemItemIds.add(dvIdentifier);
 
@@ -238,7 +237,6 @@ public class FhirToOpenEhr {
         if(compositionAdditionalConfig.containsKey("systemId")){
             finalFlat.add(templateId+"/_feeder_audit/originating_system_audit|system_id", new JsonPrimitive(compositionAdditionalConfig.get("systemId"))); // todo: need to map with suitable value
             finalFlat.add(templateId+"/_feeder_audit/feeder_system_item_id:0|system_id", new JsonPrimitive(compositionAdditionalConfig.get("systemId")));
-            finalFlat.add(templateId+"/_feeder_audit/feeder_system_item_id:0|issuer", new JsonPrimitive(compositionAdditionalConfig.get("systemId"))); // todo: need to map with suitable value
         }
     }
 
