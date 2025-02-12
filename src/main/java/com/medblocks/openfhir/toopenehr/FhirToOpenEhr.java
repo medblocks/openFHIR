@@ -2,6 +2,7 @@ package com.medblocks.openfhir.toopenehr;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.OpenFhirMappingContext;
 import com.medblocks.openfhir.fc.FhirConnectConst;
@@ -15,8 +16,12 @@ import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenEhrPopulator;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
+import com.nedap.archie.rm.archetyped.FeederAudit;
+import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvIdentifier;
+import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +34,9 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -176,6 +184,69 @@ public class FhirToOpenEhr {
             composition.setComposer(new PartySelf());
         }
     }
+
+    /**
+     * Method that adds all required metadata to a Composition, but only if this was not already set as part
+     * of the mapping logic itself.
+     *
+     * @param composition enriched with metadata that wasn't mapped
+     * @param compositionAdditionalConfig enriched with metadata of composition
+     */
+    public void enrichCompositionWithAdditionalConfig(final Composition composition, final Map<String, String> compositionAdditionalConfig) {
+        if (compositionAdditionalConfig.containsKey("composer")) {
+            String composer = compositionAdditionalConfig.getOrDefault("composer",null);
+            PartyIdentified partyIdentified = new PartyIdentified();
+            partyIdentified.setName(composer);
+            composition.setComposer(partyIdentified);
+        }
+        if(compositionAdditionalConfig.containsKey("systemId")){
+            FeederAudit feederAudit = new FeederAudit();
+
+            if( feederAudit.getOriginatingSystemAudit() == null) {
+
+                FeederAuditDetails originatingFeederAuditDetails =  new FeederAuditDetails();
+                originatingFeederAuditDetails.setSystemId(compositionAdditionalConfig.get("systemId")); // Todo: need to ensure this is populated with correct value
+                feederAudit.setOriginatingSystemAudit(originatingFeederAuditDetails);
+            }
+
+            List<DvIdentifier> feederSystemItemIds = new ArrayList<>();
+            DvIdentifier dvIdentifier = new DvIdentifier();
+            dvIdentifier.setId(compositionAdditionalConfig.get("systemId"));
+            feederSystemItemIds.add(dvIdentifier);
+
+            feederAudit.setFeederSystemItemIds(feederSystemItemIds);
+            composition.setFeederAudit(feederAudit);
+        }
+    }
+
+    /**
+     * Method that adds all required metadata to a Composition, but only if this was not already set as part
+     * of the mapping logic itself.
+     *
+     * @param finalFlat - enriched with metadata that wasn't mapped
+     * @param templateId - identifier to the template
+     */
+    public void enrichFlatComposition(final JsonObject finalFlat, final String templateId, final Map<String, String> compositionAdditionalConfig) {
+        if(!finalFlat.keySet().contains(templateId + "/context/start_time")){
+            finalFlat.add(templateId + "/context/start_time", new JsonPrimitive(getUpdatedDateTime().toString()));
+        }
+        if(!finalFlat.keySet().contains(templateId + "/composer|name") && compositionAdditionalConfig.containsKey("composer")){
+            finalFlat.add(templateId + "/composer|name", new JsonPrimitive(compositionAdditionalConfig.get("composer")));
+        }
+
+        if(compositionAdditionalConfig.containsKey("systemId")){
+            finalFlat.add(templateId+"/_feeder_audit/originating_system_audit|system_id", new JsonPrimitive(compositionAdditionalConfig.get("systemId"))); // todo: need to map with suitable value
+            finalFlat.add(templateId+"/_feeder_audit/feeder_system_item_id:0|system_id", new JsonPrimitive(compositionAdditionalConfig.get("systemId")));
+        }
+    }
+
+    private static LocalDateTime getUpdatedDateTime() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+        ZonedDateTime utcDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
+        return utcDateTime.toLocalDateTime();
+    }
+
 
     /**
      * Given FhirToOpenEhrHelpers, this method creates the actual json flat structure based on them. It evaluates

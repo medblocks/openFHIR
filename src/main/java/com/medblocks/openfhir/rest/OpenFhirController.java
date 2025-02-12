@@ -53,7 +53,9 @@ public class OpenFhirController {
     ResponseEntity toOpenEhr(@RequestBody String fhirResource,
                              @RequestParam(required = false) String templateId,
                              @RequestParam(required = false) Boolean flat,
+                             @RequestParam(required = false) String composer,
+                             @RequestParam(required = false) String systemId,
                              @RequestHeader(value = "x-req-id", required = false) final String reqId) {
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(openFhirEngine.toOpenEhr(fhirResource, templateId, flat));
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(openFhirEngine.toOpenEhr(fhirResource, templateId, flat, composer, systemId));
     }
 }
