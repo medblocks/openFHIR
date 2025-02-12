@@ -3,7 +3,6 @@ package com.medblocks.openfhir;
 import ca.uhn.fhir.parser.JsonParser;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.medblocks.openfhir.db.entity.FhirConnectContextEntity;
 import com.medblocks.openfhir.db.repository.FhirConnectContextRepository;
 import com.medblocks.openfhir.fc.FhirConnectConst;
@@ -13,7 +12,6 @@ import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import com.nedap.archie.rm.composition.Composition;
-import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
@@ -31,6 +29,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.util.*;
 
 @Component
