@@ -13,9 +13,11 @@
   "studienteilnahme/einwilligungserklärung/ism_transition/careflow_step|value": "Einwilligung verweigert",
   "studienteilnahme/einwilligungserklärung/ism_transition/careflow_step|code": "at0016",
   "studienteilnahme/einwilligungserklärung/ism_transition/careflow_step|terminology": "local",
+
   "studienteilnahme/einwilligungserklärung/ism_transition/current_state|value": "aborted",
   "studienteilnahme/einwilligungserklärung/ism_transition/current_state|code": "531",
   "studienteilnahme/einwilligungserklärung/ism_transition/current_state|terminology": "openehr",
+
   "studienteilnahme/einwilligungserklärung/ism_transition/transition|value": "abort",
   "studienteilnahme/einwilligungserklärung/ism_transition/transition|code": "547",
   "studienteilnahme/einwilligungserklärung/ism_transition/transition|terminology": "openehr",

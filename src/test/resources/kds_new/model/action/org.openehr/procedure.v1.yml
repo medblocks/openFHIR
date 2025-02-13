@@ -53,12 +53,6 @@ mappings:
 #      fhir: "$resource.recorder"
 #      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
 
-  - name: "ISMTransition"
-    with:
-      fhir: "$resource.status" #todo there needs to be a mapping table
-      openehr: "$archetype/ism_transition/current_state"
-      type: "STRING"
-
 
   - name: "name"
     with:
@@ -100,3 +94,4 @@ mappings:
       fhir: "$resource.bodySite"
       openehr: "$archetype/description[at0001]/items[at0063]"
       type: "CODEABLECONCEPT"
+

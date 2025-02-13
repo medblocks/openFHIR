@@ -16,11 +16,11 @@ mappings:
   - name: "status"
     with:
       fhir: "$resource.status"
-      openehr: "$archetype/items[at0014]"
+      openehr: "$archetype/items[at0001]"
       type: "STRING"
 
   - name: "statusReason"
     with:
       fhir: "$resource.statusReason"
-      openehr: "$archetype/items[at0001]"
+      openehr: "$archetype/items[at0014]"
       type: "CODEABLECONCEPT"

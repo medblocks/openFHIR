@@ -510,7 +510,7 @@ public class FhirToOpenEhr {
                 continue;
             }
 
-            hardcodingToFhir(mapping, fhirConnectMapper, initialHelper);
+            hardcodingToOpenEhr(mapping, fhirConnectMapper, initialHelper);
 
             final Condition condition = parentCondition != null ? parentCondition : mapping.getFhirCondition();
 
@@ -692,11 +692,11 @@ public class FhirToOpenEhr {
         }
     }
 
-    private void hardcodingToFhir(final Mapping mapping, final OpenFhirFhirConnectModelMapper fhirConnectMapper,
-                                  final FhirToOpenEhrHelper initialHelper) {
+    private void hardcodingToOpenEhr(final Mapping mapping, final OpenFhirFhirConnectModelMapper fhirConnectMapper,
+                                     final FhirToOpenEhrHelper initialHelper) {
         if (mapping.getWith().getFhir() == null) {
             // is hardcoding
-            mapping.getWith().setFhir(fhirConnectMapper.getFhirConfig().getResource());
+            mapping.getWith().setFhir(FHIR_ROOT_FC);
             initialHelper.setHardcodingValue(mapping.getWith().getValue());
         }
     }

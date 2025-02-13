@@ -109,8 +109,8 @@ mappings:
     openehrCondition:
       targetRoot: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
       targetAttributes:
-        - "darreichungsform"
-        - "wirkstärke_konzentration"
+        - "items[at0071]" #"darreichungsform"
+        - "items[at0115]" #"wirkstärke_konzentration"
       operator: "empty"
 
 
