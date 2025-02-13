@@ -14,6 +14,7 @@ public class FhirConnectConst {
     public static final String OPENEHR_COMPOSITION_FC = "$composition";
     public static final String OPENEHR_CONTEXT_FC = "$openEhrContext";
     public static final String OPENEHR_TYPE_NONE = "NONE";
+    public static final String OPENEHR_TYPE_CLUSTER = "CLUSTER";
     public static final String OPENEHR_TYPE_MEDIA = "MEDIA";
     public static final String OPENEHR_TYPE_DOSAGE = "DOSAGE";
     public static final String REFERENCE = "$reference";
@@ -28,6 +29,8 @@ public class FhirConnectConst {
     public static final String DV_CODED_TEXT = "DV_CODED_TEXT";
     public static final String CODE_PHRASE = "CODE_PHRASE";
     public static final String DV_TEXT = "DV_TEXT";
+    public static final String OPENEHR_CODE = "code";
+    public static final String OPENEHR_TERMINOLOGY = "terminology";
     public static final String DV_BOOL = "BOOLEAN";
     public static final String IDENTIFIER = "IDENTIFIER";
     public static final String DV_IDENTIFIER = "DV_IDENTIFIER";

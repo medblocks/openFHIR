@@ -50,11 +50,11 @@
 #      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Kontaktperson']"
 #    slotArchetype: "CLUSTER.person.v1"
 #
-#  - name: "versicherungsInformationen"
-#    with:
-#      fhir: "$resource.identifier"
-#      openehr: "$composition/content[openEHR-EHR-ADMIN_ENTRY.versicherungsinformationen.v0]"
-#    slotArchetype: "ADMIN_ENTRY.versicherungsinformationen.v0"
+#- name: "versicherungsInformationen"
+#  with:
+#    fhir: "$resource.identifier"
+#    openehr: "$composition/content[openEHR-EHR-ADMIN_ENTRY.versicherungsinformationen.v0]"
+#  slotArchetype: "ADMIN_ENTRY.versicherungsinformationen.v0"
 #
 #  - name: "gender"
 #    with:

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Base64;
 import java.util.List;
 
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_CLUSTER;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
 
 /**
@@ -43,8 +44,8 @@ public class OpenEhrPopulator {
             addValuePerFhirType(extractedValue, openEhrPath, constructingFlat);
             return;
         }
-        if (OPENEHR_TYPE_NONE.equals(openEhrType)) {
-            log.warn("Adding nothing on path {} as type is marked as NONE", openEhrPath);
+        if (OPENEHR_TYPE_NONE.equals(openEhrType) || OPENEHR_TYPE_CLUSTER.equals(openEhrType)) {
+            log.warn("Adding nothing on path {} as type is marked as NONE / CLUSTER", openEhrPath);
             return;
         }
         if (extractedValue == null) {

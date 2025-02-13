@@ -39,7 +39,7 @@ public class OpenEhrToFhirTest {
                                           new OpenEhrCachedUtils(null),
                                           new Gson(),
                                           openFhirStringUtils,
-                                          new OpenEhrRmWorker(openFhirStringUtils),
+                                          new OpenEhrRmWorker(openFhirStringUtils, new OpenFhirMapperUtils()),
                                           new OpenFhirMapperUtils(),
                                           new FhirInstancePopulator(),
                                           new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),

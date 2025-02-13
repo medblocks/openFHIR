@@ -22,5 +22,6 @@ mappings:
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen]"
+        # add manual mappings if needed, example being the ISM_TRANSITION ones
 
             

@@ -14,23 +14,18 @@ mappings:
     with:
       fhir: "$fhirRoot"
       openehr: "$archetype"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttribute: "type"
-      operator: "one of"
-      criteria: "[both]"
     followedBy:
       mappings:
         - name: "city"
           with:
             fhir: "city"
-            openehr: "items[at0002, 'Stadt']"
+            openehr: "items[at0002"
             type: "STRING"
 
         - name: "state"
           with:
             fhir: "state"
-            openehr: "items[at0004, 'Bundesland']|code"
+            openehr: "items[at0004]"
             type: "STRING"
 
         - name: "postalCode"
@@ -42,18 +37,78 @@ mappings:
         - name: "country"
           with:
             fhir: "country"
-            openehr: "items[at0006]|code" #todo: map
+            openehr: "items[at0006]"
             type: "STRING"
-
-#        - name: "type" todo: are we hardcoding  (above with condition) or are we mapping?
-#          with:
-#            fhir: "type"
-#            openehr: "/items[at0010]"
-#            type: "STRING"
 
         - name: "line"
           with:
             fhir: "line"
-            openehr: "items[at0001, 'Straße']"
+            openehr: "items[at0001]"
             type: "STRING"
+
+        - name: "type_physical_fhir"
+          with:
+            fhir: "type"
+            value: "physical"
+          openehrCondition:
+            targetRoot: "$archetype.items[at0010]"
+            targetAttributes:
+              - "code_string"
+            operator: "one of"
+            criteria: "at0011"
+
+        - name: "type_postal_fhir"
+          with:
+            fhir: "type"
+            value: "postal"
+          openehrCondition:
+            targetRoot: "$archetype.items[at0010]"
+            targetAttributes:
+              - "code_string"
+            operator: "one of"
+            criteria: "at0012"
+
+        - name: "type_both_fhir"
+          with:
+            fhir: "type"
+            value: "both"
+          openehrCondition:
+            targetRoot: "$archetype.items[at0010]"
+            targetAttributes:
+              - "code_string"
+            operator: "one of"
+            criteria: "at0013"
+
+        - name: "type_physical_openehr"
+          with:
+            openehr: "items[at0010]/defining_code"
+            value: "at0011"
+          fhirCondition:
+            targetRoot: "$fhirRoot"
+            targetAttributes:
+              - "type"
+            operator: "one of"
+            criteria: "physical"
+
+        - name: "type_postal_openehr"
+          with:
+            openehr: "items[at0010]/defining_code"
+            value: "at0012"
+          fhirCondition:
+            targetRoot: "$fhirRoot"
+            targetAttributes:
+              - "type"
+            operator: "one of"
+            criteria: "postal"
+
+        - name: "type_both_openehr"
+          with:
+            openehr: "items[at0010]/defining_code"
+            value: "at0013"
+          fhirCondition:
+            targetRoot: "$fhirRoot"
+            targetAttributes:
+              - "type"
+            operator: "one of"
+            criteria: "both"
 

@@ -26,10 +26,149 @@ mappings:
       openehr: "$composition/context/_health_care_facility|name"
       type: "STRING"
 
-#  - name: "ISMTransition"
-#    with:
-#      fhir: "$resource" #todo there needs to be a mapping table
-#      openehr: "$archetype/ism_transition"
+# ism transition hardcoding to fhir based on openEhr value
+  - name: "ISMTransition_draft_fhir"
+    with:
+      fhir: "$resource.status"
+      value: "draft"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "ism_transition/current_state/defining_code"
+      operator: "one of"
+      criteria: "[524]"
+
+  - name: "ISMTransition_proposed_fhir"
+    with:
+      fhir: "$resource.status"
+      value: "proposed"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "ism_transition/current_state/defining_code"
+      operator: "one of"
+      criteria: "[526]"
+
+  - name: "ISMTransition_active_fhir"
+    with:
+      fhir: "$resource.status"
+      value: "active"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "ism_transition/current_state/defining_code"
+      operator: "one of"
+      criteria: "[245]"
+
+  - name: "ISMTransition_rejected_fhir"
+    with:
+      fhir: "$resource.status"
+      value: "rejected"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "ism_transition/current_state/defining_code"
+      operator: "one of"
+      criteria: "[528]"
+
+  - name: "ISMTransition_inactive_fhir"
+    with:
+      fhir: "$resource.status"
+      value: "inactive"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "ism_transition/current_state/defining_code"
+      operator: "one of"
+      criteria: "[532]"
+
+  - name: "ISMTransition_error_fhir"
+    with:
+      fhir: "$resource.status"
+      value: "entered-in-error"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "ism_transition/current_state/defining_code"
+      operator: "one of"
+      criteria: "[531]"
+  # END of ism transition hardcoding to fhir based on openEhr value
+
+
+  # ism transition hardcoding to openehr based on fhir value
+  - name: "ISMTransition_draft_openehr"
+    with:
+      openehr: "$archetype/ism_transition/current_state/defining_code"
+      value: "524"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[draft]"
+  - name: "ISMTransition_proposed_openehr"
+    with:
+      openehr: "$archetype/ism_transition/current_state/defining_code"
+      value: "526"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[proposed]"
+  - name: "ISMTransition_active_openehr"
+    with:
+      openehr: "$archetype/ism_transition/current_state/defining_code"
+      value: "245"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[active]"
+  - name: "ISMTransition_active_openehr_terminology"
+    with:
+      openehr: "$archetype/ism_transition/current_state/terminology_id"
+      value: "local"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[active]"
+  - name: "ISMTransition_active_openehr_value"
+    with:
+      openehr: "$archetype/ism_transition/current_state/value"
+      value: "Active"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[active]"
+  - name: "ISMTransition_rejected_openehr"
+    with:
+      openehr: "$archetype/ism_transition/current_state/defining_code"
+      value: "528"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[rejected]"
+  - name: "ISMTransition_inactive_openehr"
+    with:
+      openehr: "$archetype/ism_transition/current_state/defining_code"
+      value: "532"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[inactive]"
+  - name: "ISMTransition_entered_in_error_openehr"
+    with:
+      openehr: "$archetype/ism_transition/current_state/defining_code"
+      value: "531"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "status"
+      operator: "one of"
+      criteria: "[entered-in-error]"
+
 
 
   - name: "studie"

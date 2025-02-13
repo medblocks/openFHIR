@@ -15,41 +15,40 @@ mappings:
   - name: "personData"
     with:
       fhir: "$resource"
-      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.person_data.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]"
     slotArchetype: "CLUSTER.person.v1"
 
-#  - name: "deathBoolean" #todo: where in a template is this?
-#    with:
-#      fhir: "$resource.deceased.as(Boolean)"
-#      openehr: "$archetype.personendaten.angaben_zum_tod.angaben_zum_tod.sterbedatum"
-#
-#  - name: "deathDateTime"
-#    with:
-#      fhir: "$resource.deceased.as(DateTime)"
-#      openehr: "$resource/data[at0001]/items[at0024]"
-#    manual:
-#      - name: "maindiagnose"
-#        openEHR:
-#          path: "/items[at0025]"
-#          type: "DV_BOOLEAN"
-#          value:
-#            value: "True"
-#    fhirCondition:
-#      targetRoot: "$resource"
-#      targetAttribute: "deceased"
-#      operator: "not empty"
-#    followedBy:
-#      mappings:
-#        - name: "deathDetails"
-#          with:
-#            fhir: "$fhirRoot"
-#            openehr: "$resource/data[at0001]/items[at0024]/items[openEHR-EHR-CLUSTER.death_details.v1]"
-#          slotArchetype: "CLUSTER.death_details.v1"
+  - name: "deathBoolean"
+    with:
+      fhir: "$resource.deceased.as(Boolean)"
+      openehr: "$archetype/data[at0001]/items[at0024]/items[at0025]"
+      type: "BOOL"
+
+  - name: "deathDateTime"
+    with:
+      fhir: "$resource.deceased.as(DateTime)"
+      openehr: "$archetype/data[at0001]/items[at0024]"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttributes:
+        - "deceased"
+      operator: "not empty"
+    followedBy:
+      mappings:
+        - name: "deathTrue"
+          with:
+            openehr: "data[at0001]/items[at0024]/items[at0025]"
+            value: "true"
+        - name: "deathDetails"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "data[at0001]/items[at0024]/items[openEHR-EHR-CLUSTER.death_details.v1]"
+          slotArchetype: "CLUSTER.death_details.v1"
 
   - name: "personBirthDate"
     with:
       fhir: "$resource.birthDate"
-      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.person_data.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.person_birth_data_iso.v0]"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person_birth_data_iso.v0]"
     slotArchetype: "CLUSTER.person_birth_data_iso.v0"
 
 #  - name: "link"

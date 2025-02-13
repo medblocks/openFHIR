@@ -40,6 +40,7 @@ import org.yaml.snakeyaml.Yaml;
 public abstract class GenericTest {
 
     final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
+    final OpenFhirMapperUtils openFhirMapperUtils = new OpenFhirMapperUtils();
     final FhirConnectModelMerger fhirConnectModelMerger = new FhirConnectModelMerger();
     protected final FhirPathR4 fhirPath = new FhirPathR4(FhirContext.forR4());
     final JsonParser jsonParser = (JsonParser) FhirContext.forR4().newJsonParser();
@@ -69,7 +70,7 @@ public abstract class GenericTest {
                                           new OpenEhrCachedUtils(null),
                                           new Gson(),
                                           openFhirStringUtils,
-                                          new OpenEhrRmWorker(openFhirStringUtils),
+                                          new OpenEhrRmWorker(openFhirStringUtils, openFhirMapperUtils),
                                           new OpenFhirMapperUtils(),
                                           new FhirInstancePopulator(),
                                           new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
@@ -81,7 +82,7 @@ public abstract class GenericTest {
                                           new OpenFhirStringUtils(),
                                           new FlatJsonUnmarshaller(),
                                           new Gson(),
-                                          new OpenEhrRmWorker(openFhirStringUtils),
+                                          new OpenEhrRmWorker(openFhirStringUtils, openFhirMapperUtils),
                                           openFhirStringUtils,
                                           repo,
                                           new OpenEhrCachedUtils(null),

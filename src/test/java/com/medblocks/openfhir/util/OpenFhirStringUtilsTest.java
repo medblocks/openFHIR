@@ -39,6 +39,17 @@ public class OpenFhirStringUtilsTest {
 
 
     @Test
+    public void getIndexOfElement() {
+        final String path = "laborbericht/laborbefund/pro_laboranalyt:0/bezeichnung_des_analyts|terminology";
+        final String element = "laborbericht/laborbefund/pro_laboranalyt";
+        Assert.assertEquals(0, new OpenFhirStringUtils().getIndexOfElement(element, path));
+        final String path1 = "laborbericht:1/laborbefund:2/pro_laboranalyt:0/bezeichnung_des_analyts|terminology";
+        final String element1 = "laborbericht/laborbefund";
+        Assert.assertEquals(2, new OpenFhirStringUtils().getIndexOfElement(element1, path1));
+    }
+
+
+    @Test
     public void joinValuesThatAreOne_oneContainsTheOther() {
         final List<String> toJoin = Arrays.asList(
                 "diagnose/diagnose:0/klinisch_relevanter_zeitraum_zeitpunkt_der_genesung",

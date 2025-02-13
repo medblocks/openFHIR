@@ -9,13 +9,6 @@ spec:
   extends: OBSERVATION.laboratory_test_result.v1
 
 mappings:
-  #  - name: "hierarchyMappings" #always have to be first
-  #    with:
-  #      fhir: "$resource.result.as(Observation)"
-  #      openEHR: "$archetype/data[at0001]/events[at0002]"
-  #    hierarchy:
-  #      openehrCreate: "event"
-  #      uniqueValueFHIR: "[effective]"
 
   - name: "result" #/data[at0001]/events[at0002] add new for each laboratory analyte.
     extension: "add"
@@ -28,7 +21,7 @@ mappings:
         - name: "observationRecurring"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1, 'Pro Laboranalyt']"
+            openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]"
           slotArchetype: "CLUSTER.laboratory_test_analyte.v1"
 
   #  - name: "fallIdentifikationIdentifier"
@@ -61,25 +54,18 @@ mappings:
   #              meaning: "the case this composition relates to"
   #              type: "case"
 
-  # todo: you're already overriding it below from the core mapping, so this here is obsolete
-#  - name: "status" # needs to be corrected in the template
-#    extension: "add"
-#    with:
-#      fhir: "$resource.status"
-#      openehr: "$archetype.context.status"
-
 
   - name: "status" #TODO @deprecated needs to go once mapping is updated
     extension: "overwrite"
     with:
       fhir: "$resource.status"
-      openehr: "$composition/context/other_context[at0001, 'Tree']/items[at0005]"
+      openehr: "$composition/context/other_context[at0001]/items[at0005]"
 
   - name: "berichtIdParent"
     extension: "add"
     with:
       fhir: "$resource.identifier"
-      openehr: "$composition/context/other_context[at0001, 'Tree']/items[at0002, 'Bericht ID']"
+      openehr: "$composition/context/other_context[at0001]/items[at0002]"
     fhirCondition:
       targetRoot: "$resource.identifier"
       targetAttribute: "type.coding.code"
@@ -91,7 +77,7 @@ mappings:
           extension: "add"
           with:
             fhir: "value"
-            openehr: "$composition/context/other_context[at0001, 'Tree']/items[at0002, 'Bericht ID']"
+            openehr: "$composition/context/other_context[at0001]/items[at0002]"
             type: "STRING"
         - name: "typeSystem"
           with:

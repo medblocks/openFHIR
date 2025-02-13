@@ -47,6 +47,8 @@ public class StudienteilnahmeTest extends KdsBidirectionalTest {
 
         final Consent consent = (Consent) allConsents.get(0).getResource();
 
+        Assert.assertEquals("entered-in-error", consent.getStatusElement().getValueAsString());
+
         //  - name: "period"
         final DateTimeType periodStart = consent.getProvision().getPeriod().getStartElement();
         final DateTimeType periodEnd = consent.getProvision().getPeriod().getEndElement();
@@ -58,6 +60,11 @@ public class StudienteilnahmeTest extends KdsBidirectionalTest {
     public JsonObject toOpenEhr() {
         final Bundle testBundle = getTestBundle(HELPER_LOCATION + BUNDLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
+
+        Assert.assertEquals("245", jsonObject.getAsJsonPrimitive(
+                        "studienteilnahme/einwilligungserklärung/ism_transition/current_state|code")
+                .getAsString());
+
         Assert.assertEquals("2024-08-22T10:30:00", jsonObject.getAsJsonPrimitive(
                 "studienteilnahme/context/start_time").getAsString());
         Assert.assertEquals("2023-07-22T10:30:00", jsonObject.getAsJsonPrimitive(

@@ -61,6 +61,7 @@ public abstract class KdsBidirectionalTest {
     final String EHRBASE_HOST = "http://localhost:8081";
 
     final OpenFhirStringUtils openFhirStringUtils = new OpenFhirStringUtils();
+    final OpenFhirMapperUtils openFhirMapperUtils = new OpenFhirMapperUtils();
     final FhirConnectModelMerger fhirConnectModelMerger = new FhirConnectModelMerger();
     final FhirPathR4 fhirPath = new FhirPathR4(FhirContext.forR4());
     final JsonParser jsonParser = (JsonParser) FhirContext.forR4().newJsonParser();
@@ -94,7 +95,7 @@ public abstract class KdsBidirectionalTest {
                                           new OpenEhrCachedUtils(null),
                                           new Gson(),
                                           openFhirStringUtils,
-                                          new OpenEhrRmWorker(openFhirStringUtils),
+                                          new OpenEhrRmWorker(openFhirStringUtils, openFhirMapperUtils),
                                           new OpenFhirMapperUtils(),
                                           new FhirInstancePopulator(),
                                           new FhirInstanceCreator(openFhirStringUtils, fhirInstanceCreatorUtility),
@@ -106,7 +107,7 @@ public abstract class KdsBidirectionalTest {
                                           new OpenFhirStringUtils(),
                                           new FlatJsonUnmarshaller(),
                                           new Gson(),
-                                          new OpenEhrRmWorker(openFhirStringUtils),
+                                          new OpenEhrRmWorker(openFhirStringUtils, openFhirMapperUtils),
                                           openFhirStringUtils,
                                           repo,
                                           new OpenEhrCachedUtils(null),

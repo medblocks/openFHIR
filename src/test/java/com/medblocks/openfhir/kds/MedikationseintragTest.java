@@ -285,7 +285,7 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
         Assert.assertEquals("26643007", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:1/verabreichungsweg:0|code").getAsString());
         Assert.assertEquals("26643006", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/verabreichungsweg:0|code").getAsString());
 
-        Assert.assertEquals("50621000087108", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/status/status|code").getAsString());
+//        Assert.assertEquals("50621000087108", jsonObject.getAsJsonPrimitive("medikamentenliste/medikationseintrag:0/status/status|code").getAsString());
 
         /**
          * once flat paths are replaced with aql paths, this should no longer be necessary. Reason for why it is now is

@@ -2,6 +2,7 @@ package com.medblocks.openfhir;
 
 import com.medblocks.openfhir.fc.FhirConnectConst;
 import com.medblocks.openfhir.toopenehr.FhirToOpenEhrHelper;
+import com.medblocks.openfhir.util.OpenFhirMapperUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
@@ -20,10 +21,13 @@ import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
 public class OpenEhrRmWorker {
 
     private final OpenFhirStringUtils openFhirStringUtils;
+    private final OpenFhirMapperUtils openFhirMapperUtils;
 
     @Autowired
-    public OpenEhrRmWorker(OpenFhirStringUtils openFhirStringUtils) {
+    public OpenEhrRmWorker(OpenFhirStringUtils openFhirStringUtils,
+                           OpenFhirMapperUtils openFhirMapperUtils) {
         this.openFhirStringUtils = openFhirStringUtils;
+        this.openFhirMapperUtils = openFhirMapperUtils;
     }
 
     /**
@@ -51,7 +55,8 @@ public class OpenEhrRmWorker {
             walkThroughNodes(tree.getChildren(), String.join("/", split), constructing, forcedTypes, fhirToOpenEhrHelper,pathToFindSuffix);
 
 
-            fhirToOpenEhrHelper.setOpenEhrPath(tree.getId() + "/" + fhirToOpenEhrHelper.getOpenEhrPath() + (hasSuffix ? suffix : ""));
+            final String actualSuffix = openFhirMapperUtils.endsWithAqlSuffix(suffix) ? openFhirMapperUtils.replaceAqlSuffixWithFlatSuffix(suffix) : suffix;
+            fhirToOpenEhrHelper.setOpenEhrPath(tree.getId() + "/" + fhirToOpenEhrHelper.getOpenEhrPath() + (hasSuffix ? actualSuffix : ""));
 
             // we compare so that we can see if if was found within the template; if not, we don't want for it to end up in the flat json
             final int initialOpenEhrPathWithProperTreeLength = split.length + 1;

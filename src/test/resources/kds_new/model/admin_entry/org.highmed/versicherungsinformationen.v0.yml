@@ -12,27 +12,28 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 
 mappings:
-#  - name: "versicherungsId"
-#    with:
-#      fhir: "$fhirRoot"
-#      openehr: "$archetype/data[at0001]/items[at0006]"
-#    fhirCondition:
-#      targetRoot: "$fhirRoot"
-#      targetAttribute: "system"
-#      operator: "one of"
-#      criteria: "[http://fhir.de/sid/gkv/kvid-10]"
-#    followedBy:
-#      mappings:
-#        - name: "typeString"
-#          with:
-#            fhir: "type"
-#            openehr: "$reference"
-#          manual:
-#            - name: "type"
-#              fhir:
-#                path: "type"
-#                # TODO We could also allow json strings that would make a lot of things easier ?
-#                # value: "{\"coding\: [{\"system\": \"http://fhir.de/CodeSystem/identifier-type-de-basis\",\"code\": \"KVZ10\"}}"
-#                value:
-#                  coding.system: "http://fhir.de/CodeSystem/identifier-type-de-basis"
-#                  coding.value: "KVZ10"
+  - name: "versicherungsId"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$archetype/data[at0001]/items[at0006]"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria: "[http://fhir.de/sid/gkv/kvid-10]"
+    followedBy:
+      mappings:
+        - name: "typeCoding"
+          with:
+            fhir: "type.coding"
+            openehr: "$archetype"
+          followedBy:
+            mappings:
+              - name: "code"
+                with:
+                  fhir: "code"
+                  openehr: "KVZ10"
+              - name: "system"
+                with:
+                  fhir: "system"
+                  value: "http://fhir.de/CodeSystem/identifier-type-de-basis"

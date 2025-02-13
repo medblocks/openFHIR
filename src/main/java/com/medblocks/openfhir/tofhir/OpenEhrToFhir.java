@@ -522,7 +522,7 @@ public class OpenEhrToFhir {
                                         final boolean isFollowedBy,
                                         final String parentFhirEhr,
                                         final String parentOpenEhr) {
-        if (condition == null) {
+        if (condition == null || CONDITION_OPERATOR_EMPTY.equals(condition.getOperator())) {
             return;
         }
         final String stringFromCriteria = openFhirStringUtils.getStringFromCriteria(condition.getCriteria()).getCode();
@@ -779,12 +779,8 @@ public class OpenEhrToFhir {
                 parentFollowedByOpenEhrWithOutAqlPath = parentFollowedByOpenEhrWithOutAqlPath.replace(RECURRING_SYNTAX,"");
             }
             final Condition openEhrCondition = mapping.getOpenehrCondition();
-            if(openEhrCondition != null){
-                final String openEhrConditionTargetRootWithAqlPath = openFhirStringUtils.prepareOpenEhrSyntax(openEhrCondition.getTargetRoot(), firstFlatPath);
-                String openEhrConditionTargetRoot = getPathFromAqlPath(openEhrConditionTargetRootWithAqlPath, webTemplate, null);
-                final String formatOpeneEhrConditiionTargetRoot = openEhrConditionTargetRoot.replace(RECURRING_SYNTAX,"").replace(firstFlatPath,FhirConnectConst.OPENEHR_ARCHETYPE_FC);
-                openEhrCondition.setTargetRoot(formatOpeneEhrConditiionTargetRoot);
-            }
+            prepareOpenEhrCondition(openEhrCondition, firstFlatPath, webTemplate);
+
             final JsonObject flatJsonObject = openEhrConditionEvaluator.splitByOpenEhrCondition(originalFlatJsonObject,
                     openEhrCondition,
                     parentFollowedByOpenEhr
@@ -844,6 +840,41 @@ public class OpenEhrToFhir {
             }
 
         }
+    }
+
+    private void prepareOpenEhrCondition(final Condition openEhrCondition,
+                                         final String firstFlatPath,
+                                         final WebTemplate webTemplate) {
+        if (openEhrCondition == null) {
+            return;
+        }
+        final String originalTargetRoot = openEhrCondition.getTargetRoot();
+        final String openEhrConditionTargetRootWithAqlPath = openFhirStringUtils.prepareOpenEhrSyntax(originalTargetRoot, firstFlatPath);
+
+
+        final String openEhrConditionTargetRoot = getPathFromAqlPath(openFhirMapperUtils.removeAqlSuffix(openEhrConditionTargetRootWithAqlPath), webTemplate, null);
+        final String formattedOpenEhrConditionTargetRoot = openEhrConditionTargetRoot.replace(RECURRING_SYNTAX,"").replace(firstFlatPath,FhirConnectConst.OPENEHR_ARCHETYPE_FC);
+        openEhrCondition.setTargetRoot(formattedOpenEhrConditionTargetRoot + openFhirMapperUtils.replaceAqlSuffixWithFlatSuffix(openEhrConditionTargetRootWithAqlPath));
+
+        if(openEhrCondition.getTargetAttributes() == null) {
+            return;
+        }
+        final List<String> newAttributes = new ArrayList<>();
+        for (final String targetAttribute : openEhrCondition.getTargetAttributes()) {
+            final String openEhrConditionTargetAttributeWithAqlPath = openFhirStringUtils.prepareOpenEhrSyntax(originalTargetRoot + "/" +targetAttribute, firstFlatPath);
+            final String openEhrConditionTargetAttribute = getPathFromAqlPath(openFhirMapperUtils.removeAqlSuffix(openEhrConditionTargetAttributeWithAqlPath), webTemplate, null);
+            final String formattedOpenEhrConditionAttribute = openEhrConditionTargetAttribute.replace(RECURRING_SYNTAX,"").replace(firstFlatPath,FhirConnectConst.OPENEHR_ARCHETYPE_FC);
+
+            final String newAttribute =
+                    formattedOpenEhrConditionAttribute + openFhirMapperUtils.replaceAqlSuffixWithFlatSuffix(
+                            openEhrConditionTargetAttributeWithAqlPath);
+            if(newAttribute.startsWith(openEhrCondition.getTargetRoot())) {
+                newAttributes.add(newAttribute.replace(openEhrCondition.getTargetRoot() + "/", ""));
+            } else {
+                newAttributes.add(newAttribute);
+            }
+        }
+        openEhrCondition.setTargetAttributes(newAttributes);
     }
 
     public String getPathFromAqlPath(String openEhrPath, WebTemplate webTemplate, String rmType){
@@ -1054,10 +1085,23 @@ public class OpenEhrToFhir {
                                                                   final String hardcodedValue) {
         List<OpenEhrToFhirHelper.DataWithIndex> values = null;
         if (!OPENEHR_TYPE_NONE.equals(mapping.getWith().getType())) {
-            if (StringUtils.isNotEmpty(hardcodedValue)) {
+            if (StringUtils.isNotEmpty(hardcodedValue) && !joinedEntries.isEmpty()) {
                 values = new ArrayList<>();
-                values.add(new OpenEhrToFhirHelper.DataWithIndex(new StringType(hardcodedValue), -1,
-                        OPENEHR_ARCHETYPE_FC));
+                final Condition openehrCondition = mapping.getOpenehrCondition();
+                final String fullOpenEhrPath;
+                if(openehrCondition == null) {
+                    fullOpenEhrPath = OPENEHR_ARCHETYPE_FC;
+                } else {
+                    final List<String> targetAttributes = mapping.getOpenehrCondition().getTargetAttributes();
+                    final String targetRoot = mapping.getOpenehrCondition().getTargetRoot();
+//                    final String rootWithAttrs = targetRoot + ((targetAttributes != null && !targetAttributes.isEmpty()) ? "" : ("/" + targetAttributes.get(0)));
+                    final String piped = openFhirStringUtils.addRegexPatternToSimplifiedFlatFormat(targetRoot);
+                    final List<String> allEntriesThatMatch = openFhirStringUtils.getAllEntriesThatMatch(piped,
+                                                                                                        flatJsonObject);
+                    fullOpenEhrPath = allEntriesThatMatch.get(0);
+                }
+                values.add(new OpenEhrToFhirHelper.DataWithIndex(new StringType(hardcodedValue), getHardcodedIndex(mapping, flatJsonObject),
+                                                                 fullOpenEhrPath));
             } else {
                 values = joinedEntries.values().stream()
                         .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
@@ -1071,6 +1115,16 @@ public class OpenEhrToFhir {
                     .collect(Collectors.toList());
         }
         return values;
+    }
+
+    private int getHardcodedIndex(final Mapping mapping, final JsonObject flatJsonObject) {
+        if(mapping.getOpenehrCondition() == null) {
+            return -1; // goes for all anyway
+        }
+        final String conditionRoot = mapping.getOpenehrCondition().getTargetRoot();
+        final String matchingKey = flatJsonObject.keySet().stream().filter(k -> k.startsWith(conditionRoot)).findFirst()
+                .orElse(null); // should always be at least one! else we woudln't be here
+        return openFhirStringUtils.getIndexOfElement(conditionRoot, matchingKey);
     }
 
     private String getRmType(final String openEhrPath,
