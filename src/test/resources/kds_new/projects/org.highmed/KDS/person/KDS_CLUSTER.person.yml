@@ -29,5 +29,3 @@ mappings:
       fhir: "$resource"
       openehr: "$archetype/items[openEHR-EHR-CLUSTER.address.v1 and name/value='Straßenanschrift']"
     slotArchetype: "CLUSTER.address.v1"
-
-    #todo: why overwriting it? I think template is not the right one..

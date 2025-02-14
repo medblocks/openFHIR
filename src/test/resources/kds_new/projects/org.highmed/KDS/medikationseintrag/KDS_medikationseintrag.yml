@@ -57,6 +57,6 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource"
-      openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.medication_status_fhir.v0 and name/value='Status']"
+      openehr: "$archetype/protocol[at0004]/items[openEHR-EHR-CLUSTER.medication_status_fhir.v0]"
     slotArchetype: "CLUSTER.medication_status_fhir.v0"
 

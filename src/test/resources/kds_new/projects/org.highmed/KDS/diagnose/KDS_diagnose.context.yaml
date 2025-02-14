@@ -21,6 +21,5 @@ context:
     - "KDS_problem_diagnose" #they overload the vanilla mappings, no version = take the latest
     - "KDS_problem_qualifier"
     - "KDS_lebensphase"
-    - "KDS_anatomical_location"
   start: "EVALUATION.problem_diagnosis.v1"
 

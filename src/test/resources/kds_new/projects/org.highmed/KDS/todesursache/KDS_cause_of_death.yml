@@ -1,19 +1,18 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name:  KDS_procedure.v1
-  version: 0.0.1a # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  name: KDS_cause_of_death
+  version: 0.0.1a
+spec:
   system: FHIR
   version: R4
-  extends: ACTION.procedure.v1
+  extends: EVALUATION.cause_of_death.v1
 
 mappings:
-   # Dokumentationsdatum
   - name: "fallIdentifikationIdentifier"
     extension: "add"
     with:
-      fhir: "$resource.encounter.identifier"
+      fhir: "$resource.encounter.as(Reference).identifier"
       openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
     slotArchetype: "CLUSTER.case_identification.v0"
 
@@ -22,7 +21,7 @@ mappings:
 #    with:
 #      fhir: "$resource.encounter.reference"
 #      openehr: "$reference"
-#    reference:
+#    reference: #type None
 #      resourceType: "Encounter"
 #      mappings:
 #        - name: "identifierInReference"
@@ -38,35 +37,3 @@ mappings:
 #            openehrLink:
 #              meaning: "the case this composition relates to"
 #              type: "case"
-
-
-  - name: "berichtId"
-    extension: "add"
-    with:
-      fhir: "$resource.identifier.value"
-      openehr: "$composition/context/other_context[at0001]/items[at0002]"
-      type: "STRING"
-
-  - name: "durchführungsabsicht"
-    extension: "add"
-    with:
-      fhir: "$resource.extension"
-      openehr: "$archetype/description[at0001]/items[at0014]"
-      type: "CODING"
-    fhirCondition:
-      targetRoot: "$resource.extension"
-      targetAttribute: "url"
-      operator: "one of"
-      criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht]"
-
-  - name: "contextStartDokumentationsdatum"
-    extension: "add"
-    with:
-      fhir: "$resource.extension"
-      openehr: "$composition/context/start_time"
-      type: "DATETIME"
-    fhirCondition:
-      targetRoot: "$resource.extension"
-      targetAttribute: "url"
-      operator: "one of"
-      criteria: "[http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum]"

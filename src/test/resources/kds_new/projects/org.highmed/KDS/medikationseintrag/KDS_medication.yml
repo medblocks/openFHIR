@@ -6,36 +6,36 @@ metadata:
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
-  extends: CLUSTER.medication.v2.medication-to-medication
+  extends: CLUSTER.medication.v2
 
 #todo: example of fhir data please, what should this map to??
 mappings:
-#  - name: "wirkstofftyp"
-#    extension: "append"
-#    appendTo: "ingredients"
-#    followedBy:
-#
-#      mappings:
-#        - name: "wirkstofftypExtended"
-#          with:
-#            fhir: "$fhirRoot.ingredients.extension.value"
-#            openehr: "$openehrRoot/items[at0142]"
-#          fhirCondition:
-#            targetRoot: "$fhirRoot.ingredients.extension"
-#            targetAttribute: "url"
-#            operator: "one of"
-#            criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp]"
-#
-#
+  - name: "wirkstofftyp"
+    extension: "append"
+    appendTo: "ingredients"
+    followedBy:
+      mappings:
+        - name: "wirkstofftypExtended"
+          with:
+            fhir: "$fhirRoot.ingredients.extension.value"
+            openehr: "$archetype/items[at0142]"
+            type: "CODING"
+          fhirCondition:
+            targetRoot: "$fhirRoot.ingredients.extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp]"
+
 #  - name: "wirkstoffrelation"
 #    extension: "append"
 #    appendTo: "ingredients"
 #    followedBy:
 #      mappings:
-#        - name: ""
+#        - name: "relation"
 #          with:
 #            fhir: "$fhirRoot.ingredients.extension"
-#            openehr: "$reference"
+#            openehr: "$archetype"
+#            type: "NONE"
 #          fhirCondition:
 #            targetRoot: "$fhirRoot.ingredients.extension"
 #            targetAttribute: "url"

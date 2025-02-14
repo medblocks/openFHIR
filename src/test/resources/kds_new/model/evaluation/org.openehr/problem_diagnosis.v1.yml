@@ -9,7 +9,13 @@ spec:
   openEhrConfig:
     archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
   fhirConfig:
-    structureDefinition: Condition
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Condition
+
+    condition:
+      - targetRoot: "$resource.verificationStatus" # exclude all conditions with entered-in-error, since there is no mapping for this code
+        targetAttribute: "coding.code"
+        operator: "not of"
+        criteria: "[entered-in-error]"
 
 mappings:
 
@@ -80,7 +86,7 @@ mappings:
   - name: "bodySite"
     with:
       fhir: "$resource.bodySite"
-      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0001]"
+      openehr: "$archetype/data[at0012]"
       type: "CODEABLECONCEPT"
 
   - name: "bodySiteCluster"

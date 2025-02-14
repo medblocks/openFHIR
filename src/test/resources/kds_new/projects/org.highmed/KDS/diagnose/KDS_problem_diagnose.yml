@@ -64,39 +64,39 @@ mappings:
               - name: "problemDiagnoseNameCode"
                 with:
                   fhir: "code"
-                  openehr: "data[at0001]/items[at0002, 'Kodierte Diagnose']"
+                  openehr: "data[at0001]/items[at0002]"
         #                  openehr: "kodierte_diagnose"
         - name: "problemDiagnoseText"
           with:
             fhir: "text"
-            openehr: "data[at0001]/items[at0009, 'Freitextbeschreibung']"
+            openehr: "data[at0001]/items[at0009]"
 
   - name: "note"
     extension: "overwrite"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype/data[at0001]/items[at0069, 'Diagnoseerläuterung']"
+      openehr: "$archetype/data[at0001]/items[at0069]"
       type: "STRING"
 
   - name: "dateTime"
     extension: "overwrite"
     with:
       fhir: "$resource.onset"
-      openehr: "$archetype/data[at0001]/items[at0077, 'Klinisch relevanter Zeitraum (Zeitpunkt des Auftretens)']"
+      openehr: "$archetype/data[at0001]/items[at0077]"
       type: "DATETIME"
 
   - name: "severity"
     extension: "overwrite"
     with:
       fhir: "$resource.severity"
-      openehr: "$archetype/data[at0001]/items[at0005, 'Severity']"
+      openehr: "$archetype/data[at0001]/items[at0005]"
       type: "CODEABLECONCEPT"
 
   - name: "date"
     extension: "add"
     with:
       fhir: "$resource.extension.value.as(DateTimeType)"
-      openehr: "$archetype/data[at0001]/items[at0003, 'Feststellungsdatum']"
+      openehr: "$archetype/data[at0001]/items[at0003]"
       type: "DATETIME"
     fhirCondition:
       targetRoot: "$resource.extension"
@@ -117,6 +117,15 @@ mappings:
       operator: "not contains"
       criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]" # execute cluster here if no icd-10 code is provided, otherwise the cluster is below specified
 
+# because we're overwriting bodySiteCluster altogether above, meaning when going to openehr to fhir, we're missing out on bodySite mappings
+  - name: "bodySiteClusterToFhir"
+    extension: "add"
+    with:
+      fhir: "$resource.bodySite"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
+      unidirectional: "openEHR->fhir"
+    slotArchetype: "CLUSTER.anatomical_location.v1"
+
   - name: "icd10ProblemDiagnose"
     extension: "append"
     appendTo: "problemDiagnose.problemDiagnoseName"
@@ -130,7 +139,7 @@ mappings:
         - name: "codeIcd10Diagnosesicherheit"
           with:
             fhir: "extension"
-            openehr: "data[at0001]/items[at0073, 'Diagnosesicherheit']"
+            openehr: "data[at0001]/items[at0073]"
             type: "CODEABLECONCEPT"
           fhirCondition:
             targetRoot: "extension"
@@ -149,6 +158,18 @@ mappings:
             fhir: "extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
           slotArchetype: "CLUSTER.anatomical_location.v1"
+          followedBy:
+            mappings:
+              - name: "seitenlokalisation"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]" #todo: check why full path is needed here, this should not be required
+                  type: "CODEABLECONCEPT"
+                fhirCondition:
+                  targetRoot: "$fhirRoot"
+                  targetAttribute: "url"
+                  operator: "one of"
+                  criteria: "[http://fhir.de/StructureDefinition/seitenlokalisation]"
 
   - name: "dateTime"
     extension: "overwrite"
@@ -161,7 +182,7 @@ mappings:
         - name: "start"
           with:
             fhir: "$fhirRoot.start"
-            openehr: "data[at0001]/items[at0077, 'Klinisch relevanter Zeitraum (Zeitpunkt des Auftretens)']"
+            openehr: "data[at0001]/items[at0077]"
             type: "DATETIME"
 
         - name: "lebensphaseCluster"
@@ -174,7 +195,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource"
-      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2, 'Klinischer Status']"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]"
     slotArchetype: "CLUSTER.problem_qualifier.v2"
 
   - name: "primärdiagnose"
@@ -207,6 +228,6 @@ mappings:
                 slotArchetype: "EVALUATION.problem_diagnosis.v1"
                 openehrCondition:
                   targetRoot: "$archetype.diagnose" # beacuse based on this we're then determining what needs to be excluded from mapping
-                  targetAttribute: "items[openEHR-EHR-CLUSTER.problem_qualifier.v2, 'Klinischer Status']/items[at0063, 'Diagnoserolle']|code"
+                  targetAttribute: "items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]|code"
                   operator: "one of"
                   criteria: "[at0064]"

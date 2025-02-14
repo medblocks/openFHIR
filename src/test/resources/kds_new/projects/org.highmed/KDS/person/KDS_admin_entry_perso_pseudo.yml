@@ -13,7 +13,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.identifier"
-      openehr: "$archetype.context.patient_id"
+      openehr: "$composition/context/other_context[at0003]/items[at0004]"
       type: "IDENTIFIER"
     fhirCondition:
       targetRoot: "$resource.identifier"
@@ -28,25 +28,25 @@ mappings:
             value: "http://terminology.hl7.org/CodeSystem/v2-0203"
 
 
-#  - name: "personData"
-#    extension: "overwrite"
-#    with: #todo: why are you overwriting it?
-#      fhir: "$resource"
-#      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Person']"
-#    slotArchetype: "CLUSTER.person.v1"
+  - name: "personData"
+    extension: "overwrite"
+    with: #todo: why are you overwriting it?
+      fhir: "$resource"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Person']"
+    slotArchetype: "CLUSTER.person.v1"
 
-#  - name: "contactPerson" #todo: where in template?
-#    extension: "add"
-#    with:
-#      fhir: "$resource.contact"
-#      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Kontaktperson']"
-#    slotArchetype: "CLUSTER.person.v1"
+  - name: "contactPerson"
+    extension: "add"
+    with:
+      fhir: "$resource.contact"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Kontaktperson']"
+    slotArchetype: "CLUSTER.person.v1"
 
   - name: "gender"
     extension: "add"
     with:
       fhir: "$resource.gender"
-      openehr: "$archetype.geschlecht"
+      openehr: "$composition/content[openEHR-EHR-EVALUATION.gender.v1]"
     slotArchetype: "EVALUATION.gender.v1"
 
 #  - name: "identifier"

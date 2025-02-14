@@ -1,63 +1,56 @@
-#
-#TODO: should one of these two (this and KDS_admin_entry_perso_pseudo.yml) be removed?
-#engine: FHIRConnect/v0.0.1
-#type: extension
-#metadata:
-#  name: KDS_admin_entry_person.v0
-#  version: 0.0.1a
-#spec:
-#  system: FHIR
-#  version: R4
-#  extends: ADMIN_ENTRY.person_data.v0
-#
-#mappings:
-#  - name: "pid"
-#    extension: "add"
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_admin_entry_person.v0
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  extends: ADMIN_ENTRY.person_data.v0
+
+mappings:
+  - name: "pid"
+    extension: "add"
+    with:
+      fhir: "$resource.identifier"
+      openehr: "$composition/context/other_context[at0003]/items[at0004]"
+      type: "IDENTIFIER"
+    fhirCondition:
+      targetRoot: "$resource.identifier"
+      targetAttribute: "type.coding.code"
+      operator: "one of"
+      criteria: "[MR]"
+    followedBy:
+      mappings:
+        - name: "typeString"
+          with:
+            fhir: "$resource.identifier.type.coding.system"
+            value: "http://terminology.hl7.org/CodeSystem/v2-0203"
+
+
+  - name: "personData"
+    extension: "overwrite"
+    with: #todo: why are you overwriting it?
+      fhir: "$resource"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Person']"
+    slotArchetype: "CLUSTER.person.v1"
+
+  - name: "versicherungsInformationen"
+    with:
+      fhir: "$resource.identifier"
+      openehr: "$composition/content[openEHR-EHR-ADMIN_ENTRY.versicherungsinformationen.v0]"
+    slotArchetype: "ADMIN_ENTRY.versicherungsinformationen.v0"
+
+  - name: "gender"
+    extension: "add"
+    with:
+      fhir: "$resource.gender"
+      openehr: "$composition/content[openEHR-EHR-EVALUATION.gender.v1]"
+    slotArchetype: "EVALUATION.gender.v1"
+
+#  - name: "identifier"
 #    with:
 #      fhir: "$resource.identifier"
-#      openehr: "$composition/context/other_context[at0003]/items[at0004]"
-#    fhirCondition: # TODO @Gasper how did the old engine did that
-#      targetRoot: "$resource.identifier.type.coding"
-#      targetAttribute: "code"
-#      operator: "one of"
-#      criteria: "[MR]"
-#    followedBy: #TODO Solution to static values ?
-#      mappings:
-#        - name: "typeString"
-#          with:
-#            fhir: "type.coding"
-#            openehr: "$reference"
-#          manual:
-#            - name: "typeMR"
-#              fhir:
-#                # TODO We could also allow json strings that would make a lot of things easier ?
-#                # value: "{\"coding\: [{\"system\": \"http://fhir.de/CodeSystem/identifier-type-de-basis\",\"code\": \"KVZ10\"}}"
-#                value:
-#                  system: "http://terminology.hl7.org/CodeSystem/v2-0203"
-#                  value: "MR"
-#
-#  - name: "personData"
-#    extension: "overwrite"
-#    with:
-#      fhir: "$resource"
-#      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Person']"
-#    slotArchetype: "CLUSTER.person.v1"
-#
-#  - name: "contactPerson"
-#    extension: "add"
-#    with:
-#      fhir: "$resource.contact"
-#      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Kontaktperson']"
-#    slotArchetype: "CLUSTER.person.v1"
-#
-#- name: "versicherungsInformationen"
-#  with:
-#    fhir: "$resource.identifier"
-#    openehr: "$composition/content[openEHR-EHR-ADMIN_ENTRY.versicherungsinformationen.v0]"
-#  slotArchetype: "ADMIN_ENTRY.versicherungsinformationen.v0"
-#
-#  - name: "gender"
-#    with:
-#      fhir: "$resource.gender"
-#      openehr: "$composition/content[openEHR-EHR-EVALUATION.gender.v1]"
-#    slotArchetype: "openEHR-EHR-EVALUATION.gender.v1"
+#      openehr: "$reference"
+#    type: "PROGRAMMED_MAPPING"
+#    mappingCode: "ehrStatusAddExternalREF" #these identifiers of FHIR need to go to the EHR status to be honest as external references.

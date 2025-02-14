@@ -13,7 +13,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$fhirRoot.extension"
-      openehr: "$archetype/items[at0014, 'Anderes Geschlecht amtlich']|code"
+      openehr: "$archetype/data[at0002]/items[at0014]"
       type: "STRING"
     fhirCondition:
       targetRoot: "$fhirRoot.extension"

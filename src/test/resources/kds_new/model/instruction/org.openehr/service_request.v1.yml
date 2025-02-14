@@ -23,7 +23,7 @@ mappings:
     with:
       fhir: "$resource.authoredOn"
       openehr: "$composition/context/start_time"
-      type: DATE
+      type: "DATE"
 
   - name: "composer"
     with:
@@ -39,13 +39,13 @@ mappings:
     with:
       fhir: "$resource.identifier"
       openehr: "$archetype/protocol[at0008]/items[at0010]"
-      type: IDENTIFIER
+      type: "IDENTIFIER"
 
   - name: "status"
     with:
       fhir: "$resource.status"
       openehr: "$archetype/protocol[at0008]/items[at0127]"
-      type: CODING
+      type: "CODING"
 
   - name: "code"
     with:

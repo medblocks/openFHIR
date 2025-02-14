@@ -20,7 +20,7 @@ mappings:
         - name: "typeOfName"
           with:
             fhir: "use"
-            openehr: "namensart"
+            openehr: "items[at0001]"
             type: "STRING"
 
         - name: "firstName"
@@ -29,9 +29,15 @@ mappings:
             openehr: "items[at0002]"
             type: "STRING"
 
+        - name: "prefix"
+          with:
+            fhir: "prefix"
+            openehr: "items[at0006]"
+            type: "STRING"
+
         - name: "familyName"
           with:
             fhir: "family"
-            openehr: "items[at0005, 'Familienname']"
+            openehr: "items[at0005]"
             type: "STRING"
 

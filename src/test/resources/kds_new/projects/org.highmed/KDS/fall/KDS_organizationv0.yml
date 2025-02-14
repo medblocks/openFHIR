@@ -10,9 +10,8 @@ spec:
 
 mappings:
 
-#  todo: what is this mapping from and to?? example of a fhir resource etc.
 
-# todo we need to overwrite orgId from the core one because there it's 'identifier' and here it needs to be like below
+# we need to overwrite orgId from the core one because there it's 'identifier' and here it needs to be like below
   - name: "orgId"
     extension: "overwrite"
     with:

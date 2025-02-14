@@ -43,18 +43,35 @@ mappings:
   - name: "effective"
     with:
       fhir: "$resource.effective"
-      openehr: "sterbedatum"
+      openehr: "$archetype/protocol[at0002]/items[at0018]"
       type: "DATETIME"
 
   - name: "vitalStatus"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype.something" #todo where in template?!
+      openehr: "$archetype/data[at0001]/items[at0006]"
+      type: "CODEABLECONCEPT"
+
+  - name: "category"
+    with:
+      fhir: "$resource.category"
+      openehr: "$archetype"
+    followedBy:
+      mappings:
+        - name: "code"
+          with:
+            fhir: "code"
+            value: "survey"
+        - name: "system"
+          with:
+            fhir: "system"
+            value: "http://terminology.hl7.org/CodeSystem/observation-category"
 
   - name: "note"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype.kommentar"
+      openehr: "$archetype/data[at0001]/items[at0013]"
+      type: "STRING"
 
 #  - name: "partOf"
 #    with:

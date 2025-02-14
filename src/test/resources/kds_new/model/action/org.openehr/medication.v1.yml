@@ -255,7 +255,7 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]"
-          slotArchetype: "CLUSTER.medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
+          slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
 
 
   - name: "medicationCode"

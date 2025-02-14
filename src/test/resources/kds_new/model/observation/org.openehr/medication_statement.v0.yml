@@ -98,7 +98,7 @@ mappings:
             fhir: "$fhirRoot"
             openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
             type: "NONE"
-          slotArchetype: "CLUSTER.medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
+          slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
 
 
   - name: "medicationCode"
@@ -112,13 +112,6 @@ mappings:
         - "items[at0071]" #"darreichungsform"
         - "items[at0115]" #"wirkstärke_konzentration"
       operator: "empty"
-
-
-##todo: is already defined above
-#  - name: "reasonCode"
-#    with:
-#      fhir: "$resource.reasonCode"
-#      openehr: "/data[at0001]/events[at0002]/data[at0003]/items[at0023]"
 
   - name: "reasonReference"
     with:

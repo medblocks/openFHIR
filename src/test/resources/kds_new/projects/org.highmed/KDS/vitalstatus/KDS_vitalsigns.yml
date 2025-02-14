@@ -1,32 +1,20 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name:  KDS_medikamentenverabreichung
-  version: 0.0.1a # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  name: KDS_vital_status
+  version: 0.0.1a
+spec:
   system: FHIR
   version: R4
-  extends: ACTION.medication.v1
+  openEhrConfig:
+    archetype: openEHR-EHR-EVALUATION.vital_status.v1
+  extends: EVALUATION.vital_status.v1
 
 mappings:
-  - name: "berichtId"
-    extension: "add"
+  - name: "encounter"
+    extension: "overwrite"
     with:
-      fhir: "$resource.identifier.value"
-      openehr: "$composition/context/other_context[at0001]/items[at0002]"
-      type: "STRING"
-
-  - name: "status"
-    extension: "add"
-    with:
-      fhir: "$resource.status"
-      openehr: "$composition/context/other_context[at0001]/items[at0005]|code"
-      type: "STRING"
-
-  - name: "fallIdentifikationIdentifier"
-    extension: "add"
-    with:
-      fhir: "$resource.context.as(Reference).identifier"
+      fhir: "$resource.encounter.as(Reference).identifier"
       openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
     slotArchetype: "CLUSTER.case_identification.v0"
 
@@ -41,13 +29,19 @@ mappings:
 #        - name: "identifierInReference"
 #          with:
 #            fhir: "$fhirRoot.identifier"
-#            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+#            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
 #          slotArchetype: "CLUSTER.case_identification.v0"
 #        - name: "encounterMapping"
 #          with:
 #            fhir: "$fhirRoot"
-#            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+#            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
 #            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
 #            openehrLink:
 #              meaning: "the case this composition relates to"
 #              type: "case"
+
+  - name: "status"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.observation_status_fhir.v1]"
+    slotArchetype: "CLUSTER.observation_status_fhir.v1"
