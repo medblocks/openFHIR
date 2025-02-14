@@ -63,60 +63,130 @@ mappings:
                   type: "IDENTIFIER"
 
 
-# todo: I don't think you need this. A simple mapping from Resource.category with terminology mapping (like in many other places
-# todo: suffices. Goes for all three mappings below. Why do this manual kind of mapping??
-#  - name: "category"
-#    extension: "overwrite"
-#    with:
-#      fhir: "$resource.category.coding"
-#      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/value/defining_code"
-#    manual:
-#      - name: "categoryStatic"
-#        openehr:
-#          - path: "terminology_id/value"
-#            value: "http://terminology.hl7.org/ValueSet/observation-category"
-#          - path: "code_string"
-#            value: "laboratory"
-#          - path: "../value"
-#            value: "Laboratory"
-#        fhir:
-#          - path: "system"
-#            value: "http://terminology.hl7.org/CodeSystem/observation-category"
-#          - path: "code"
-#            value: "laboratory"
-#
-#  - name: "intent"
-#    extension: "overwrite"
-#    with:
-#      fhir: "$resource"
-#      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/value/defining_code"
-#    manual:
-#      - name: "categoryStatic"
-#        openehr:
-#          - path: "terminology_id/value"
-#            value: "http://hl7.org/fhir/request-intent"
-#          - path: "code_string"
-#            value: "order"
-#          - path: "../value"
-#            value: "Order"
-#        fhir:
-#          - path: "intent"
-#            value: "order"
-#
-#  - name: "status"
-#    extension: "overwrite"
-#    with:
-#      fhir: "$resource"
-#      openehr: "$archetype/protocol[at0008]/items[at0127]/value/defining_code"
-#    manual:
-#      - name: "categoryStatic"
-#        openehr:
-#          - path: "terminology_id/value"
-#            value: "http://hl7.org/fhir/ValueSet/request-status"
-#          - path: "code_string"
-#            value: "completed"
-#          - path: "../value"
-#            value: "Completed"
-#        fhir:
-#          - path: "status"
-#            value: "completed"
+  - name: "category"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.category.coding"
+      openehr: "$archetype"
+      type: "NONE"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "activities[at0001]/description[at0009]/items[at0148]/defining_code"
+      operator: "one of"
+      criteria: "laboratory"
+    followedBy:
+      mappings:
+        - name: "category_fhir_code"
+          with:
+            fhir: "code"
+            value: "laboratory"
+        - name: "category_fhir_system"
+          with:
+            fhir: "system"
+            value: "http://terminology.hl7.org/CodeSystem/observation-category"
+
+  - name: "category_openehr_lab_code"
+    extension: "add"
+    with:
+      value: "laboratory"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/defining_code"
+    fhirCondition:
+      targetRoot: "$resource.category.coding"
+      targetAttributes:
+        - "code"
+      operator: "one of"
+      criteria: "laboratory"
+  - name: "category_openehr_lab_terminology"
+    extension: "add"
+    with:
+      value: "http://terminology.hl7.org/ValueSet/observation-category"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/terminology_id"
+    fhirCondition:
+      targetRoot: "$resource.category.coding"
+      targetAttributes:
+        - "code"
+      operator: "one of"
+      criteria: "laboratory"
+  - name: "category_openehr_lab_value"
+    extension: "add"
+    with:
+      value: "Laboratory"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/value"
+    fhirCondition:
+      targetRoot: "$resource.category.coding"
+      targetAttributes:
+        - "code"
+      operator: "one of"
+      criteria: "laboratory"
+
+  - name: "intent"
+    extension: "add"
+    with:
+      fhir: "$resource.intent"
+      value: "order"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "activities[at0001]/description[at0009]/items[at0148]/defining_code"
+      operator: "one of"
+      criteria: "order"
+
+  - name: "intent_openehr_code"
+    extension: "add"
+    with:
+      value: "order"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/defining_code"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttributes:
+        - "intent"
+      operator: "one of"
+      criteria: "order"
+  - name: "intent_openehr_terminology"
+    extension: "add"
+    with:
+      value: "http://hl7.org/fhir/request-intent"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/terminology_id"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttributes:
+        - "intent"
+      operator: "one of"
+      criteria: "order"
+
+# status
+  - name: "status"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.status"
+      value: "completed"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "protocol[at0008]/items[at0127]/defining_code"
+      operator: "one of"
+      criteria: "completed"
+
+  - name: "status_openehr_code"
+    extension: "add"
+    with:
+      value: "completed"
+      openehr: "$archetype/protocol[at0008]/items[at0127]/defining_code"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttributes:
+        - "status"
+      operator: "one of"
+      criteria: "completed"
+  - name: "status_openehr_terminology"
+    extension: "add"
+    with:
+      value: "http://hl7.org/fhir/request-status"
+      openehr: "$archetype/protocol[at0008]/items[at0127]/terminology_id"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttributes:
+        - "status"
+      operator: "one of"
+      criteria: "completed"

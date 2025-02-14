@@ -24,35 +24,12 @@ mappings:
             openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]"
           slotArchetype: "CLUSTER.laboratory_test_analyte.v1"
 
-  #  - name: "fallIdentifikationIdentifier"
-  #    extension: "add"
-  #    with:
-  #      fhir: "$resource.encounter.identifier"
-  #      # todo: not ok; slotArchetype CLUSTER.case_identification has a "case_identifier", BUT this template requires a "fall-kennung".
-  #      openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-  #    slotArchetype: "CLUSTER.case_identification.v0"
-
-  #  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
-  #    extension: "add"
-  #    with:
-  #      fhir: "$resource.encounter.reference"
-  #      openehr: "$reference"
-  #    reference: #type None
-  #      resourceType: "Encounter"
-  #      mappings:
-  #        - name: "identifierInReference"
-  #          with:
-  #            fhir: "$fhirRoot.identifier"
-  #            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-  #          slotArchetype: "CLUSTER.case_identification.v0"
-  #        - name: "encounterMapping"
-  #          with:
-  #            fhir: "$fhirRoot"
-  #            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
-  #            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-  #            openehrLink:
-  #              meaning: "the case this composition relates to"
-  #              type: "case"
+  - name: "fallIdentifikationIdentifier"
+    extension: "add"
+    with:
+      fhir: "$resource.encounter.as(Reference).identifier"
+      openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+    slotArchetype: "CLUSTER.case_identification.v0"
 
 
   - name: "status" #TODO @deprecated needs to go once mapping is updated

@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name:  CLUSTER.medication.v2.medication-to-medication
+  name:  CLUSTER.medication.v2
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
@@ -9,7 +9,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.medication.v2
   fhirConfig:
-    structureDefinition: http://hl7.org/fhir/StructureDefinition/Person #todo: same issue as elsewhere, where this is taken as a standalone mapping...
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 mappings:
   - name: "name"
     with:
@@ -39,13 +39,13 @@ mappings:
         - name: "id"
           with:
             fhir: "lotNumber"
-            openehr: "items[openEHR-EHR-CLUSTER.medication.v2]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0150]"
+            openehr: "items[at0150]"
             type: "STRING"
 
         - name: "expirationDate"
           with:
             fhir: "expirationDate"
-            openehr: "items[openEHR-EHR-CLUSTER.medication.v2]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0003]"
+            openehr: "items[at0003]"
             type: "DATETIME"
 
   - name: "ingredients"
@@ -85,7 +85,7 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "$archetype"
-                slotArchetype: "CLUSTER.medication.v2.medication-to-medication" # depending on the resourceType picks the correct one
+                slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
 
         - name: "medicationSubstance"
           with:
@@ -99,7 +99,7 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "$archetype"
-                slotArchetype: "CLUSTER.medication.v2.substance-to-medication" # depending on the resourceType picks the correct one
+                slotArchetype: "CLUSTER.medication.v2.substance" # depending on the resourceType picks the correct one
 
         - name: "strength"
           with:

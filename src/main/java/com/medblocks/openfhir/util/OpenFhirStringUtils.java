@@ -1,7 +1,6 @@
 package com.medblocks.openfhir.util;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
-import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_ARCHETYPE_FC;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -135,6 +134,36 @@ public class OpenFhirStringUtils {
         return Integer.valueOf(match);
     }
 
+    /**
+     * get outer most index of all indexes in path that is the same for all paths
+     */
+    public Integer getLastMostCommonIndex(final List<String> paths) {
+        List<List<Integer>> indicesList = new ArrayList<>();
+
+        for (String path : paths) {
+            List<Integer> indices = getAllIndexes(path);
+            indicesList.add(indices);
+        }
+
+        return findCommonRightmostIndex(indicesList);
+    }
+
+    private static Integer findCommonRightmostIndex(List<List<Integer>> indicesList) {
+        int minSize = indicesList.stream().mapToInt(List::size).min().orElse(0);
+
+        for (int i = minSize - 1; i >= 0; i--) {
+            Integer candidate = indicesList.get(0).get(i);
+            final int iFinal = i;
+            boolean allMatch = indicesList.stream()
+                    .allMatch(list -> list.size() > iFinal && list.get(iFinal).equals(candidate));
+
+            if (allMatch) {
+                return candidate;
+            }
+        }
+        return -1;
+    }
+
     public String getCastType(final String path) {
         String CAST_TYPE = "as\\(([^()]*)\\)";
         return getByRegex(path, CAST_TYPE);
@@ -190,6 +219,7 @@ public class OpenFhirStringUtils {
     /**
      * having fullPath laborbericht:1/laborbefund/pro_laboranalyt:0/bezeichnung_des_analyts|terminology
      * and element laborbericht/laborbefund/pro_laboranalyt
+     *
      * @return this will return last index matching this path
      */
     public int getIndexOfElement(final String element, final String fullPath) {
@@ -200,7 +230,7 @@ public class OpenFhirStringUtils {
             final String path = splitFullPath[i];
             final String[] splitByColon = path.split(":");
             final String toMatch = splitByColon[0];
-            if(toMatch.equals(el) && i == splitElement.length-1 && splitByColon.length > 1) {
+            if (toMatch.equals(el) && i == splitElement.length - 1 && splitByColon.length > 1) {
                 return Integer.parseInt(splitByColon[1]);
             }
         }
@@ -347,11 +377,12 @@ public class OpenFhirStringUtils {
             } else {
                 base = fhirPath;
             }
+            boolean negate = FhirConnectConst.CONDITION_OPERATOR_NOT_OF.equals(condition.getOperator());
             stringJoiner.add(base
                                      .replace(condition.getTargetRoot(),
                                               condition.getTargetRoot() + ".where(" + targetAttribute
                                                       + ".toString().contains('" + getStringFromCriteria(
-                                                      condition.getCriteria()).getCode() + "'))")
+                                                      condition.getCriteria()).getCode() + "')"+ (negate ? "=false":"") +")")
                                      .replace(FhirConnectConst.FHIR_RESOURCE_FC, resource));
 
         }
@@ -546,7 +577,7 @@ public class OpenFhirStringUtils {
                                             final String resource,
                                             final String parentPath) {
         originalFhirPath = originalFhirPath.replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
-        if(condition != null
+        if (condition != null
                 && condition.getTargetAttribute() == null
                 && condition.getTargetAttributes() != null
                 && !condition.getTargetAttributes().isEmpty()) {

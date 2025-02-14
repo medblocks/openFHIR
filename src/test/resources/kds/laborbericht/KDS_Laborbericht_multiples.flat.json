@@ -54,7 +54,7 @@
   "laborbericht/laborbefund/probenmaterial:1/identifikator_der_übergeordneten_probe:0|id": "dev/null",
   "laborbericht/laborbefund/probenmaterial:1/eignung_zur_analyse|terminology": "local",
   "laborbericht/laborbefund/probenmaterial:1/eignung_zur_analyse|value": "Zufriedenstellend",
-  "laborbericht/laborbefund/probenmaterial:1/eignung_zur_analyse|code": "1_at0062",
+  "laborbericht/laborbefund/probenmaterial:1/eignung_zur_analyse|code": "at0064",
   "laborbericht/laborbefund/probenmaterial:1/kommentar": "1_Sample collected in the morning.",
 
 

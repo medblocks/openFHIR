@@ -16,13 +16,13 @@ mappings:
   - name: "name"
     with:
       fhir: "$resource.name"
-      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.person_data.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]/items[openEHR-EHR-CLUSTER.structured_name.v1]"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.structured_name.v1]"
     slotArchetype: "CLUSTER.structured_name.v1.person_name-structured_name"
 
   - name: "address"
     with:
       fhir: "$resource.address"
-      openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.person_data.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]/items[openEHR-EHR-CLUSTER.address.v1]"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.address.v1]"
     slotArchetype: "CLUSTER.address.v1"
 
   - name: "organizationReference"
@@ -35,11 +35,11 @@ mappings:
         - name: "organization"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype/content[openEHR-EHR-ADMIN_ENTRY.person_data.v0]/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]/items[openEHR-EHR-CLUSTER.organisation.v1]"
+            openehr: "$archetype/items[openEHR-EHR-CLUSTER.organisation.v1]"
           slotArchetype: "CLUSTER.organisation.v1"
           #todo: identifier_value would need to be overwritten in a KDS organisation if we wanted to map that one
 
-#  - name: "electronicCommunication" #todo: where in a template is this?!
+#  - name: "electronicCommunication"
 #    with:
 #      fhir: "$resource"
 #      openehr: "$archetype/items[openEHR-EHR-CLUSTER.electronic_communication.v1]"

@@ -14,7 +14,7 @@ mappings:
   - name: "gender"
     with:
       fhir: "$fhirRoot"
-      openehr: "$archetype/data[at0002]/items[at0022]|code"
+      openehr: "$archetype/data[at0002]/items[at0022]"
       type: "STRING"
 #
 #  - name: "sex"

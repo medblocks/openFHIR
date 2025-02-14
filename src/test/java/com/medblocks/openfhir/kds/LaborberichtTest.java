@@ -84,7 +84,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
                                     .getAsString());
         Assert.assertEquals("2022-02-03T05:05:06", jsonObject.getAsJsonPrimitive(
                 "laborbericht/laborbefund/probenmaterial:0/zeitpunkt_des_probeneingangs").getAsString());
-        Assert.assertEquals("available", jsonObject.getAsJsonPrimitive(
+        Assert.assertEquals("at0062", jsonObject.getAsJsonPrimitive(
                 "laborbericht/laborbefund/probenmaterial:0/eignung_zur_analyse|code").getAsString());
         Assert.assertEquals("at0018", jsonObject.getAsJsonPrimitive(
                 "laborbericht/laborbefund/pro_laboranalyt:0/ergebnis-status|code").getAsString());
@@ -210,7 +210,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         assertEquals("2022-02-03T04:05:06+01:00", specimen.getReceivedTimeElement().getValueAsString());
 
         // specimen - name: "status"
-        assertEquals("at0062", specimen.getStatusElement().getValueAsString());
+        assertEquals("available", specimen.getStatusElement().getValueAsString());
 
         // basedOn, identifierInReference
         assertEquals("identifikation_der_laboranforderung",
@@ -347,7 +347,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         assertEquals("2022-02-03T04:05:06+01:00", specimen.getReceivedTimeElement().getValueAsString());
 
         // specimen - name: "status"
-        assertEquals("at0062", specimen.getStatusElement().getValueAsString());
+        assertEquals("available", specimen.getStatusElement().getValueAsString());
 
         Specimen specimen1 = (Specimen) diagnosticReport.getSpecimen().get(1).getResource();
 
@@ -389,7 +389,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         assertEquals("3022-02-03T04:05:06+01:00", specimen1.getReceivedTimeElement().getValueAsString());
 
         // specimen - name: "status"
-        assertEquals("1_at0062", specimen1.getStatusElement().getValueAsString());
+        assertEquals("unsatisfactory", specimen1.getStatusElement().getValueAsString());
 
 
         // basedOn, identifierInReference

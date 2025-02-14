@@ -9,7 +9,7 @@ spec:
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.specimen.v1
   fhirConfig:
-    structureDefinition: http://hl7.org/fhir/StructureDefinition/Person #todo if we make this Organization, it also means it will try to map fhir->openehr standalone organization without the context of a template (resulting in leistungsanforderung/identifikator_des_probenehmers|id, leistungsanforderung/zeitpunkt_der_probenentnahme/date_time_value).. what do we do?
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 
 mappings:
   - name: "identifier"
@@ -55,25 +55,6 @@ mappings:
             openehr: "items[at0008]" #Sampling context
             type: "STRING"
 
-#        - name: "collector"
-#          with:
-#            fhir: "collector.reference"
-#            openehr: "$reference"
-#          reference:
-#            mappings:
-#              - name: "identifierInReference"
-#                with:
-#                  fhir: "$resource.identifier"
-#                  openehr: "$archetype/items[at0070]"
-#              - name: "collectorLink"
-#                with:
-#                  fhir: "$resource"
-#                  openehr: "$archetype/items[at0070]/links"
-#                  type: "REFERENCED_MAPPING"
-#                  openehrLink:
-#                    meaning: "the collector that collected this specimen"
-#                    type: "collector"
-
   - name: "type"
     with:
       fhir: "$resource.type"
@@ -104,29 +85,122 @@ mappings:
       openehr: "$archetype/items[at0034]" #Date/Time received
       type: "DATETIME"
 
-#  - name: "parent"
-#    with:
-#      fhir: "$resource.parent.reference"
-#      openehr: "$reference"
-#    reference:
-#      resourceType: "Specimen"
-#      mappings:
-#        - name: "referenceInIdentifier"
-#          with:
-#            fhir: "$resource.identifier"
-#            openehr: "$archetype/items[at0003]"
-#        - name: "parentLink"
-#          with:
-#            fhir: "$resource"
-#            openehr: "$archetype/items[at0003]/links"
-#            type: "REFERENCED_MAPPING"
-#            openehrLink:
-#              meaning: "the parent of this specimen"
-#              type: "parent"
+  - name: "parent"
+    with:
+      fhir: "$resource.parent.as(Reference).identifier.value"
+      openehr: "$archetype/items[at0003]"
+      type: "STRING"
 
   - name: "status"
     with:
       fhir: "$resource.status"
       openehr: "$archetype/items[at0041]|code" #adequacy for testing
       type: "STRING"
+
+  - name: "status_fhir_available"
+    with:
+      fhir: "$resource.status"
+      value: "available"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "items[at0041]/defining_code"
+      operator: "one of"
+      criteria: "at0062"
+
+  - name: "status_fhir_unavailable"
+    with:
+      fhir: "$resource.status"
+      value: "unavailable"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "items[at0041]/defining_code"
+      operator: "one of"
+      criteria: "at0064"
+
+  - name: "status_fhir_unsatisfactory"
+    with:
+      fhir: "$resource.status"
+      value: "unsatisfactory"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "items[at0041]/defining_code"
+      operator: "one of"
+      criteria: "at0064"
+
+  - name: "status_openehr_available_code"
+    with:
+      openehr: "$archetype/items[at0041]/defining_code"
+      value: "at0062"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttributes:
+        - "status"
+      operator: "one of"
+      criteria: "available"
+  - name: "status_openehr_available_value"
+    with:
+      openehr: "$archetype/items[at0041]/value"
+      value: "Satisfactory"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttributes:
+        - "status"
+      operator: "one of"
+      criteria: "available"
+
+  - name: "status_openehr_unavailable_code"
+    with:
+      openehr: "$archetype/items[at0041]/defining_code"
+      value: "at0064"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttributes:
+        - "status"
+      operator: "one of"
+      criteria: "unavailable"
+  - name: "status_openehr_unavailable_value"
+    with:
+      openehr: "$archetype/items[at0041]/value"
+      value: "Unsatisfactory - not analysed"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttributes:
+        - "status"
+      operator: "one of"
+      criteria: "unavailable"
+
+  - name: "status_openehr_unsatisfactory_code"
+    with:
+      openehr: "$archetype/items[at0041]/defining_code"
+      value: "at0064"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttributes:
+        - "status"
+      operator: "one of"
+      criteria: "unsatisfactory"
+  - name: "status_openehr_unsatisfactory_value"
+    with:
+      openehr: "$archetype/items[at0041]/value"
+      value: "Unsatisfactory - not analysed"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      targetAttributes:
+        - "status"
+      operator: "one of"
+      criteria: "unsatisfactory"
+
+
+
+
+
+
+  - name: "status_openehr_available_terminology"
+    with:
+      openehr: "$archetype/items[at0041]/terminology_id"
+      value: "local"
+
 
