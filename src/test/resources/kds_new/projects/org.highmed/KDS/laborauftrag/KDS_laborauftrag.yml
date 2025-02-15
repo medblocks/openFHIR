@@ -62,6 +62,40 @@ mappings:
                   openehr: "items[at0001]"
                   type: "IDENTIFIER"
 
+  - name: "intent"
+    extension: "add"
+    with:
+      fhir: "$resource.intent"
+      value: "order"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttributes:
+        - "activities[at0001]/description[at0009]/items[at0148]/defining_code"
+      operator: "one of"
+      criteria: "order"
+
+  - name: "intent_openehr_code"
+    extension: "add"
+    with:
+      value: "order"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/defining_code"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttributes:
+        - "intent"
+      operator: "one of"
+      criteria: "order"
+  - name: "intent_openehr_terminology"
+    extension: "add"
+    with:
+      value: "http://hl7.org/fhir/request-intent"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/terminology_id"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttributes:
+        - "intent"
+      operator: "one of"
+      criteria: "order"
 
   - name: "category"
     extension: "overwrite"
@@ -120,41 +154,6 @@ mappings:
       operator: "one of"
       criteria: "laboratory"
 
-  - name: "intent"
-    extension: "add"
-    with:
-      fhir: "$resource.intent"
-      value: "order"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "activities[at0001]/description[at0009]/items[at0148]/defining_code"
-      operator: "one of"
-      criteria: "order"
-
-  - name: "intent_openehr_code"
-    extension: "add"
-    with:
-      value: "order"
-      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/defining_code"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttributes:
-        - "intent"
-      operator: "one of"
-      criteria: "order"
-  - name: "intent_openehr_terminology"
-    extension: "add"
-    with:
-      value: "http://hl7.org/fhir/request-intent"
-      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/terminology_id"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttributes:
-        - "intent"
-      operator: "one of"
-      criteria: "order"
-
 # status
   - name: "status"
     extension: "overwrite"
@@ -182,7 +181,7 @@ mappings:
   - name: "status_openehr_terminology"
     extension: "add"
     with:
-      value: "http://hl7.org/fhir/request-status"
+      value: "http://hl7.org/fhir/ValueSet/request-status"
       openehr: "$archetype/protocol[at0008]/items[at0127]/terminology_id"
     fhirCondition:
       targetRoot: "$resource"

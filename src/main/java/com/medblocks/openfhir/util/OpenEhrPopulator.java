@@ -266,8 +266,16 @@ public class OpenEhrPopulator {
                 Coding coding = codings.get(0);
                 addToConstructingFlat(path + "|code", coding.getCode(), flat);
                 addToConstructingFlat(path + "|terminology", coding.getSystem(), flat);
+                if(codeableConcept.getText() == null || codeableConcept.getText().isEmpty()) {
+                    addToConstructingFlat(path + "|value", coding.getDisplay(), flat);
+                }
             }
             addToConstructingFlat(path + "|value", codeableConcept.getText(), flat);
+            return true;
+        } else if(value instanceof Coding coding) {
+            addToConstructingFlat(path + "|code", coding.getCode(), flat);
+            addToConstructingFlat(path + "|terminology", coding.getSystem(), flat);
+            addToConstructingFlat(path + "|value", coding.getDisplay(), flat);
             return true;
         } else {
             log.warn("openEhrType is DV_CODED_TEXT but extracted value is not CodeableConcept; is {}", value.getClass());
@@ -299,6 +307,7 @@ public class OpenEhrPopulator {
             return true;
         } else if (value instanceof Enumeration<?> enumeration) {
             addToConstructingFlat(path + "|code", enumeration.getValueAsString(), flat);
+            addToConstructingFlat(path + "|value", enumeration.getValueAsString(), flat);
             return true;
         } else {
             log.warn("openEhrType is CODE_PHRASE but extracted value is not Coding, Extension, CodeableConcept or Enumeration; is {}", value.getClass());

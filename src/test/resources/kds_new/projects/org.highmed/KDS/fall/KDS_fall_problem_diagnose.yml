@@ -13,30 +13,17 @@ mappings:
     extension: "overwrite"
     with:
       fhir: "$fhirRoot"
-      openehr: "$archetype"
+      openehr: "$reference"
       type: "NONE"
-    followedBy:
+    reference:
+      resourceType: "Condition"
       mappings:
-#        - name: "referencedDiagnose" # condition reference
-#          with:
-#            fhir: "condition.reference"
-#            openehr: "$reference"
-#          reference:
-#            resourceType: "Condition"
-#            mappings:
-#              - name: "referencedDiagnose"
-#                with:
-#                  fhir: "$fhirRoot"
-#                  openehr: "$archetype/data[at0001]/links"
-#                  type: "REFERENCED_MAPPING"
-#                  openehrLink:
-#                    meaning: "link to the diagnosis composition"
-#                    type: "diagnose"
-
-        - name: "diagnoseName" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
+        - name: "diagnoseName"
           with:
             fhir: "$fhirRoot.code.coding"
             openehr: "$archetype/data[at0001]/items[at0002]"
             type: "CODING"
+
+
 
 

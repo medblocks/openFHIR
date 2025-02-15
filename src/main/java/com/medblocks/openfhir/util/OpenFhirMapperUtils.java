@@ -7,6 +7,7 @@ import com.medblocks.openfhir.fc.FhirConnectConst;
 import com.medblocks.openfhir.fc.OpenFhirFhirConfig;
 import com.medblocks.openfhir.fc.OpenFhirFhirConnectModelMapper;
 import com.medblocks.openfhir.fc.schema.model.Condition;
+import com.medblocks.openfhir.fc.schema.model.FhirConnectReference;
 import com.medblocks.openfhir.fc.schema.model.Mapping;
 import com.medblocks.openfhir.fc.schema.model.With;
 import java.text.ParseException;
@@ -453,6 +454,13 @@ public class OpenFhirMapperUtils {
             // open ehr condition
             final Condition openehrCondition = slotArchetypeMappersMapping.getOpenehrCondition();
             fixOpenEhrForwardingPathsCondition(openehrCondition, openEhrPath);
+
+            // reference
+            final FhirConnectReference reference = slotArchetypeMappersMapping.getReference();
+            if(reference == null) {
+                continue;
+            }
+            fixOpenEhrForwardingPaths(reference.getMappings(), openEhrPath);
         }
     }
 
