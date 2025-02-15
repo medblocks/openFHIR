@@ -147,15 +147,6 @@ mappings:
       targetAttribute: "category.coding.code"
       operator: "one of"
       criteria: "[outpatient]"
-  - name: "category_outpatient_openehr_terminology"
-    with:
-      openehr: "$composition/context/setting/terminology_id"
-      value: "local"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "category.coding.code"
-      operator: "one of"
-      criteria: "[outpatient]"
 
   - name: "category_inpatient_openehr_code"
     with:
@@ -169,16 +160,7 @@ mappings:
   - name: "category_inpatient_openehr_value"
     with:
       openehr: "$composition/context/setting/value"
-      value: "Inpatient"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "category.coding.code"
-      operator: "one of"
-      criteria: "[inpatient]"
-  - name: "category_inpatient_openehr_terminology"
-    with:
-      openehr: "$composition/context/setting/terminology_id"
-      value: "local"
+      value: "primary medical care"
     fhirCondition:
       targetRoot: "$resource"
       targetAttribute: "category.coding.code"
@@ -203,15 +185,11 @@ mappings:
       targetAttribute: "category.coding.code"
       operator: "one of"
       criteria: "[community]"
-  - name: "category_community_openehr_terminology"
+
+  - name: "category_openehr_terminology"
     with:
       openehr: "$composition/context/setting/terminology_id"
-      value: "local"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "category.coding.code"
-      operator: "one of"
-      criteria: "[community]"
+      value: "openehr"
 
   - name: "note"
     with:

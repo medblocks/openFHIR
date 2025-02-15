@@ -17,7 +17,7 @@ mappings:
     with:
       fhir: "$resource.status"
       openehr: "$archetype/items[at0001]"
-      type: "STRING"
+      type: "CODING"
 
   - name: "statusReason"
     with:
