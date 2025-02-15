@@ -57,17 +57,20 @@ mappings:
         - name: "problemDiagnoseName"
           with:
             fhir: "coding"
-            openehr: "$archetype/data[at0001]/items[at0002]"
+            openehr: "$archetype"
+            type: "NONE" # had to be none, else when going to openEhr, it's mapped to $archetype|code, ..
           followedBy:
             mappings:
               - name: "problemDiagnoseNameCode"
                 with:
                   fhir: "code"
                   openehr: "$archetype/data[at0001]/items[at0002]"
+                  type: "STRING"
         - name: "problemDiagnoseText"
           with:
             fhir: "text"
-            openehr: "data[at0001]/items[at0009]"
+            openehr: "$archetype/data[at0001]/items[at0009]"
+            type: "STRING"
 
   - name: "note"
     with:

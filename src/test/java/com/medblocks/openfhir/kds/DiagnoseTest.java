@@ -167,8 +167,8 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                         "http://hl7.org/fhir/StructureDefinition/condition-related")
                 .getValue();
         Assert.assertNotNull(referencedExtensionCondition);
-        Assert.assertNull(conditionSecond.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/condition-related")
-                                  .getValue());
+        Assert.assertTrue(conditionSecond.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/condition-related")
+                                  .getValue().isEmpty());
 
         assertCondition((Condition) ((Reference) referencedExtensionCondition).getResource(), true);
 
@@ -180,10 +180,8 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
         Assert.assertEquals("2022-02-03T01:00:00", jsonObject.get("diagnose/context/start_time").getAsString());
-        Assert.assertEquals("C34.1", jsonObject.get("diagnose/diagnose:0|code").getAsString());
-        Assert.assertEquals("C34.1", jsonObject.get("diagnose/diagnose:0|value").getAsString());
-        Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm",
-                            jsonObject.get("diagnose/diagnose:0|terminology").getAsString());
+
+
         Assert.assertEquals("C34.1", jsonObject.get("diagnose/diagnose:0/kodierte_diagnose").getAsString());
         Assert.assertEquals("G", jsonObject.get("diagnose/diagnose:0/diagnosesicherheit|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
