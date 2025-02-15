@@ -57,15 +57,13 @@ mappings:
         - name: "problemDiagnoseName"
           with:
             fhir: "coding"
-            openehr: "$archetype"
-            type: "CODING"
+            openehr: "$archetype/data[at0001]/items[at0002]"
           followedBy:
             mappings:
               - name: "problemDiagnoseNameCode"
                 with:
                   fhir: "code"
-                  openehr: "data[at0001]/items[at0002]"
-#                  openehr: "kodierte_diagnose"
+                  openehr: "$archetype/data[at0001]/items[at0002]"
         - name: "problemDiagnoseText"
           with:
             fhir: "text"
