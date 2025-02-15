@@ -93,6 +93,10 @@ public class OpenFhirStringUtils {
                 string.substring(start + charToReplace.length());
     }
 
+    public String replaceFirstIndex(String path, int newIndex) {
+        return path.replaceFirst(":(\\d+)", ":" + newIndex);
+    }
+
     /**
      * replaces dots in a simplified openEHR path with / and replaces FHIR Connect reference to openEHR archetype with
      * the actual one

@@ -13,6 +13,7 @@ import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX_E
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.WHERE;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.OpenFhirMappingContext;
@@ -41,6 +42,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -1040,7 +1042,7 @@ public class OpenEhrToFhir {
         }
         for (final OpenFhirFhirConnectModelMapper slotArchetypeMappers : slotArchetypeMapperss) {
             boolean possibleRecursion = slotArchetypeMappers.getName().equals(theMapper.getName());
-            if (breakRecursion) {
+            if (breakRecursion && possibleRecursion) {
                 log.warn("Breaking possible infinite recursion with mapping: {}", slotArchetypeMappers.getName());
                 break;
             }
@@ -1108,19 +1110,65 @@ public class OpenEhrToFhir {
                                            helpers);
         }
 
-        // recursive call so all $reference.mappings are handled
-        prepareOpenEhrToFhirHelpers(theMapper,
-                                    mapping.getReference().getResourceType(),
-                                    firstFlatPath,
-                                    mapping.getReference().getMappings(),
-                                    helpers,
-                                    webTemplate,
-                                    flatJsonObject,
-                                    isFollowedBy,
-                                    parentFollowedByFhir,
-                                    parentFollowedByOpenEhr,
-                                    slotContext,
-                                    possibleRecursion);
+        // narrow refeence mapping if openehr condition exists
+        final Condition openEhrCondition = mapping.getReference().getMappings().get(0).getOpenehrCondition();
+        if(openEhrCondition != null) {
+            prepareOpenEhrCondition(openEhrCondition, firstFlatPath, webTemplate);
+
+            final JsonObject newFlatJsonObject = openEhrConditionEvaluator.splitByOpenEhrCondition(flatJsonObject,
+                                                                                                openEhrCondition,
+                                                                                                parentFollowedByOpenEhr
+                                                                                                        == null
+                                                                                                        ? firstFlatPath
+                                                                                                        : parentFollowedByOpenEhr);
+            // newFlatJsonObject now has that one that is being referenced, but indexes will map to the wrong one
+            // so now we fix indexes to point to all "other" ones that are having this one linked to it
+            final HashSet<String> allOtherKeys = new HashSet<>(flatJsonObject.keySet());
+            allOtherKeys.removeAll(newFlatJsonObject.keySet());
+
+            final JsonObject modifiedObject = new JsonObject();
+            for (final String key : allOtherKeys) {
+                final Integer anotherIndex = openFhirStringUtils.getFirstIndex(key);
+                if(anotherIndex == null) {
+                    continue;
+                }
+                // now modify the newFlatJsonObject with this new index
+                for (final Entry<String, JsonElement> stringJsonElementEntry : newFlatJsonObject.entrySet()) {
+                    final String key1 = stringJsonElementEntry.getKey();
+                    final JsonElement value1 = stringJsonElementEntry.getValue();
+                    modifiedObject.add(openFhirStringUtils.replaceFirstIndex(key1, anotherIndex), value1);
+                }
+            }
+
+            // recursive call so all $reference.mappings are handled
+            prepareOpenEhrToFhirHelpers(theMapper,
+                                        mapping.getReference().getResourceType(),
+                                        firstFlatPath,
+                                        mapping.getReference().getMappings(),
+                                        helpers,
+                                        webTemplate,
+                                        modifiedObject,
+                                        isFollowedBy,
+                                        parentFollowedByFhir,
+                                        parentFollowedByOpenEhr,
+                                        slotContext,
+                                        possibleRecursion);
+        } else {
+            // recursive call so all $reference.mappings are handled
+            prepareOpenEhrToFhirHelpers(theMapper,
+                                        mapping.getReference().getResourceType(),
+                                        firstFlatPath,
+                                        mapping.getReference().getMappings(),
+                                        helpers,
+                                        webTemplate,
+                                        flatJsonObject,
+                                        isFollowedBy,
+                                        parentFollowedByFhir,
+                                        parentFollowedByOpenEhr,
+                                        slotContext,
+                                        possibleRecursion);
+        }
+
     }
 
     /**

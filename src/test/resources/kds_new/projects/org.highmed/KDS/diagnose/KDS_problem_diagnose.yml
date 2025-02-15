@@ -40,57 +40,6 @@ mappings:
 #              type: "case"
 #  -------------------------------------
 
-  - name: "status"
-    extension: "add"
-    with:
-      fhir: "$resource.verificationStatus.text"
-      openehr: "$composition/context/other_context[at0001]/items[at0005]"
-      type: "STRING"
-
-  - name: "problemDiagnose"
-    extension: "overwrite"
-    with:
-      fhir: "$resource.code"
-      openehr: "$archetype"
-    followedBy:
-      mappings:
-        - name: "problemDiagnoseName"
-          with:
-            fhir: "coding"
-            openehr: "$archetype"
-            type: "CODING"
-          followedBy:
-            mappings:
-              - name: "problemDiagnoseNameCode"
-                with:
-                  fhir: "code"
-                  openehr: "data[at0001]/items[at0002]"
-        #                  openehr: "kodierte_diagnose"
-        - name: "problemDiagnoseText"
-          with:
-            fhir: "text"
-            openehr: "data[at0001]/items[at0009]"
-
-  - name: "note"
-    extension: "overwrite"
-    with:
-      fhir: "$resource.note.text"
-      openehr: "$archetype/data[at0001]/items[at0069]"
-      type: "STRING"
-
-  - name: "dateTime"
-    extension: "overwrite"
-    with:
-      fhir: "$resource.onset"
-      openehr: "$archetype/data[at0001]/items[at0077]"
-      type: "DATETIME"
-
-  - name: "severity"
-    extension: "overwrite"
-    with:
-      fhir: "$resource.severity"
-      openehr: "$archetype/data[at0001]/items[at0005]"
-      type: "CODEABLECONCEPT"
 
   - name: "date"
     extension: "add"
@@ -139,7 +88,7 @@ mappings:
         - name: "codeIcd10Diagnosesicherheit"
           with:
             fhir: "extension"
-            openehr: "data[at0001]/items[at0073]"
+            openehr: "$archetype/data[at0001]/items[at0073]"
             type: "CODEABLECONCEPT"
           fhirCondition:
             targetRoot: "extension"
@@ -223,11 +172,10 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "$archetype"
-                  #This will create another problem diagnose entry since its 0..* and the grammar will add not overwrite if its not 1..1
-                  #This will create another problem_diagnose
                 slotArchetype: "EVALUATION.problem_diagnosis.v1"
                 openehrCondition:
-                  targetRoot: "$archetype.diagnose" # beacuse based on this we're then determining what needs to be excluded from mapping
-                  targetAttribute: "items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]|code"
+                  targetRoot: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
+                  targetAttributes:
+                    - "data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/defining_code"
                   operator: "one of"
                   criteria: "[at0064]"
