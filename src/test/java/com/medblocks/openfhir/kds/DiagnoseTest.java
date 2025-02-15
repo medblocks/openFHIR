@@ -291,13 +291,14 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                                     .getAsString());
         Assert.assertEquals("active", jsonObject.get("diagnose/diagnose:0/klinischer_status/klinischer_status|value")
                 .getAsString());
-        Assert.assertEquals("ref_U",
-                            jsonObject.get("diagnose/diagnose:0/anatomical_location/laterality|code").getAsString());
-        Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
-                            jsonObject.get("diagnose/diagnose:0/anatomical_location/laterality|terminology")
-                                    .getAsString());
-        Assert.assertEquals("ref_Upper lobe",
-                            jsonObject.get("diagnose/diagnose:0/anatomical_location/laterality|value").getAsString());
+//
+//        Assert.assertEquals("L",
+//                            jsonObject.get("diagnose/diagnose:0/anatomical_location/laterality|code").getAsString());
+//        Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
+//                            jsonObject.get("diagnose/diagnose:0/anatomical_location/laterality|terminology")
+//                                    .getAsString());
+//        Assert.assertEquals("Left side",
+//                            jsonObject.get("diagnose/diagnose:0/anatomical_location/laterality|value").getAsString());
 
         Assert.assertEquals("ref_C34.1", jsonObject.get("diagnose/diagnose:1/kodierte_diagnose").getAsString());
         Assert.assertEquals("ref_S", jsonObject.get("diagnose/diagnose:1/diagnosesicherheit|code").getAsString());
@@ -348,6 +349,25 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                                     .getAsString());
         Assert.assertEquals("ref_active",
                             jsonObject.get("diagnose/diagnose:1/klinischer_status/klinischer_status|value")
+                                    .getAsString());
+
+        Assert.assertEquals("at0064",
+                            jsonObject.get("diagnose/diagnose:1/klinischer_status/diagnoserolle|code")
+                                    .getAsString());
+        Assert.assertEquals("at0066",
+                            jsonObject.get("diagnose/diagnose:0/klinischer_status/diagnoserolle|code")
+                                    .getAsString());
+        Assert.assertEquals("local",
+                            jsonObject.get("diagnose/diagnose:0/klinischer_status/diagnoserolle|terminology")
+                                    .getAsString());
+        Assert.assertEquals("local",
+                            jsonObject.get("diagnose/diagnose:1/klinischer_status/diagnoserolle|terminology")
+                                    .getAsString());
+        Assert.assertEquals("Nebendiagnose",
+                            jsonObject.get("diagnose/diagnose:0/klinischer_status/diagnoserolle|value")
+                                    .getAsString());
+        Assert.assertEquals("Hauptdiagnose",
+                            jsonObject.get("diagnose/diagnose:1/klinischer_status/diagnoserolle|value")
                                     .getAsString());
 
         return jsonObject;

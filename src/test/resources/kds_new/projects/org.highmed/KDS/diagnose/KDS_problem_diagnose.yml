@@ -112,7 +112,7 @@ mappings:
               - name: "seitenlokalisation"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]" #todo: check why full path is needed here, this should not be required
+                  openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]" #todo: check why full path is needed here, this should not be required. It's also probably the reason why bodysite is wrongly mapped to the neben diagnosis
                   type: "CODEABLECONCEPT"
                 fhirCondition:
                   targetRoot: "$fhirRoot"

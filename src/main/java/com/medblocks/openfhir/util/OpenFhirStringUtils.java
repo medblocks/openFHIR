@@ -541,6 +541,8 @@ public class OpenFhirStringUtils {
             remainingItems = "";
         }
 
+        boolean negate = FhirConnectConst.CONDITION_OPERATOR_NOT_OF.equals(condition.getOperator());
+
         if (actualConditionTargetRoot.startsWith(resource) && withParentsWhereInPlace.equals(originalFhirPath)) {
             // find the right place first
             final String commonPath = setParentsWherePathToTheCorrectPlace(originalFhirPath,
@@ -552,14 +554,14 @@ public class OpenFhirStringUtils {
                     StringUtils.isBlank(remainingToEndUpInWhere) ? "" : (remainingToEndUpInWhere + ".");
             final String whereClause =
                     ".where(" + remainingToAdd + condition.getTargetAttribute() + ".toString().contains('"
-                            + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
+                            + getStringFromCriteria(condition.getCriteria()).getCode() + "')"+ (negate ? "=false":"") +")";
             final String remainingItemsFromParent = originalFhirPath.replace(commonPath, "");
             return commonPath + whereClause + remainingItemsFromParent;
         } else {
             // then do your own where path
             final String whereClause =
                     ".where(" + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(
-                            condition.getCriteria()).getCode() + "'))";
+                            condition.getCriteria()).getCode() + "')"+ (negate ? "=false":"") +")";
             // then suffix with whatever is left from the children's path
             return withParentsWhereInPlace + whereClause + (StringUtils.isBlank(remainingItems) ? ""
                     : (remainingItems.startsWith(".") ? remainingItems : ("." + remainingItems)));

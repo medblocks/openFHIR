@@ -16,29 +16,52 @@ mappings:
       openehr: "$archetype/items[at0003]"
       type: "CODEABLECONCEPT"
 
-#  - name: "referenzPrimaerdiagnose"
-#    extension: "add"
-#    with:
-#      fhir: "$resource"
-#      openehr: "diagnoserolle"
-#    fhirCondition:
-#      targetRoot: "extension"
-#      targetAttribute: "url"
-#      operator: "not of"
-#      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
-#
-#  - name: "referenzNebendiagnose"
-#    extension: "add"
-#    with:
-#      fhir: "$resource"
-#      openehr: "$archetype/items[at0063]/value/defining_code"
-#    fhirCondition:
-#      targetRoot: "$resource.extension"
-#      targetAttribute: "url"
-#      operator: "one of"
-#      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
-#    openehrCondition:
-#      targetRoot: "$archetype/items[at0063]/value/defining_code"
-#      targetAttribute: "/code_string"
-#      operator: "one of"
-#      criteria: "at0066"
+  - name: "referenzPrimaerdiagnose_code"
+    extension: "add"
+    with:
+      value: "at0064"
+      openehr: "$archetype/items[at0063]/defining_code"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttribute: "extension.url"
+      operator: "not of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+
+  - name: "referenzPrimaerdiagnose_value"
+    extension: "add"
+    with:
+      value: "Hauptdiagnose"
+      openehr: "$archetype/items[at0063]/value"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttribute: "extension.url"
+      operator: "not of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+
+  - name: "referenzNebendiagnose_code"
+    extension: "add"
+    with:
+      value: "at0066"
+      openehr: "$archetype/items[at0063]/defining_code"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttribute: "extension.url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+
+  - name: "referenzNebendiagnose_value"
+    extension: "add"
+    with:
+      value: "Nebendiagnose"
+      openehr: "$archetype/items[at0063]/value"
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttribute: "extension.url"
+      operator: "one of"
+      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+
+  - name: "referenzNebenAndHaupt_terminology"
+    extension: "add"
+    with:
+      value: "local"
+      openehr: "$archetype/items[at0063]/terminology_id"
