@@ -37,7 +37,6 @@ mappings:
             fhir: "$fhirRoot"
             openehr: "$archetype/items[openEHR-EHR-CLUSTER.organisation.v1]"
           slotArchetype: "CLUSTER.organisation.v1"
-          #todo: identifier_value would need to be overwritten in a KDS organisation if we wanted to map that one
 
 #  - name: "electronicCommunication"
 #    with:

@@ -70,7 +70,7 @@ mappings:
     with:
       fhir: "$resource.dosage"
       openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.dosage.v2]"
-    slotArchetype: "CLUSTER.dosage.v2.dosage-to-dosage"
+    slotArchetype: "CLUSTER.dosage.v2.dosage"
     followedBy:
       mappings:
         - name: "route"
