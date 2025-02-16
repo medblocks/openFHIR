@@ -45,7 +45,7 @@ mappings:
         - name: "contextEnd"
           with:
             fhir: "end"
-            openehr: "_end_time"
+            openehr: "$archetype/description[at0001]/items[at0060]"
             type: "DATETIME"
 
 #  - name: "composer"

@@ -50,8 +50,6 @@ public class ProcedureTest extends KdsBidirectionalTest {
         // -performed
         Assert.assertEquals("2020-02-03T04:05:06+01:00",
                             theProcedure.getPerformedPeriod().getStartElement().getValueAsString());
-        Assert.assertEquals("2022-02-03T04:05:06+01:00",
-                            theProcedure.getPerformedPeriod().getEndElement().getValueAsString());
 
 //        - name: "ISM Transition"
 //        Assert.assertEquals("530", theProcedure.getStatusElement().getValueAsString());

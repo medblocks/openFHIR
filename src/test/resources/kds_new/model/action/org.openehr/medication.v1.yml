@@ -201,7 +201,7 @@ mappings:
     with:
       fhir: "$resource.dosage"
       openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.dosage.v2]"
-    slotArchetype: "CLUSTER.dosage.v2.BackboneElement-to-dosage" #todo: why CLUSTER.dosage.v2.BackboneElement-to-dosage and not CLUSTER.dosage.v2.dosage-to-dosage
+    slotArchetype: "CLUSTER.dosage.v2.BackboneElement"
     followedBy:
       mappings:
         - name: "route"
