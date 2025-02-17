@@ -56,7 +56,7 @@ mappings:
     manual:
       - name: "initial"
         fhir:
-          - path: "state"
+          - path: "status"
             value: "unknown"
         openehrCondition:
           targetRoot: "$openehrRoot"
@@ -72,13 +72,13 @@ mappings:
             value: "524"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttribute: "state"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[unknown]"
 
       - name: "planned"
         fhir:
-          - path: "state"
+          - path: "status"
             value: "preparation"
         openehrCondition:
           targetRoot: "$openehrRoot"
@@ -94,13 +94,13 @@ mappings:
             value: "526"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttribute: "state"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[preparation]"
 
       - name: "postponed"
         fhir:
-          - path: "state"
+          - path: "status"
             value: "not-done"
         openehrCondition:
           targetRoot: "$openehrRoot"
@@ -116,13 +116,13 @@ mappings:
             value: "527"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttribute: "state"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[not-done]"
 
       - name: "scheduled"
         fhir:
-          - path: "state"
+          - path: "status"
             value: "preparation"
         openehrCondition:
           targetRoot: "$openehrRoot"
@@ -138,13 +138,13 @@ mappings:
             value: "529"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttribute: "state"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[preparation]"
 
       - name: "cancelled"
         fhir:
-          - path: "state"
+          - path: "status"
             value: "entered-in-error"
         openehrCondition:
           targetRoot: "$openehrRoot"
@@ -160,13 +160,13 @@ mappings:
             value: "528"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttribute: "state"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[entered-in-error]"
 
       - name: "active"
         fhir:
-          - path: "state"
+          - path: "status"
             value: "in-progress"
         openehrCondition:
           targetRoot: "$openehrRoot"
@@ -182,13 +182,13 @@ mappings:
             value: "245"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttribute: "state"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[in-progress]"
 
       - name: "suspended"
         fhir:
-          - path: "state"
+          - path: "status"
             value: "on-hold"
         openehrCondition:
           targetRoot: "$openehrRoot"
@@ -204,13 +204,13 @@ mappings:
             value: "530"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttribute: "state"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[on-hold]"
 
       - name: "aborted"
         fhir:
-          - path: "state"
+          - path: "status"
             value: "stopped"
         openehrCondition:
           targetRoot: "$openehrRoot"
@@ -226,13 +226,13 @@ mappings:
             value: "531"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttribute: "state"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[stopped]"
 
       - name: "completed"
         fhir:
-          - path: "state"
+          - path: "status"
             value: "completed"
         openehrCondition:
           targetRoot: "$openehrRoot"
@@ -248,13 +248,13 @@ mappings:
             value: "532"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttribute: "state"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[completed]"
 
       - name: "expired"
         fhir:
-          - path: "state"
+          - path: "status"
             value: "unknown"
         openehrCondition:
           targetRoot: "$openehrRoot"
@@ -270,7 +270,7 @@ mappings:
             value: "533"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttribute: "state"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[unknown]"
 
