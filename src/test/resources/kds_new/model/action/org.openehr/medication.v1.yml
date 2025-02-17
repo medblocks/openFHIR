@@ -98,7 +98,7 @@ mappings:
           - path: "code_string"
             value: "228"
           - path: "../value"
-            value: "Inpatient"
+            value: "primary medical care"
         fhirCondition:
           targetRoot: "$resource.category"
           targetAttribute: "code"
