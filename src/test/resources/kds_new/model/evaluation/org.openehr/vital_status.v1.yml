@@ -52,21 +52,6 @@ mappings:
       openehr: "$archetype/data[at0001]/items[at0006]"
       type: "CODEABLECONCEPT"
 
-  - name: "category"
-    with:
-      fhir: "$resource.category"
-      openehr: "$archetype"
-    followedBy:
-      mappings:
-        - name: "code"
-          with:
-            fhir: "code"
-            value: "survey"
-        - name: "system"
-          with:
-            fhir: "system"
-            value: "http://terminology.hl7.org/CodeSystem/observation-category"
-
   - name: "note"
     with:
       fhir: "$resource.note.text"

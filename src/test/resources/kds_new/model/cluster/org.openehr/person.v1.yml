@@ -37,9 +37,3 @@ mappings:
             fhir: "$fhirRoot"
             openehr: "$archetype/items[openEHR-EHR-CLUSTER.organisation.v1]"
           slotArchetype: "CLUSTER.organisation.v1"
-
-#  - name: "electronicCommunication"
-#    with:
-#      fhir: "$resource"
-#      openehr: "$archetype/items[openEHR-EHR-CLUSTER.electronic_communication.v1]"
-#    slotArchetype: "CLUSTER.electronic_communication.v1"

@@ -72,7 +72,7 @@ mappings:
       targetAttributes:
         - "context/setting/defining_code"
       operator: "one of"
-      criteria: "[225]"
+      criteria: "[228]"
     followedBy:
       mappings:
         - name: "category_outpatient_fhir_code"
@@ -94,7 +94,7 @@ mappings:
       targetAttributes:
         - "context/setting/defining_code"
       operator: "one of"
-      criteria: "[228]"
+      criteria: "[232]"
     followedBy:
       mappings:
         - name: "category_outpatient_fhir_code"
@@ -132,7 +132,7 @@ mappings:
   - name: "category_outpatient_openehr_code"
     with:
       openehr: "$composition/context/setting/defining_code"
-      value: "225"
+      value: "228"
     fhirCondition:
       targetRoot: "$resource"
       targetAttribute: "category.coding.code"
@@ -151,7 +151,7 @@ mappings:
   - name: "category_inpatient_openehr_code"
     with:
       openehr: "$composition/context/setting/defining_code"
-      value: "228"
+      value: "232"
     fhirCondition:
       targetRoot: "$resource"
       targetAttribute: "category.coding.code"
