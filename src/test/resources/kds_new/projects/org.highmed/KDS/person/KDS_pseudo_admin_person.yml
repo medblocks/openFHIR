@@ -1,0 +1,36 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_admin_entry_perso_pseudo
+  version: 0.0.1a
+spec:
+  system: FHIR
+  version: R4
+  extends: ADMIN_ENTRY.person_data.v0
+
+mappings:
+  - name: "personData"
+    extension: "overwrite"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1]"
+    slotArchetype: "CLUSTER.person.v1"
+
+  - name: "gender"
+    with:
+      fhir: "$resource.gender"
+      openehr: "$composition/content[openEHR-EHR-EVALUATION.gender.v1]"
+    slotArchetype: "openEHR-EHR-EVALUATION.gender.v1"
+
+#  - name: "identifier"
+#    with:
+#      fhir: "$resource.identifier"
+#      openehr: "$reference"
+#    type: "PROGRAMMED_MAPPING"
+#    mappingCode: "ehrStatusAddExternalREF" #TODO these identifiers of FHIR need to go to the EHR status to be honest as external references.
+#    fhirCondition: #@Gasper if we decide not to url::value mappings, we need this if cause of the overwrite of identifier
+#      # if we add url::value we can delete this followeBy, this mapping will prevail the one in the tempplate for fhir.identifier
+#      targetRoot: "identifier"
+#      targetAttribute: "type.coding.code"
+#      operator: "one of"
+#      criteria: "[PSEUDED, ANONYED]"

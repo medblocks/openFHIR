@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name:  KDS_CLUSTER.person
+  name:  KDS_cluster_person.v1
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
@@ -23,9 +23,26 @@ mappings:
       openehr: "$archetype/items[openEHR-EHR-CLUSTER.structured_name.v1 and name/value='Geburtsname']"
     slotArchetype: "CLUSTER.structured_name.v1.person_name-structured_name"
 
-  - name: "address"
+  - name: "address" #Straßenanschrift
     extension: "overwrite"
     with:
       fhir: "$resource"
       openehr: "$archetype/items[openEHR-EHR-CLUSTER.address.v1 and name/value='Straßenanschrift']"
     slotArchetype: "CLUSTER.address.v1"
+    fhirCondition:
+      targetRoot: "address"
+      targetAttribute: "type"
+      operator: "one of"
+      criteria: "[both]"
+
+  - name: "addressPostfach"
+    extension: "add"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.address.v1 and name/value='Postfach']"
+    slotArchetype: "CLUSTER.address.v1"
+    fhirCondition:
+      targetRoot: "address"
+      targetAttribute: "type"
+      operator: "one of"
+      criteria: "[postal]"

@@ -70,7 +70,7 @@ mappings:
     openehrCondition:
       targetRoot: "$archetype"
       targetAttributes:
-        - "activities[at0001]/description[at0009]/items[at0148]/defining_code"
+        - "activities[at0001]/description[at0009]/items[at0065]/defining_code"
       operator: "one of"
       criteria: "order"
 
@@ -78,7 +78,7 @@ mappings:
     extension: "add"
     with:
       value: "order"
-      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/defining_code"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0065]/defining_code"
     fhirCondition:
       targetRoot: "$resource"
       targetAttributes:
@@ -89,7 +89,7 @@ mappings:
     extension: "add"
     with:
       value: "http://hl7.org/fhir/request-intent"
-      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/terminology_id"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0065]/terminology_id"
     fhirCondition:
       targetRoot: "$resource"
       targetAttributes:
