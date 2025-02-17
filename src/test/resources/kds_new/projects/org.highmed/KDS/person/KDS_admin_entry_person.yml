@@ -14,12 +14,12 @@ mappings:
     with:
       fhir: "$resource.identifier"
       openehr: "$composition/context/other_context[at0003]/items[at0004]"
-    fhirCondition: # TODO @Gasper how did the old engine did that
+    fhirCondition:
       targetRoot: "$resource.identifier.type.coding"
       targetAttribute: "code"
       operator: "one of"
       criteria: "[MR]"
-    followedBy: #TODO Solution to static values ?
+    followedBy:
       mappings:
         - name: "typeString"
           with:
@@ -28,10 +28,9 @@ mappings:
           manual:
             - name: "typeMR"
               fhir:
-                # TODO We could also allow json strings that would make a lot of things easier ?
-                # value: "{\"coding\: [{\"system\": \"http://fhir.de/CodeSystem/identifier-type-de-basis\",\"code\": \"KVZ10\"}}"
-                value:
-                  system: "http://terminology.hl7.org/CodeSystem/v2-0203"
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/v2-0203"
+                - path: "value"
                   value: "MR"
 
   - name: "personData"
