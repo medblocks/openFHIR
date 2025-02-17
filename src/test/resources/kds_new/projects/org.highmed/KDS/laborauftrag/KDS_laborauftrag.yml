@@ -105,7 +105,7 @@ mappings:
     extension: "overwrite"
     with:
       fhir: "$resource"
-      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/value/defining_code"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0065]/value/defining_code"
     manual:
       - name: "categoryStatic"
         openehr:
