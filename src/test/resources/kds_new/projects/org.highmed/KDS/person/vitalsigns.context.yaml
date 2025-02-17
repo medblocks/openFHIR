@@ -8,7 +8,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus"
   templateId: "KDS_Vitalstatus"
   archetypes:
     - "EVALUATION.vital_status.v1"

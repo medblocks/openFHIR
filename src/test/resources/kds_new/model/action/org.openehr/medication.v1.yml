@@ -244,70 +244,70 @@ mappings:
       fhir: "$resource" #there needs to be a mapping table
       openehr: "$archetype/ism_transition/current_state/defining_code"
     manual:
-      manual:
-        - name: "active"
-          fhir:
-            - path: "status"
-              value: "active"
-          openehrCondition:
-            targetRoot: "$openehrRoot"
-            targetAttribute: "code_string"
-            operator: "one of"
-            criteria: "[245]"
-          openehr:
-            - path: "terminology_id/value"
-              value: "openehr"
-            - path: "code_string"
-              value: "245"
-            - path: "../value"
-              value: "Active"
-          fhirCondition:
-            targetRoot: "$fhirRoot"
-            targetAttribute: "status"
-            operator: "one of"
-            criteria: "[active]"
+      - name: "active"
+        fhir:
+          - path: "status"
+            value: "active"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[245]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "openehr"
+          - path: "code_string"
+            value: "245"
+          - path: "../value"
+            value: "Active"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[active]"
 
-        - name: "inactive"
-          fhir:
-            - path: "status"
-              value: "inactive"
-          openehrCondition:
-            targetRoot: "$openehrRoot"
-            targetAttribute: "code_string"
-            operator: "one of"
-            criteria: "[532]"
-          openehr:
-            - path: "terminology_id/value"
-              value: "openehr"
-            - path: "code_string"
-              value: "532"
-            - path: "../value"
-              value: "Completed"
-          fhirCondition:
-            targetRoot: "$fhirRoot"
-            targetAttribute: "status"
-            operator: "one of"
-            criteria: "[inactive]"
+      - name: "inactive"
+        fhir:
+          - path: "status"
+            value: "inactive"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[532]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "openehr"
+          - path: "code_string"
+            value: "532"
+          - path: "../value"
+            value: "Completed"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[inactive]"
 
-        - name: "entered-in-error"
-          fhir:
-            - path: "status"
-              value: "entered-in-error"
-          openehrCondition:
-            targetRoot: "$openehrRoot"
-            targetAttribute: "code_string"
-            operator: "one of"
-            criteria: "[528]"
-          openehr:
-            - path: "terminology_id/value"
-              value: "openehr"
-            - path: "code_string"
-              value: "528"
-            - path: "../value"
-              value: "Cancelled"
-          fhirCondition:
-            targetRoot: "$fhirRoot"
-            targetAttribute: "status"
-            operator: "one of"
-            criteria: "[entered-in-error]"
+      - name: "entered-in-error"
+        fhir:
+          - path: "status"
+            value: "entered-in-error"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "code_string"
+          operator: "one of"
+          criteria: "[528]"
+        openehr:
+          - path: "terminology_id/value"
+            value: "openehr"
+          - path: "code_string"
+            value: "528"
+          - path: "../value"
+            value: "Cancelled"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[entered-in-error]"
+
 

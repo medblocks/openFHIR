@@ -40,8 +40,30 @@ mappings:
               meaning: "the case this composition relates to"
               type: "case"
 
-  - name: "status"
+  - name: "category"
+    extension: "add"
     with:
-      fhir: "$resource"
-      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.observation_status_fhir.v1]"
-    slotArchetype: "CLUSTER.observation_status_fhir.v1"
+      fhir: "$resource.category"
+      openehr: "$reference"
+    #  unidirectional: "openEHR->fhir" # @Gasper is basically unidirectional cause of $reference
+    manual:
+      - name: "survey"
+        fhir:
+          - path: "code"
+            value: "survey"
+          - path: "system"
+            value: "http://terminology.hl7.org/CodeSystem/observation-category"
+
+  - name: "code"
+    extension: "add"
+    with:
+      fhir: "$resource.code.coding"
+      openehr: "$reference"
+    #  unidirectional: "openEHR->fhir" # @Gasper is basically unidirectional cause of $reference
+    manual:
+      - name: "coding"
+        fhir:
+          - path: "code"
+            value: "67162-8"
+          - path: "system"
+            value: "http://loinc.org"
