@@ -140,7 +140,7 @@ public class FhirConnectService {
         return mapperRepository.findAll();
     }
 
-    public List<String> allProfiles(final String reqId) {
+    public List<String> getValidProfiles(final String reqId) {
         List<FhirConnectContextEntity> contextEntities = contextRepository.findAll();
         List<String> profiles = new ArrayList<>();
         for (final FhirConnectContextEntity contextEntity : contextEntities){
