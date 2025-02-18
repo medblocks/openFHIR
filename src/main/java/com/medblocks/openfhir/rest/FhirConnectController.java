@@ -1,7 +1,6 @@
 package com.medblocks.openfhir.rest;
 
 import com.medblocks.openfhir.db.FhirConnectService;
-import com.medblocks.openfhir.db.entity.FhirConnectContextEntity;
 import com.medblocks.openfhir.db.entity.FhirConnectModelEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
