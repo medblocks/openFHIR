@@ -10,7 +10,11 @@ spec:
     archetype: openEHR-EHR-ADMIN_ENTRY.person_data.v0
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Patient
-
+    fhirCondition:
+      targetRoot: "$resource"
+      targetAttribute: "active"  # exclude non-active patients
+      operator: "one of"
+      criteria: "[false]"
 mappings:
   - name: "personData"
     with:
