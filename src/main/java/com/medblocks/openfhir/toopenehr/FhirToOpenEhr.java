@@ -205,7 +205,7 @@ public class FhirToOpenEhr {
             if( feederAudit.getOriginatingSystemAudit() == null) {
 
                 FeederAuditDetails originatingFeederAuditDetails =  new FeederAuditDetails();
-                originatingFeederAuditDetails.setSystemId(compositionAdditionalConfig.get("systemId")); // Todo: need to ensure this is populated with correct value
+                originatingFeederAuditDetails.setSystemId("FHIR-Bridge");
                 feederAudit.setOriginatingSystemAudit(originatingFeederAuditDetails);
             }
 
@@ -235,7 +235,7 @@ public class FhirToOpenEhr {
         }
 
         if(compositionAdditionalConfig.containsKey("systemId")){
-            finalFlat.add(templateId+"/_feeder_audit/originating_system_audit|system_id", new JsonPrimitive(compositionAdditionalConfig.get("systemId"))); // todo: need to map with suitable value
+            finalFlat.add(templateId+"/_feeder_audit/originating_system_audit|system_id", new JsonPrimitive("FHIR-Bridge"));
             finalFlat.add(templateId+"/_feeder_audit/feeder_system_item_id:0|system_id", new JsonPrimitive(compositionAdditionalConfig.get("systemId")));
         }
     }
