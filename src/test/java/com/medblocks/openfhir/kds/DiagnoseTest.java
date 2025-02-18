@@ -3,7 +3,10 @@ package com.medblocks.openfhir.kds;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nedap.archie.rm.composition.Composition;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
@@ -155,7 +158,10 @@ public class DiagnoseTest extends KdsBidirectionalTest {
     public void toOpenEhr_single() {
         final Bundle testBundle = getTestBundle(HELPER_LOCATION + BUNDLE_SINGLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
-
+        Map<String, String> compositionAdditionalConfig = new HashMap<>();
+        compositionAdditionalConfig.put("composer","test");
+        compositionAdditionalConfig.put("systemId","Observation/3115d7ee-d9f1-4390-b57d-89cbeb0db494/_history/1");
+        fhirToOpenEhr.enrichFlatComposition(jsonObject,webTemplate.getTree().getId(),compositionAdditionalConfig);
         Assert.assertEquals("2022-02-03T01:00:00", jsonObject.get("diagnose/context/start_time").getAsString());
         Assert.assertEquals("C34.1", jsonObject.get("diagnose/diagnose:0|code").getAsString());
         Assert.assertEquals("C34.1", jsonObject.get("diagnose/diagnose:0|value").getAsString());
@@ -190,8 +196,8 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("2025-02-03T05:05:06", jsonObject.get("diagnose/diagnose:0/feststellungsdatum").getAsString());
         Assert.assertEquals("active", jsonObject.get("diagnose/diagnose:0/klinischer_status/klinischer_status|code").getAsString());
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/condition-clinical", jsonObject.get("diagnose/diagnose:0/klinischer_status/klinischer_status|terminology").getAsString());
-
-
+        Assert.assertEquals("FHIR-Bridge",jsonObject.get("diagnose/_feeder_audit/originating_system_audit|system_id").getAsString());
+        Assert.assertEquals("Observation/3115d7ee-d9f1-4390-b57d-89cbeb0db494/_history/1",jsonObject.get("diagnose/_feeder_audit/originating_system_item_id:0|id").getAsString());
     }
 
     @Ignore

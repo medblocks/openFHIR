@@ -205,16 +205,17 @@ public class FhirToOpenEhr {
             if( feederAudit.getOriginatingSystemAudit() == null) {
 
                 FeederAuditDetails originatingFeederAuditDetails =  new FeederAuditDetails();
-                originatingFeederAuditDetails.setSystemId(compositionAdditionalConfig.get("systemId")); // Todo: need to ensure this is populated with correct value
+                originatingFeederAuditDetails.setSystemId("FHIR-Bridge");
                 feederAudit.setOriginatingSystemAudit(originatingFeederAuditDetails);
             }
 
-            List<DvIdentifier> feederSystemItemIds = new ArrayList<>();
+            List<DvIdentifier> originatingSystemItemIds = new ArrayList<>();
             DvIdentifier dvIdentifier = new DvIdentifier();
             dvIdentifier.setId(compositionAdditionalConfig.get("systemId"));
-            feederSystemItemIds.add(dvIdentifier);
+            dvIdentifier.setType("fhir_logical_id");
+            originatingSystemItemIds.add(dvIdentifier);
 
-            feederAudit.setFeederSystemItemIds(feederSystemItemIds);
+            feederAudit.setOriginatingSystemItemIds(originatingSystemItemIds);
             composition.setFeederAudit(feederAudit);
         }
     }
@@ -235,8 +236,9 @@ public class FhirToOpenEhr {
         }
 
         if(compositionAdditionalConfig.containsKey("systemId")){
-            finalFlat.add(templateId+"/_feeder_audit/originating_system_audit|system_id", new JsonPrimitive(compositionAdditionalConfig.get("systemId"))); // todo: need to map with suitable value
-            finalFlat.add(templateId+"/_feeder_audit/feeder_system_item_id:0|system_id", new JsonPrimitive(compositionAdditionalConfig.get("systemId")));
+            finalFlat.add(templateId+"/_feeder_audit/originating_system_audit|system_id", new JsonPrimitive("FHIR-Bridge"));
+            finalFlat.add(templateId+"/_feeder_audit/originating_system_item_id:0|id", new JsonPrimitive(compositionAdditionalConfig.get("systemId")));
+            finalFlat.add(templateId+"/_feeder_audit/originating_system_item_id:0|type", new JsonPrimitive("fhir_logical_id"));
         }
     }
 
