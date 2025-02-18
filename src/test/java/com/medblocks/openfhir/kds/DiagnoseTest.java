@@ -197,7 +197,7 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("active", jsonObject.get("diagnose/diagnose:0/klinischer_status/klinischer_status|code").getAsString());
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/condition-clinical", jsonObject.get("diagnose/diagnose:0/klinischer_status/klinischer_status|terminology").getAsString());
         Assert.assertEquals("FHIR-Bridge",jsonObject.get("diagnose/_feeder_audit/originating_system_audit|system_id").getAsString());
-        Assert.assertEquals("Observation/3115d7ee-d9f1-4390-b57d-89cbeb0db494/_history/1",jsonObject.get("diagnose/_feeder_audit/feeder_system_item_id:0|system_id").getAsString());
+        Assert.assertEquals("Observation/3115d7ee-d9f1-4390-b57d-89cbeb0db494/_history/1",jsonObject.get("diagnose/_feeder_audit/originating_system_item_id:0|id").getAsString());
     }
 
     @Ignore
