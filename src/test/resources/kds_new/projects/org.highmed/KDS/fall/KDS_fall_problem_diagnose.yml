@@ -28,10 +28,9 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "$archetype/data[at0001]/links"
-                  type: "REFERENCED_MAPPING"
-                  openehrLink:
-                    meaning: "link to the diagnosis composition"
-                    type: "diagnose"
+                openehrLink:
+                  meaning: "link to the diagnosis composition"
+                  type: "diagnose"
 
         - name: "diagnoseName" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
           with:

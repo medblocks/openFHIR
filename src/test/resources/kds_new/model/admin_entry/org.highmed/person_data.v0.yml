@@ -64,9 +64,8 @@ mappings:
           with:
             fhir: "$fhirRoot.other.reference"
             openehr: "$archetype/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
             openehrLink:
-              meaning: "Part of referenced event"
+              meaning: "Part of  event"
               type: "partOf"
           followedBy:
               mappings:

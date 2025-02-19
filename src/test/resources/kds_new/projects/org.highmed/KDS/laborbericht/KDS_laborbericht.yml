@@ -55,10 +55,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehrLink:
-              meaning: "the case this composition relates to"
-              type: "case"
+          openehrLink:
+            meaning: "the case this composition relates to"
+            type: "case"
 
   - name: "status" #TODO @deprecated needs to go once mapping is updated
     extension: "overwrite"

@@ -63,10 +63,9 @@ mappings:
                 with:
                   fhir: "$fhirRoot"
                   openehr: "$archetype/items[at0070]/links"
-                  type: "REFERENCED_MAPPING"
-                  openehrLink:
-                    meaning: "the collector that collected this specimen"
-                    type: "collector"
+                openehrLink:
+                  meaning: "the collector that collected this specimen"
+                  type: "collector"
 
   - name: "type"
     with:
@@ -108,10 +107,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/items[at0003]/links"
-            type: "REFERENCED_MAPPING"
-            openehrLink:
-              meaning: "the parent of this specimen"
-              type: "parent"
+          openehrLink:
+            meaning: "the parent of this specimen"
+            type: "parent"
 
   - name: "status"
     with:

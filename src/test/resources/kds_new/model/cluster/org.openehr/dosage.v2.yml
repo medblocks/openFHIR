@@ -31,7 +31,6 @@ mappings:
     with:
       fhir: "$fhirRoot.timing"
       openehr: "$archetype"
-    type: "PROGRAMMED_MAPPING"
     mappingCode: "timingToDaily_NonDaily" #FHIR and openEHR are here very different, openEHR uses ISO, FHIR made up their own
 
   - name: "dose"
@@ -48,7 +47,6 @@ mappings:
     with:
       fhir: "$fhirRoot.timing.duration"
       openehr: "$archetype/items[at0134]"  #not sure if this mapping is correct
-    type: "PROGRAMMED_MAPPING"
     mappingCode: "dosageDurationToAdministrationDuration" #FHIR and openEHR are here very different, openEHR uses ISO, FHIR made up their own
 
   - name: "sequence"

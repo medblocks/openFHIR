@@ -306,10 +306,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/items[at0026]/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get data
-            openehrLink: #follow this link
-              meaning: "link to the ehr object this specimen was mapped from"
-              type: "specimen"
+          openehrLink: #follow this link
+            meaning: "link to the ehr object this specimen was mapped from"
+            type: "specimen"
 
   - name: "comment"
     with:

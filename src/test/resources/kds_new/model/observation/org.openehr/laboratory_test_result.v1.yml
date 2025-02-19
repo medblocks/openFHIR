@@ -314,10 +314,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/protocol[at0004]/items[at0094]/items[at0063]/links"
-            type: "REFERENCED_MAPPING"
-            openehrLink:
-              meaning: "the identifier which it derived from"
-              type: "based on"
+          openehrLink:
+            meaning: "the identifier which it derived from"
+            type: "based on"
 
   - name: "eventTime"
     with:

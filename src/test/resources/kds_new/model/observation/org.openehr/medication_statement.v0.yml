@@ -112,10 +112,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0023]links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehrLink:
-              meaning: "what the medication derived from"
-              type: "derivedFrom"
+          openehrLink:
+            meaning: "what the medication derived from"
+            type: "derivedFrom"
 
   - name: "partOf"
     with:
@@ -127,10 +126,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehrLink:
-              meaning: "what the medication is part of"
-              type: "partOf"
+          openehrLink:
+            meaning: "what the medication is part of"
+            type: "partOf"
 
   - name: "basedOn"
     with:
@@ -142,10 +140,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehrLink:
-              meaning: "what the medication is based on"
-              type: "basedOn"
+          openehrLink:
+            meaning: "what the medication is based on"
+            type: "basedOn"
 
   - name: "derivedFrom"
     with:
@@ -157,8 +154,7 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehrLink:
-              meaning: "what the medication is derived from"
-              type: "derivedFrom"
+          openehrLink:
+            meaning: "what the medication is derived from"
+            type: "derivedFrom"
 

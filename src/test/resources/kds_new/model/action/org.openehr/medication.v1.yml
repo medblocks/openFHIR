@@ -213,10 +213,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehrLink:
-              meaning: "part of a other medication administration"
-              type: "partOf"
+          openehrLink:
+            meaning: "part of a other medication administration"
+            type: "partOf"
 
   - name: "request" # always the last one is executed for the mapping back.
     extension: "add"
@@ -234,10 +233,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/protocol[at0030]/items[at0103]/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI if there is any
-            openehrLink:
-              meaning: "the medication request for this medication"
-              type: "medicationRequest"
+          openehrLink:
+            meaning: "the medication request for this medication"
+            type: "medicationRequest"
 
   - name: "ISMTransition"
     with:

@@ -65,10 +65,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehrLink:
-              meaning: "Part of referenced event"
-              type: "partOf"
+          openehrLink:
+            meaning: "Part of referenced event"
+            type: "partOf"
 
   - name: "basedOn"
     with:
@@ -80,10 +79,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehrLink:
-              meaning: "Fulfills plan, proposal or order"
-              type: "basedOn"
+          openehrLink:
+            meaning: "Fulfills plan, proposal or order"
+            type: "basedOn"
 
   - name: "focus"
     with:
@@ -95,10 +93,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehrLink:
-              meaning: "What the observation is about, when it is not about the subject of record"
-              type: "focus"
+          openehrLink:
+            meaning: "What the observation is about, when it is not about the subject of record"
+            type: "focus"
 
   - name: "encounter"
     with:
@@ -110,10 +107,9 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehrLink:
-              meaning: "case or contact"
-              type: "case"
+          openehrLink:
+            meaning: "case or contact"
+            type: "case"
 
   - name: "hasMember"
     with:
@@ -125,7 +121,7 @@ mappings:
           with:
             fhir: "$fhirRoot"
             openehr: "$archetype/links" # will use link
-            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-            openehrLink:
-              meaning: "Related resource that belongs to the Observation group"
-              type: "hasMember"
+            type: "REFERENCED" # execute mapping or use already mapped one to get Composition URI
+          openehrLink:
+            meaning: "Related resource that belongs to the Observation group"
+            type: "hasMember"
