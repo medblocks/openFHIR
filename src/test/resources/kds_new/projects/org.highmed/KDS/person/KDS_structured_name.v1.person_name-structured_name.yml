@@ -15,7 +15,7 @@ mappings:
       fhir: "$fhirRoot.prefix.extension"
       openehr: "$openehrRoot/items[at0006]"
     fhirCondition:
-      targetRoot: "extension"
+      targetRoot: "$fhirRoot.prefix.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier]"

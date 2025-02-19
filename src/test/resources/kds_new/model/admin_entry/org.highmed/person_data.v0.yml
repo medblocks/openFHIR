@@ -32,9 +32,10 @@ mappings:
       fhir: "$resource.deceased.as(DateTime)"
       openehr: "$archetype/data[at0001]/items[at0024]"
     manual:
-      openehr:
-        - path: "items[at0025]/value"
-          value: "True"
+      - name: "deathboolean"
+        openehr:
+          - path: "items[at0025]/value"
+            value: "True"
     fhirCondition:
       targetRoot: "$resource"
       targetAttribute: "deceased"

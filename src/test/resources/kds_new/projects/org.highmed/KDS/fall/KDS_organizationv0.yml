@@ -16,8 +16,8 @@ mappings:
       fhir: "$fhirRoot.serviceType"
       openehr: "$archetype/items[at0024]" #is mapped from fachabteilungsschlüssel
     fhirCondition:
-      targetRoot: "coding"
-      targetAttribute: "system"
+      targetRoot: "$fhirRoot.serviceType"
+      targetAttribute: "coding.system"
       operator: "one of"
       criteria: "[http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel]"
     followedBy:

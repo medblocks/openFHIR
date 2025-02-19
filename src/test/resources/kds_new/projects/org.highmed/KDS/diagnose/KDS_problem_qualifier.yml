@@ -25,8 +25,8 @@ mappings:
       fhir: "$resource"
       openehr: "$archetype/items[at0063]/value/defining_code"
     fhirCondition:
-      targetRoot: "extension"
-      targetAttribute: "url"
+      targetRoot: "$resource"
+      targetAttribute: "extension.url"
       operator: "not of"
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     manual:
@@ -45,8 +45,8 @@ mappings:
       fhir: "$resource"
       openehr: "$archetype/items[at0063]/value/defining_code"
     fhirCondition:
-      targetRoot: "$resource.extension"
-      targetAttribute: "url"
+      targetRoot: "$resource"
+      targetAttribute: "extension.url"
       operator: "one of"
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     openehrCondition:

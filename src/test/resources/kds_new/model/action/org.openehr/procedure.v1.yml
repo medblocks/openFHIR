@@ -285,10 +285,10 @@ mappings:
       mappings:
         - name: "Name"
           with:
-            fhir: "code"
+            fhir: "code.coding"
             openehr: "description[at0001]/items[at0002]"
           fhirCondition:
-            targetRoot: "coding"
+            targetRoot: "code.coding"
             targetAttribute: "system"
             operator: "one of"
             criteria: "[http://snomed.info/sct, http://fhir.de/CodeSystem/bfarm/ops]"

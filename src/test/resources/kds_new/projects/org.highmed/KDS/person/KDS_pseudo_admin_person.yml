@@ -30,7 +30,7 @@ mappings:
     mappingCode: "ehrStatusAddExternalREF" #TODO these identifiers of FHIR need to go to the EHR status to be honest as external references.
     fhirCondition: #@Gasper if we decide not to url::value mappings, we need this if cause of the overwrite of identifier
       # if we add url::value we can delete this followeBy, this mapping will prevail the one in the tempplate for fhir.identifier
-      targetRoot: "identifier"
+      targetRoot: "$resource.identifier"
       targetAttribute: "type.coding.code"
       operator: "one of"
       criteria: "[PSEUDED, ANONYED]"

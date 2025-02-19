@@ -118,7 +118,7 @@ mappings:
       fhir: "$resource.status"
       openehr: "archetypePath/items[at0041]/defining_code" #adequacy for testing
     fhirCondition:
-      targetRoot: "$fhirRoot"
+      targetRoot: "$resource"
       targetAttribute: "status"
       operator: "not of"
       criteria: "[entered-in-error]"

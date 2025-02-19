@@ -33,8 +33,8 @@ mappings:
       fhir: "$resource.identifier"
       openehr: "$composition/context/other_context[at0001]/items[at0003]"
     fhirCondition:
-      targetRoot: "$resource.identifier.type"
-      targetAttribute: "value"
+      targetRoot: "$resource.identifier"
+      targetAttribute: "type.value"
       operator: "one of"
       criteria: "[VN]"
     followedBy:
@@ -174,7 +174,7 @@ mappings:
            targetRoot: "dischargeDisposition.extension"
            targetAttribute: "url"
            operator: "one of"
-           fhirCondition: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
+           criteria: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
          followedBy:
            mappings:
              - name: "entlassungsgrundUrl"
@@ -226,7 +226,7 @@ mappings:
                         fhir: "^^.use.coding.code"
                         openehr: "data[at0001]/items[at0009]"
                       fhirCondition:
-                        targetRoot: "use.coding.code"
+                        targetRoot: "^^.use.coding.code"
                         targetAttribute: "value"
                         operator: "one of"
                         criteria: "[referral-diagnosis, treatment-diagnosis]"
@@ -236,7 +236,7 @@ mappings:
                         fhir: "^^.use.coding.code"
                         openehr: "data[at0001]/items[at0079]"
                       fhirCondition:
-                        targetRoot: "use.coding.code"
+                        targetRoot: "^^.use.coding.code"
                         targetAttribute: "value"
                         operator: "one of"
                         criteria: "[surgery-diagnosis, department-main-diagnosis, cause-of-death, infection-control-diagnosis, AD, DD]"

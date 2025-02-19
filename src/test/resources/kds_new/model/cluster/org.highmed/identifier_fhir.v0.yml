@@ -17,7 +17,7 @@ mappings:
       fhir: "$fhirRoot"
       openehr: "$archetype/items[at0001]"
     fhirCondition:
-      targetRoot: "$resource.identifier"
+      targetRoot: "$fhirRoot"
       targetAttribute: "system"
       operator: "one of"
       criteria: "[external identifier]"

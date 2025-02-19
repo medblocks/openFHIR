@@ -54,8 +54,8 @@ mappings:
       fhir: "$resource.location.identifier.value"
       openehr: "$archetype/data[at0001]/items[at0018]/items[at0023]"
     fhirCondition:
-      targetRoot: "$resource.location.physicalType"
-      targetAttribute: "coding.code"
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
       operator: "one of"
       criteria: "[ro]"
     followedBy:
@@ -77,8 +77,8 @@ mappings:
       fhir: "$resource.location.identifier.value"
       openehr: "$archetype/data[at0001]/items[at0018]/items[at0024]"
     fhirCondition:
-      targetRoot: "$resource.location.physicalType"
-      targetAttribute: "coding.code"
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
       operator: "one of"
       criteria: "[bd]"
     followedBy:
@@ -100,8 +100,8 @@ mappings:
       fhir: "$resource.location.identifier.value"
       openehr: "$archetype/data[at0001]/items[at0018]/items[at0022]"
     fhirCondition:
-      targetRoot: "$resource.location.physicalType"
-      targetAttribute: "coding.code"
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
       operator: "one of"
       criteria: "[wa]"
     followedBy:
