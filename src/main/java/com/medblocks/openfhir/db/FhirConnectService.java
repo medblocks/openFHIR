@@ -27,9 +27,9 @@ public class FhirConnectService {
     private final Yaml yamlParser;
 
     @Autowired
-    public FhirConnectService(FhirConnectModelRepository mapperRepository,
-                              FhirConnectContextRepository contextRepository,
-                              FhirConnectValidator validator,
+    public FhirConnectService(final FhirConnectModelRepository mapperRepository,
+                              final FhirConnectContextRepository contextRepository,
+                              final FhirConnectValidator validator,
                               final Yaml yamlParser) {
         this.mapperRepository = mapperRepository;
         this.contextRepository = contextRepository;

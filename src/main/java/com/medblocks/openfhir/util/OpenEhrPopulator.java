@@ -341,7 +341,10 @@ public class OpenEhrPopulator {
         } else if (fhirValue instanceof HumanName extracted) {
             addToConstructingFlat(openEhrPath, extracted.getNameAsSingleString(), constructingFlat);
         } else if (fhirValue instanceof Extension extracted) {
-            addToConstructingFlat(openEhrPath, extracted.getValue().hasPrimitiveValue() ? extracted.getValue().primitiveValue() : null, constructingFlat);
+            if (extracted.getValue().hasPrimitiveValue()) {
+                addValuePerFhirType(extracted.getValue(), openEhrPath, constructingFlat);
+            }
+//            addToConstructingFlat(openEhrPath, extracted.getValue().hasPrimitiveValue() ? extracted.getValue().primitiveValue() : null, constructingFlat);
         } else if (fhirValue.hasPrimitiveValue()) {
             addToConstructingFlat(openEhrPath, fhirValue.primitiveValue(), constructingFlat);
         } else {
