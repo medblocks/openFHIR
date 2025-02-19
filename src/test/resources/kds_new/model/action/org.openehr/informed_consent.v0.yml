@@ -7,7 +7,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
   openEhrConfig:
-    archetype: ACTION.informed_consent.v0
+    archetype: openEHR-EHR-ACTION.informed_consent.v0
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Consent
 
