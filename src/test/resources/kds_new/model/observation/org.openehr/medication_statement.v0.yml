@@ -18,12 +18,16 @@ mappings:
     with:
       fhir: "$resource.dosage"
       openEHR: "$archetype/data[at0001]/events[at0002]"
-  #    type: "HIERARCHY"
+    #    type: "HIERARCHY" not necessary since hierarchy is a unique key for Hierarchy mappings
     hierarchy:
-      fhirCreate: "resource"
-      openehrCreate: "event"
-      uniqueValueFHIR: "[route, timing.event]" # if route value is different per dosage slice make a new event
-      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
+      fhir:
+        create: "resource"
+        path: "$resource"
+        unique: "['data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
+      openehr:
+        create: "event"
+        path: "$archetype/data[at0001]/events[at0002]"
+        unique: "[route, timing.event]" # if route value is different per dosage slice make a new event
 
   - name: "healthcareFacility"
     with:

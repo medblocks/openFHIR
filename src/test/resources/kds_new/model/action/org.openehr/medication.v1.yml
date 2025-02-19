@@ -18,10 +18,14 @@ mappings:
       openEHR: "$archetype"
     #    type: "HIERARCHY"
     hierarchy:
-      fhirCreate: "resource"
-      openehrCreate: "archetype"
-      uniqueValueFHIR: "[route, site]" # if route value is different per dosage slice make a new archetype
-      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
+      fhir:
+        create: "resource"
+        path: "$resource"
+        unique: "['data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
+      openehr:
+        create: "archetype"
+        path: "$archetype"
+        unique: "[route, site]"
 
   - name: "healthcareFacility"
     with:
