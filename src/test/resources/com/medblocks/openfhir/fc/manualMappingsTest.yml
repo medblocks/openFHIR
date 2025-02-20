@@ -1,0 +1,121 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: ACTION.informed_consent.v0
+  version: 0.0.1a # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-ACTION.informed_consent.v0
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Consent
+
+
+mappings:
+  - name: "context"
+    with:
+      fhir: "$resource.effective.as(Period)"
+      openehr: "$composition/context"
+    followedBy:
+      mappings:
+        - name: "contextStart"
+          with:
+            fhir: "start"
+            openehr: "start_time"
+            type: "DATETIME"
+
+        - name: "contextEnd"
+          with:
+            fhir: "end"
+            openehr: "_end_time"
+            type: "DATETIME"
+
+  - name: "firstLevelTest"
+    with:
+      fhir: "$resource" # there needs to be a mapping table
+      openehr: "$archetype/ism_transition/current_state"
+    manual:
+      - name: "draft"
+        openehr:
+          - path: "terminology_id"
+            value: "openehr"
+          - path: "value"
+            value: "Initial"
+          - path: "defining_code"
+            value: "524"
+        fhirCondition:
+          targetRoot: "status"
+          targetAttribute: "value"
+          operator: "one of"
+          criteria: "[draft]"
+        fhir:
+          - path: "status"
+            value: "draft"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "defining_code"
+          operator: "one of"
+          criteria: "[524]"
+
+  - name: "innerTest"
+    with:
+      fhir: "$resource" # there needs to be a mapping table
+      openehr: "$archetype/ism_transition/current_state"
+    followedBy:
+      mappings:
+        - name: "performer"
+          with:
+            fhir: "$resource.performer.as(Reference).display"
+            openehr: "$composition/perfomer"
+            type: "STRING"
+
+        - name: "secondLevel"
+          with:
+            fhir: "status"
+            openehr: "something/else"
+          followedBy:
+            mappings:
+              - name: "name"
+                with:
+                  fhir: "$resource.code"
+                  openehr: "$archetype"
+                followedBy:
+                  mappings:
+                    - name: "Name"
+                      with:
+                        fhir: "coding"
+                        openehr: "description[at0001]/items[at0002]"
+                        type: "CODING"
+                      fhirCondition:
+                        targetRoot: "coding"
+                        targetAttribute: "system"
+                        operator: "one of"
+                        criteria: "[http://fhir.de/CodeSystem/bfarm/ops, http://snomed.info/sct]"
+
+              - name: "thirdLevel"
+                with:
+                  fhir: "code"
+                  openehr: "third"
+                manual:
+                  - name: "thirdLevelManualMappings"
+                    openehr:
+                      - path: "terminology_id"
+                        value: "openehr"
+                      - path: "value"
+                        value: "InitialX"
+                      - path: "defining_code"
+                        value: "xxx"
+                    fhirCondition:
+                      targetRoot: "status"
+                      targetAttribute: "value"
+                      operator: "one of"
+                      criteria: "[active]"
+                    fhir:
+                      - path: "status"
+                        value: "yyyy"
+                    openehrCondition:
+                      targetRoot: "$openehrRoot"
+                      targetAttribute: "defining_code"
+                      operator: "one of"
+                      criteria: "[999]"

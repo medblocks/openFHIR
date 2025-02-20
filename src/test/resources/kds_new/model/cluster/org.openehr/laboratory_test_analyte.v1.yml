@@ -1,7 +1,7 @@
 engine: FHIRConnect/v0.0.1
 type: model
 metadata:
-  name:  CLUSTER.laboratory_test_analyte.v1
+  name: CLUSTER.laboratory_test_analyte.v1
   version: 0.0.1a # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
@@ -14,204 +14,251 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 
 
 mappings:
-  - name: "status_registered_fhir"
+  - name: "status"
     with:
-      fhir: "$resource.status"
-      value: "registered"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0005]/defining_code"
-      operator: "one of"
-      criteria: "at0015"
+      fhir: "$resource"
+      openehr: "$archetype/items[at0005]"
+    manual:
+      - name: "registered"
+        fhir:
+          - path: "status"
+            value: "registered"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0005]/defining_code"
+          operator: "one of"
+          criteria: "[at0015]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0015"
+          - path: "value"
+            value: "Registered"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[registered]"
 
-  - name: "status_partial_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "partial"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0005]/defining_code"
-      operator: "one of"
-      criteria: "at0016"
+      - name: "partial"
+        fhir:
+          - path: "status"
+            value: "partial"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0005]/defining_code"
+          operator: "one of"
+          criteria: "[at0016]"
 
-  - name: "status_preliminary_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "preliminary"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0005]/defining_code"
-      operator: "one of"
-      criteria: "at0017"
+      - name: "preliminary"
+        fhir:
+          - path: "status"
+            value: "preliminary"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0005]/defining_code"
+          operator: "one of"
+          criteria: "[at0017]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0017"
+          - path: "value"
+            value: "Preliminary"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[preliminary]"
 
-  - name: "status_final_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "final"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0005]/defining_code"
-      operator: "one of"
-      criteria: "at0018"
+      - name: "final"
+        fhir:
+          - path: "status"
+            value: "final"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0005]/defining_code"
+          operator: "one of"
+          criteria: "[at0018]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0018"
+          - path: "value"
+            value: "Final"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[final]"
 
-  - name: "status_amended_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "amended"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0005]/defining_code"
-      operator: "one of"
-      criteria: "at0020"
+      - name: "amended"
+        fhir:
+          - path: "status"
+            value: "amended"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0005]/defining_code"
+          operator: "one of"
+          criteria: "[at0020]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0020"
+          - path: "value"
+            value: "Amended"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[amended]"
 
-  - name: "status_corrected_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "corrected"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0005]/defining_code"
-      operator: "one of"
-      criteria: "at0019"
+      - name: "corrected"
+        fhir:
+          - path: "status"
+            value: "corrected"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0005]/defining_code"
+          operator: "one of"
+          criteria: "[at0019]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0019"
+          - path: "value"
+            value: "Corrected"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[corrected]"
 
-  - name: "status_appended_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "appended"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0005]/defining_code"
-      operator: "one of"
-      criteria: "at0021"
+      - name: "appended"
+        fhir:
+          - path: "status"
+            value: "appended"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0005]/defining_code"
+          operator: "one of"
+          criteria: "[at0021]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0021"
+          - path: "value"
+            value: "Appended"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[appended]"
 
-  - name: "status_cancelled_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "cancelled"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0005]/defining_code"
-      operator: "one of"
-      criteria: "at0023"
+      - name: "cancelled"
+        fhir:
+          - path: "status"
+            value: "cancelled"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0005]/defining_code"
+          operator: "one of"
+          criteria: "[at0023]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0023"
+          - path: "value"
+            value: "Cancelled"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[cancelled]"
 
-  - name: "status_entered_in_error_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "entered-in-error"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0005]/defining_code"
-      operator: "one of"
-      criteria: "at0022"
+      - name: "entered-in-error"
+        fhir:
+          - path: "status"
+            value: "entered-in-error"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0005]/defining_code"
+          operator: "one of"
+          criteria: "[at0022]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0022"
+          - path: "value"
+            value: "Entered in error"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[entered-in-error]"
 
-  - name: "status_registered_openehr"
-    with:
-      openehr: "$archetype/items[at0005]/defining_code"
-      value: "at0015"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "registered"
+#      - name: "unknown"
+#        fhir:
+#          - path: "status"
+#            value: "unknown"
+#        openehrCondition:
+#          targetRoot: "../"
+#          targetAttribute: "value"
+#          operator: "one of"
+#          criteria: "[unknown]"
+#        openehr:
+#          - path: "null_flavour/value"
+#            value: "unknown"
+#          - path: "null_flavour/terminology_id"
+#            value: "openehr"
+#          - path: "null_flavour/terminology_id/defining_code"
+#            value: "253"
+#        fhirCondition:
+#          targetRoot: "$fhirRoot"
+#          targetAttribute: "status"
+#          operator: "one of"
+#          criteria: "[unknown]"
 
 
-  - name: "status_partial_openehr"
-    with:
-      openehr: "$archetype/items[at0005]/defining_code"
-      value: "at0016"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "partial"
-
-  - name: "status_preliminary_openehr"
-    with:
-      openehr: "$archetype/items[at0005]/defining_code"
-      value: "at0017"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "preliminary"
-
-  - name: "status_final_openehr"
-    with:
-      openehr: "$archetype/items[at0005]/defining_code"
-      value: "at0018"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "final"
-
-  - name: "status_amended_openehr"
-    with:
-      openehr: "$archetype/items[at0005]/defining_code"
-      value: "at0020"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "amended"
-
-  - name: "status_corrected_openehr"
-    with:
-      openehr: "$archetype/items[at0005]/defining_code"
-      value: "at0019"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "corrected"
-
-  - name: "status_appended_openehr"
-    with:
-      openehr: "$archetype/items[at0005]/defining_code"
-      value: "at0021"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "appended"
-
-  - name: "status_cancelled_openehr"
-    with:
-      openehr: "$archetype/items[at0005]/defining_code"
-      value: "at0023"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "cancelled"
-
-  - name: "status_entered_in_error_openehr"
-    with:
-      openehr: "$archetype/items[at0005]/defining_code"
-      value: "at0022"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "entered-in-error"
+      - name: "entered-in-error"
+        fhir:
+          - path: "status"
+            value: "entered-in-error"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0005]/defining_code"
+          operator: "one of"
+          criteria: "[at0022]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0022"
+          - path: "value"
+            value: "Entered in error"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[entered-in-error]"
 
   - name: "issued"
     with:
@@ -248,21 +295,21 @@ mappings:
       fhir: "$resource.specimen.as(Reference).identifier"
       openehr: "$archetype/items[at0026]"
       type: "IDENTIFIER"
-#    reference:
-#      resourceType: "Specimen"
-#      mappings:
-#        - name: "identifierInReference"
-#          with:
-#            fhir: "$fhirRoot.identifier"
+  #    reference:
+  #      resourceType: "Specimen"
+  #      mappings:
+  #        - name: "identifierInReference"
+  #          with:
+  #            fhir: "$fhirRoot.identifier"
 
-#        - name: "specimenLink"
-#          with:
-#            fhir: "$fhirRoot"
-#            openehr: "$archetype/items[at0026]/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get data
-#            openehrLink: #follow this link
-#              meaning: "link to the ehr object this specimen was mapped from"
-#              type: "specimen"
+  #        - name: "specimenLink"
+  #          with:
+  #            fhir: "$fhirRoot"
+  #            openehr: "$archetype/items[at0026]/links" # will use link
+  #            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get data
+  #            openehrLink: #follow this link
+  #              meaning: "link to the ehr object this specimen was mapped from"
+  #              type: "specimen"
 
   - name: "comment"
     with:

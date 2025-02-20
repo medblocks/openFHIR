@@ -93,114 +93,85 @@ mappings:
 
   - name: "status"
     with:
-      fhir: "$resource.status"
-      openehr: "$archetype/items[at0041]|code" #adequacy for testing
-      type: "STRING"
-
-  - name: "status_fhir_available"
-    with:
-      fhir: "$resource.status"
-      value: "available"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0041]/defining_code"
-      operator: "one of"
-      criteria: "at0062"
-
-  - name: "status_fhir_unavailable"
-    with:
-      fhir: "$resource.status"
-      value: "unavailable"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0041]/defining_code"
-      operator: "one of"
-      criteria: "at0064"
-
-  - name: "status_fhir_unsatisfactory"
-    with:
-      fhir: "$resource.status"
-      value: "unsatisfactory"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0041]/defining_code"
-      operator: "one of"
-      criteria: "at0064"
-
-  - name: "status_openehr_available_code"
-    with:
-      openehr: "$archetype/items[at0041]/defining_code"
-      value: "at0062"
+      fhir: "$resource"
+      openehr: "$archetype/items[at0041]"
     fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "available"
-  - name: "status_openehr_available_value"
-    with:
-      openehr: "$archetype/items[at0041]/value"
-      value: "Satisfactory"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "available"
+      targetRoot: "$resource"
+      targetAttribute: "status"
+      operator: "not in"
+      criteria: "[entered-in-error]"
+    manual:
+      - name: "available"
+        fhir:
+          - path: "status"
+            value: "available"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0041]/defining_code"
+          operator: "one of"
+          criteria: "[at0062]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0062" # Zufriedenstellend
+          - path: "value"
+            value: "Satisfactory "
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttributes:
+            - "status"
+          operator: "one of"
+          criteria: "[available]"
 
-  - name: "status_openehr_unavailable_code"
-    with:
-      openehr: "$archetype/items[at0041]/defining_code"
-      value: "at0064"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "unavailable"
-  - name: "status_openehr_unavailable_value"
-    with:
-      openehr: "$archetype/items[at0041]/value"
-      value: "Unsatisfactory - not analysed"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "unavailable"
+      - name: "unavailable"
+        fhir:
+          - path: "status"
+            value: "unavailable"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0041]/defining_code"
+          operator: "one of"
+          criteria: "[at0064]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0064"
+          - path: "value"
+            value: "Unsatisfactory - not analysed"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttributes:
+            - "status"
+          operator: "one of"
+          criteria: "[unavailable]"
 
-  - name: "status_openehr_unsatisfactory_code"
-    with:
-      openehr: "$archetype/items[at0041]/defining_code"
-      value: "at0064"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "unsatisfactory"
-  - name: "status_openehr_unsatisfactory_value"
-    with:
-      openehr: "$archetype/items[at0041]/value"
-      value: "Unsatisfactory - not analysed"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "unsatisfactory"
+      - name: "unsatisfactory"
+        fhir:
+          - path: "status"
+            value: "unsatisfactory"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0041]/defining_code"
+          operator: "one of"
+          criteria: "[at0064]"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0064"
+          - path: "value"
+            value: "Unsatisfactory - not analysed"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttributes:
+            - "status"
+          operator: "one of"
+          criteria: "[unsatisfactory]"
 
-
-
-
-
-
-  - name: "status_openehr_available_terminology"
-    with:
-      openehr: "$archetype/items[at0041]/terminology_id"
-      value: "local"
 
 

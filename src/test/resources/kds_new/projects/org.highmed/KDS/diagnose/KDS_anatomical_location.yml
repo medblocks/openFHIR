@@ -1,0 +1,17 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name:  KDS_anatomical_location
+  version: 0.0.1-alpha # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  extends: CLUSTER.anatomical_location.v1
+
+mappings:
+#  - name: "seitenlokalisation"
+#    extension: "add"
+#    with:
+#      fhir: "$fhirRoot.value"
+#      openehr: "items[at0002]"
+#      type: "CODING"

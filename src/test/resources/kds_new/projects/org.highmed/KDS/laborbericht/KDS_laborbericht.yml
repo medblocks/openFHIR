@@ -50,16 +50,22 @@ mappings:
       criteria: "[FILL]"
     followedBy:
       mappings:
+        - name: "type"
+          with:
+            fhir: "type.coding"
+          manual:
+            - name: "fill"
+              fhir:
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/v2-0203"
+                - path: "code"
+                  value: "FILL"
         - name: "berichtId"
           extension: "add"
           with:
             fhir: "value"
             openehr: "$composition/context/other_context[at0001]/items[at0002]"
             type: "STRING"
-        - name: "typeSystem"
-          with:
-            fhir: "type.coding.system"
-            value: "http://terminology.hl7.org/CodeSystem/v2-0203"
 
 
 
