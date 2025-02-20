@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: model
 metadata:
   name: ADMIN_ENTRY.episode_institution_local.v0
-  version: 0.0.1a # version of this particular mapping
+  version: 0.0.1-alpha # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
@@ -83,8 +83,14 @@ mappings:
       mappings:
         - name: "hardcodingRoomSystem"
           with:
-            fhir: "$resource.location.physicalType.coding.system"
-            value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
+            fhir: "$resource.location.physicalType.coding"
+          manual:
+            - name: "physicalType"
+              fhir:
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
+                - path: "code"
+                  value: "ro"
 
   - name: "bed"
     with:
@@ -99,8 +105,14 @@ mappings:
       mappings:
         - name: "hardcodingBedSystem"
           with:
-            fhir: "$resource.location.physicalType.coding.system"
-            value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
+            fhir: "$resource.location.physicalType.coding"
+          manual:
+            - name: "physicalType"
+              fhir:
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
+                - path: "code"
+                  value: "bd"
 
   - name: "station"
     with:
@@ -115,5 +127,11 @@ mappings:
       mappings:
         - name: "hardcodingWardSystem"
           with:
-            fhir: "$resource.location.physicalType.coding.system"
-            value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
+            fhir: "$resource.location.physicalType.coding"
+          manual:
+            - name: "physicalType"
+              fhir:
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
+                - path: "code"
+                  value: "wa"

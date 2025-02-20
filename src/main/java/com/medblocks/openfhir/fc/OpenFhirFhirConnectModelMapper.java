@@ -1,9 +1,15 @@
 
 package com.medblocks.openfhir.fc;
 
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_ROOT_FC;
+
+import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.fc.schema.model.FhirConnectModel;
+import com.medblocks.openfhir.fc.schema.model.Manual;
+import com.medblocks.openfhir.fc.schema.model.ManualEntry;
 import com.medblocks.openfhir.fc.schema.model.Mapping;
 import com.medblocks.openfhir.fc.schema.model.OpenEhrConfig;
+import com.medblocks.openfhir.fc.schema.model.With;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -39,7 +45,8 @@ public class OpenFhirFhirConnectModelMapper {
 
     public OpenFhirFhirConnectModelMapper fromFhirConnectModelMapper(final FhirConnectModel fhirConnectModel) {
         final OpenFhirFhirConnectModelMapper openFhirFhirConnectModelMapper = new OpenFhirFhirConnectModelMapper();
-        openFhirFhirConnectModelMapper.setMappings(fhirConnectModel.getMappings());
+        openFhirFhirConnectModelMapper.setMappings(handleMappings(fhirConnectModel.getMappings()));
+        doManualMappings(fhirConnectModel.getMappings());
         openFhirFhirConnectModelMapper.setOpenEhrConfig(
                 new OpenEhrConfig().withArchetype(fhirConnectModel.getSpec().getOpenEhrConfig().getArchetype()));
         openFhirFhirConnectModelMapper.setFhirConfig(new OpenFhirFhirConfig()
@@ -49,6 +56,72 @@ public class OpenFhirFhirConnectModelMapper {
                                                              .withResource(parseResourceType(fhirConnectModel)));
         openFhirFhirConnectModelMapper.setName(fhirConnectModel.getMetadata().getName());
         return openFhirFhirConnectModelMapper;
+    }
+
+    private void doManualMappings(final List<Mapping> mappings) {
+        if(mappings == null) {
+            return;
+        }
+        for (final Mapping mapping : mappings) {
+            if(mapping.getFollowedBy() == null
+                    || mapping.getFollowedBy().getMappings() == null
+                    || mapping.getFollowedBy().getMappings().isEmpty()) {
+                continue;
+            }
+            mapping.getFollowedBy().setMappings(handleMappings(mapping.getFollowedBy().getMappings()));
+            doManualMappings(mapping.getFollowedBy().getMappings());
+        }
+    }
+
+    private List<Mapping> handleMappings(final List<Mapping> mappingsFromFile) {
+        final List<Mapping> toReturn = new ArrayList<>();
+        if(mappingsFromFile == null) {
+            return null;
+        }
+        for (final Mapping mapping : mappingsFromFile) {
+            if(mapping.getManual() == null || mapping.getManual().isEmpty()) {
+                // add it as is
+                toReturn.add(mapping);
+            } else {
+                // create more than one
+                for (final Manual manual : mapping.getManual()) {
+                    // when setting openehr, it has to have fhir condition
+                    // when setting fhir, it has to have openehr condition
+                    if (manual.getOpenehr() != null) {
+                        for (final ManualEntry openEhrManualEntry : manual.getOpenehr()) {
+                            final Mapping fromManual = new Mapping();
+                            fromManual.setName(mapping.getName() + "." + manual.getName());
+                            fromManual.setWith(new With()
+                                                       .withValue(openEhrManualEntry.getValue())
+                                                       .withOpenehr(mapping.getWith().getOpenehr() + "/" + openEhrManualEntry.getPath()));
+                            final boolean manualFhirConditionNull = manual.getFhirCondition() == null;
+                            fromManual.setFhirCondition(manualFhirConditionNull ? mapping.getFhirCondition() : manual.getFhirCondition().copy());
+                            toReturn.add(fromManual);
+                        }
+                    }
+                    if (manual.getFhir() != null) {
+                        for (final ManualEntry fhirManualEntry : manual.getFhir()) {
+                            final Mapping fromManual = new Mapping();
+                            fromManual.setName(mapping.getName() + "." + manual.getName());
+                            fromManual.setWith(new With()
+                                                       .withValue(fhirManualEntry.getValue())
+                                                       .withFhir(mapping.getWith().getFhir() + "." + fhirManualEntry.getPath()));
+                            if (manual.getOpenehrCondition() != null) {
+                                final Condition openEhrCondition = manual.getOpenehrCondition().copy();
+                                if(openEhrCondition.getTargetRoot().equals(OPENEHR_ROOT_FC)) {
+                                    openEhrCondition.setTargetRoot(mapping.getWith().getOpenehr());
+                                }
+                                fromManual.setOpenehrCondition(openEhrCondition);
+                            } else {
+                                fromManual.setOpenehrCondition(mapping.getOpenehrCondition());
+                            }
+                            toReturn.add(fromManual);
+                        }
+                    }
+                }
+            }
+        }
+        return toReturn;
     }
 
     private String parseResourceType(final FhirConnectModel fhirConnectModel) {

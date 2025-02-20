@@ -106,7 +106,7 @@ public class MedikamentenverabreichungenTest extends KdsBidirectionalTest {
         //  - name: "category"
         Assert.assertEquals("232", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/context/setting|code").getAsString());
         Assert.assertEquals("openehr", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/context/setting|terminology").getAsString());
-        Assert.assertEquals("primary medical care", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/context/setting|value").getAsString());
+        Assert.assertEquals("secondary medical care", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/context/setting|value").getAsString());
 
         // - name: "note"
         Assert.assertEquals("textab", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/kommentar").getAsString());

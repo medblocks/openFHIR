@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: model
 metadata:
   name:  CLUSTER.problem_qualifier.v2
-  version: 0.0.1a # version of this particular mapping
+  version: 0.0.1-alpha # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
@@ -12,239 +12,154 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 
 mappings:
-#  - name: "statusCoded_fhir"
-#    with:
-#      fhir: "$fhirRoot.verificationStatus"
-#      openehr: "$archetype/items[at0004]"
-
-  - name: "status_provisional_fhir"
+  - name: "statusCoded"
     with:
-      fhir: "$fhirRoot.verificationStatus.coding"
-      openehr: "$archetype"
-    openehrCondition:
-      targetRoot: "$archetype"
+      fhir: "$resource.verificationStatus.coding"
+      openehr: "$archetype/items[at0004]"
+    fhirCondition:
+      targetRoot: "$resource.verificationStatus"
       targetAttributes:
-        - "items[at0004]/code_string"
-      operator: "one of"
-      criteria: "at0017"
-    followedBy:
-      mappings:
-        - name: "status_provisional_fhir_code"
-          with:
-            fhir: "code"
+        - "coding.code"
+      operator: "not of"
+      criteria: "[entered-in-error]"
+    manual:
+      - name: "provisional"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0017"
+          - path: "value"
+            value: "Working"
+
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "code"
+          operator: "one of"
+          criteria: "[provisional]"
+
+        fhir:
+          - path: "code"
             value: "provisional"
-        - name: "status_provisional_fhir_system"
-          with:
-            fhir: "system"
-            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
-        - name: "status_provisional_fhir_display"
-          with:
-            fhir: "display"
+          - path: "display"
             value: "Provisional"
-  - name: "status_differential_fhir"
-    with:
-      fhir: "$fhirRoot.verificationStatus.coding"
-      openehr: "$archetype"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0004]/code_string"
-      operator: "one of"
-      criteria: "at0017"
-    followedBy:
-      mappings:
-        - name: "status_differential_fhir_code"
-          with:
-            fhir: "code"
+          - path: "system"
+            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0004]/code_string"
+          operator: "one of"
+          criteria: "[at0017]"
+
+      - name: "differential"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0017"
+          - path: "value"
+            value: "Working"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "code"
+          operator: "one of"
+          criteria: "[differential]"
+
+        fhir:
+          - path: "code"
             value: "differential"
-        - name: "status_differential_fhir_system"
-          with:
-            fhir: "system"
-            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
-        - name: "status_differential_fhir_display"
-          with:
-            fhir: "display"
+          - path: "display"
             value: "Differential"
+          - path: "system"
+            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0004]/code_string"
+          operator: "one of"
+          criteria: "[at0017]"
 
-  - name: "status_preliminary_fhir"
-    with:
-      fhir: "$fhirRoot.verificationStatus.coding"
-      openehr: "$archetype"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0004]/code_string"
-      operator: "one of"
-      criteria: "at0016"
-    followedBy:
-      mappings:
-        - name: "status_preliminary_fhir_code"
-          with:
-            fhir: "code"
+      - name: "preliminary"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0016"
+          - path: "value"
+            value: "Preliminary"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "code"
+          operator: "one of"
+          criteria: "[unconfirmed]"
+
+        fhir:
+          - path: "code"
             value: "unconfirmed"
-        - name: "status_preliminary_fhir_system"
-          with:
-            fhir: "system"
-            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
-        - name: "status_preliminary_fhir_display"
-          with:
-            fhir: "display"
+          - path: "display"
             value: "Unconfirmed"
+          - path: "system"
+            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0004]/code_string"
+          operator: "one of"
+          criteria: "[at0016]"
 
-  - name: "status_established_fhir"
-    with:
-      fhir: "$fhirRoot.verificationStatus.coding"
-      openehr: "$archetype"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0004]/code_string"
-      operator: "one of"
-      criteria: "at0018"
-    followedBy:
-      mappings:
-        - name: "status_established_fhir_code"
-          with:
-            fhir: "code"
+      - name: "established"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0018"
+          - path: "value"
+            value: "Established"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "code"
+          operator: "one of"
+          criteria: "[confirmed]"
+
+        fhir:
+          - path: "code"
             value: "confirmed"
-            type: "STRING"
-        - name: "status_established_fhir_system"
-          with:
-            fhir: "system"
-            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
-            type: "STRING"
-        - name: "status_established_fhir_display"
-          with:
-            fhir: "display"
+          - path: "display"
             value: "Confirmed"
-            type: "STRING"
-
-  - name: "status_refuted_fhir"
-    with:
-      fhir: "$fhirRoot.verificationStatus.coding"
-      openehr: "$archetype"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0004]/code_string"
-      operator: "one of"
-      criteria: "at0088"
-    followedBy:
-      mappings:
-        - name: "status_refuted_fhir_code"
-          with:
-            fhir: "code"
-            value: "refuted"
-        - name: "status_refuted_fhir_system"
-          with:
-            fhir: "system"
+          - path: "system"
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
-        - name: "status_refuted_fhir_display"
-          with:
-            fhir: "display"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0004]/code_string"
+          operator: "one of"
+          criteria: "[at0018]"
+
+      - name: "refuted"
+        openehr:
+          - path: "terminology_id"
+            value: "local"
+          - path: "defining_code"
+            value: "at0088"
+          - path: "value"
             value: "Refuted"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "code"
+          operator: "one of"
+          criteria: "[refuted]"
 
-  - name: "status_provisional_openehr_code"
-    with:
-      openehr: "items[at0004]/defining_code"
-      value: "at0017"
-    fhirCondition:
-      targetRoot: "$fhirRoot.verificationStatus"
-      targetAttributes:
-        - "coding.code"
-      operator: "one of"
-      criteria: "provisional"
-  - name: "status_provisional_openehr_value"
-    with:
-      openehr: "items[at0004]/value"
-      value: "Working"
-    fhirCondition:
-      targetRoot: "$fhirRoot.verificationStatus"
-      targetAttributes:
-        - "coding.code"
-      operator: "one of"
-      criteria: "provisional"
-
-  - name: "status_differential_openehr_code"
-    with:
-      openehr: "items[at0004]/defining_code"
-      value: "at0017"
-    fhirCondition:
-      targetRoot: "$fhirRoot.verificationStatus"
-      targetAttributes:
-        - "coding.code"
-      operator: "one of"
-      criteria: "differential"
-  - name: "status_differential_openehr_value"
-    with:
-      openehr: "items[at0004]/value"
-      value: "Working"
-    fhirCondition:
-      targetRoot: "$fhirRoot.verificationStatus"
-      targetAttributes:
-        - "coding.code"
-      operator: "one of"
-      criteria: "differential"
-
-  - name: "status_preliminary_openehr_code"
-    with:
-      openehr: "items[at0004]/defining_code"
-      value: "at0016"
-    fhirCondition:
-      targetRoot: "$fhirRoot.verificationStatus"
-      targetAttributes:
-        - "coding.code"
-      operator: "one of"
-      criteria: "unconfirmed"
-  - name: "status_preliminary_openehr_value"
-    with:
-      openehr: "items[at0004]/value"
-      value: "Preliminary"
-    fhirCondition:
-      targetRoot: "$fhirRoot.verificationStatus"
-      targetAttributes:
-        - "coding.code"
-      operator: "one of"
-      criteria: "unconfirmed"
-
-  - name: "status_established_openehr_code"
-    with:
-      openehr: "items[at0004]/defining_code"
-      value: "at0018"
-    fhirCondition:
-      targetRoot: "$fhirRoot.verificationStatus"
-      targetAttributes:
-        - "coding.code"
-      operator: "one of"
-      criteria: "confirmed"
-  - name: "status_established_openehr_value"
-    with:
-      openehr: "items[at0004]/value"
-      value: "Established"
-    fhirCondition:
-      targetRoot: "$fhirRoot.verificationStatus"
-      targetAttributes:
-        - "coding.code"
-      operator: "one of"
-      criteria: "confirmed"
-
-  - name: "status_refuted_openehr_code"
-    with:
-      openehr: "items[at0004]/defining_code"
-      value: "at0088"
-    fhirCondition:
-      targetRoot: "$fhirRoot.verificationStatus"
-      targetAttributes:
-        - "coding.code"
-      operator: "one of"
-      criteria: "refuted"
-  - name: "status_refuted_openehr_value"
-    with:
-      openehr: "items[at0004]/value"
-      value: "Refuted"
-    fhirCondition:
-      targetRoot: "$fhirRoot.verificationStatus"
-      targetAttributes:
-        - "coding.code"
-      operator: "one of"
-      criteria: "refuted"
+        fhir:
+          - path: "code"
+            value: "refuted"
+          - path: "display"
+            value: "Refuted"
+          - path: "system"
+            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "items[at0004]/code_string"
+          operator: "one of"
+          criteria: "[at0088]"
