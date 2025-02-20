@@ -23,6 +23,7 @@ import org.hl7.fhir.r4.model.Resource;
 
 @Slf4j
 public abstract class OpenFhirMappingContext {
+
     @Getter
     Map<String, OpenFhirContextRepository> repository = new HashMap<>();
 
@@ -41,7 +42,8 @@ public abstract class OpenFhirMappingContext {
     /**
      * Returns a fhir connect model mapper for a specific archetype within a template.
      */
-    public List<OpenFhirFhirConnectModelMapper> getMapperForArchetype(final String templateId, final String archetypeId) {
+    public List<OpenFhirFhirConnectModelMapper> getMapperForArchetype(final String templateId,
+                                                                      final String archetypeId) {
         final OpenFhirContextRepository repoForTemplate = repository.get(normalizeTemplateId(templateId));
         if (repoForTemplate == null) {
             log.warn("No repo exists for template: {}", templateId);
@@ -58,16 +60,19 @@ public abstract class OpenFhirMappingContext {
     /**
      * Returns a fhir connect model mapper for a specific archetype within a template. It retrieves from a slotArchetype
      * repository cache instead of from the main one.
+     *
      * @deprecated we don't differentiate between slots mappers and regular mappers anymore, so @see getMapperForArchetype
      */
     @Deprecated
-    public List<OpenFhirFhirConnectModelMapper> getSlotMapperForArchetype(final String templateId, final String archetypeId) {
+    public List<OpenFhirFhirConnectModelMapper> getSlotMapperForArchetype(final String templateId,
+                                                                          final String archetypeId) {
         final OpenFhirContextRepository repoForTemplate = repository.get(normalizeTemplateId(templateId));
         if (repoForTemplate == null) {
             log.warn("No repo exists for template: {}", templateId);
             return null;
         }
-        final List<OpenFhirFhirConnectModelMapper> fhirConnectMapper = repoForTemplate.getSlotMappers().get(archetypeId);
+        final List<OpenFhirFhirConnectModelMapper> fhirConnectMapper = repoForTemplate.getSlotMappers()
+                .get(archetypeId);
         if (fhirConnectMapper == null) {
             return null;
         }
@@ -76,15 +81,18 @@ public abstract class OpenFhirMappingContext {
 
     /**
      * Finds specific mappers for a Resource then used in a FHIR to openEHR mapping, where an additional business logic
-     * needs to be used to find correct context and model mappers, whereas when mapping from openEHR to FHIR, you can simply
+     * needs to be used to find correct context and model mappers, whereas when mapping from openEHR to FHIR, you can
+     * simply
      * do this based on an archetypeId/templateId.
      * <p>
-     * In this case of a FHIR to openEHR mapping, the following business logic is applied when finding the correct mappers:
+     * In this case of a FHIR to openEHR mapping, the following business logic is applied when finding the correct
+     * mappers:
      * <p>
      * - iterate over all available model mappers within a context (the right context has been defined beforehand)
      * - evaluate a fhirConfig.condition on the Resource
      * - if fhirpath evaluation returns a result, it means this specific mapping in question is the right one
-     * - if no condition is present and the mere fhir resource type matches the incoming Resource, it also adds it to the
+     * - if no condition is present and the mere fhir resource type matches the incoming Resource, it also adds it to
+     * the
      * available one
      *
      * @param resource incoming Resource that is to be mapped
@@ -106,12 +114,14 @@ public abstract class OpenFhirMappingContext {
             return null;
         }
         if (relevantMappers.size() > 1) {
-            log.info("More than one mapper found for Resource: {}, id: {}", resource.getResourceType().name(), resource.getId());
+            log.info("More than one mapper found for Resource: {}, id: {}", resource.getResourceType().name(),
+                     resource.getId());
         }
         return relevantMappers;
     }
 
-    private void getMappers(final List<OpenFhirFhirConnectModelMapper> connectMappers, final List<OpenFhirFhirConnectModelMapper> relevantMappers,
+    private void getMappers(final List<OpenFhirFhirConnectModelMapper> connectMappers,
+                            final List<OpenFhirFhirConnectModelMapper> relevantMappers,
                             final Resource resource) {
         for (OpenFhirFhirConnectModelMapper connectMapper : connectMappers) {
             if (connectMapper.getFhirConfig() == null) {
@@ -119,17 +129,24 @@ public abstract class OpenFhirMappingContext {
             }
             final List<Condition> conditions = connectMapper.getFhirConfig().getCondition();
             final String fhirPathWithCondition = openFhirStringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,
-                    conditions, connectMapper.getFhirConfig().getResource());
-            if (StringUtils.isEmpty(fhirPathWithCondition) || fhirPathWithCondition.equals(connectMapper.getFhirConfig().getResource())) {
+                                                                                   conditions,
+                                                                                   connectMapper.getFhirConfig()
+                                                                                           .getResource());
+            if (StringUtils.isEmpty(fhirPathWithCondition)
+                    || fhirPathWithCondition.equals(connectMapper.getFhirConfig().getResource())
+                    && connectMapper.getFhirConfig().getResource().equals(resource.getResourceType().name())) {
                 log.warn("No fhirpath defined for resource type, mapper relevant for all Resources of this type?");
-                relevantMappers.add(connectMapper.copy()); // IMPORTANT! as a mapper is being edited as part of the mapping process, this needs to be copied!
+                relevantMappers.add(
+                        connectMapper.copy()); // IMPORTANT! as a mapper is being edited as part of the mapping process, this needs to be copied!
             } else {
                 final Optional<Base> evaluated = fhirPathR4.evaluateFirst(resource, fhirPathWithCondition, Base.class);
                 // if is present and is of type boolean, it also needs to be true
                 // if is present and is not of type boolean, then the mere presence means the mapper is for this resource
-                if (evaluated.isPresent() && ((!(evaluated.get() instanceof BooleanType) || ((BooleanType) evaluated.get()).getValue()))) {
+                if (evaluated.isPresent() && ((!(evaluated.get() instanceof BooleanType)
+                        || ((BooleanType) evaluated.get()).getValue()))) {
                     // mapper matches this Resource, it can handle it
-                    relevantMappers.add(connectMapper.copy()); // IMPORTANT! as a mapper is being edited as part of the mapping process, this needs to be copied!
+                    relevantMappers.add(
+                            connectMapper.copy()); // IMPORTANT! as a mapper is being edited as part of the mapping process, this needs to be copied!
                 }
             }
         }

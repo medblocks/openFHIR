@@ -14,6 +14,7 @@ import java.util.List;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_CLUSTER;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
 
 /**
  * Class used for populating openEHR flat path Composition
@@ -39,7 +40,7 @@ public class OpenEhrPopulator {
      * @param openEhrType      openEHR type as defined in the fhir connect model mapping
      * @param constructingFlat composition in a flat path format that's being constructed
      */
-    public void setFhirPathValue(final String openEhrPath, final Base extractedValue, final String openEhrType, final JsonObject constructingFlat) {
+    public void setFhirPathValue(String openEhrPath, final Base extractedValue, final String openEhrType, final JsonObject constructingFlat) {
         if (openEhrType == null) {
             addValuePerFhirType(extractedValue, openEhrPath, constructingFlat);
             return;
@@ -51,6 +52,11 @@ public class OpenEhrPopulator {
         if (extractedValue == null) {
             log.warn("Extracted value is null");
             return;
+        }
+        if(openEhrPath.contains(RECURRING_SYNTAX)) {
+            // still has recurring syntax due to the fact some recurring elements were not aligned or simply couldn't have been
+            // in this case just set all to 0th
+            openEhrPath = openEhrPath.replace(RECURRING_SYNTAX, ":0");
         }
 
         switch (openEhrType) {
