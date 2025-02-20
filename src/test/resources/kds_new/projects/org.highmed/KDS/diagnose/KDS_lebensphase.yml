@@ -20,6 +20,16 @@ mappings:
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
+    followedBy:
+      mappings:
+        - name: "extension"
+          with:
+            fhir: "$fhirRoot"
+          manual:
+            - name: "physicalType"
+              fhir:
+                - path: "url"
+                  value: "http://fhir.de/StructureDefinition/lebensphase"
 
   - name: "periodOnsetEnd"
     extension: "add"
@@ -32,4 +42,14 @@ mappings:
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
+    followedBy:
+      mappings:
+        - name: "extension"
+          with:
+            fhir: "$fhirRoot"
+          manual:
+            - name: "physicalType"
+              fhir:
+                - path: "url"
+                  value: "http://fhir.de/StructureDefinition/lebensphase"
 

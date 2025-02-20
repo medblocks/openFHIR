@@ -59,137 +59,88 @@ mappings:
 #      fhir: "$resource.actor.performer"
 #      openehr: "$archetype/provider"
 
-
-# category mappings to fhir based on openehr value
-
-  - name: "category_outpatient_fhir_parent"
+  - name: "category"
     with:
       fhir: "$resource.category.coding"
-      openehr: "$archetype"
-      type: "NONE"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "context/setting/defining_code"
-      operator: "one of"
-      criteria: "[228]"
-    followedBy:
-      mappings:
-        - name: "category_outpatient_fhir_code"
-          with:
-            fhir: "code"
+      openehr: "$composition/context/setting"
+    manual:
+      - name: "outpatient"
+        fhir:
+          - path: "code"
             value: "outpatient"
-        - name: "category_outpatient_fhir_system"
-          with:
-            fhir: "system"
+          - path: "system"
             value: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
+          - path: "display"
+            value: "Outpatient"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "defining_code"
+          operator: "one of"
+          criteria: "[228]"
+        openehr:
+          - path: "terminology_id"
+            value: "openehr"
+          - path: "defining_code"
+            value: "228"
+          - path: "value"
+            value: "primary medical care"
+        fhirCondition:
+          targetRoot: "$resource"
+          targetAttribute: "category.coding.code"
+          operator: "one of"
+          criteria: "[outpatient]"
 
-  - name: "category_inpatient_fhir_parent"
-    with:
-      fhir: "$resource.category.coding"
-      openehr: "$archetype"
-      type: "NONE"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "context/setting/defining_code"
-      operator: "one of"
-      criteria: "[232]"
-    followedBy:
-      mappings:
-        - name: "category_outpatient_fhir_code"
-          with:
-            fhir: "code"
+      - name: "inpatient"
+        fhir:
+          - path: "code"
             value: "inpatient"
-        - name: "category_outpatient_fhir_system"
-          with:
-            fhir: "system"
+          - path: "system"
             value: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
+          - path: "display"
+            value: "Inpatient"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "defining_code"
+          operator: "one of"
+          criteria: "[232]"
+        openehr:
+          - path: "terminology_id"
+            value: "openehr"
+          - path: "defining_code"
+            value: "232"
+          - path: "value"
+            value: "secondary medical care"
+        fhirCondition:
+          targetRoot: "$resource"
+          targetAttribute: "category.coding.code"
+          operator: "one of"
+          criteria: "[inpatient]"
 
-  - name: "category_community_fhir_parent"
-    with:
-      fhir: "$resource.category.coding"
-      openehr: "$archetype"
-      type: "NONE"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "context/setting/defining_code"
-      operator: "one of"
-      criteria: "[238]"
-    followedBy:
-      mappings:
-        - name: "category_outpatient_fhir_code"
-          with:
-            fhir: "code"
+      - name: "community"
+        fhir:
+          - path: "code"
             value: "community"
-        - name: "category_outpatient_fhir_system"
-          with:
-            fhir: "system"
+          - path: "system"
             value: "http://terminology.hl7.org/CodeSystem/medication-admin-category"
-  # END OF category mappings to fhir based on openehr value
-  # category mappings to openehr based on fhir value
-  - name: "category_outpatient_openehr_code"
-    with:
-      openehr: "$composition/context/setting/defining_code"
-      value: "228"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "category.coding.code"
-      operator: "one of"
-      criteria: "[outpatient]"
-  - name: "category_outpatient_openehr_value"
-    with:
-      openehr: "$composition/context/setting/value"
-      value: "Outpatient"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "category.coding.code"
-      operator: "one of"
-      criteria: "[outpatient]"
-
-  - name: "category_inpatient_openehr_code"
-    with:
-      openehr: "$composition/context/setting/defining_code"
-      value: "232"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "category.coding.code"
-      operator: "one of"
-      criteria: "[inpatient]"
-  - name: "category_inpatient_openehr_value"
-    with:
-      openehr: "$composition/context/setting/value"
-      value: "primary medical care"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "category.coding.code"
-      operator: "one of"
-      criteria: "[inpatient]"
-
-  - name: "category_community_openehr_code"
-    with:
-      openehr: "$composition/context/setting/defining_code"
-      value: "238"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "category.coding.code"
-      operator: "one of"
-      criteria: "[community]"
-  - name: "category_community_openehr_value"
-    with:
-      openehr: "$composition/context/setting/value"
-      value: "Community"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttribute: "category.coding.code"
-      operator: "one of"
-      criteria: "[community]"
-
-  - name: "category_openehr_terminology"
-    with:
-      openehr: "$composition/context/setting/terminology_id"
-      value: "openehr"
+          - path: "display"
+            value: "Community"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "defining_code"
+          operator: "one of"
+          criteria: "[238]"
+        openehr:
+          - path: "terminology_id"
+            value: "openehr"
+          - path: "defining_code"
+            value: "238"
+          - path: "value"
+            value: "Community"
+        fhirCondition:
+          targetRoot: "$resource"
+          targetAttribute: "category.coding.code"
+          operator: "one of"
+          criteria: "[community]"
 
   - name: "note"
     with:
@@ -285,99 +236,73 @@ mappings:
 #              type: "medicationRequest"
 
 
-  # ism transition hardcoding to fhir based on openEhr value
+  - name: "ISMTransition"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype/ism_transition/current_state"
+    manual:
+      - name: "active"
+        fhir:
+          - path: "status"
+            value: "active"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "defining_code"
+          operator: "one of"
+          criteria: "[245]"
+        openehr:
+          - path: "terminology_id"
+            value: "openehr"
+          - path: "defining_code"
+            value: "245"
+          - path: "value"
+            value: "Active"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[active]"
 
-  - name: "ISMTransition_active_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "active"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "ism_transition/current_state/defining_code"
-      operator: "one of"
-      criteria: "[245]"
+      - name: "inactive"
+        fhir:
+          - path: "status"
+            value: "inactive"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "defining_code"
+          operator: "one of"
+          criteria: "[532]"
+        openehr:
+          - path: "terminology_id"
+            value: "openehr"
+          - path: "defining_code"
+            value: "532"
+          - path: "value"
+            value: "Completed"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[inactive]"
 
-  - name: "ISMTransition_rejected_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "rejected"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "ism_transition/current_state/defining_code"
-      operator: "one of"
-      criteria: "[528]"
-
-  - name: "ISMTransition_inactive_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "inactive"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "ism_transition/current_state/defining_code"
-      operator: "one of"
-      criteria: "[532]"
-
-  - name: "ISMTransition_error_fhir"
-    with:
-      fhir: "$resource.status"
-      value: "entered-in-error"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "ism_transition/current_state/defining_code"
-      operator: "one of"
-      criteria: "[528]"
-  # END of ism transition hardcoding to fhir based on openEhr value
-
-
-  # ism transition hardcoding to openehr based on fhir value
-
-  - name: "ISMTransition_active_openehr"
-    with:
-      openehr: "$archetype/ism_transition/current_state/defining_code"
-      value: "245"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttribute: "status"
-      operator: "one of"
-      criteria: "[active]"
-  - name: "ISMTransition_active_openehr_terminology"
-    with:
-      openehr: "$archetype/ism_transition/current_state/terminology_id"
-      value: "local"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttribute: "status"
-      operator: "one of"
-      criteria: "[active]"
-  - name: "ISMTransition_active_openehr_value"
-    with:
-      openehr: "$archetype/ism_transition/current_state/value"
-      value: "Active"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttribute: "status"
-      operator: "one of"
-      criteria: "[active]"
-
-  - name: "ISMTransition_inactive_openehr"
-    with:
-      openehr: "$archetype/ism_transition/current_state/defining_code"
-      value: "532"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttribute: "status"
-      operator: "one of"
-      criteria: "[inactive]"
-  - name: "ISMTransition_entered_in_error_openehr"
-    with:
-      openehr: "$archetype/ism_transition/current_state/defining_code"
-      value: "531"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      targetAttribute: "status"
-      operator: "one of"
-      criteria: "[entered-in-error]"
+      - name: "entered-in-error"
+        fhir:
+          - path: "status"
+            value: "entered-in-error"
+        openehrCondition:
+          targetRoot: "$openehrRoot"
+          targetAttribute: "defining_code"
+          operator: "one of"
+          criteria: "[528]"
+        openehr:
+          - path: "terminology_id"
+            value: "openehr"
+          - path: "defining_code"
+            value: "528"
+          - path: "value"
+            value: "Cancelled"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttribute: "status"
+          operator: "one of"
+          criteria: "[entered-in-error]"

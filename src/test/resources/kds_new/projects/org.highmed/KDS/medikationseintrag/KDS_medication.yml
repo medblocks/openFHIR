@@ -25,6 +25,16 @@ mappings:
             targetAttribute: "url"
             operator: "one of"
             criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp]"
+          followedBy:
+            mappings:
+              - name: "extension"
+                with:
+                  fhir: "$fhirRoot.ingredients.extension"
+                manual:
+                  - name: "extensionUrl"
+                    fhir:
+                      - path: "url"
+                        value: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp"
 
 #  - name: "wirkstoffrelation"
 #    extension: "append"

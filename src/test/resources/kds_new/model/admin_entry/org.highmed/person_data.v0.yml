@@ -10,6 +10,11 @@ spec:
     archetype: openEHR-EHR-ADMIN_ENTRY.person_data.v0
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Patient
+    condition:
+      - targetRoot: "$resource"
+        targetAttribute: "active"  # exclude non-active patients
+        operator: "one of"
+        criteria: "[false]"
 
 mappings:
   - name: "personData"
@@ -28,6 +33,11 @@ mappings:
     with:
       fhir: "$resource.deceased.as(DateTime)"
       openehr: "$archetype/data[at0001]/items[at0024]"
+    manual:
+      - name: "deathboolean"
+        openehr:
+          - path: "items[at0025]/value"
+            value: "True"
     fhirCondition:
       targetRoot: "$resource"
       targetAttributes:
@@ -35,10 +45,6 @@ mappings:
       operator: "not empty"
     followedBy:
       mappings:
-        - name: "deathTrue"
-          with:
-            openehr: "data[at0001]/items[at0024]/items[at0025]"
-            value: "true"
         - name: "deathDetails"
           with:
             fhir: "$fhirRoot"

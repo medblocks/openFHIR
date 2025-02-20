@@ -143,7 +143,7 @@ public class FhirConnectModelMerger {
     }
 
     /**
-     * Goes over all mappings and finds the one that has the same name; does to recursively in followedBy as well
+     * Goes over all mappings and finds the one that has the same name; does so recursively in followedBy as well
      *
      * @param mappings to look into for one matching the 'name'
      * @param appendTo looking for a mapping with this name (this can be json path)
