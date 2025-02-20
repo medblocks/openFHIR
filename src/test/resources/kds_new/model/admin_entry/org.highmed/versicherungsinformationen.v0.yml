@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: model
 metadata:
   name:  ADMIN_ENTRY.versicherungsinformationen.v0
-  version: 0.0.1a # version of this particular mapping
+  version: 0.0.1-alpha # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
@@ -23,17 +23,25 @@ mappings:
       criteria: "[http://fhir.de/sid/gkv/kvid-10]"
     followedBy:
       mappings:
+        - name: "staticUrl"
+          with:
+            fhir: "$fhirRoot"
+            openehr: "$reference"
+          manual:
+            - name: "system"
+              fhir:
+                - path: "system"
+                  value: "http://fhir.de/sid/gkv/kvid-10"
+
         - name: "typeCoding"
           with:
             fhir: "type.coding"
             openehr: "$archetype"
-          followedBy:
-            mappings:
-              - name: "code"
-                with:
-                  fhir: "code"
-                  openehr: "KVZ10"
-              - name: "system"
-                with:
-                  fhir: "system"
+          manual:
+            - name: "type"
+              fhir:
+                - path: "system"
                   value: "http://fhir.de/CodeSystem/identifier-type-de-basis"
+                - path: "value"
+                  value: "KVZ10"
+

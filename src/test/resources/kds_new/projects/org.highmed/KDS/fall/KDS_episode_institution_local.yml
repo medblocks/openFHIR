@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name: KDS_episode_institution_local
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
@@ -69,6 +69,15 @@ mappings:
       criteria: "[http://fhir.de/StructureDefinition/Aufnahmegrund]"
     followedBy:
       mappings:
+        - name: "aufnahmegrund"
+          with:
+            fhir: "$fhirRoot"
+          manual:
+            - name: "extension"
+              fhir:
+                - path: "url"
+                  value: "http://fhir.de/StructureDefinition/Aufnahmegrund"
+
         - name: "ersteUndZweiteStelle"
           with:
             fhir: "extension.value" # since its two extensions nested
@@ -128,6 +137,16 @@ mappings:
             targetAttribute: "url"
             operator: "one of"
             criteria: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
+          followedBy:
+            mappings:
+              - name: "entlassungsgrundUrl"
+                with:
+                  fhir: "dischargeDisposition.extension"
+                manual:
+                  - name: "extension"
+                    fhir:
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/Entlassungsgrund"
 
   - name: "problemDiagnoseParent"
     extension: "add"

@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name: KDS_problem_diagnose
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
@@ -52,6 +52,16 @@ mappings:
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-assertedDate]"
+    followedBy:
+      mappings:
+        - name: "staticURL"
+          with:
+            fhir: "$resource.extension"
+          manual:
+            - name: "url"
+              fhir:
+                - path: "url"
+                  value: "http://hl7.org/fhir/StructureDefinition/condition-assertedDate"
 
   - name: "bodySiteCluster"
     extension: "overwrite"
@@ -95,6 +105,16 @@ mappings:
             targetAttribute: "url"
             operator: "one of"
             criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+          followedBy:
+            mappings:
+              - name: "extension"
+                with:
+                  fhir: "$fhirRoot" #since we want to access extension here
+                manual:
+                  - name: "extensionUrl"
+                    fhir:
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit"
 
         - name: "multipleCoding"
           with:
@@ -160,6 +180,15 @@ mappings:
       criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
     followedBy:
       mappings:
+        - name: "extensionUrl"
+          with:
+            fhir: "$resource.extension"
+          manual:
+            - name: "conditionRelatedUrl"
+              fhir:
+                - path: "url"
+                  value: "http://hl7.org/fhir/StructureDefinition/condition-related"
+
         - name: "referenced condition"
           with:
             fhir: "value"

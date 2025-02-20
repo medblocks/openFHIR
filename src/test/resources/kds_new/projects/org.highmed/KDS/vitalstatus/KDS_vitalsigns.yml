@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name: KDS_vital_status
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
@@ -48,28 +48,32 @@ mappings:
       type: "NONE"
     followedBy:
       mappings:
-        - name: "code"
+        - name: "manual"
           with:
-            fhir: "code"
-            value: "survey"
-        - name: "system"
-          with:
-            fhir: "system"
-            value: "http://terminology.hl7.org/CodeSystem/observation-category"
+            fhir: "coding"
+          manual:
+            - name: "survey"
+              fhir:
+                - path: "code"
+                  value: "survey"
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/observation-category"
 
   - name: "code"
     extension: "add"
     with:
-      fhir: "$resource.code.coding"
+      fhir: "$resource.code"
       openehr: "$archetype"
       type: "NONE"
     followedBy:
       mappings:
-        - name: "code"
+        - name: "manual"
           with:
-            fhir: "code"
-            value: "67162-8"
-        - name: "system"
-          with:
-            fhir: "system"
-            value: "http://loinc.org"
+            fhir: "coding"
+          manual:
+            - name: "survey"
+              fhir:
+                - path: "code"
+                  value: "67162-8"
+                - path: "system"
+                  value: "http://loinc.org"

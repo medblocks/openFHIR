@@ -134,6 +134,32 @@
             "type": {
               "type": "string"
             },
+            "unidirectional": {
+              "type": "string"
+            }
+          }
+        },
+        "manual": {
+          "type": "array",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "openehr": {
+              "type": "array",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "fhirCondition": {
+              "type": "object"
+            },
             "value": {
               "type": "string"
             },

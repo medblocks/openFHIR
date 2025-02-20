@@ -13,6 +13,7 @@ public class FhirConnectConst {
     public static final String OPENEHR_ARCHETYPE_FC = "$archetype";
     public static final String OPENEHR_COMPOSITION_FC = "$composition";
     public static final String OPENEHR_CONTEXT_FC = "$openEhrContext";
+    public static final String OPENEHR_ROOT_FC = "$openehrRoot";
     public static final String OPENEHR_TYPE_NONE = "NONE";
     public static final String OPENEHR_TYPE_CLUSTER = "CLUSTER";
     public static final String OPENEHR_TYPE_MEDIA = "MEDIA";

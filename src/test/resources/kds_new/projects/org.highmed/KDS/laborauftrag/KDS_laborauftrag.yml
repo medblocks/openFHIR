@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name: KDS_laborauftrag
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
@@ -62,130 +62,99 @@ mappings:
                   openehr: "items[at0001]"
                   type: "IDENTIFIER"
 
-  - name: "intent"
-    extension: "add"
-    with:
-      fhir: "$resource.intent"
-      value: "order"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "activities[at0001]/description[at0009]/items[at0065]/defining_code"
-      operator: "one of"
-      criteria: "order"
 
-  - name: "intent_openehr_code"
-    extension: "add"
+
+  - name: "intent"
+    extension: "overwrite"
     with:
-      value: "order"
-      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0065]/defining_code"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttributes:
-        - "intent"
-      operator: "one of"
-      criteria: "order"
-  - name: "intent_openehr_terminology"
-    extension: "add"
-    with:
-      value: "http://hl7.org/fhir/request-intent"
-      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0065]/terminology_id"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttributes:
-        - "intent"
-      operator: "one of"
-      criteria: "order"
+      fhir: "$resource"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0065]"
+    manual:
+      - name: "intentStatic"
+        openehr:
+          - path: "terminology_id"
+            value: "http://hl7.org/fhir/request-intent"
+          - path: "defining_code"
+            value: "order"
+          - path: "value"
+            value: "Order"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttributes:
+            - "category.coding.code"
+          operator: "one of"
+          criteria: "laboratory"
+
+        fhir:
+          - path: "intent"
+            value: "order"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "activities[at0001]/description[at0009]/items[at0065]/defining_code"
+          operator: "one of"
+          criteria: "order"
 
   - name: "category"
     extension: "overwrite"
     with:
       fhir: "$resource.category.coding"
-      openehr: "$archetype"
-      type: "NONE"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "activities[at0001]/description[at0009]/items[at0148]/defining_code"
-      operator: "one of"
-      criteria: "laboratory"
-    followedBy:
-      mappings:
-        - name: "category_fhir_code"
-          with:
-            fhir: "code"
+      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]"
+    manual:
+      - name: "categoryStatic"
+        openehr:
+          - path: "terminology_id"
+            value: "http://terminology.hl7.org/ValueSet/observation-category"
+          - path: "defining_code"
             value: "laboratory"
-        - name: "category_fhir_system"
-          with:
-            fhir: "system"
+          - path: "value"
+            value: "Laboratory"
+        fhirCondition:
+          targetRoot: "$fhirRoot"
+          targetAttributes:
+            - "category.coding.code"
+          operator: "one of"
+          criteria: "laboratory"
+
+        fhir:
+          - path: "system"
             value: "http://terminology.hl7.org/CodeSystem/observation-category"
+          - path: "code"
+            value: "laboratory"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "activities[at0001]/description[at0009]/items[at0148]/defining_code"
+          operator: "one of"
+          criteria: "laboratory"
 
-  - name: "category_openehr_lab_code"
-    extension: "add"
-    with:
-      value: "laboratory"
-      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/defining_code"
-    fhirCondition:
-      targetRoot: "$resource.category.coding"
-      targetAttributes:
-        - "code"
-      operator: "one of"
-      criteria: "laboratory"
-  - name: "category_openehr_lab_terminology"
-    extension: "add"
-    with:
-      value: "http://terminology.hl7.org/ValueSet/observation-category"
-      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/terminology_id"
-    fhirCondition:
-      targetRoot: "$resource.category.coding"
-      targetAttributes:
-        - "code"
-      operator: "one of"
-      criteria: "laboratory"
-  - name: "category_openehr_lab_value"
-    extension: "add"
-    with:
-      value: "Laboratory"
-      openehr: "$archetype/activities[at0001]/description[at0009]/items[at0148]/value"
-    fhirCondition:
-      targetRoot: "$resource.category.coding"
-      targetAttributes:
-        - "code"
-      operator: "one of"
-      criteria: "laboratory"
-
-# status
   - name: "status"
     extension: "overwrite"
     with:
-      fhir: "$resource.status"
-      value: "completed"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "protocol[at0008]/items[at0127]/defining_code"
-      operator: "one of"
-      criteria: "completed"
+      fhir: "$resource"
+      openehr: "$archetype/protocol[at0008]/items[at0127]"
+    manual:
+      - name: "categoryStatic"
+        openehr:
+          - path: "terminology_id"
+            value: "http://hl7.org/fhir/ValueSet/request-status"
+          - path: "defining_code"
+            value: "completed"
+          - path: "value"
+            value: "Completed"
+        fhirCondition:
+          targetRoot: "$resource"
+          targetAttributes:
+            - "status"
+          operator: "one of"
+          criteria: "completed"
 
-  - name: "status_openehr_code"
-    extension: "add"
-    with:
-      value: "completed"
-      openehr: "$archetype/protocol[at0008]/items[at0127]/defining_code"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "completed"
-  - name: "status_openehr_terminology"
-    extension: "add"
-    with:
-      value: "http://hl7.org/fhir/ValueSet/request-status"
-      openehr: "$archetype/protocol[at0008]/items[at0127]/terminology_id"
-    fhirCondition:
-      targetRoot: "$resource"
-      targetAttributes:
-        - "status"
-      operator: "one of"
-      criteria: "completed"
+        fhir:
+          - path: "status"
+            value: "completed"
+        openehrCondition:
+          targetRoot: "$archetype"
+          targetAttributes:
+            - "protocol[at0008]/items[at0127]/defining_code"
+          operator: "one of"
+          criteria: "completed"

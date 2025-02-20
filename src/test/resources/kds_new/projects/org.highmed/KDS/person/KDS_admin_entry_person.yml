@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name: KDS_admin_entry_person.v0
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
@@ -22,10 +22,16 @@ mappings:
       criteria: "[MR]"
     followedBy:
       mappings:
-        - name: "typeString"
+        - name: "type"
           with:
-            fhir: "$resource.identifier.type.coding.system"
-            value: "http://terminology.hl7.org/CodeSystem/v2-0203"
+            fhir: "type.coding"
+          manual:
+            - name: "typeMR"
+              fhir:
+                - path: "system"
+                  value: "http://terminology.hl7.org/CodeSystem/v2-0203"
+                - path: "code"
+                  value: "MR"
 
 
   - name: "personData"

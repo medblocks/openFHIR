@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: model
 metadata:
   name:  EVALUATION.cause_of_death.v1
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
@@ -65,30 +65,33 @@ mappings:
           with:
             fhir: "coding"
             openehr: "$archetype"
-          followedBy:
-            mappings:
-              - name: "loinc_coce"
-                with:
-                  fhir: "code"
+          manual:
+            - name: "loinc_coce"
+              fhir:
+                - path: "code"
                   value: "79378-6"
-              - name: "loinc_system"
-                with:
-                  fhir: "system"
+
+            - name: "loinc_system"
+              fhir:
+                - path: "system"
                   value: "http://loinc.org"
+
+
         - name: "category_code_coding_snomed"
           with:
             fhir: "coding"
             openehr: "$archetype"
-          followedBy:
-            mappings:
-              - name: "loinc_coce"
-                with:
-                  fhir: "code"
+          manual:
+            - name: "snomed_coce"
+              fhir:
+                - path: "code"
                   value: "16100001"
-              - name: "loinc_system"
-                with:
-                  fhir: "system"
+
+            - name: "snomed_system"
+              fhir:
+                - path: "system"
                   value: "http://snomed.info/sct"
+
 
 
   - name: "comment"

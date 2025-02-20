@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name: KDS_organisation
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
@@ -31,8 +31,12 @@ mappings:
       criteria: "[http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel]"
     followedBy:
       mappings:
-        - name: "$archetype/items[at0024]"
+        - name: "fachabteilungsschluessel"
           with:
             fhir: "coding" # goes on element back to extension
-            openehr: "$reference"
+          manual:
+            - name: "system"
+              fhir:
+                - path: "system"
+                  value: "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel"
 

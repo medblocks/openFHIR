@@ -8,7 +8,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -21,6 +23,7 @@ import java.util.Map;
         "extension",
         "appendTo",
         "with",
+        "manual",
         "fhirCondition",
         "openehrCondition",
         "followedBy",
@@ -44,6 +47,8 @@ public class Mapping {
      */
     @JsonProperty("with")
     private With with;
+    @JsonProperty("manual")
+    private List<Manual> manual;
     @JsonProperty("fhirCondition")
     private Condition fhirCondition;
     @JsonProperty("openehrCondition")
@@ -60,6 +65,8 @@ public class Mapping {
         mapping.setAppendTo(appendTo);
         mapping.setSlotArchetype(slotArchetype);
         mapping.setWith(with == null ? null : with.copy());
+        mapping.setManual(manual == null ? null : manual.stream().map(e -> e.copy())
+                .collect(Collectors.toList()));
         mapping.setFhirCondition(fhirCondition == null ? null : fhirCondition.copy());
         mapping.setOpenehrCondition(openehrCondition == null ? null : openehrCondition.copy());
         mapping.setFollowedBy(followedBy == null ? null : followedBy.copy());
@@ -77,6 +84,7 @@ public class Mapping {
         this.setOpenehrCondition(copyingFrom.getOpenehrCondition());
         this.setFollowedBy(copyingFrom.getFollowedBy());
         this.setReference(copyingFrom.getReference());
+        this.setManual(copyingFrom.getManual());
         return this;
     }
 
@@ -98,6 +106,21 @@ public class Mapping {
 
     public Mapping withName(String name) {
         this.name = name;
+        return this;
+    }
+
+    @JsonProperty("manual")
+    public List<Manual> getManual() {
+        return manual;
+    }
+
+    @JsonProperty("manual")
+    public void setManual(List<Manual> manual) {
+        this.manual = manual;
+    }
+
+    public Mapping withManual(List<Manual> manual) {
+        this.manual = manual;
         return this;
     }
 

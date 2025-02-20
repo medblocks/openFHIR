@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name:  KDS_procedure.v1
-  version: 0.0.1a # version of this particular mapping
+  version: 0.0.1-alpha # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
@@ -58,6 +58,16 @@ mappings:
       targetAttribute: "url"
       operator: "one of"
       criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht]"
+    followedBy:
+      mappings:
+        - name: "staticUrl"
+          with:
+            fhir: "$fhirRoot"
+          manual:
+            - name: "manualUrl"
+              fhir:
+                - path: "url"
+                  value: "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht"
 
   - name: "contextStartDokumentationsdatum"
     extension: "add"
@@ -70,3 +80,13 @@ mappings:
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum]"
+    followedBy:
+      mappings:
+        - name: "staticUrl"
+          with:
+            fhir: "$fhirRoot"
+          manual:
+            - name: "manualUrl"
+              fhir:
+                - path: "url"
+                  value: "http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum"

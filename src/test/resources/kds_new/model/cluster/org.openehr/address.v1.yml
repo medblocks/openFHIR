@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: model
 metadata:
   name:  CLUSTER.address.v1
-  version: 0.0.1a # version of this particular mapping
+  version: 0.0.1-alpha # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
@@ -45,70 +45,78 @@ mappings:
             fhir: "line"
             openehr: "items[at0001]"
             type: "STRING"
-
-        - name: "type_physical_fhir"
+            
+        - name: "type"
           with:
             fhir: "type"
-            value: "physical"
-          openehrCondition:
-            targetRoot: "$archetype.items[at0010]"
-            targetAttributes:
-              - "code_string"
-            operator: "one of"
-            criteria: "at0011"
+            openehr: "items[at0010]"
+          manual:
+            - name: "physical"
+              openehr:
+                - path: "terminology_id"
+                  value: "local"
+                - path: "defining_code"
+                  value: "at0011"
+                - path: "value"
+                  value: "Physical"
+              fhirCondition:
+                targetRoot: "$fhirRoot"
+                targetAttribute: "code"
+                operator: "one of"
+                criteria: "[physical]"
 
-        - name: "type_postal_fhir"
-          with:
-            fhir: "type"
-            value: "postal"
-          openehrCondition:
-            targetRoot: "$archetype.items[at0010]"
-            targetAttributes:
-              - "code_string"
-            operator: "one of"
-            criteria: "at0012"
+              fhir:
+                - path: "code"
+                  value: "physical"
+              openehrCondition:
+                targetRoot: "$openehrRoot"
+                targetAttribute: "defining_code"
+                operator: "one of"
+                criteria: "[at0011]"
 
-        - name: "type_both_fhir"
-          with:
-            fhir: "type"
-            value: "both"
-          openehrCondition:
-            targetRoot: "$archetype.items[at0010]"
-            targetAttributes:
-              - "code_string"
-            operator: "one of"
-            criteria: "at0013"
+            - name: "postal"
+              openehr:
+                - path: "terminology_id"
+                  value: "local"
+                - path: "defining_code"
+                  value: "at0012"
+                - path: "value"
+                  value: "Postal"
+              fhirCondition:
+                targetRoot: "$fhirRoot"
+                targetAttribute: "code"
+                operator: "one of"
+                criteria: "[postal]"
+              fhir:
+                - path: "code"
+                  value: "postal"
+              openehrCondition:
+                targetRoot: "$openehrRoot"
+                targetAttribute: "defining_code"
+                operator: "one of"
+                criteria: "[at0012]"
 
-        - name: "type_physical_openehr"
-          with:
-            openehr: "items[at0010]/defining_code"
-            value: "at0011"
-          fhirCondition:
-            targetRoot: "$fhirRoot"
-            targetAttributes:
-              - "type"
-            operator: "one of"
-            criteria: "physical"
+            - name: "both"
+              openehr:
+                - path: "terminology_id"
+                  value: "local"
+                - path: "defining_code"
+                  value: "at0013"
+                - path: "value"
+                  value: "Both"
+              fhirCondition:
+                targetRoot: "$fhirRoot"
+                targetAttribute: "code"
+                operator: "one of"
+                criteria: "[both]"
+              fhir:
+                - path: "code"
+                  value: "both"
+              openehrCondition:
+                targetRoot: "$openehrRoot"
+                targetAttribute: "defining_code"
+                operator: "one of"
+                criteria: "[at0013]"
 
-        - name: "type_postal_openehr"
-          with:
-            openehr: "items[at0010]/defining_code"
-            value: "at0012"
-          fhirCondition:
-            targetRoot: "$fhirRoot"
-            targetAttributes:
-              - "type"
-            operator: "one of"
-            criteria: "postal"
-
-        - name: "type_both_openehr"
-          with:
-            openehr: "items[at0010]/defining_code"
-            value: "at0013"
-          fhirCondition:
-            targetRoot: "$fhirRoot"
-            targetAttributes:
-              - "type"
-            operator: "one of"
-            criteria: "both"
+        
 
