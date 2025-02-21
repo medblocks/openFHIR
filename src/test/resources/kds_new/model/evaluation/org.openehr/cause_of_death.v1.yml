@@ -28,7 +28,6 @@ mappings:
     with:
       fhir: "$resource.recorder.as(Reference).identifier.value"
       openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
-      type: "STRING"
 
 #  - name: "other_participations"
 #    with:

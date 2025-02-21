@@ -32,13 +32,6 @@ import org.hl7.fhir.r4.model.TimeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Base64;
-import java.util.List;
-
-import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_CLUSTER;
-import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
-
 /**
  * Class used for populating openEHR flat path Composition
  */
@@ -144,8 +137,14 @@ public class OpenEhrPopulator {
                     return;
                 }
             case FhirConnectConst.DV_PARTY_IDENTIFIED:
-                final boolean addedPartyIdentified = handlePartyIdentifier(openEhrPath, extractedValue, constructingFlat);
+                final boolean addedPartyIdentified = handlePartyIdentifier(openEhrPath, extractedValue,
+                                                                           constructingFlat);
                 if (addedPartyIdentified) {
+                    return;
+                }
+            case FhirConnectConst.DV_PARTY_PROXY:
+                final boolean addedPartyProxy = handlePartyProxy(openEhrPath, extractedValue, constructingFlat);
+                if (addedPartyProxy) {
                     return;
                 }
             default:
@@ -344,6 +343,18 @@ public class OpenEhrPopulator {
             addToConstructingFlat(path + "|type", id.getType().getText(), flat);
             // if coding.code exists, it should override the type
             addToConstructingFlat(path + "|type", id.getType().getCodingFirstRep().getCode(), flat);
+            return true;
+        } else {
+            log.warn(
+                    "openEhrType is CODE_PHRASE but extracted value is not Coding, Extension, CodeableConcept or Enumeration; is {}",
+                    value.getClass());
+        }
+        return false;
+    }
+
+    private boolean handlePartyProxy(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof StringType string) {
+            addToConstructingFlat(path + "|name", string.getValue(), flat);
             return true;
         } else {
             log.warn(

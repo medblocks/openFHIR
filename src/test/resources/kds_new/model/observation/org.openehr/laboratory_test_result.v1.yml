@@ -29,8 +29,7 @@ mappings:
   - name: "composer"
     with:
       fhir: "$resource.performer.as(Reference).display"
-      openehr: "$composition/composer|name" #take the first one if its 0..n ?!
-      type: "STRING"
+      openehr: "$composition/composer" #take the first one if its 0..n ?!
 
   - name: "performer"
     with:

@@ -28,7 +28,7 @@ mappings:
   - name: "composer"
     with:
       fhir: "$resource.requester.as(Reference).display"
-      openehr: "$composition/composer|name" #take the first one if its 0..n ?!
+      openehr: "$composition/composer" #take the first one if its 0..n ?!
 
   - name: "provider"
     with:

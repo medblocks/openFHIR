@@ -26,8 +26,7 @@ mappings:
   #  - name: "healthcareFacility"
   #    with:
   #      fhir: "$resource.requester.as(Organization).display" #todo: no such fhir attribute
-  #      openehr: "$archetype.context._health_care_facility|name"
-  #      type: "STRING"
+  #      openehr: "$archetype.context._health_care_facility"
 
   - name: "context"
     with:
