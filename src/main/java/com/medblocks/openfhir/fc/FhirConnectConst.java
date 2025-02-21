@@ -21,6 +21,7 @@ public class FhirConnectConst {
     public static final String REFERENCE = "$reference";
     public static final String DV_MULTIMEDIA= "MULTIMEDIA";
     public static final String DV_QUANTITY = "DV_QUANTITY";
+    public static final String DV_PARTY_IDENTIFIED = "PARTY_IDENTIFIED";
     public static final String DV_ORDINAL = "DV_ORDINAL";
     public static final String DV_PROPORTION = "DV_PROPORTION";
     public static final String DV_COUNT = "DV_COUNT";
@@ -41,5 +42,7 @@ public class FhirConnectConst {
     public static final String CONDITION_OPERATOR_NOT_OF = "not of";
     public static final String CONDITION_OPERATOR_EMPTY = "empty";
     public static final List<String> OPENEHR_INVALID_PATH_RM_TYPES = Arrays.asList("HISTORY","EVENT","ITEM_TREE","POINT_EVENT","POINT_INTERVAL");
+    public static final List<String> OPENEHR_UNDERSCORABLES = Arrays.asList("health_care_facility", "end_time"); // certain keywords are reserved and as such need to be prefixed with an underscore when constructing flat paths so ehrbase (un)marshaller can handle it
+
     public static final Set<String> OPENEHR_CONSISTENT_SET = Set.of(DV_TEXT, DV_CODED_TEXT,"FEEDER_AUDIT");
 }

@@ -23,10 +23,9 @@ mappings:
   - name: "healthCareFacility"
     with:
       fhir: "$resource.organization"
-      openehr: "$composition/context/_health_care_facility|name"
-      type: "STRING"
+      openehr: "$composition/context/health_care_facility"
 
-# ism transition hardcoding to fhir based on openEhr value
+  # ism transition hardcoding to fhir based on openEhr value
   - name: "ISMTransition"
     with:
       fhir: "$resource" # there needs to be a mapping table
@@ -45,7 +44,7 @@ mappings:
           targetAttribute: "status"
           operator: "one of"
           criteria: "[draft]"
-          
+
         fhir:
           - path: "status"
             value: "draft"
