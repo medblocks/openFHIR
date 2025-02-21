@@ -2,12 +2,14 @@ engine: FHIRConnect/v0.0.1
 type: model
 metadata:
   name: CLUSTER.death_details.v1.Person
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.death_details.v1
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/DateTime
 
 mappings:
 
@@ -15,28 +17,3 @@ mappings:
     with:
       fhir: "$fhirRoot"
       openehr: "$archetype/items[at0001]"
-
-  - name: "causeOfDeath" # TODO should be in another Template, CHECK FOR THE EHR ID/Patient
-  # id TO BE THE SAME! engine should always do that automatically if referencing bundle
-    with:
-      fhir: "$bundle.entry.resource" # Would that work ?!
-      openehr: "$archetype"
-    fhirCondition:
-      targetRoot: "$bundle.entry.resource.as(Condition)"
-      targetAttribute: "url"
-      operator: "one of"
-      criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache]"
-    followedBy:
-      mappings:
-        - name: "conditionCode"
-          with:
-            fhir: "$fhirRoot.code"
-            openehr: "items[at0003]"
-        - name: "conditionCategory"
-          with:
-            fhir: "$fhirRoot.note.text"
-            openehr: "items[at0004]"
-        - name: "date"
-          with:
-            fhir: "$fhirRoot.recordedDate"
-            openehr: "items[at0001]"

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 import java.util.Base64;
 import java.util.List;
 
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_CLUSTER;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
 
 /**
  * Class used for populating openEHR flat path Composition
@@ -38,18 +40,23 @@ public class OpenEhrPopulator {
      * @param openEhrType      openEHR type as defined in the fhir connect model mapping
      * @param constructingFlat composition in a flat path format that's being constructed
      */
-    public void setFhirPathValue(final String openEhrPath, final Base extractedValue, final String openEhrType, final JsonObject constructingFlat) {
+    public void setFhirPathValue(String openEhrPath, final Base extractedValue, final String openEhrType, final JsonObject constructingFlat) {
         if (openEhrType == null) {
             addValuePerFhirType(extractedValue, openEhrPath, constructingFlat);
             return;
         }
-        if (OPENEHR_TYPE_NONE.equals(openEhrType)) {
-            log.warn("Adding nothing on path {} as type is marked as NONE", openEhrPath);
+        if (OPENEHR_TYPE_NONE.equals(openEhrType) || OPENEHR_TYPE_CLUSTER.equals(openEhrType)) {
+            log.warn("Adding nothing on path {} as type is marked as NONE / CLUSTER", openEhrPath);
             return;
         }
         if (extractedValue == null) {
             log.warn("Extracted value is null");
             return;
+        }
+        if(openEhrPath.contains(RECURRING_SYNTAX)) {
+            // still has recurring syntax due to the fact some recurring elements were not aligned or simply couldn't have been
+            // in this case just set all to 0th
+            openEhrPath = openEhrPath.replace(RECURRING_SYNTAX, ":0");
         }
 
         switch (openEhrType) {
@@ -265,8 +272,16 @@ public class OpenEhrPopulator {
                 Coding coding = codings.get(0);
                 addToConstructingFlat(path + "|code", coding.getCode(), flat);
                 addToConstructingFlat(path + "|terminology", coding.getSystem(), flat);
+                if(codeableConcept.getText() == null || codeableConcept.getText().isEmpty()) {
+                    addToConstructingFlat(path + "|value", coding.getDisplay(), flat);
+                }
             }
             addToConstructingFlat(path + "|value", codeableConcept.getText(), flat);
+            return true;
+        } else if(value instanceof Coding coding) {
+            addToConstructingFlat(path + "|code", coding.getCode(), flat);
+            addToConstructingFlat(path + "|terminology", coding.getSystem(), flat);
+            addToConstructingFlat(path + "|value", coding.getDisplay(), flat);
             return true;
         } else {
             log.warn("openEhrType is DV_CODED_TEXT but extracted value is not CodeableConcept; is {}", value.getClass());
@@ -298,6 +313,7 @@ public class OpenEhrPopulator {
             return true;
         } else if (value instanceof Enumeration<?> enumeration) {
             addToConstructingFlat(path + "|code", enumeration.getValueAsString(), flat);
+            addToConstructingFlat(path + "|value", enumeration.getValueAsString(), flat);
             return true;
         } else {
             log.warn("openEhrType is CODE_PHRASE but extracted value is not Coding, Extension, CodeableConcept or Enumeration; is {}", value.getClass());
@@ -331,7 +347,10 @@ public class OpenEhrPopulator {
         } else if (fhirValue instanceof HumanName extracted) {
             addToConstructingFlat(openEhrPath, extracted.getNameAsSingleString(), constructingFlat);
         } else if (fhirValue instanceof Extension extracted) {
-            addToConstructingFlat(openEhrPath, extracted.getValue().hasPrimitiveValue() ? extracted.getValue().primitiveValue() : null, constructingFlat);
+            if (extracted.getValue().hasPrimitiveValue()) {
+                addValuePerFhirType(extracted.getValue(), openEhrPath, constructingFlat);
+            }
+//            addToConstructingFlat(openEhrPath, extracted.getValue().hasPrimitiveValue() ? extracted.getValue().primitiveValue() : null, constructingFlat);
         } else if (fhirValue.hasPrimitiveValue()) {
             addToConstructingFlat(openEhrPath, fhirValue.primitiveValue(), constructingFlat);
         } else {

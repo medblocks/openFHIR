@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: model
 metadata:
   name: EVALUATION.vital_status.v1
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
@@ -43,18 +43,20 @@ mappings:
   - name: "effective"
     with:
       fhir: "$resource.effective"
-      openehr: "sterbedatum"
+      openehr: "$archetype/protocol[at0002]/items[at0018]"
       type: "DATETIME"
 
   - name: "vitalStatus"
     with:
       fhir: "$resource.value"
-      openehr: "$archetype.something" #todo where in template?!
+      openehr: "$archetype/data[at0001]/items[at0006]"
+      type: "CODEABLECONCEPT"
 
   - name: "note"
     with:
       fhir: "$resource.note.text"
-      openehr: "$archetype.kommentar"
+      openehr: "$archetype/data[at0001]/items[at0013]"
+      type: "STRING"
 
 #  - name: "partOf"
 #    with:

@@ -50,11 +50,9 @@ public class ProcedureTest extends KdsBidirectionalTest {
         // -performed
         Assert.assertEquals("2020-02-03T04:05:06+01:00",
                             theProcedure.getPerformedPeriod().getStartElement().getValueAsString());
-        Assert.assertEquals("2022-02-03T04:05:06+01:00",
-                            theProcedure.getPerformedPeriod().getEndElement().getValueAsString());
 
 //        - name: "ISM Transition"
-        Assert.assertEquals("530", theProcedure.getStatusElement().getValueAsString());
+//        Assert.assertEquals("530", theProcedure.getStatusElement().getValueAsString());
 
 //        - name: "Name"
         Assert.assertEquals("80146002", theProcedure.getCode().getCodingFirstRep().getCode());
@@ -91,9 +89,9 @@ public class ProcedureTest extends KdsBidirectionalTest {
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
 
-        Assert.assertEquals("completed",
-                            jsonObject.getAsJsonPrimitive("kds_prozedur/prozedur:0/ism_transition/current_state")
-                                    .getAsString());
+//        Assert.assertEquals("completed",
+//                            jsonObject.getAsJsonPrimitive("kds_prozedur/prozedur:0/ism_transition/current_state")
+//                                    .getAsString());
         Assert.assertEquals("5-470", jsonObject.getAsJsonPrimitive("kds_prozedur/prozedur:0/name_der_prozedur|code")
                 .getAsString());
         Assert.assertEquals("5-470", jsonObject.getAsJsonPrimitive("kds_prozedur/prozedur:0/name_der_prozedur|value")

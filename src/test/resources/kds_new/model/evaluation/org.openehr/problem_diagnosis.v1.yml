@@ -2,14 +2,20 @@ engine: FHIRConnect/v0.0.1
 type: model
 metadata:
   name: EVALUATION.problem_diagnosis.v1
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
   fhirConfig:
-    structureDefinition: Condition
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Condition
+
+    condition:
+      - targetRoot: "$resource.verificationStatus" # exclude all conditions with entered-in-error, since there is no mapping for this code
+        targetAttribute: "coding.code"
+        operator: "not of"
+        criteria: "[entered-in-error]"
 
 mappings:
 
@@ -52,18 +58,19 @@ mappings:
           with:
             fhir: "coding"
             openehr: "$archetype"
-            type: "CODING"
+            type: "NONE" # had to be none, else when going to openEhr, it's mapped to $archetype|code, ..
           followedBy:
             mappings:
               - name: "problemDiagnoseNameCode"
                 with:
                   fhir: "code"
-                  openehr: "data[at0001]/items[at0002]"
-#                  openehr: "kodierte_diagnose"
+                  openehr: "$archetype/data[at0001]/items[at0002]"
+                  type: "STRING"
         - name: "problemDiagnoseText"
           with:
             fhir: "text"
-            openehr: "data[at0001]/items[at0009]"
+            openehr: "$archetype/data[at0001]/items[at0009]"
+            type: "STRING"
 
   - name: "note"
     with:
@@ -80,7 +87,7 @@ mappings:
   - name: "bodySite"
     with:
       fhir: "$resource.bodySite"
-      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0001]"
+      openehr: "$archetype/data[at0012]"
       type: "CODEABLECONCEPT"
 
   - name: "bodySiteCluster"

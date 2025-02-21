@@ -1,0 +1,121 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name:  CLUSTER.medication.v2
+  version: 0.0.1-alpha # version of this particular mapping
+spec: # schema specific to the FHIRConnect v0.0.1 engine
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.medication.v2
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
+mappings:
+  - name: "name"
+    with:
+      fhir: "$resource.code.text"
+      openehr: "$archetype/items[at0132]"
+      type: "STRING"
+
+  - name: "form"
+    with:
+      fhir: "$resource.form"
+      openehr: "$archetype/items[at0071]"
+      type: "CODEABLECONCEPT"
+
+  - name: "amount"
+    with:
+      fhir: "$resource.amount"
+      openehr: "$archetype/items[at0115]"
+      type: "QUANTITY"
+
+  - name: "batch"
+    with:
+      fhir: "$resource.batch"
+      openehr: "$archetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "id"
+          with:
+            fhir: "lotNumber"
+            openehr: "items[at0150]"
+            type: "STRING"
+
+        - name: "expirationDate"
+          with:
+            fhir: "expirationDate"
+            openehr: "items[at0003]"
+            type: "DATETIME"
+
+  - name: "ingredients"
+    with:
+      fhir: "$resource.ingredient"
+      openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
+    followedBy:
+      mappings:
+        - name: "ingredient"
+          with:
+            fhir: "item.as(CodeableConcept)" # todo: what do we map to when going from openEHR to FHIR? Because all these 3 below
+                                            # todo are mapping the same thing. CodeableConcept, Medication?
+            openehr: "$archetype"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "itemtext"
+                with:
+                  fhir: "text"
+                  openehr: "items[at0132]"
+                  type: "STRING"
+
+              - name: "wirkstofftyp"
+                with:
+                  fhir: "coding"
+                  openehr: "items[at0142]"
+                  type: "CODING"
+
+        - name: "medication"
+          with:
+            fhir: "item.as(Medication)"
+            openehr: "$reference"
+          reference:
+            resourceType: "Medication"
+            mappings:
+              - name: "medicationMedicationReference"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "$archetype"
+                slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
+
+        - name: "medicationSubstance"
+          with:
+            fhir: "item.as(Substance)"
+            openehr: "$reference"
+            unidirectional: "fhir->openEHR" # wont convert from openEHR to fhir otherwise would be two mappings
+          reference:
+            resourceType: "Substance"
+            mappings:
+              - name: "medicationSubstanceReference"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "$archetype"
+                slotArchetype: "CLUSTER.medication.v2.substance" # depending on the resourceType picks the correct one
+
+        - name: "strength"
+          with:
+            fhir: "strength"
+            openehr: "items[at0152]"
+            type: "NONE"
+          followedBy:
+            mappings:
+              - name: "zahler"
+                with:
+                  fhir: "numerator"
+                  openehr: "items[at0153]"
+                  type: "QUANTITY"
+              - name: "nenner"
+                with:
+                  fhir: "denominator"
+                  openehr: "items[at0157]"
+                  type: "QUANTITY"
+

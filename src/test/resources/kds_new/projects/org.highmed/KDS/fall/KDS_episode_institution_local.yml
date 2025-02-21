@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name: KDS_episode_institution_local
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
@@ -27,7 +27,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.status"
-      openehr: "$composition/context/other_context[at0001]/items[at0010 and name/value='Fallart']"
+      openehr: "$composition/context/other_context[at0001]/items[at0010]"
       type: "CODING"
 
   - name: "fallId"
@@ -69,6 +69,15 @@ mappings:
       criteria: "[http://fhir.de/StructureDefinition/Aufnahmegrund]"
     followedBy:
       mappings:
+        - name: "aufnahmegrund"
+          with:
+            fhir: "$fhirRoot"
+          manual:
+            - name: "extension"
+              fhir:
+                - path: "url"
+                  value: "http://fhir.de/StructureDefinition/Aufnahmegrund"
+
         - name: "ersteUndZweiteStelle"
           with:
             fhir: "extension.value" # since its two extensions nested
@@ -128,6 +137,16 @@ mappings:
             targetAttribute: "url"
             operator: "one of"
             criteria: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
+          followedBy:
+            mappings:
+              - name: "entlassungsgrundUrl"
+                with:
+                  fhir: "dischargeDisposition.extension"
+                manual:
+                  - name: "extension"
+                    fhir:
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/Entlassungsgrund"
 
   - name: "problemDiagnoseParent"
     extension: "add"
@@ -148,7 +167,7 @@ mappings:
             openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
           followedBy:
             mappings:
-              #todo: these have to be here, they can not be in the slot archetype because they're mapping to the DiagnosisComponent and not on Condition (resolved reference)
+              # these have to be here, they can not be in the slot archetype because they're mapping to the DiagnosisComponent and not on Condition (resolved reference)
               - name: "diagnoseTyp"
                 with:
                   fhir: "coding"

@@ -23,6 +23,7 @@ context:
   extensions:
     - "KDS_person_data.v0"
     - "KDS_gender.v1"
+    - "KDS_cluster_person.v1"
     - "KDS_structured_name.v1.person_name-structured_name"
     - "KDS_EVALUATION.vital_status.v1"
     - "KDS_admin_entry_person.v0"

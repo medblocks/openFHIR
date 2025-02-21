@@ -1,7 +1,6 @@
 package com.medblocks.openfhir.util;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
-import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_ARCHETYPE_FC;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -69,12 +68,16 @@ public class OpenFhirStringUtils {
 
     public String endsWithOpenEhrType(final String path) {
         final Set<String> openEhrTypes = new HashSet<>();
-        openEhrTypes.add("magnitude");
-        openEhrTypes.add("unit");
-        openEhrTypes.add("ordinal");
+//        openEhrTypes.add("magnitude");
+//        openEhrTypes.add("unit");
+//        openEhrTypes.add("ordinal");
+//        openEhrTypes.add("value");
+//        openEhrTypes.add("code");
+//        openEhrTypes.add("terminology");
+        openEhrTypes.add("terminology_id");
+        openEhrTypes.add("terminology_id/value");
+        openEhrTypes.add("defining_code");
         openEhrTypes.add("value");
-        openEhrTypes.add("code");
-        openEhrTypes.add("terminology");
         for (String openEhrType : openEhrTypes) {
             if (path.endsWith(openEhrType)) {
                 return openEhrType;
@@ -88,6 +91,10 @@ public class OpenFhirStringUtils {
         return string.substring(0, start) +
                 replaceWith +
                 string.substring(start + charToReplace.length());
+    }
+
+    public String replaceFirstIndex(String path, int newIndex) {
+        return path.replaceFirst(":(\\d+)", ":" + newIndex);
     }
 
     /**
@@ -129,6 +136,36 @@ public class OpenFhirStringUtils {
             return -1;
         }
         return Integer.valueOf(match);
+    }
+
+    /**
+     * get outer most index of all indexes in path that is the same for all paths
+     */
+    public Integer getLastMostCommonIndex(final List<String> paths) {
+        List<List<Integer>> indicesList = new ArrayList<>();
+
+        for (String path : paths) {
+            List<Integer> indices = getAllIndexes(path);
+            indicesList.add(indices);
+        }
+
+        return findCommonRightmostIndex(indicesList);
+    }
+
+    private static Integer findCommonRightmostIndex(List<List<Integer>> indicesList) {
+        int minSize = indicesList.stream().mapToInt(List::size).min().orElse(0);
+
+        for (int i = minSize - 1; i >= 0; i--) {
+            Integer candidate = indicesList.get(0).get(i);
+            final int iFinal = i;
+            boolean allMatch = indicesList.stream()
+                    .allMatch(list -> list.size() > iFinal && list.get(iFinal).equals(candidate));
+
+            if (allMatch) {
+                return candidate;
+            }
+        }
+        return -1;
     }
 
     public String getCastType(final String path) {
@@ -181,6 +218,27 @@ public class OpenFhirStringUtils {
             return Collections.emptyList();
         }
         return matches.stream().map(Integer::parseInt).collect(Collectors.toList());
+    }
+
+    /**
+     * having fullPath laborbericht:1/laborbefund/pro_laboranalyt:0/bezeichnung_des_analyts|terminology
+     * and element laborbericht/laborbefund/pro_laboranalyt
+     *
+     * @return this will return last index matching this path
+     */
+    public int getIndexOfElement(final String element, final String fullPath) {
+        final String[] splitFullPath = fullPath.split("/");
+        final String[] splitElement = element.split("/");
+        for (int i = 0; i < splitElement.length; i++) {
+            final String el = splitElement[i];
+            final String path = splitFullPath[i];
+            final String[] splitByColon = path.split(":");
+            final String toMatch = splitByColon[0];
+            if (toMatch.equals(el) && i == splitElement.length - 1 && splitByColon.length > 1) {
+                return Integer.parseInt(splitByColon[1]);
+            }
+        }
+        return -1;
     }
 
     public String prepareParentOpenEhrPath(String fullOpenEhrPath,
@@ -323,11 +381,12 @@ public class OpenFhirStringUtils {
             } else {
                 base = fhirPath;
             }
+            boolean negate = FhirConnectConst.CONDITION_OPERATOR_NOT_OF.equals(condition.getOperator());
             stringJoiner.add(base
                                      .replace(condition.getTargetRoot(),
                                               condition.getTargetRoot() + ".where(" + targetAttribute
                                                       + ".toString().contains('" + getStringFromCriteria(
-                                                      condition.getCriteria()).getCode() + "'))")
+                                                      condition.getCriteria()).getCode() + "')"+ (negate ? "=false":"") +")")
                                      .replace(FhirConnectConst.FHIR_RESOURCE_FC, resource));
 
         }
@@ -482,6 +541,8 @@ public class OpenFhirStringUtils {
             remainingItems = "";
         }
 
+        boolean negate = FhirConnectConst.CONDITION_OPERATOR_NOT_OF.equals(condition.getOperator());
+
         if (actualConditionTargetRoot.startsWith(resource) && withParentsWhereInPlace.equals(originalFhirPath)) {
             // find the right place first
             final String commonPath = setParentsWherePathToTheCorrectPlace(originalFhirPath,
@@ -493,14 +554,14 @@ public class OpenFhirStringUtils {
                     StringUtils.isBlank(remainingToEndUpInWhere) ? "" : (remainingToEndUpInWhere + ".");
             final String whereClause =
                     ".where(" + remainingToAdd + condition.getTargetAttribute() + ".toString().contains('"
-                            + getStringFromCriteria(condition.getCriteria()).getCode() + "'))";
+                            + getStringFromCriteria(condition.getCriteria()).getCode() + "')"+ (negate ? "=false":"") +")";
             final String remainingItemsFromParent = originalFhirPath.replace(commonPath, "");
             return commonPath + whereClause + remainingItemsFromParent;
         } else {
             // then do your own where path
             final String whereClause =
                     ".where(" + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(
-                            condition.getCriteria()).getCode() + "'))";
+                            condition.getCriteria()).getCode() + "')"+ (negate ? "=false":"") +")";
             // then suffix with whatever is left from the children's path
             return withParentsWhereInPlace + whereClause + (StringUtils.isBlank(remainingItems) ? ""
                     : (remainingItems.startsWith(".") ? remainingItems : ("." + remainingItems)));
@@ -522,6 +583,13 @@ public class OpenFhirStringUtils {
                                             final String resource,
                                             final String parentPath) {
         originalFhirPath = originalFhirPath.replace(FhirConnectConst.FHIR_RESOURCE_FC, resource);
+        if (condition != null
+                && condition.getTargetAttribute() == null
+                && condition.getTargetAttributes() != null
+                && !condition.getTargetAttributes().isEmpty()) {
+            // fallback until it's entirely deprecated
+            condition.setTargetAttribute(condition.getTargetAttributes().get(0));
+        }
         if (condition == null || condition.getTargetAttribute() == null) {
             // only make sure parent's where path is added to the child
             return constructFhirPathNoConditions(originalFhirPath, parentPath);

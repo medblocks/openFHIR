@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: model
 metadata:
   name:  CLUSTER.structured_name.v1.person_name-structured_name
-  version: 0.0.1a # version of this particular mapping
+  version: 0.0.1-alpha # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
@@ -20,7 +20,7 @@ mappings:
         - name: "typeOfName"
           with:
             fhir: "use"
-            openehr: "namensart"
+            openehr: "items[at0001]"
             type: "STRING"
 
         - name: "firstName"
@@ -29,9 +29,15 @@ mappings:
             openehr: "items[at0002]"
             type: "STRING"
 
+        - name: "prefix"
+          with:
+            fhir: "prefix"
+            openehr: "items[at0006]"
+            type: "STRING"
+
         - name: "familyName"
           with:
             fhir: "family"
-            openehr: "items[at0005, 'Familienname']"
+            openehr: "items[at0005]"
             type: "STRING"
 

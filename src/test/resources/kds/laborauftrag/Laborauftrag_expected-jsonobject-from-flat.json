@@ -1,6 +1,7 @@
 {
   "leistungsanforderung/laborleistung/auftrags-id_des_anfordernden_einsendenden_systems_plac|id": "Medical record identifier",
   "leistungsanforderung/laborleistung/status_der_anfrage|code": "completed",
+  "leistungsanforderung/laborleistung/status_der_anfrage|terminology": "http://hl7.org/fhir/ValueSet/request-status",
   "leistungsanforderung/laborleistung/aktuelle_aktivität/name_der_laborleistung|code": "2345-7",
   "leistungsanforderung/laborleistung/aktuelle_aktivität/name_der_laborleistung|terminology": "//fhir.hl7.org/ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/ValueSet/ValueSetOrderCodes",
   "leistungsanforderung/laborleistung/aktuelle_aktivität/name_der_laborleistung|value": "Blood Glucose Test",
@@ -8,6 +9,7 @@
   "leistungsanforderung/laborleistung/aktuelle_aktivität/art_der_laborleistung_kategorie|terminology": "http://terminology.hl7.org/ValueSet/observation-category",
   "leistungsanforderung/laborleistung/aktuelle_aktivität/art_der_laborleistung_kategorie|value": "Laboratory",
   "leistungsanforderung/laborleistung/aktuelle_aktivität/intention|code": "order",
+  "leistungsanforderung/laborleistung/aktuelle_aktivität/intention|terminology": "http://hl7.org/fhir/request-intent",
   "leistungsanforderung/laborleistung/aktuelle_aktivität/kommentar": "Sample collected in the morning.",
   "leistungsanforderung/laborleistung/einsender/namenszeile": "Einsender name",
   "leistungsanforderung/laborleistung/einsender/identifier|id": "Example Hospital",

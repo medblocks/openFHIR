@@ -103,7 +103,7 @@
                 "display": "Einrichtungskontakt"
               },
               {
-                "system":  "http://fhir.de/CodeSystem/kontaktart-de",
+                "system": "http://fhir.de/CodeSystem/kontaktart-de",
                 "code": "begleitperson",
                 "display": "Begleitperson"
               }
@@ -163,7 +163,6 @@
             "rank": 1
           }
         ],
-
         "hospitalization": {
           "admitSource": {
             "coding": [
@@ -276,11 +275,10 @@
           "reference": "Organization/example-lab",
           "display": "Organization"
         },
-
         "serviceType": {
           "coding": [
             {
-              "system":"local_terms",
+              "system": "local_terms",
               "code": "dept",
               "display": "Innere Medizin"
             },
@@ -314,6 +312,26 @@
           }
         ],
         "name": "Example Hospital"
+      }
+    },
+    {
+      "fullUrl": "reference-condition",
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      },
+      "resource": {
+        "resourceType": "Condition",
+        "id": "reference-condition",
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "code": "ref_C34.1",
+              "display": "ref_Malignant neoplasm of upper lobe, bronchus or lung"
+            }
+          ]
+        }
       }
     }
   ]

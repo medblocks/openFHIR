@@ -39,7 +39,7 @@
             "reference": "http://external.fhir.server/ServiceRequest/111"
           }
         ],
-        "status": "final",
+        "status": "registered",
         "category": [
           {
             "coding": [

@@ -36,7 +36,7 @@ public class FhirToOpenEhrTest {
                                           new OpenFhirStringUtils(),
                                           new FlatJsonUnmarshaller(),
                                           new Gson(),
-                                          new OpenEhrRmWorker(openFhirStringUtils),
+                                          new OpenEhrRmWorker(openFhirStringUtils, new OpenFhirMapperUtils()),
                                           openFhirStringUtils,
                                           repo,
                                           new OpenEhrCachedUtils(null),

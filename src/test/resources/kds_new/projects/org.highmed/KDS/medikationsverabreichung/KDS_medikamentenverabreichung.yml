@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name:  KDS_medikamentenverabreichung
-  version: 0.0.1a # version of this particular mapping
+  version: 0.0.1-alpha # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
@@ -23,13 +23,12 @@ mappings:
       openehr: "$composition/context/other_context[at0001]/items[at0005]|code"
       type: "STRING"
 
-#  - name: "fallIdentifikationIdentifier"
-#    extension: "add"
-#    with:
-#      fhir: "$resource.context.as(Reference).identifier"
-#      #      # todo: not ok; slotArchetype CLUSTER.case_identification has a "case_identifier", BUT this template requires a "fall-kennung".
-#      openehr: "$archetype.context.fallidentifikation"
-#    slotArchetype: "CLUSTER.case_identification.v0"
+  - name: "fallIdentifikationIdentifier"
+    extension: "add"
+    with:
+      fhir: "$resource.context.as(Reference).identifier"
+      openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+    slotArchetype: "CLUSTER.case_identification.v0"
 
 #  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
 #    extension: "add"

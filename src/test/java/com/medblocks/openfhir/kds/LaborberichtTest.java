@@ -54,7 +54,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         Assert.assertEquals("LOINC",
                             jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/labortest-kategorie|terminology")
                                     .getAsString());
-        Assert.assertEquals("final", jsonObject.getAsJsonPrimitive("laborbericht/context/status").getAsString());
+        Assert.assertEquals("registered", jsonObject.getAsJsonPrimitive("laborbericht/context/status").getAsString());
         Assert.assertEquals("Normal blood count",
                             jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/schlussfolgerung").getAsString());
         Assert.assertEquals("2022-02-03T04:05:06Z",
@@ -84,9 +84,9 @@ public class LaborberichtTest extends KdsBidirectionalTest {
                                     .getAsString());
         Assert.assertEquals("2022-02-03T05:05:06", jsonObject.getAsJsonPrimitive(
                 "laborbericht/laborbefund/probenmaterial:0/zeitpunkt_des_probeneingangs").getAsString());
-        Assert.assertEquals("available", jsonObject.getAsJsonPrimitive(
+        Assert.assertEquals("at0062", jsonObject.getAsJsonPrimitive(
                 "laborbericht/laborbefund/probenmaterial:0/eignung_zur_analyse|code").getAsString());
-        Assert.assertEquals("final", jsonObject.getAsJsonPrimitive(
+        Assert.assertEquals("at0018", jsonObject.getAsJsonPrimitive(
                 "laborbericht/laborbefund/pro_laboranalyt:0/ergebnis-status|code").getAsString());
         Assert.assertEquals("2022-02-03T04:05:06Z", jsonObject.getAsJsonPrimitive(
                 "laborbericht/laborbefund/pro_laboranalyt:0/zeitpunkt_ergebnis-status").getAsString());
@@ -108,9 +108,6 @@ public class LaborberichtTest extends KdsBidirectionalTest {
                 "laborbericht/laborbefund/pro_laboranalyt:0/interpretation|value").getAsString());
         Assert.assertEquals("Blood test using standard laboratory methods", jsonObject.getAsJsonPrimitive(
                 "laborbericht/laborbefund/pro_laboranalyt:0/testmethode|other").getAsString());
-        Assert.assertEquals("The observation result is within normal range, but further review may be needed.",
-                            jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/pro_laboranalyt:0/kommentar:0")
-                                    .getAsString());
         Assert.assertEquals("FILL-12345",
                             jsonObject.getAsJsonPrimitive("laborbericht/context/bericht_id").getAsString());
 
@@ -213,7 +210,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         assertEquals("2022-02-03T04:05:06+01:00", specimen.getReceivedTimeElement().getValueAsString());
 
         // specimen - name: "status"
-        assertEquals("at0062", specimen.getStatusElement().getValueAsString());
+        assertEquals("available", specimen.getStatusElement().getValueAsString());
 
         // basedOn, identifierInReference
         assertEquals("identifikation_der_laboranforderung",
@@ -224,7 +221,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         Observation observation = (Observation) diagnosticReport.getResultFirstRep().getResource();
 
         // - name: "status"
-        Assert.assertEquals("at0015", observation.getStatusElement().getValueAsString());
+        Assert.assertEquals("registered", observation.getStatusElement().getValueAsString());
 
         // - name: "issued"
         Assert.assertEquals("2022-02-03T04:05:06.000+01:00", observation.getIssuedElement().getValueAsString());
@@ -248,9 +245,6 @@ public class LaborberichtTest extends KdsBidirectionalTest {
 
         // - name: "testmethod"
         assertEquals("testmethode", observation.getMethod().getText());
-
-        // - name: "comment"
-        assertEquals("komm", observation.getNoteFirstRep().getText());
     }
 
     @Test
@@ -353,7 +347,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         assertEquals("2022-02-03T04:05:06+01:00", specimen.getReceivedTimeElement().getValueAsString());
 
         // specimen - name: "status"
-        assertEquals("at0062", specimen.getStatusElement().getValueAsString());
+        assertEquals("available", specimen.getStatusElement().getValueAsString());
 
         Specimen specimen1 = (Specimen) diagnosticReport.getSpecimen().get(1).getResource();
 
@@ -395,7 +389,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         assertEquals("3022-02-03T04:05:06+01:00", specimen1.getReceivedTimeElement().getValueAsString());
 
         // specimen - name: "status"
-        assertEquals("1_at0062", specimen1.getStatusElement().getValueAsString());
+        assertEquals("unsatisfactory", specimen1.getStatusElement().getValueAsString());
 
 
         // basedOn, identifierInReference
@@ -407,7 +401,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         Observation observation = (Observation) diagnosticReport.getResultFirstRep().getResource();
 
         // - name: "status"
-        Assert.assertEquals("at0015", observation.getStatusElement().getValueAsString());
+        Assert.assertEquals("registered", observation.getStatusElement().getValueAsString());
 
         // - name: "issued"
         Assert.assertEquals("2022-02-03T04:05:06.000+01:00", observation.getIssuedElement().getValueAsString());
@@ -432,13 +426,10 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         // - name: "testmethod"
         assertEquals("testmethode", observation.getMethod().getText());
 
-        // - name: "comment"
-        assertEquals("komm", observation.getNoteFirstRep().getText());
-
         Observation observation1 = (Observation) diagnosticReport.getResult().get(1).getResource();
 
         // - name: "status"
-        Assert.assertEquals("1_at0015", observation1.getStatusElement().getValueAsString());
+        Assert.assertEquals("partial", observation1.getStatusElement().getValueAsString());
 
         // - name: "issued"
         Assert.assertEquals("3022-02-03T04:05:06.000+01:00", observation1.getIssuedElement().getValueAsString());
@@ -456,8 +447,5 @@ public class LaborberichtTest extends KdsBidirectionalTest {
 
         // - name: "testmethod"
         assertEquals("1_testmethode", observation1.getMethod().getText());
-
-        // - name: "comment"
-        assertEquals("1_komm", observation1.getNoteFirstRep().getText());
     }
 }

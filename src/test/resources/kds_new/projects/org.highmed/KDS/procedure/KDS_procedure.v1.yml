@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name:  KDS_procedure.v1
-  version: 0.0.1a # version of this particular mapping
+  version: 0.0.1-alpha # version of this particular mapping
 spec: # schema specific to the FHIRConnect v0.0.1 engine
   system: FHIR
   version: R4
@@ -10,15 +10,12 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 
 mappings:
    # Dokumentationsdatum
-   # durchfuehrungsabsicht
-
-#  - name: "fallIdentifikationIdentifier"
-#    extension: "add"
-#    with:
-#      fhir: "$resource.encounter.identifier"
-#      #      # todo: not ok; slotArchetype CLUSTER.case_identification has a "case_identifier", BUT this template requires a "fall-kennung".
-#      openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-#    slotArchetype: "CLUSTER.case_identification.v0"
+  - name: "fallIdentifikationIdentifier"
+    extension: "add"
+    with:
+      fhir: "$resource.encounter.identifier"
+      openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+    slotArchetype: "CLUSTER.case_identification.v0"
 
 #  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
 #    extension: "add"
@@ -42,6 +39,7 @@ mappings:
 #              meaning: "the case this composition relates to"
 #              type: "case"
 
+
   - name: "berichtId"
     extension: "add"
     with:
@@ -53,10 +51,42 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.extension"
-      openehr: "$archetype/description[at0001]/items[at0014, 'Durchführungsabsicht']"
+      openehr: "$archetype/description[at0001]/items[at0014]"
       type: "CODING"
     fhirCondition:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
       criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht]"
+    followedBy:
+      mappings:
+        - name: "staticUrl"
+          with:
+            fhir: "$fhirRoot"
+          manual:
+            - name: "manualUrl"
+              fhir:
+                - path: "url"
+                  value: "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht"
+
+  - name: "contextStartDokumentationsdatum"
+    extension: "add"
+    with:
+      fhir: "$resource.extension"
+      openehr: "$composition/context/start_time"
+      type: "DATETIME"
+    fhirCondition:
+      targetRoot: "$resource.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "[http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum]"
+    followedBy:
+      mappings:
+        - name: "staticUrl"
+          with:
+            fhir: "$fhirRoot"
+          manual:
+            - name: "manualUrl"
+              fhir:
+                - path: "url"
+                  value: "http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum"

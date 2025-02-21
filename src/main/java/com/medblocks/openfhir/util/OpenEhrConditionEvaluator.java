@@ -5,7 +5,9 @@ import com.google.gson.JsonPrimitive;
 import com.medblocks.openfhir.fc.FhirConnectConst;
 import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.fc.schema.model.Mapping;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,29 +69,36 @@ public class OpenEhrConditionEvaluator {
             // no such flat path even exists, so let's just consider all entries?
             return fullFlatPath;
         }
-        final String targetAttribute = openEhrCondition.getTargetAttribute();
+        final String targetAttribute = openEhrCondition.getTargetAttribute() == null ? openEhrCondition.getTargetAttributes().get(0) : openEhrCondition.getTargetAttribute();
         final JsonObject modifiedJsonObject = new JsonObject();
+        final Set<String> notAddingForThisCondition = new HashSet<>();
         for (final String extractedValueKey : extractedValueKeys) {
             final String preparedTargetAttribute = openFhirStringUtils.prepareOpenEhrSyntax(
                     targetAttribute,
                     "");
-            final String openEhrKey = String.format("%s/%s", extractedValueKey, preparedTargetAttribute);
+            final String openEhrKey = preparedTargetAttribute == null ? extractedValueKey : String.format("%s/%s", extractedValueKey, preparedTargetAttribute);
             final JsonPrimitive extractedValueJson = fullFlatPath.getAsJsonPrimitive(openEhrKey);
             final String extractedValue = extractedValueJson == null ? "" : extractedValueJson.getAsString();
 
-            final String operator = openEhrCondition.getOperator();
-
-            if (FhirConnectConst.CONDITION_OPERATOR_ONE_OF.equals(operator)
-                    && openEhrCondition.getCriteria().contains(extractedValue)) {
+            if (openEhrCondition.getCriteria().contains(extractedValue)) {
+                fullFlatPath.entrySet().forEach((entry) -> {
+                    if (entry.getKey().startsWith(extractedValueKey)) {
+                        modifiedJsonObject.add(entry.getKey(), entry.getValue());
+                    }
+                });
                 continue;
             }
 
             log.info(
                     "Flat path {} evaluated to {}, condition.criteria requires it to be {}, therefore excluding all {} from mapping.",
                     openEhrKey, extractedValue, openEhrCondition.getCriteria(), extractedValueKey);
+            notAddingForThisCondition.add(extractedValueKey);
 
             fullFlatPath.entrySet().forEach((entry) -> {
-                if (!entry.getKey().startsWith(extractedValueKey)) {
+//                if (!entry.getKey().startsWith(extractedValueKey)) {
+//                    modifiedJsonObject.add(entry.getKey(), entry.getValue());
+//                }
+                if (notAddingForThisCondition.stream().noneMatch(extractedValueKey::startsWith)) {
                     modifiedJsonObject.add(entry.getKey(), entry.getValue());
                 }
             });
@@ -114,10 +123,7 @@ public class OpenEhrConditionEvaluator {
                 final List<String> matchingEntries = openFhirStringUtils.getAllEntriesThatMatchIgnoringPipe(openEhrKey,
                                                                                                             fullFlatPath);
 
-                final String operator = openEhrCondition.getOperator();
-
-                if (FhirConnectConst.CONDITION_OPERATOR_EMPTY.equals(operator)
-                        && !matchingEntries.isEmpty()) {
+                if (!matchingEntries.isEmpty()) {
                     log.info(
                             "Flat path {} didn't evaluate to empty, as per condition, therefore excluding all {} from mapping.",
                             openEhrKey, extractedValueKey);
@@ -164,7 +170,7 @@ public class OpenEhrConditionEvaluator {
         return fullFlatPath;
     }
 
-    private List<String> narrowingCriteria(final Condition openEhrCondition, final String firstFlatPath,
+    public List<String> narrowingCriteria(final Condition openEhrCondition, final String firstFlatPath,
                                            final JsonObject fullFlatPath) {
         final String openEhrPath = openFhirStringUtils.prepareOpenEhrSyntax(openEhrCondition.getTargetRoot(),
                                                                             firstFlatPath);

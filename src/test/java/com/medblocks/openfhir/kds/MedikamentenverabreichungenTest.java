@@ -80,6 +80,7 @@ public class MedikamentenverabreichungenTest extends KdsBidirectionalTest {
         Assert.assertEquals("l/h", dosage.getRateQuantity().getUnit());
 
         Assert.assertEquals("Reason code", medicationAdministration.getReasonCodeFirstRep().getText());
+        Assert.assertEquals("dev/null", medicationAdministration.getRequest().getIdentifier().getValue());
     }
 
 
@@ -103,7 +104,9 @@ public class MedikamentenverabreichungenTest extends KdsBidirectionalTest {
         Assert.assertEquals("Oral", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/details_zur_verabreichung/verabreichungsweg|value").getAsString());
 
         //  - name: "category"
-        Assert.assertEquals("inpatient", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/context/setting|code").getAsString());
+        Assert.assertEquals("232", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/context/setting|code").getAsString());
+        Assert.assertEquals("openehr", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/context/setting|terminology").getAsString());
+        Assert.assertEquals("secondary medical care", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/context/setting|value").getAsString());
 
         // - name: "note"
         Assert.assertEquals("textab", jsonObject.getAsJsonPrimitive("kds_medikamentenverabreichungen/arzneimittelanwendung:0/kommentar").getAsString());

@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: model
 metadata:
   name:  CLUSTER.multiple_coding_icd10gm.v1
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
@@ -22,5 +22,6 @@ mappings:
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen]"
+        # add manual mappings if needed, example being the ISM_TRANSITION ones
 
-            
+

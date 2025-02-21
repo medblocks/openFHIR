@@ -1,0 +1,28 @@
+engine: FHIRConnect/v0.0.1
+type: model
+metadata:
+  name: CLUSTER.organization.v0
+  version: 0.0.1-alpha
+spec:
+  system: FHIR
+  version: R4
+  openEhrConfig:
+    archetype: openEHR-EHR-CLUSTER.organization.v0
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Organization
+
+mappings:
+  - name: "type"
+    with:
+      fhir: "$fhirRoot.type"
+      openehr: "$archetype/items[at0051]"
+
+  - name: "orgaKey"
+    with:
+      fhir: "$fhirRoot.identifier"
+      openehr: "$archetype/items[at0024]"
+
+  - name: "name"
+    with:
+      fhir: "$fhirRoot.name"
+      openehr: "$archetype/items[at0052]"

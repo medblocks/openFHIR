@@ -2,7 +2,7 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name: KDS_organisation
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
@@ -10,9 +10,8 @@ spec:
 
 mappings:
 
-#  todo: what is this mapping from and to?? example of a fhir resource etc.
 
-# todo we need to overwrite orgId from the core one because there it's 'identifier' and here it needs to be like below
+# we need to overwrite orgId from the core one because there it's 'identifier' and here it needs to be like below
   - name: "orgId"
     extension: "overwrite"
     with:
@@ -32,8 +31,12 @@ mappings:
       criteria: "[http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel]"
     followedBy:
       mappings:
-        - name: "$archetype/items[at0024]"
+        - name: "fachabteilungsschluessel"
           with:
             fhir: "coding" # goes on element back to extension
-            openehr: "$reference"
+          manual:
+            - name: "system"
+              fhir:
+                - path: "system"
+                  value: "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel"
 

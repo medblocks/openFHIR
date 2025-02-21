@@ -39,6 +39,60 @@ public class OpenFhirStringUtilsTest {
 
 
     @Test
+    public void getIndexOfElement() {
+        final String path = "laborbericht/laborbefund/pro_laboranalyt:0/bezeichnung_des_analyts|terminology";
+        final String element = "laborbericht/laborbefund/pro_laboranalyt";
+        Assert.assertEquals(0, new OpenFhirStringUtils().getIndexOfElement(element, path));
+        final String path1 = "laborbericht:1/laborbefund:2/pro_laboranalyt:0/bezeichnung_des_analyts|terminology";
+        final String element1 = "laborbericht/laborbefund";
+        Assert.assertEquals(2, new OpenFhirStringUtils().getIndexOfElement(element1, path1));
+    }
+
+    @Test
+    public void getLastMostCommonIndex() {
+        List<String> paths = Arrays.asList(
+                "diagnose:1/diagnose:0/klinischer_status:1/diagnostic_status/abc|code",
+                "diagnose:1/diagnose:0/klinischer_status:1/diagnostic_status/abc|terminology",
+                "diagnose:1/diagnose:0/klinischer_status:1/diagnostic_status/abc|value",
+                "diagnose:1/diagnose:0/klinischer_status:1/klinischer_status:0|terminology",
+                "diagnose:1/diagnose:0/klinischer_status:1/klinischer_status:0|code",
+                "diagnose:1/diagnose:0/klinischer_status:1/klinischer_status|value",
+                "diagnose:1/diagnose:0/klinischer_status:1/klinischer_status2|value",
+                "diagnose:1/diagnose:0/klinischer_status:2/klinischer_status2|terminology",
+                "diagnose:1/diagnose:0/klinischer_status:2/klinischer_status2|code",
+                "diagnose:1/diagnose:0/klinischer_status:2/diagnoserolle:0/ztsd/asdasd/aadd/aa:1/aaa|code",
+                "diagnose:1/diagnose:0/klinischer_status:2/diagnoserolle:0/ztsd/asdasd/aadd/aa:1/aaa|terminology",
+                "diagnose:1/diagnose:0/klinischer_status:2/diagnoserolle:0/ztsd/asdasd/aadd/aa:1/aaa|value",
+                "diagnose:1/diagnose:0/klinischer_status:2/diagnoserolle2|value",
+                "diagnose:1/diagnose:0/klinischer_status:2/diagnoserolle2|code",
+                "diagnose:1/diagnose:0/klinischer_status:2/diagnoserolle2|terminology"
+        );
+        int lastMostCommonIndex = new OpenFhirStringUtils().getLastMostCommonIndex(paths);
+        Assert.assertEquals(0, lastMostCommonIndex);
+
+        paths = Arrays.asList(
+                "diagnose:1/diagnose:0/klinischer_status:3/diagnostic_status/abc|code",
+                "diagnose:1/diagnose:0/klinischer_status:3/diagnostic_status/abc|terminology",
+                "diagnose:1/diagnose:0/klinischer_status:3/diagnostic_status/abc|value",
+                "diagnose:1/diagnose:0/klinischer_status:3/klinischer_status:0|terminology",
+                "diagnose:1/diagnose:0/klinischer_status:3/klinischer_status:0|code",
+                "diagnose:1/diagnose:0/klinischer_status:3/klinischer_status|value",
+                "diagnose:1/diagnose:0/klinischer_status:3/klinischer_status2|value",
+                "diagnose:1/diagnose:0/klinischer_status:3/klinischer_status2|terminology",
+                "diagnose:1/diagnose:0/klinischer_status:3/klinischer_status2|code",
+                "diagnose:1/diagnose:0/klinischer_status:3/diagnoserolle:0/ztsd/asdasd/aadd/aa:1/aaa|code",
+                "diagnose:1/diagnose:0/klinischer_status:3/diagnoserolle:0/ztsd/asdasd/aadd/aa:1/aaa|terminology",
+                "diagnose:1/diagnose:0/klinischer_status:3/diagnoserolle:0/ztsd/asdasd/aadd/aa:1/aaa|value",
+                "diagnose:1/diagnose:0/klinischer_status:3/diagnoserolle2|value",
+                "diagnose:1/diagnose:0/klinischer_status:3/diagnoserolle2|code",
+                "diagnose:1/diagnose:0/klinischer_status:3/diagnoserolle2|terminology"
+        );
+        lastMostCommonIndex = new OpenFhirStringUtils().getLastMostCommonIndex(paths);
+        Assert.assertEquals(3, lastMostCommonIndex);
+    }
+
+
+    @Test
     public void joinValuesThatAreOne_oneContainsTheOther() {
         final List<String> toJoin = Arrays.asList(
                 "diagnose/diagnose:0/klinisch_relevanter_zeitraum_zeitpunkt_der_genesung",

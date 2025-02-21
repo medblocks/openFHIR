@@ -2,14 +2,14 @@ engine: FHIRConnect/v0.0.1
 type: model
 metadata:
   name: CLUSTER.organisation.v1
-  version: 0.0.1a
+  version: 0.0.1-alpha
 spec:
   system: FHIR
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.organisation.v1
   fhirConfig:
-    structureDefinition: http://hl7.org/fhir/StructureDefinition/Person #todo if we make this Organization, it also means it will try to map fhir->openehr standalone organization without the context of a template (resulting in "leistungsanforderung/namenszeile": "Einsender name", and "leistungsanforderung/laborleistung/einsender/namenszeile": "Einsender name",).. what do we do?
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 
 mappings:
   - name: "orgName"
