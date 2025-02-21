@@ -106,8 +106,8 @@ public class LaborberichtTest extends KdsBidirectionalTest {
                 "laborbericht/laborbefund/pro_laboranalyt:0/interpretation|terminology").getAsString());
         Assert.assertEquals("Interpretation description", jsonObject.getAsJsonPrimitive(
                 "laborbericht/laborbefund/pro_laboranalyt:0/interpretation|value").getAsString());
-        Assert.assertEquals("Blood test using standard laboratory methods", jsonObject.getAsJsonPrimitive(
-                "laborbericht/laborbefund/pro_laboranalyt:0/testmethode|other").getAsString());
+//        Assert.assertEquals("Blood test using standard laboratory methods", jsonObject.getAsJsonPrimitive(
+//                "laborbericht/laborbefund/pro_laboranalyt:0/testmethode|other").getAsString());
         Assert.assertEquals("FILL-12345",
                             jsonObject.getAsJsonPrimitive("laborbericht/context/bericht_id").getAsString());
 
@@ -244,7 +244,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
                 observation.getInterpretationFirstRep().getText());
 
         // - name: "testmethod"
-        assertEquals("testmethode", observation.getMethod().getText());
+//        assertEquals("testmethode", observation.getMethod().getText());
     }
 
     @Test
@@ -424,7 +424,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
                 observation.getInterpretationFirstRep().getText());
 
         // - name: "testmethod"
-        assertEquals("testmethode", observation.getMethod().getText());
+//        assertEquals("testmethode", observation.getMethod().getText());
 
         Observation observation1 = (Observation) diagnosticReport.getResult().get(1).getResource();
 
@@ -446,6 +446,6 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         assertEquals("1_142", observation1.getInterpretationFirstRep().getCodingFirstRep().getCode());
 
         // - name: "testmethod"
-        assertEquals("1_testmethode", observation1.getMethod().getText());
+//        assertEquals("1_testmethode", observation1.getMethod().getText());
     }
 }

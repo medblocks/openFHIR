@@ -40,8 +40,7 @@ mappings:
   - name: "composer"
     with:
       fhir: "$resource.serviceProvider.as(Reference).display"
-      openehr: "$composition/composer|name"
-      type: "STRING"
+      openehr: "$composition/composer"
 
   # todo ??? no such 'provider' exists, or does it?
   #  - name: "entryProvider"

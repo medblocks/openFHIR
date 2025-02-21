@@ -22,6 +22,7 @@ public class FhirConnectConst {
     public static final String DV_MULTIMEDIA= "MULTIMEDIA";
     public static final String DV_QUANTITY = "DV_QUANTITY";
     public static final String DV_PARTY_IDENTIFIED = "PARTY_IDENTIFIED";
+    public static final String DV_PARTY_PROXY = "PARTY_PROXY";
     public static final String DV_ORDINAL = "DV_ORDINAL";
     public static final String DV_PROPORTION = "DV_PROPORTION";
     public static final String DV_COUNT = "DV_COUNT";
