@@ -12,22 +12,22 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
     structureDefinition: http://hl7.org/fhir/StructureDefinition/MedicationAdministration
 
 mappings:
-#  - name: "hierarchyMappings" # is defined by the
-#    with:
-#      fhir: "$resource.dosage"
-#      openEHR: "$archetype
-#    #    type: "HIERARCHY"
-#    hierarchy:
-#      fhirCreate: "resource"
-#      openehrCreate: "archetype"
-#      uniqueValueFHIR: "[route, site]" # if route value is different per dosage slice make a new archetype
-#      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
+  #  - name: "hierarchyMappings" # is defined by the
+  #    with:
+  #      fhir: "$resource.dosage"
+  #      openEHR: "$archetype
+  #    #    type: "HIERARCHY"
+  #    hierarchy:
+  #      fhirCreate: "resource"
+  #      openehrCreate: "archetype"
+  #      uniqueValueFHIR: "[route, site]" # if route value is different per dosage slice make a new archetype
+  #      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
 
-#  - name: "healthcareFacility"
-#    with:
-#      fhir: "$resource.requester.as(Organization).display" #todo: no such fhir attribute
-#      openehr: "$archetype.context._health_care_facility|name"
-#      type: "STRING"
+  #  - name: "healthcareFacility"
+  #    with:
+  #      fhir: "$resource.requester.as(Organization).display" #todo: no such fhir attribute
+  #      openehr: "$archetype.context._health_care_facility|name"
+  #      type: "STRING"
 
   - name: "context"
     with:
@@ -44,20 +44,20 @@ mappings:
         - name: "contextEnd"
           with:
             fhir: "end"
-            openehr: "_end_time"
+            openehr: "end_time"
             type: "DATETIME"
 
 
 
-#  - name: "composer" #TODO introduce unidirectional mapping or just take the last one ?!
-#    with:
-#      fhir: "$resource.request.requester" # take identifier
-#      openehr: "$archetype/composer"
-#
-#  - name: "provider"
-#    with:
-#      fhir: "$resource.actor.performer"
-#      openehr: "$archetype/provider"
+  #  - name: "composer" #TODO introduce unidirectional mapping or just take the last one ?!
+  #    with:
+  #      fhir: "$resource.request.requester" # take identifier
+  #      openehr: "$archetype/composer"
+  #
+  #  - name: "provider"
+  #    with:
+  #      fhir: "$resource.actor.performer"
+  #      openehr: "$archetype/provider"
 
   - name: "category"
     with:
@@ -206,34 +206,34 @@ mappings:
       openehr: "$archetype/description[at0017]/items[at0156]"
       type: "STRING"
 
-#  - name: "partOf"
-#    with:
-#      fhir: "$resource.partOf.reference"
-#      openehr: "$reference"
-#    reference:
-#      mappings:
-#        - name: "partOfReference"
-#          with:
-#            fhir: "$fhirRoot"
-#            openehr: "$archetype/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-#            openehrLink:
-#              meaning: "part of a other medication administration"
-#              type: "partOf"
+  #  - name: "partOf"
+  #    with:
+  #      fhir: "$resource.partOf.reference"
+  #      openehr: "$reference"
+  #    reference:
+  #      mappings:
+  #        - name: "partOfReference"
+  #          with:
+  #            fhir: "$fhirRoot"
+  #            openehr: "$archetype/links" # will use link
+  #            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+  #            openehrLink:
+  #              meaning: "part of a other medication administration"
+  #              type: "partOf"
 
   - name: "request" # always the last one is executed for the mapping back.
     with:
       fhir: "$resource.request.as(Reference).identifier.value"
       openehr: "$archetype/protocol[at0030]/items[at0103]"
       type: "STRING"
-#        - name: "encounterMapping"
-#          with:
-#            fhir: "$fhirRoot"
-#            openehr: "$archetype/protocol[at0030]/items[at0103]/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI if there is any
-#            openehrLink:
-#              meaning: "the medication request for this medication"
-#              type: "medicationRequest"
+  #        - name: "encounterMapping"
+  #          with:
+  #            fhir: "$fhirRoot"
+  #            openehr: "$archetype/protocol[at0030]/items[at0103]/links" # will use link
+  #            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI if there is any
+  #            openehrLink:
+  #              meaning: "the medication request for this medication"
+  #              type: "medicationRequest"
 
 
   - name: "ISMTransition"

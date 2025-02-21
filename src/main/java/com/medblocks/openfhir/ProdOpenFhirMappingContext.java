@@ -79,7 +79,9 @@ public class ProdOpenFhirMappingContext extends OpenFhirMappingContext {
                     mappers.put(archetype, new ArrayList<>());
                 }
                 mappers.get(mappingName).add(mapperEntity);
-                mappers.get(archetype).add(mapperEntity);
+                if(!mappingName.equals(archetype)) {
+                    mappers.get(archetype).add(mapperEntity);
+                }
             }
 
         });

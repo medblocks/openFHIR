@@ -16,8 +16,7 @@ mappings:
   - name: "healthcareFacility"
     with:
       fhir: "$resource.serviceProvider.as(Reference).display"
-      openehr: "$composition/context/_health_care_facility|name"
-      type: "STRING"
+      openehr: "$composition/context/health_care_facility"
 
   - name: "contextPeriod"
     with:
@@ -34,7 +33,7 @@ mappings:
         - name: "contextEnd"
           with:
             fhir: "end"
-            openehr: "_end_time"
+            openehr: "end_time"
             type: "DATETIME"
 
   #todo: mapped to same field as above?

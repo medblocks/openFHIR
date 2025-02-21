@@ -32,6 +32,13 @@ import org.hl7.fhir.r4.model.TimeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
+import java.util.List;
+
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_CLUSTER;
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
+
 /**
  * Class used for populating openEHR flat path Composition
  */
@@ -134,6 +141,11 @@ public class OpenEhrPopulator {
             case FhirConnectConst.DV_BOOL:
                 final boolean addedBool = handleDvBool(openEhrPath, extractedValue, constructingFlat);
                 if (addedBool) {
+                    return;
+                }
+            case FhirConnectConst.DV_PARTY_IDENTIFIED:
+                final boolean addedPartyIdentified = handlePartyIdentifier(openEhrPath, extractedValue, constructingFlat);
+                if (addedPartyIdentified) {
                     return;
                 }
             default:
@@ -318,6 +330,25 @@ public class OpenEhrPopulator {
             return true;
         } else {
             log.warn("openEhrType is IDENTIFIER but extracted value is not Identifier; is {}", value.getClass());
+        }
+        return false;
+    }
+
+    private boolean handlePartyIdentifier(final String path, final Base value, final JsonObject flat) {
+        if (value instanceof StringType string) {
+            addToConstructingFlat(path + "|name", string.getValue(), flat);
+            return true;
+        } else if (value instanceof Identifier id) {
+            addToConstructingFlat(path + "|id", id.getValue(), flat);
+            addToConstructingFlat(path + "|assigner", id.getSystem(), flat);
+            addToConstructingFlat(path + "|type", id.getType().getText(), flat);
+            // if coding.code exists, it should override the type
+            addToConstructingFlat(path + "|type", id.getType().getCodingFirstRep().getCode(), flat);
+            return true;
+        } else {
+            log.warn(
+                    "openEhrType is CODE_PHRASE but extracted value is not Coding, Extension, CodeableConcept or Enumeration; is {}",
+                    value.getClass());
         }
         return false;
     }
