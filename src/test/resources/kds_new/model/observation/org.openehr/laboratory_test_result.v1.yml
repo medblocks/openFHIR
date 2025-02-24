@@ -91,7 +91,11 @@ mappings:
             fhir: "start"
             openehr: "context/start_time"
             type: "DATETIME"
-
+            
+  - name: "effective"
+    with:
+      fhir: "$resource.effective.as(DateTime)"
+      openehr: "$composition/context/start_time"
 
   - name: "category"
     with:
@@ -113,7 +117,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0107]"
+          criteria: "at0107"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -125,7 +129,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[registered]"
+          criteria: "registered"
       - name: "partial"
         fhir:
           - path: "status"
@@ -364,8 +368,11 @@ mappings:
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$archetype/protocol[at0004]/items[at0094]/items[at0063]/links"
-#            type: "REFERENCED_MAPPING"
 #            openehrLink:
 #              meaning: "the identifier which it derived from"
 #              type: "based on"
 
+  - name: "eventTime"
+    with:
+      fhir: "$resource.effective"
+      openEHR: "$archetype/data[at0001]/events[at0002]" # period -> interval event, datetime to pointInTime event

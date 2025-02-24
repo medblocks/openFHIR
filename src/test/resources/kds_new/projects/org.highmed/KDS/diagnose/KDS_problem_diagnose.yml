@@ -16,30 +16,35 @@ mappings:
       openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
     slotArchetype: "CLUSTER.case_identification.v0"
 
-#--------------------------------
-#  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
-#    extension: "add"
-#    with:
-#      fhir: "$resource.encounter.reference"
-#      openehr: "$reference"
-#    reference: #type None
-#      resourceType: "Encounter"
-#      mappings:
-#        - name: "identifierInReference"
-#          with:
-#            fhir: "$fhirRoot.identifier"
-#            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-#          slotArchetype: "CLUSTER.case_identification.v0"
-#        - name: "encounterMapping"
+  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+    extension: "add"
+    with:
+      fhir: "$resource.encounter"
+      openehr: "$reference"
+    reference: #type None
+      resourceType: "Encounter"
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.identifier"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+          slotArchetype: "CLUSTER.case_identification.v0"
+#        - name: "encounterMapping" # link mappings not suppoorted
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
 #            openehrLink:
 #              meaning: "the case this composition relates to"
 #              type: "case"
-#  -------------------------------------
 
+
+
+  - name: "problemDiagnose.problemDiagnoseName.problemDiagnoseNameCode"
+    extension: "overwrite"
+    with:
+      fhir: "code.coding.display"
+      openehr: "$archetype/data[at0001]/items[at0002]" #should be coded text, change in progress bug in AD cant upload template
+      type: "STRING"
 
   - name: "date"
     extension: "add"
@@ -143,23 +148,41 @@ mappings:
   - name: "dateTime"
     extension: "overwrite"
     with:
-      fhir: "$resource.onset.as(Period)"
+      fhir: "$resource"
       openehr: "$archetype"
-      type: "DATETIME"
+    type: "NONE"
     followedBy:
       mappings:
-        - name: "start"
+        - name: "period"
           with:
-            fhir: "$fhirRoot.start"
-            openehr: "data[at0001]/items[at0077]"
+            fhir: "onset.as(Period)"
+            openehr: "$archetype"
             type: "DATETIME"
+          followedBy:
+            mappings:
+              - name: "start"
+                with:
+                  fhir: "$fhirRoot.start"
+                  openehr: "data[at0001]/items[at0077]"
+                  type: "DATETIME"
 
-        - name: "lebensphaseCluster"
+              - name: "lebensphaseCluster"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
+                slotArchetype: "CLUSTER.lebensphase.v0"
+
+        - name: "dateTime"
           with:
-            fhir: "$fhirRoot"
-            openehr: "data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
-          slotArchetype: "CLUSTER.lebensphase.v0"
-#
+            fhir: "onset.as(DateTime)"
+            openehr: "data[at0001]/items[at0077]"
+          openehrCondition:
+            targetRoot: "$archetype/data[at0001]"
+            targetAttribute:
+            - "items[openEHR-EHR-CLUSTER.lebensphase.v0]/items[at0001]"
+            - "items[openEHR-EHR-CLUSTER.lebensphase.v0]/items[at0002]"
+            operator: "empty"
+
   - name: "problemQualifier"
     extension: "add"
     with:

@@ -161,33 +161,4 @@ mappings:
             openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
           slotArchetype: "EVALUATION.problem_diagnosis.v1"
 
-        - name: "problemDiagnoseUse"
-          with:
-            fhir: "use"
-            openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
-          followedBy:
-            mappings:
-              # these have to be here, they can not be in the slot archetype because they're mapping to the DiagnosisComponent and not on Condition (resolved reference)
-              - name: "diagnoseTyp"
-                with:
-                  fhir: "coding"
-                  openehr: "data[at0001]/items[at0009 and name/value='Diagnosetyp']"
-                  type: "CODING"
-                fhirCondition:
-                  targetRoot: "coding"
-                  targetAttribute: "system"
-                  operator: "one of"
-                  criteria: "[http://fhir.de/CodeSystem/dki-diagnosetyp]"
-
-              - name: "diagnoseSubtyp"
-                with:
-                  fhir: "coding"
-                  openehr: "data[at0001]/items[at0079 and name/value='Diagnosesubtyp']"
-                  type: "CODING"
-                fhirCondition:
-                  targetRoot: "coding"
-                  targetAttribute: "system"
-                  operator: "one of"
-                  criteria: "[http://fhir.de/CodeSystem/dki-diagnosesubtyp]"
-
 

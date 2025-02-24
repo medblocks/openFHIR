@@ -128,7 +128,7 @@ mappings:
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$archetype/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+
 #            openehrLink:
 #              meaning: "what the medication is part of"
 #              type: "partOf"
@@ -143,7 +143,7 @@ mappings:
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$archetype/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+
 #            openehrLink:
 #              meaning: "what the medication is based on"
 #              type: "basedOn"
@@ -158,7 +158,7 @@ mappings:
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$archetype/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+
 #            openehrLink:
 #              meaning: "what the medication is derived from"
 #              type: "derivedFrom"
