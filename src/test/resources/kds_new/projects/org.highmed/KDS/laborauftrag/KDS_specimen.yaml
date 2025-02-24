@@ -1,0 +1,45 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name: KDS_Specimen
+  version: 0.0.1-alpha
+spec:
+  system: FHIR
+  version: R4
+  extends: CLUSTER.specimen.v1
+
+mappings:
+  - name: "collection"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.collection"
+      openehr: "$archetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "collected"
+          with:
+            fhir: "collected.as(DateTimeType)" # same as onset; try to provide both and use the one that's present
+            openehr: "items[at0015]"
+            type: "DATETIME"
+
+        - name: "collector"
+          with:
+            fhir: "collector.as(Reference).identifier" # explicitly cast to Reference to avoid adding a Resource
+            openehr: "items[at0070]" #TODO should in the best case pinpoint to a resource via link, dunno where to put this in openEHR currently
+            type: "IDENTIFIER"
+
+        - name: "specimenCollectionMethod"
+          with:
+            fhir: "method.coding.code.display"
+            openehr: "items[at0007]"
+
+        - name: "specimenCollectionBodySite"
+          with:
+            fhir: "bodySite.coding.code.display"
+            openehr: "items[at0087]"
+
+        - name: "samplingContext"
+          with:
+            fhir: "fastingStatus.as(CodeableConcept).coding.code.display"
+            openehr: "items[at0008]" #Sampling context
