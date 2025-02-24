@@ -29,6 +29,27 @@ mappings:
       openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
     slotArchetype: "CLUSTER.case_identification.v0"
 
+  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+    extension: "add"
+    with:
+      fhir: "$resource.encounter"
+      openehr: "$reference"
+    reference: #type None
+      resourceType: "Encounter"
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.identifier"
+            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+          slotArchetype: "CLUSTER.case_identification.v0"
+#        - name: "encounterMapping"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+#            openehrLink:
+#              meaning: "the case this composition relates to"
+#              type: "case"
+
   - name: "medicationCode"
     extension: "overwrite"
     with:
@@ -63,25 +84,3 @@ mappings:
       fhir: "$resource.reasonCode.coding.display"
       openehr: "$archetype/description[at0017]/items[at0156]"
       type: "STRING"
-
-#  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
-#    extension: "add"
-#    with:
-#      fhir: "$resource.encounter.reference"
-#      openehr: "$reference"
-#    reference: #type None
-#      resourceType: "Encounter"
-#      mappings:
-#        - name: "identifierInReference"
-#          with:
-#            fhir: "$fhirRoot.identifier"
-#            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-#          slotArchetype: "CLUSTER.case_identification.v0"
-#        - name: "encounterMapping"
-#          with:
-#            fhir: "$fhirRoot"
-#            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-#            openehrLink:
-#              meaning: "the case this composition relates to"
-#              type: "case"
