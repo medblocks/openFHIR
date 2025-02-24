@@ -13,23 +13,22 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 
 mappings:
 
-#  - name: "hierarchyMappings" # is defined by the
-#    with:
-#      fhir: "$resource.dosage"
-#      openEHR: "$archetype/data[at0001]/events[at0002]"
-#  #    type: "HIERARCHY"
-#    hierarchy:
-#      fhirCreate: "resource"
-#      openehrCreate: "event"
-#      uniqueValueFHIR: "[route, timing.event]" # if route value is different per dosage slice make a new event
-#      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
+  #  - name: "hierarchyMappings" # is defined by the
+  #    with:
+  #      fhir: "$resource.dosage"
+  #      openEHR: "$archetype/data[at0001]/events[at0002]"
+  #  #    type: "HIERARCHY"
+  #    hierarchy:
+  #      fhirCreate: "resource"
+  #      openehrCreate: "event"
+  #      uniqueValueFHIR: "[route, timing.event]" # if route value is different per dosage slice make a new event
+  #      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
 
 
   - name: "healthcareFacility"
     with:
       fhir: "$resource.informationSource.as(Reference).display"
-      openehr: "$composition/context/_health_care_facility|name"
-      type: "STRING"
+      openehr: "$composition/context/health_care_facility"
 
   - name: "dateAsserted"
     with:
@@ -37,22 +36,22 @@ mappings:
       openehr: "$composition/context/start_time"
       type: "DATETIME"
 
-## todo: overrides the informationSource above?
-#  - name: "provider"
-#    with:
-#      fhir: "$resource.informationSource"
-#      openehr: "$archetype/provider"
+  ## todo: overrides the informationSource above?
+  #  - name: "provider"
+  #    with:
+  #      fhir: "$resource.informationSource"
+  #      openehr: "$archetype/provider"
 
-#  - name: "composer"
-#    with:
-#      fhir: "$resource.informationSource"
-#      openehr: "$archetype/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
+  #  - name: "composer"
+  #    with:
+  #      fhir: "$resource.informationSource"
+  #      openehr: "$archetype/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
 
-#todo: from which openehr path??
-#  - name: "eventTime"
-#    with:
-#      fhir: "$resource.effective.as(Period)"
-#      openEHR: "$archetype/data[at0001]/events[at0002]" #todo: when dynamic mapping period -> interval event, datetime to pointInTime event
+  #todo: from which openehr path??
+  #  - name: "eventTime"
+  #    with:
+  #      fhir: "$resource.effective.as(Period)"
+  #      openEHR: "$archetype/data[at0001]/events[at0002]" #todo: when dynamic mapping period -> interval event, datetime to pointInTime event
 
   - name: "reasonCode"
     with:

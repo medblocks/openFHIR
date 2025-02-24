@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_UNDERSCORABLES;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
 
 @Component
@@ -93,13 +94,14 @@ public class OpenEhrRmWorker {
         }
         final List<String> remainingPaths;
         final String[] splitOpenEhrPath = path.split("/");
-        final String pathToFind = pathToFindSuffix + splitOpenEhrPath[0].replace("*","/");
-        if (splitOpenEhrPath[0].startsWith("_")) {
+        final String zerothSplitPath = splitOpenEhrPath[0];
+        final String pathToFind = pathToFindSuffix + zerothSplitPath.replace("*", "/");
+        if (zerothSplitPath.startsWith("_")) {
             // we don't bother with this, can't be multiple occurrences
             constructing.add(splitOpenEhrPath[0]);
             remainingPaths = Arrays.asList(splitOpenEhrPath).subList(1, splitOpenEhrPath.length);
             walkThroughNodes(webTemplateNodes, String.join("/", remainingPaths),
-                    constructing, forcedTypes, fhirToOpenEhrHelper, pathToFindSuffix);
+                             constructing, forcedTypes, fhirToOpenEhrHelper, pathToFindSuffix);
             return;
         }
         AqlPath aqlPath = AqlPath.parse(pathToFind);
@@ -127,7 +129,7 @@ public class OpenEhrRmWorker {
             if(FhirConnectConst.OPENEHR_INVALID_PATH_RM_TYPES.contains(findingTheOne.getRmType())) {
                 constructing.add(findingTheOne.getRmType());
             }else {
-                constructing.add(findingTheOne.getId());
+                constructing.add(OPENEHR_UNDERSCORABLES.contains(findingTheOne.getId()) ? ("_"+findingTheOne.getId()) : findingTheOne.getId());
             }
             fhirToOpenEhrHelper.setOpenEhrType(forcedTypes == null ? findingTheOne.getRmType() : getCorrectOpenEhrType(forcedTypes, findingTheOne,constructing));
         }

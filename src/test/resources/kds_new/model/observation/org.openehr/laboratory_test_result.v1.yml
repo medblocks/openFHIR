@@ -17,8 +17,7 @@ mappings:
   - name: "healthCareFacility"
     with:
       fhir: "$resource.performer.as(Reference).display"
-      openehr: "$composition/context/_health_care_facility|name"
-      type: "STRING"
+      openehr: "$composition/context/health_care_facility"
 
   #  - name: "participations"
   #    with:
@@ -30,8 +29,7 @@ mappings:
   - name: "composer"
     with:
       fhir: "$resource.performer.as(Reference).display"
-      openehr: "$composition/composer|name" #take the first one if its 0..n ?!
-      type: "STRING"
+      openehr: "$composition/composer" #take the first one if its 0..n ?!
 
   - name: "performer"
     with:
@@ -54,7 +52,7 @@ mappings:
         - name: "effectiveEnd"
           with:
             fhir: "end"
-            openehr: "context/_end_time"
+            openehr: "context/end_time"
             type: "DATETIME"
 
         - name: "effectiveStart"
@@ -274,23 +272,23 @@ mappings:
           operator: "one of"
           criteria: "[entered-in-error]"
 
-#      - name: "unknown"
-#        fhir:
-#          - path: "status"
-#            value: "unknown"
-#        openehrCondition: # free Text, maybe this should be a Nullflavour
-#          targetRoot: "../"
-#          targetAttribute: "value"
-#          operator: "one of"
-#          criteria: "[unknown]"
-#        openehr:
-#          - path: "value"
-#            value: "unknown"
-#        fhirCondition:
-#          targetRoot: "$fhirRoot"
-#          targetAttribute: "status"
-#          operator: "one of"
-#          criteria: "[unknown]"
+  #      - name: "unknown"
+  #        fhir:
+  #          - path: "status"
+  #            value: "unknown"
+  #        openehrCondition: # free Text, maybe this should be a Nullflavour
+  #          targetRoot: "../"
+  #          targetAttribute: "value"
+  #          operator: "one of"
+  #          criteria: "[unknown]"
+  #        openehr:
+  #          - path: "value"
+  #            value: "unknown"
+  #        fhirCondition:
+  #          targetRoot: "$fhirRoot"
+  #          targetAttribute: "status"
+  #          operator: "one of"
+  #          criteria: "[unknown]"
 
 
 

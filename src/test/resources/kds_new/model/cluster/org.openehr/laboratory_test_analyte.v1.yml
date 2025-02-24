@@ -286,9 +286,9 @@ mappings:
 
   - name: "testmethod"
     with:
-      fhir: "$resource.method.text"
-      openehr: "$archetype/items[at0028]|other"
-      type: "STRING"
+      fhir: "$resource.method"
+      openehr: "$archetype/items[at0028]"  # was before according to test fhir payload mapped to method.text
+      type: "CODEABLECONCEPT"
 
   - name: "specimen"
     with:
