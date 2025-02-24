@@ -21,5 +21,5 @@ mappings:
       targetRoot: "$fhirRoot"
       targetAttribute: "type.coding.code"
       operator: "one of"
-      criteria: "1" # visit number
+      criteria: "[VN]" # visit number
 
