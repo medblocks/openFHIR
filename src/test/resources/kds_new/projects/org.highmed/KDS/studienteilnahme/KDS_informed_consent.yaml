@@ -2,8 +2,8 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name:  KDS_informed_consent
-  version: 0.0.1a # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1a 
+spec: 
   system: FHIR
   version: R4
   extends: ACTION.informed_consent.v0

@@ -38,13 +38,13 @@ mappings:
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$openEHRRoot" # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
-
+#
 #reference to party identified, unsupported
 #  - name: "composer"
 #    with:
 #      fhir: "$resource.recorder"
 #      openehr: "$composition/composer"
-
+#
 #  - name: "other_participations"
 #    with:
 #      fhir: "$resource.asserter"
@@ -65,12 +65,11 @@ mappings:
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$openEHRRoot" # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
-
-  - name: "provider"
-    with:
-      fhir: "$resource.recorder.as(Reference).identifier.value"
-      openehr: "$archetype/provider"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
-      type: "STRING"
+# reference to party identified, unsupported
+#  - name: "provider"
+#    with:
+#      fhir: "$resource.recorder"
+#      openehr: "$archetype/provider"
 
   - name: "status" #clincalStatus
     with:
@@ -96,7 +95,7 @@ mappings:
             fhir: "coding"
             openehr: "$archetype"
           manual:
-            - name: "loinc_coce"
+            - name: "loinc_code"
               fhir:
                 - path: "code"
                   value: "79378-6"
@@ -112,7 +111,7 @@ mappings:
             fhir: "coding"
             openehr: "$archetype"
           manual:
-            - name: "snomed_coce"
+            - name: "snomed_code"
               fhir:
                 - path: "code"
                   value: "16100001"
@@ -121,7 +120,6 @@ mappings:
               fhir:
                 - path: "system"
                   value: "http://snomed.info/sct"
-
 
 
   - name: "comment"

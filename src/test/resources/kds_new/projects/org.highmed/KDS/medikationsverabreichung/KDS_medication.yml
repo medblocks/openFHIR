@@ -1,0 +1,19 @@
+engine: FHIRConnect/v0.0.1
+type: extension
+metadata:
+  name:  KDS_medication.v2
+  version: 0.0.1-alpha 
+spec: 
+  system: FHIR
+  version: R4
+  extends: CLUSTER.medication.v2
+
+#todo: example of fhir data please, what should this map to??
+mappings:
+
+  - name: "name"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.code.coding.display" # missing coded_text in template
+      openehr: "$archetype/items[at0132]"
+      type: "STRING"
