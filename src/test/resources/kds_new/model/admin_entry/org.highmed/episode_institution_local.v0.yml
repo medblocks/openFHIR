@@ -13,10 +13,11 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 
 mappings:
 
-  - name: "healthcareFacility"
-    with:
-      fhir: "$resource.serviceProvider.as(Reference).display"
-      openehr: "$composition/context/health_care_facility"
+# reference to party identified, not supported
+#  - name: "healthcareFacility"
+#    with:
+#      fhir: "$resource.serviceProvider"
+#      openehr: "$composition/context/health_care_facility"
 
   - name: "contextPeriod"
     with:
@@ -36,19 +37,17 @@ mappings:
             openehr: "end_time"
             type: "DATETIME"
 
-  #todo: mapped to same field as above?
-  - name: "composer"
-    with:
-      fhir: "$resource.serviceProvider.as(Reference).display"
-      openehr: "$composition/composer"
+# reference to party identified, not supported
+#  - name: "composer"
+#    with:
+#      fhir: "$resource.serviceProvider"
+#      openehr: "$composition/composer"
 
-  # todo ??? no such 'provider' exists, or does it?
-  #  - name: "entryProvider"
-  #    with:
-  #      fhir: "$resource.serviceProvider"
-  #      openehr: "$archetype/provider"
-
-  #todo: these two will overwrite contextStartTime and contextEndTime
+# reference to party identified, not supported
+#  - name: "entryProvider"
+#    with:
+#      fhir: "$resource.serviceProvider"
+#      openehr: "$archetype/provider"
 
   - name: "period"
     with:
@@ -120,7 +119,7 @@ mappings:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
       operator: "one of"
-      criteria: "[wa]"
+      criteria: "wa"
     followedBy:
       mappings:
         - name: "hardcodingWardSystem"

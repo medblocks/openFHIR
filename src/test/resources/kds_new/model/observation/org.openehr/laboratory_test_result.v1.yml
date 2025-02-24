@@ -14,34 +14,65 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
 
 mappings:
 
-  - name: "healthCareFacility"
-    with:
-      fhir: "$resource.performer.as(Reference).display"
-      openehr: "$composition/context/health_care_facility"
+# unsupported, reference to party_identified mappings
+#  - name: "healthCareFacility"
+#    with:
+#      fhir: "$resource.performer"
+#      openehr: "$composition/context/health_care_facility"
 
-  #  - name: "participations"
-  #    with:
-  #      fhir: "$resource.resultsInterpreter"
-  #      openehr: "$archetype/context/participations"
-  #    participationsFunction: "results Interpreter"
+#  - name: "participations"
+#    with:
+#      fhir: "$resource.resultsInterpreter"
+#      openehr: "$composition/context/participations"  # reference to part
+#      type: "NONE"
+#    followedBy:
+#      mappings:
+#        - name : "participationFunction"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot"
+#          manual:
+#            - name: "function"
+#              openehr:
+#                - path: "function"
+#                  value: "result interpreter"
+#        - name: "performer"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot" # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
 
-  # todo: this is overriding itself below?
-  - name: "composer"
-    with:
-      fhir: "$resource.performer.as(Reference).display"
-      openehr: "$composition/composer" #take the first one if its 0..n ?!
+# unsupported, reference to party_identified mappings
+#  - name: "composer"
+#    with:
+#      fhir: "$resource.performer"
+#      openehr: "$composition/composer" #take the first one if its 0..n ?!
 
-  - name: "performer"
-    with:
-      fhir: "$resource.performer.as(Reference).display"
-      openehr: "$composition/perfomer"
-      type: "STRING"
+# unsupported, reference to party_identified mappings
+#  - name: "performer"
+#    with:
+#      fhir: "$resource.performer"
+#      openehr: "$composition/perfomer"
 
-  #  - name: "otherParticipants"
-  #    with:
-  #      fhir: "$resource.resultsInterpreter"
-  #      openehr: "$archetype/other_participations"
-  #    participationsFunction: "results Interpreter"
+#  - name: "otherParticipants"
+#    with:
+#      fhir: "$resource.resultsInterpreter"
+#      openehr: "$archetype/other_participations"
+#      type: "NONE"
+#    followedBy:
+#      mappings:
+#        - name : "participationFunction"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot"
+#          manual:
+#            - name: "function"
+#              openehr:
+#                - path: "function"
+#                  value: "result interpreter"
+#        - name: "performer"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot" # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
 
   - name: "effective"
     with:
@@ -60,7 +91,6 @@ mappings:
             fhir: "start"
             openehr: "context/start_time"
             type: "DATETIME"
-
 
 
   - name: "category"

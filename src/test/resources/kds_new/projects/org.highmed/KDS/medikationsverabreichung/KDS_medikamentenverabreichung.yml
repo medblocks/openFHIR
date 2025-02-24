@@ -29,6 +29,41 @@ mappings:
       openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
     slotArchetype: "CLUSTER.case_identification.v0"
 
+  - name: "medicationCode"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.medication.as(CodeableConcept).text"
+      openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
+      type: "STRING"
+    openehrCondition:
+      targetRoot: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]"
+      targetAttributes:
+        - "/items[at0071]",
+        - "/items[at0142]",
+        - "/items[at0153]",
+        - "/items[at0153]",
+        - "/items[at0157]",
+        - "/items[at0115]",
+        - "/items[at0151]",
+        - "/items[at0150]",
+        - "/items[at0003]",
+        - "/items[at0003]",
+        - "/items[at0138]",
+        - "/items[at0139]",
+        - "/items[at0148]",
+        - "/items[at0127]",
+        - "/items[at0133]",
+        - "/items[at0141]"
+      operator: "empty"
+
+
+  - name: "clinicalIndication"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.reasonCode.text"
+      openehr: "$archetype/description[at0017]/items[at0156]"
+      type: "STRING"
+
 #  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
 #    extension: "add"
 #    with:

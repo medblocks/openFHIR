@@ -14,9 +14,10 @@ spec:
 
 mappings:
 
+# reference to party identified unsupported
 #  - name: "healthCareFacility"
 #    with:
-#      fhir: "$resource.requester.as(Organization)" # todo: what are you mapping here??
+#      fhir: "$resource.requester"
 #      openehr: "$archetype/context/health_care_facility"
 
   - name: "authoredOn"
@@ -25,15 +26,17 @@ mappings:
       openehr: "$composition/context/start_time"
       type: "DATE"
 
-  - name: "composer"
-    with:
-      fhir: "$resource.requester.as(Reference).display"
-      openehr: "$composition/composer" #take the first one if its 0..n ?!
+# reference to party identified unsupported
+#  - name: "composer"
+#    with:
+#      fhir: "$resource.requester"
+#      openehr: "$composition/composer"
 
-  - name: "provider"
-    with:
-      fhir: "$resource.requester" # mapping is twice, entry level will overwrite the composer from above if not changed in the extension mapping
-      openehr: "$composition/provider"
+# reference to party identified unsupported
+#  - name: "provider"
+#    with:
+#      fhir: "$resource.requester" # mapping is twice, entry level will overwrite the composer from above if not changed in the extension mapping
+#      openehr: "$composition/provider"
 
   - name: "identifier"
     with:
