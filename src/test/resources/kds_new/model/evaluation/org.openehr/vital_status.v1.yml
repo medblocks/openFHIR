@@ -13,33 +13,66 @@ spec:
 
 mappings:
 
-  - name: "healthCareFacility"
-    with:
-      fhir: "$resource.performer.as(Reference).display"
-      openehr: "$archetype/context/_health_care_facility"
+# unsupported, reference to party_identified mappings
+#  - name: "healthCareFacility"
+#    with:
+#      fhir: "$resource.performer"
+#      openehr: "$archetype/context/health_care_facility"
 
 #  - name: "participations"
 #    with:
 #      fhir: "$resource.performer"
-#      openehr: "$archetype/context/participations"
-#    participationsFunction: "performer"
-#
+#      openehr: "$composition/context/participations"  # reference to part
+#      type: "NONE"
+#    followedBy:
+#      mappings:
+#        - name : "participationFunction"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot"
+#          manual:
+#            - name: "function"
+#              openehr:
+#                - path: "function"
+#                  value: "performer"
+#        - name: "performer"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot" # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
+
+# unsupported, reference to party_identified mappings
 #  - name: "composer"
 #    with:
 #      fhir: "$resource.performer"
-#      openehr: "$archetype/composer"
-#
+#      openehr: "$composition/composer"
+
+# unsupported, reference to party_identified mappings
 #  - name: "performer"
 #    with:
 #      fhir: "$resource.performer"
 #      openehr: "$archetype/perfomer"
-#
-#  - name: "otherParticipants"
+
+#  - name: "other_participations"
 #    with:
 #      fhir: "$resource.performer"
 #      openehr: "$archetype/other_participations"
-#    participationsFunction: "performer"
-
+#      type: "NONE"
+#    followedBy:
+#      mappings:
+#        - name : "participationFunction"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot"
+#          manual:
+#            - name: "function"
+#              openehr:
+#                - path: "function"
+#                  value: "performer"
+#        - name: "performer"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot" # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
+  -
   - name: "effective"
     with:
       fhir: "$resource.effective"

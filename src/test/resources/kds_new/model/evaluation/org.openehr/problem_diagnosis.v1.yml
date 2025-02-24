@@ -24,28 +24,58 @@ mappings:
       fhir: "$resource.recordedDate"
       openehr: "$composition/context/start_time"
       type: "DATETIME"
-#
+
 #  - name: "participations"
 #    with:
 #      fhir: "$resource.asserter"
-#      openehr: "$composition/context/participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
-#    participationsFunction: "asserter" # participations_mode this one has to be done in the mapping and cannot be mapped automatically.
-#
+#      openehr: "$composition/context/participations"  # reference to part
+#      type: "NONE"
+#    followedBy:
+#      mappings:
+#        - name : "participationFunction"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot"
+#          manual:
+#            - name: "function"
+#              openehr:
+#                - path: "function"
+#                  value: "asserter"
+#        - name: "performer"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot" # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out#
 #  - name: "composer"
 #    with:
 #      fhir: "$resource.recorder"
 #      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
 #
+
 #  - name: "other_participations"
 #    with:
 #      fhir: "$resource.asserter"
-#      openehr: "$archetype.diagnose/other_participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
-#    participationsFunction: "asserter"
-#
+#      openehr: "$archetype/diagnose/other_participations"  # reference to part
+#      type: "NONE"
+#    followedBy:
+#      mappings:
+#        - name : "participationFunction"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot"
+#          manual:
+#            - name: "function"
+#              openehr:
+#                - path: "function"
+#                  value: "asserter"
+#        - name: "performer"
+#          with:
+#            fhir: "$fhirRoot"
+#            openehr: "$openEHRRoot" # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
+
 #  - name: "provider"
 #    with:
 #      fhir: "$resource.recorder"
-#      openehr: "$archetype.diagnose/provider"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+#      openehr: "$archetype/provider"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
 
 
   - name: "problemDiagnose"

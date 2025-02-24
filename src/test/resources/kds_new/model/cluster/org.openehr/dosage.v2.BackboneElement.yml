@@ -21,22 +21,6 @@ mappings:
       fhir: "$fhirRoot.dose"
       openehr: "$archetype/items[at0144]"
       type: "QUANTITY"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0144.1]"
-      operator: "empty"
-
-  - name: "doseValue"
-    with:
-      fhir: "$fhirRoot.dose"
-      openehr: "$archetype/items[at0144.1]"
-      type: "QUANTITY"
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttributes:
-        - "items[at0144]"
-      operator: "empty"
 
   - name: "doseDescription"
     with:
@@ -44,8 +28,15 @@ mappings:
       openehr: "$archetype/items[at0178]"
       type: "STRING"
 
-  - name: "administrationRoute"
+  - name: "rateQuantity"
     with:
       fhir: "$fhirRoot.rate.as(Quantity)"
       openehr: "$archetype/items[at0134]"
       type: "QUANTITY"
+
+#  - name: "rateRatio"
+#    with:
+#      fhir: "$fhirRoot.rate.as(Ratio)"
+#      openehr: "$archetype/items[at0134]"
+#      type: "PROGRAMMED_MAPPING"
+#    mappingCode: "ratio_to_dv_quantity" #rate is in two bits denominator and nominator, openEHR uses the unit for this in dv_quantity. These have to be merges.
