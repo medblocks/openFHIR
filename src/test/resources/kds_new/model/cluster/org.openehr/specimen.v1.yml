@@ -9,7 +9,7 @@ spec:
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.specimen.v1
   fhirConfig:
-    structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Specimen
 
 mappings:
   - name: "identifier"
@@ -31,6 +31,12 @@ mappings:
             openehr: "items[at0015]"
             type: "DATETIME"
 
+        - name: "collected"
+          with:
+            fhir: "collected.as(Period)" # same as onset; try to provide both and use the one that's present
+            openehr: "items[at0015]"
+            type: "PERIOD"
+
         - name: "collector"
           with:
             fhir: "collector.as(Reference).identifier" # explicitly cast to Reference to avoid adding a Resource
@@ -39,21 +45,18 @@ mappings:
 
         - name: "specimenCollectionMethod"
           with:
-            fhir: "method.text"
+            fhir: "method"
             openehr: "items[at0007]"
-            type: "STRING"
 
         - name: "specimenCollectionBodySite"
           with:
-            fhir: "bodySite.text"
-            openehr: "items[at0087, 'Körperstelle']"
-            type: "STRING"
+            fhir: "bodySite"
+            openehr: "items[at0087]"
 
         - name: "samplingContext"
           with:
-            fhir: "fastingStatus.as(CodeableConcept).text"
+            fhir: "fastingStatus.as(CodeableConcept)"
             openehr: "items[at0008]" #Sampling context
-            type: "STRING"
 
   - name: "type"
     with:
@@ -90,6 +93,45 @@ mappings:
       fhir: "$resource.parent.as(Reference).identifier.value"
       openehr: "$archetype/items[at0003]"
       type: "STRING"
+
+  - name: "request"
+    with:
+      fhir: "$resource.parent"
+      openehr: "$archetype/items[at0003]"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "identifier"
+          with:
+            fhir: "$fhirRoot.as(Reference).identifier"
+            openehr: "$openehrRoot"
+          openehrCondition:
+            targetRoot: "$openehrRoot"
+            targetAttribute: "links"
+            operator: "empty"
+
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.as(Specimen)"
+            openehr: "$reference"
+          openehrCondition:
+            targetRoot: "$openehrRoot"
+            targetAttribute: "links"
+            operator: "not empty"
+          reference:
+            resourceType: "Specimen"
+            mappings:
+              - name: "identifierInReference"
+                with:
+                  fhir: "$fhirRoot.identifier"
+                  openehr: "$openehrRoot"
+#              - name: "specimenLink"
+#                with:
+#                  fhir: "$fhirRoot"
+#                  openehr: "$openehrRoot/links"
+#                openehrLink:
+#                  meaning: "the parent of this specimen"
+#                  type: "parent"
 
   - name: "status"
     with:

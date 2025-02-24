@@ -6,13 +6,11 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Medication;
 import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.Period;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -21,7 +19,7 @@ import java.util.stream.Collectors;
 public class MedikamentenverabreichungenTest extends KdsBidirectionalTest {
 
     final String MODEL_MAPPINGS = "/kds_new/";
-    final String CONTEXT = "/kds_new/projects/org.highmed/KDS/medikationsverabreichung/KDS_medikationseintrag.context.yaml";
+    final String CONTEXT = "/kds_new/projects/org.highmed/KDS/medikationsverabreichung/KDS_medikationsverabreichung.context.yaml";
     final String HELPER_LOCATION = "/kds/medikationsverabreichung/";
     final String OPT = "KDS_Medikamentenverabreichungen.opt";
     final String FLAT = "KDS_Medikamentenverabreichungen.flat.json";

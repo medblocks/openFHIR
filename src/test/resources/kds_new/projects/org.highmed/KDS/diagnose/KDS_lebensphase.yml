@@ -2,8 +2,8 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name:  KDS_lebensphase
-  version: 0.0.1-alpha # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1-alpha 
+spec: 
   system: FHIR
   version: R4
   extends: CLUSTER.lebensphase.v0
