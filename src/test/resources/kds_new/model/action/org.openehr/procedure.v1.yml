@@ -16,19 +16,54 @@ mappings:
 #  - name: "participations"
 #    with:
 #      fhir: "$resource.performer.actor"
-#      openehr: "$composition/context/participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
-#    participationsFunction: "asserter" # participations_mode this one has to be done in the mapping and cannot be mapped automatically.
-#
+#      openehr: "$composition/context/participations"  # reference to part
+#      type: "NONE"
+#    followedBy:
+#      mappings:
+#         - name : "participationFunction"
+#           with:
+#             fhir: "$fhirRoot"
+#             openehr: "$openEHRRoot"
+#           manual:
+#             - name: "function"
+#               openehr:
+#                 - path: "function"
+#                   value: "asserter"
+#         - name: "performer"
+#           with:
+#             fhir: "$fhirRoot"
+#             openehr: "$openEHRRoot" # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
+
 #  - name: "other_participations"
 #    with:
 #      fhir: "$resource.performer.actor"
-#      openehr: "$archetype/other_participations"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
-#    participationsFunction: "asserter"
+#      openehr: "$archetype/other_participation"  # reference to part
+#      type: "NONE"
+#    followedBy:
+#      mappings:
+#         - name : "participationFunction"
+#           with:
+#             fhir: "$fhirRoot"
+#             openehr: "$openEHRRoot"
+#           manual:
+#             - name: "function"
+#               openehr:
+#                 - path: "function"
+#                   value: "asserter"
+#         - name: "performer"
+#           with:
+#             fhir: "$fhirRoot"
+#             openehr: "$openEHRRoot" # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
 
-  - name: "provider"
+#  - name: "provider"
+#    with:
+#      fhir: "$resource.performer.actor"
+#      openehr: "$composition/provider"  # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
+
+  - name: "contextStartTime"
     with:
-      fhir: "$resource.performer.actor"
-      openehr: "$composition/provider"  # often required therefore simplified mapping engine is to resolve Reference -> Participations
+      fhir: "$resource.performed.as(dateTime)"
+      openehr: "$composition/context/start_time"
 
   - name: "performed"
     with:
@@ -45,13 +80,19 @@ mappings:
         - name: "contextEnd"
           with:
             fhir: "end"
-            openehr: "$archetype/description[at0001]/items[at0060]"
+            openehr: "$composition/context/end_time"
             type: "DATETIME"
 
+  - name: "actionPerformed"
+    with:
+      fhir: "$resource.performed.as(dateTime)"
+      openehr: "$archetype/time" # this field is more fiting then start_time thats why it overwrites the initial performed in fhir.
+
+  # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
 #  - name: "composer"
 #    with:
 #      fhir: "$resource.recorder"
-#      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
+#      openehr: "$composition/composer"
 
   - name: "ISMTransition"
     with:
@@ -281,25 +322,15 @@ mappings:
   - name: "name"
     with:
       fhir: "$resource.code"
-      openehr: "$archetype"
-    followedBy:
-      mappings:
-        - name: "Name"
-          with:
-            fhir: "coding"
-            openehr: "description[at0001]/items[at0002]"
-            type: "CODING"
-          fhirCondition:
-            targetRoot: "coding"
-            targetAttribute: "system"
-            operator: "one of"
-            criteria: "[http://fhir.de/CodeSystem/bfarm/ops, http://snomed.info/sct]"
-
-        - name: "freetext"
-          with:
-            fhir: "text"
-            openehr: "description[at0001]/items[at0049]"
-            type: "STRING"
+      openehr: "$archetype/description[at0001]/items[at0002]"
+      type: "CODEABLECONCEPT"
+    fhirCondition:
+      targetRoot: "coding"
+      targetAttribute: "system"
+      operator: "one of"
+      criteria:
+        - "http://fhir.de/CodeSystem/bfarm/ops"
+        - "http://snomed.info/sct"
 
   - name: "comment"
     with:
@@ -319,3 +350,7 @@ mappings:
       openehr: "$archetype/description[at0001]/items[at0063]"
       type: "CODEABLECONCEPT"
 
+  - name: "performedEnd"
+    with:
+      fhir: "$resource.performed.end" # better fiting then performed end from context since this covers all procedures, overwrites performed.end
+      openehr: "$archetype/description[at0001]/items[at0060]"
