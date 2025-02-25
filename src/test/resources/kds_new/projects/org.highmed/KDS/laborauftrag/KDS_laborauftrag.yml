@@ -79,20 +79,18 @@ mappings:
             value: "Order"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttributes:
-            - "category.coding.code"
+          targetAttribute: "category.coding.code"
           operator: "one of"
-          criteria: "laboratory"
+          criteria: "[laboratory]"
 
         fhir:
           - path: "intent"
             value: "order"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "activities[at0001]/description[at0009]/items[at0065]/defining_code"
+          targetAttribute: "activities[at0001]/description[at0009]/items[at0065]/defining_code"
           operator: "one of"
-          criteria: "order"
+          criteria: "[order]"
 
   - name: "category"
     extension: "overwrite"
@@ -110,10 +108,9 @@ mappings:
             value: "Laboratory"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttributes:
-            - "category.coding.code"
+          targetAttribute: "category.coding.code"
           operator: "one of"
-          criteria: "laboratory"
+          criteria: "[laboratory]"
 
         fhir:
           - path: "system"
@@ -122,10 +119,9 @@ mappings:
             value: "laboratory"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "activities[at0001]/description[at0009]/items[at0148]/defining_code"
+          targetAttribute: "activities[at0001]/description[at0009]/items[at0148]/defining_code"
           operator: "one of"
-          criteria: "laboratory"
+          criteria: "[laboratory]"
 
   - name: "status"
     extension: "overwrite"
@@ -143,17 +139,15 @@ mappings:
             value: "Completed"
         fhirCondition:
           targetRoot: "$resource"
-          targetAttributes:
-            - "status"
+          targetAttribute: "status"
           operator: "one of"
-          criteria: "completed"
+          criteria: "[completed]"
 
         fhir:
           - path: "status"
             value: "completed"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "protocol[at0008]/items[at0127]/defining_code"
+          targetAttribute: "protocol[at0008]/items[at0127]/defining_code"
           operator: "one of"
-          criteria: "completed"
+          criteria: "[completed]"

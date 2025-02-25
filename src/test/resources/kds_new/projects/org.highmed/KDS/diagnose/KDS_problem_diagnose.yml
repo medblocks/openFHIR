@@ -150,7 +150,7 @@ mappings:
     with:
       fhir: "$resource"
       openehr: "$archetype"
-    type: "NONE"
+      type: "NONE"
     followedBy:
       mappings:
         - name: "period"
@@ -178,7 +178,7 @@ mappings:
             openehr: "data[at0001]/items[at0077]"
           openehrCondition:
             targetRoot: "$archetype/data[at0001]"
-            targetAttribute:
+            targetAttributes:
             - "items[openEHR-EHR-CLUSTER.lebensphase.v0]/items[at0001]"
             - "items[openEHR-EHR-CLUSTER.lebensphase.v0]/items[at0002]"
             operator: "empty"
@@ -227,7 +227,6 @@ mappings:
                 slotArchetype: "EVALUATION.problem_diagnosis.v1"
                 openehrCondition:
                   targetRoot: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
-                  targetAttributes:
-                    - "data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/defining_code"
+                  targetAttribute: "data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/defining_code"
                   operator: "one of"
                   criteria: "[at0064]"

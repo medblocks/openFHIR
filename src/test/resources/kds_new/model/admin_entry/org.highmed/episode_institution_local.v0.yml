@@ -119,7 +119,7 @@ mappings:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
       operator: "one of"
-      criteria: "wa"
+      criteria: "[wa]"
     followedBy:
       mappings:
         - name: "hardcodingWardSystem"
