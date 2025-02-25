@@ -60,12 +60,12 @@ mappings:
       fhir: "$resource.status"
       openehr: "$composition/context/other_context[at0001]/items[at0005]"
 
-
-  - name: "eventTime" #TODO @deprecated needs to go once mapping is updated
-    extension: "overwrite"
-    with:
-      fhir: "$resource.effective.as(dateTime)"
-      openEHR: "$archetype/data[at0001]/events[at0002]/time" # period -> interval event, datetime to pointInTime event
+#TODO does not work
+#  - name: "eventTime" #TODO @deprecated needs to go once mapping is updated
+#    extension: "overwrite"
+#    with:
+#      fhir: "$resource.effective.as(DateTime)"
+#      openEHR: "$archetype/data[at0001]/events[at0002]/time" # period -> interval event, datetime to pointInTime event
 
   - name: "berichtIdParent"
     extension: "add"
