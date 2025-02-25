@@ -38,9 +38,7 @@ mappings:
             targetRoot: "use.coding.code"
             targetAttribute: "value"
             operator: "one of"
-            criteria:
-            - "referral-diagnosis"
-            - "treatment-diagnosis"
+            criteria: "[referral-diagnosis, treatment-diagnosis]"
 
         - name: "diagnoseSubtyp" # use fields etc. CANT reuse cluster mappings since this is not a clear condition to problem dia mapping
           with:
@@ -50,10 +48,4 @@ mappings:
             targetRoot: "use.coding.code"
             targetAttribute: "value"
             operator: "one of"
-            criteria:
-            - "surgery-diagnosis"
-            - "department-main-diagnosis"
-            - "cause-of-death"
-            - "infection-control-diagnosis"
-            - "AD"
-            - "DD"
+            criteria: "[surgery-diagnosis, department-main-diagnosis, cause-of-death, infection-control-diagnosis, AD, DD]"

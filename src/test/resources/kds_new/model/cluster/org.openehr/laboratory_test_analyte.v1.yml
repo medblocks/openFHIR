@@ -25,8 +25,7 @@ mappings:
             value: "registered"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code"
           operator: "one of"
           criteria: "[at0015]"
         openehr:
@@ -48,8 +47,7 @@ mappings:
             value: "partial"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code"
           operator: "one of"
           criteria: "[at0016]"
 
@@ -59,8 +57,7 @@ mappings:
             value: "preliminary"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code"
           operator: "one of"
           criteria: "[at0017]"
         openehr:
@@ -82,8 +79,7 @@ mappings:
             value: "final"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code"
           operator: "one of"
           criteria: "[at0018]"
         openehr:
@@ -105,8 +101,7 @@ mappings:
             value: "amended"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code"
           operator: "one of"
           criteria: "[at0020]"
         openehr:
@@ -128,8 +123,7 @@ mappings:
             value: "corrected"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code"
           operator: "one of"
           criteria: "[at0019]"
         openehr:
@@ -151,8 +145,7 @@ mappings:
             value: "appended"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code"
           operator: "one of"
           criteria: "[at0021]"
         openehr:
@@ -174,8 +167,7 @@ mappings:
             value: "cancelled"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code"
           operator: "one of"
           criteria: "[at0023]"
         openehr:
@@ -197,8 +189,7 @@ mappings:
             value: "entered-in-error"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code"
           operator: "one of"
           criteria: "[at0022]"
         openehr:
@@ -243,8 +234,7 @@ mappings:
             value: "entered-in-error"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code"
           operator: "one of"
           criteria: "[at0022]"
         openehr:

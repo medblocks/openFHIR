@@ -40,8 +40,7 @@ mappings:
             value: "True"
     fhirCondition:
       targetRoot: "$resource"
-      targetAttributes:
-        - "deceased"
+      targetAttribute: "deceased"
       operator: "not empty"
     followedBy:
       mappings:

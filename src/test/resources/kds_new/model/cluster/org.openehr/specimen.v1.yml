@@ -149,8 +149,7 @@ mappings:
             value: "available"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0041]/defining_code"
+          targetAttribute: "items[at0041]/defining_code"
           operator: "one of"
           criteria: "[at0062]"
         openehr:
@@ -162,8 +161,7 @@ mappings:
             value: "Satisfactory "
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttributes:
-            - "status"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[available]"
 
@@ -173,8 +171,7 @@ mappings:
             value: "unavailable"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0041]/defining_code"
+          targetAttribute: "items[at0041]/defining_code"
           operator: "one of"
           criteria: "[at0064]"
         openehr:
@@ -186,8 +183,7 @@ mappings:
             value: "Unsatisfactory - not analysed"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttributes:
-            - "status"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[unavailable]"
 
@@ -197,8 +193,7 @@ mappings:
             value: "unsatisfactory"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0041]/defining_code"
+          targetAttribute: "items[at0041]/defining_code"
           operator: "one of"
           criteria: "[at0064]"
         openehr:
@@ -210,8 +205,7 @@ mappings:
             value: "Unsatisfactory - not analysed"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttributes:
-            - "status"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "[unsatisfactory]"
 

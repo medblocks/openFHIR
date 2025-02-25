@@ -328,9 +328,7 @@ mappings:
       targetRoot: "coding"
       targetAttribute: "system"
       operator: "one of"
-      criteria:
-        - "http://fhir.de/CodeSystem/bfarm/ops"
-        - "http://snomed.info/sct"
+      criteria: "[http://fhir.de/CodeSystem/bfarm/ops, http://snomed.info/sct]"
 
   - name: "comment"
     with:

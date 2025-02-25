@@ -18,8 +18,7 @@ mappings:
       openehr: "$archetype/items[at0004]"
     fhirCondition:
       targetRoot: "$resource.verificationStatus"
-      targetAttributes:
-        - "coding.code"
+      targetAttribute: "coding.code"
       operator: "not of"
       criteria: "[entered-in-error]"
     manual:
@@ -47,8 +46,7 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/code_string"
           operator: "one of"
           criteria: "[at0017]"
 
@@ -75,8 +73,7 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/code_string"
           operator: "one of"
           criteria: "[at0017]"
 
@@ -103,8 +100,7 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/code_string"
           operator: "one of"
           criteria: "[at0016]"
 
@@ -131,8 +127,7 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/code_string"
           operator: "one of"
           criteria: "[at0018]"
 
@@ -159,7 +154,6 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/code_string"
           operator: "one of"
           criteria: "[at0088]"
