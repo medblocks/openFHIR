@@ -62,8 +62,9 @@ mappings:
 
   - name: "contextStartTime"
     with:
-      fhir: "$resource.performed.as(dateTime)"
+      fhir: "$resource.performed.as(DateTimeType)"
       openehr: "$composition/context/start_time"
+      type: "DATETIME"
 
   - name: "performed"
     with:
@@ -85,7 +86,7 @@ mappings:
 
   - name: "actionPerformed"
     with:
-      fhir: "$resource.performed.as(dateTime)"
+      fhir: "$resource.performed.as(DateTimeType)"
       openehr: "$archetype/time" # this field is more fiting then start_time thats why it overwrites the initial performed in fhir.
 
   # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
@@ -319,16 +320,23 @@ mappings:
           operator: "one of"
           criteria: "[unknown]"
 
+
   - name: "name"
     with:
       fhir: "$resource.code"
-      openehr: "$archetype/description[at0001]/items[at0002]"
-      type: "CODEABLECONCEPT"
-    fhirCondition:
-      targetRoot: "coding"
-      targetAttribute: "system"
-      operator: "one of"
-      criteria: "[http://fhir.de/CodeSystem/bfarm/ops, http://snomed.info/sct]"
+      openehr: "$archetype"
+    followedBy:
+      mappings:
+        - name: "Name"
+          with:
+            fhir: "coding"
+            openehr: "description[at0001]/items[at0002]"
+            type: "CODING"
+          fhirCondition:
+            targetRoot: "coding"
+            targetAttribute: "system"
+            operator: "one of"
+            criteria: "[http://fhir.de/CodeSystem/bfarm/ops, http://snomed.info/sct]"
 
   - name: "comment"
     with:

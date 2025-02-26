@@ -14,8 +14,8 @@ spec:
 mappings:
   - name: "mehrfachcodierung"
     with:
-      fhir: "$fhirRoot.valueCoding" #fhir.extension
-      openehr: "$archetype/items[at0001]/value"
+      fhir: "$fhirRoot.value.as(CodeableConcept).coding" #fhir.extension
+      openehr: "$archetype/items[at0001]"
     manual:
       - name: "manifestation"
         openehr:
@@ -26,7 +26,7 @@ mappings:
           - path: "value"
             value: "*"
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$fhirRoot.value.as(CodeableConcept).coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "[*]"
@@ -52,7 +52,7 @@ mappings:
           - path: "value"
             value: "†"
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$fhirRoot.value.as(CodeableConcept).coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "[†]"
@@ -78,7 +78,7 @@ mappings:
           - path: "value"
             value: "!"
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$fhirRoot.value.as(CodeableConcept).coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "[!]"

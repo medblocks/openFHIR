@@ -9,7 +9,7 @@ spec:
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.specimen.v1
   fhirConfig:
-    structureDefinition: http://hl7.org/fhir/StructureDefinition/Specimen
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 
 mappings:
   - name: "identifier"

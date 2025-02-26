@@ -125,7 +125,7 @@
                     "coding": [
                       {
                         "system": "local",
-                        "code": "at0002",
+                        "code": "†",
                         "display": "Primary code in multiple coding"
                       }
                     ],
@@ -371,7 +371,7 @@
                     "coding": [
                       {
                         "system": "local",
-                        "code": "at0002",
+                        "code": "*",
                         "display": "ref_Primary code in multiple coding"
                       }
                     ],

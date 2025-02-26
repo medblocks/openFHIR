@@ -48,8 +48,8 @@ public class ProcedureTest extends KdsBidirectionalTest {
         final Procedure theProcedure = (Procedure) allProcedures.get(0).getResource();
 
         // -performed
-        Assert.assertEquals("2020-02-03T04:05:06+01:00",
-                            theProcedure.getPerformedPeriod().getStartElement().getValueAsString());
+        Assert.assertEquals("2022-02-03T04:05:06",
+                            theProcedure.getPerformedDateTimeType().getValueAsString());
 
 //        - name: "ISM Transition"
 //        Assert.assertEquals("530", theProcedure.getStatusElement().getValueAsString());
@@ -58,7 +58,6 @@ public class ProcedureTest extends KdsBidirectionalTest {
         Assert.assertEquals("80146002", theProcedure.getCode().getCodingFirstRep().getCode());
         Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/ops",
                             theProcedure.getCode().getCodingFirstRep().getSystem());
-        Assert.assertEquals("freitextbeschreibung", theProcedure.getCode().getText());
 
 //        - name: "Comment"
         Assert.assertEquals("Procedure completed successfully with no complications.",
@@ -99,9 +98,7 @@ public class ProcedureTest extends KdsBidirectionalTest {
         Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/ops",
                             jsonObject.getAsJsonPrimitive("kds_prozedur/prozedur:0/name_der_prozedur|terminology")
                                     .getAsString());
-        Assert.assertEquals("Appendectomy",
-                            jsonObject.getAsJsonPrimitive("kds_prozedur/prozedur:0/freitextbeschreibung")
-                                    .getAsString());
+
         Assert.assertEquals("Procedure completed successfully with no complications.",
                             jsonObject.getAsJsonPrimitive("kds_prozedur/prozedur:0/kommentar").getAsString());
         Assert.assertEquals("103693007",

@@ -696,7 +696,11 @@ public class FhirToOpenEhr {
                                      final FhirToOpenEhrHelper initialHelper) {
         if (mapping.getWith().getFhir() == null) {
             // is hardcoding
-            mapping.getWith().setFhir(FHIR_ROOT_FC);
+            if(mapping.getFhirCondition() != null) {
+                mapping.getWith().setFhir(FHIR_ROOT_FC + mapping.getFhirCondition().getTargetRoot());
+            } else {
+                mapping.getWith().setFhir(FHIR_ROOT_FC);
+            }
             initialHelper.setHardcodingValue(mapping.getWith().getValue());
         }
     }
