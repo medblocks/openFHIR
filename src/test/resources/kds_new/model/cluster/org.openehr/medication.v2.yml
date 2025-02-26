@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: model
 metadata:
   name:  CLUSTER.medication.v2
@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.medication.v2
+    revision: 2.0.1
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 mappings:
@@ -90,7 +91,7 @@ mappings:
           with:
             fhir: "item.as(Substance)"
             openehr: "$reference"
-            unidirectional: "fhir->openEHR" # wont convert from openEHR to fhir otherwise would be two mappings
+          unidirectional: "fhir->openEHR" # wont convert from openEHR to fhir otherwise would be two mappings
           reference:
             resourceType: "Substance"
             mappings:

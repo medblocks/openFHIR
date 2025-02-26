@@ -17,7 +17,7 @@ import com.medblocks.openfhir.fc.schema.Spec;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "engine",
+        "grammar",
         "type",
         "metadata",
         "spec",
@@ -30,8 +30,8 @@ public class FhirConnectContext {
      * (Required)
      *
      */
-    @JsonProperty("engine")
-    private String engine;
+    @JsonProperty("grammar")
+    private String grammar;
     /**
      *
      * (Required)
@@ -66,9 +66,9 @@ public class FhirConnectContext {
      * (Required)
      *
      */
-    @JsonProperty("engine")
-    public String getEngine() {
-        return engine;
+    @JsonProperty("grammar")
+    public String getGrammar() {
+        return grammar;
     }
 
     /**
@@ -76,9 +76,9 @@ public class FhirConnectContext {
      * (Required)
      *
      */
-    @JsonProperty("engine")
-    public void setEngine(String engine) {
-        this.engine = engine;
+    @JsonProperty("grammar")
+    public void setGrammar(String grammar) {
+        this.grammar = grammar;
     }
 
     /**

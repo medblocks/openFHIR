@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: context
 metadata:
   name:  KDS_Person.context
@@ -8,8 +8,12 @@ spec:
   version: R4
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/PatientPseudonymisiert"
-  templateId: "KDS_Person_Pseudonymisiert"
+  profile:
+    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/PatientPseudonymisiert"
+    version: "2025.0.0"
+  template:
+    id: "KDS_Person_Pseudonymisiert"
+    sem_ver: "63.0.0"
   archetypes:
     - "EVALUATION.gender.v1"
     - "ADMIN_ENTRY.person_data.v0"

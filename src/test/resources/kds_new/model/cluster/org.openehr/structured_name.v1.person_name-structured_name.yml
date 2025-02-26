@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: model
 metadata:
   name:  CLUSTER.structured_name.v1.person_name-structured_name
@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.structured_name.v1
+    revision: 1.0.1
 
 mappings:
   - name: "name"

@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: context
 metadata:
   name:  KDS_medikationseintrag.context
@@ -8,8 +8,12 @@ spec:
   version: R4
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/MedicationStatement"
-  templateId: "KDS_Medikationseintrag"
+  profile:
+    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/MedicationStatement"
+    version: "2025.0.0"
+  template:
+    id: "KDS_Medikationseintrag"
+    sem_ver: "16.0.0"
   archetypes:
     - "OBSERVATION.medication_statement.v0"
     - "CLUSTER.medication.v2"

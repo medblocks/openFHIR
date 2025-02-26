@@ -41,7 +41,7 @@ public class TestOpenFhirMappingContext extends OpenFhirMappingContext {
 
     @Deprecated
     public void initRepository(final FhirConnectContext context, final String dir) {
-        final String templateId = context.getContext().getTemplateId();
+        final String templateId = context.getContext().getTemplate().getId();
         final String normalizedRepoId = normalizeTemplateId(templateId);
         if (repository.containsKey(normalizedRepoId)) {
             log.info("Repository for template {} already initialized");
@@ -68,7 +68,7 @@ public class TestOpenFhirMappingContext extends OpenFhirMappingContext {
     public void initRepository(final FhirConnectContext context,
                                final OPERATIONALTEMPLATE operationaltemplate,
                                final String modelsDir) {
-        final String templateId = context.getContext().getTemplateId();
+        final String templateId = context.getContext().getTemplate().getId();
         final String normalizedRepoId = normalizeTemplateId(templateId);
         if (repository.containsKey(normalizedRepoId)) {
             log.info("Repository for template {} already initialized");

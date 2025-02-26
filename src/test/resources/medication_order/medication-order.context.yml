@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: context
 metadata:
   name: "medication order"
@@ -8,8 +8,10 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
 
 context:
-  profileUrl: "MedicationRequest"
-  templateId: "medication order"
+  profile:
+    url: "MedicationRequest"
+  template:
+    id: "medication order"
   archetypes:
     # This list could be computed by the (GUI) tooling, which will help to create these mappings.
     - "openEHR-EHR-INSTRUCTION.medication_order.v2"

@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "fhir",
         "openehr",
         "value",
-        "unidirectional",
         "type"
 })
 
@@ -30,8 +29,6 @@ public class With {
     private String type;
     @JsonProperty("value")
     private String value;
-    @JsonProperty("unidirectional")
-    private String unidirectional;
 
     public With copy() {
         final With with = new With();
@@ -39,7 +36,6 @@ public class With {
         with.setOpenehr(openehr);
         with.setType(type);
         with.setValue(value);
-        with.setUnidirectional(unidirectional);
         return with;
     }
 
@@ -61,24 +57,6 @@ public class With {
 
     public With withFhir(String fhir) {
         this.fhir = fhir;
-        return this;
-    }
-
-    @JsonProperty("unidirectional")
-    public String getUnidirectional() {
-        return unidirectional;
-    }
-
-    /**
-     * (Required)
-     */
-    @JsonProperty("unidirectional")
-    public void setUnidirectional(String unidirectional) {
-        this.unidirectional = unidirectional;
-    }
-
-    public With withUnidirectional(String unidirectional) {
-        this.unidirectional = unidirectional;
         return this;
     }
 

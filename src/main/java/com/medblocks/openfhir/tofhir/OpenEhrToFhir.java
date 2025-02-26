@@ -139,7 +139,7 @@ public class OpenEhrToFhir {
         final WebTemplate webTemplate = openEhrApplicationScopedUtils.parseWebTemplate(operationaltemplate);
         final String flatJson = flatJsonMarshaller.toFlatJson(composition, webTemplate);
         final JsonObject flatJsonObject = gson.fromJson(flatJson, JsonObject.class);
-        final String templateId = OpenFhirMappingContext.normalizeTemplateId(context.getContext().getTemplateId());
+        final String templateId = OpenFhirMappingContext.normalizeTemplateId(context.getContext().getTemplate().getId());
         final Bundle creatingBundle = prepareBundle();
         final Map<String, Boolean> isMultipleByResourceType = new HashMap<>();
         final Map<String, Map<String, Object>> intermediateCaches = new HashMap<>();
@@ -806,8 +806,8 @@ public class OpenEhrToFhir {
                 with.setOpenehr(OPENEHR_ARCHETYPE_FC);
             }
 
-            if (with.getUnidirectional() != null && UNIDIRECTIONAL_TOOPENEHR.equalsIgnoreCase(
-                    with.getUnidirectional())) {
+            if (mapping.getUnidirectional() != null && UNIDIRECTIONAL_TOOPENEHR.equalsIgnoreCase(
+                    mapping.getUnidirectional())) {
                 // this is unidirectional mapping to openEHR only, ignore
                 continue;
             }

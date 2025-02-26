@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: model
 metadata:
   name: EVALUATION.problem_diagnosis.v1
@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-EVALUATION.problem_diagnosis.v1
+    revision: 1.4.1
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Condition
 

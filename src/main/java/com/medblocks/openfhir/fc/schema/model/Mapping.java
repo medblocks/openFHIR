@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
         "extension",
         "appendTo",
         "with",
+        "unidirectional",
         "manual",
         "fhirCondition",
         "openehrCondition",
@@ -47,6 +48,8 @@ public class Mapping {
      */
     @JsonProperty("with")
     private With with;
+    @JsonProperty("unidirectional")
+    private String unidirectional;
     @JsonProperty("manual")
     private List<Manual> manual;
     @JsonProperty("fhirCondition")
@@ -71,6 +74,7 @@ public class Mapping {
         mapping.setOpenehrCondition(openehrCondition == null ? null : openehrCondition.copy());
         mapping.setFollowedBy(followedBy == null ? null : followedBy.copy());
         mapping.setReference(reference == null ? null : reference.copy());
+        mapping.setUnidirectional(unidirectional);
         return mapping;
     }
 
@@ -85,6 +89,7 @@ public class Mapping {
         this.setFollowedBy(copyingFrom.getFollowedBy());
         this.setReference(copyingFrom.getReference());
         this.setManual(copyingFrom.getManual());
+        this.setUnidirectional(copyingFrom.getUnidirectional());
         return this;
     }
 
@@ -142,6 +147,24 @@ public class Mapping {
 
     public Mapping withAppendTo(String appendTo) {
         this.appendTo = name;
+        return this;
+    }
+
+    @JsonProperty("unidirectional")
+    public String getUnidirectional() {
+        return unidirectional;
+    }
+
+    /**
+     * (Required)
+     */
+    @JsonProperty("unidirectional")
+    public void setUnidirectional(String unidirectional) {
+        this.unidirectional = unidirectional;
+    }
+
+    public Mapping withUnidirectional(String unidirectional) {
+        this.unidirectional = unidirectional;
         return this;
     }
 

@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: context
 metadata:
   name:  KDS_medikationsverabreichung.context
@@ -8,8 +8,12 @@ spec:
   version: R4
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration"
-  templateId: "KDS_Medikamentenverabreichungen"
+  profile:
+    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration"
+    version: "2025.0.0"
+  template:
+    id: "KDS_Medikamentenverabreichungen"
+    sem_ver: "5.0.1"
   archetypes:
     - "ACTION.medication.v1"
     - "CLUSTER.medication.v2"
