@@ -150,7 +150,7 @@ mappings:
             value: "available"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0041]/defining_code"
+          targetAttribute: "items[at0041]/defining_code/code_string"
           operator: "one of"
           criteria: "at0062"
         openehr:
@@ -172,7 +172,7 @@ mappings:
             value: "unavailable"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0041]/defining_code"
+          targetAttribute: "items[at0041]/defining_code/code_string"
           operator: "one of"
           criteria: "at0064"
         openehr:
@@ -194,7 +194,7 @@ mappings:
             value: "unsatisfactory"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0041]/defining_code"
+          targetAttribute: "items[at0041]/defining_code/code_string"
           operator: "one of"
           criteria: "at0064"
         openehr:
