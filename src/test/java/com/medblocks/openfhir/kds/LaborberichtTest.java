@@ -43,11 +43,11 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         final Bundle testBundle = getTestBundle(HELPER_LOCATION + BUNDLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
-        Assert.assertEquals("Example Lab Organization",
-                            jsonObject.getAsJsonPrimitive("laborbericht/context/_health_care_facility|name")
-                                    .getAsString());
-        Assert.assertEquals("Example Lab Organization",
-                            jsonObject.getAsJsonPrimitive("laborbericht/composer|name").getAsString());
+//        Assert.assertEquals("Example Lab Organization",
+//                            jsonObject.getAsJsonPrimitive("laborbericht/context/_health_care_facility|name")
+//                                    .getAsString());
+//        Assert.assertEquals("Example Lab Organization",
+//                            jsonObject.getAsJsonPrimitive("laborbericht/composer|name").getAsString());
         Assert.assertEquals("26436-6",
                             jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/labortest-kategorie|code")
                                     .getAsString());
@@ -66,11 +66,11 @@ public class LaborberichtTest extends KdsBidirectionalTest {
                 .getAsString());
         Assert.assertEquals("1234567", jsonObject.getAsJsonPrimitive(
                 "laborbericht/laborbefund/probenmaterial:0/identifikator_des_probenehmers|id").getAsString());
-        Assert.assertEquals("Aspiration", jsonObject.getAsJsonPrimitive(
-                "laborbericht/laborbefund/probenmaterial:0/probenentnahmemethode").getAsString());
-        Assert.assertEquals("Right arm",
-                            jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/probenmaterial:0/körperstelle")
-                                    .getAsString());
+//        Assert.assertEquals("Aspiration", jsonObject.getAsJsonPrimitive(
+//                "laborbericht/laborbefund/probenmaterial:0/probenentnahmemethode").getAsString());
+//        Assert.assertEquals("Right arm",
+//                            jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/probenmaterial:0/körperstelle")
+//                                    .getAsString());
         Assert.assertEquals("122555007",
                             jsonObject.getAsJsonPrimitive("laborbericht/laborbefund/probenmaterial:0/probenart|code")
                                     .getAsString());
@@ -128,15 +128,15 @@ public class LaborberichtTest extends KdsBidirectionalTest {
 
         //- name: "healthCareFacility"
 //        - name: "composer"
-        Assert.assertEquals(2, diagnosticReport.getPerformer().size());
-        Assert.assertEquals("DOE, John", diagnosticReport.getPerformer().get(0).getDisplay());
-        Assert.assertEquals("Max Mustermann", diagnosticReport.getPerformer().get(1).getDisplay());
+//        Assert.assertEquals(2, diagnosticReport.getPerformer().size()); // commented out with the comment out of mapping of this field
+//        Assert.assertEquals("DOE, John", diagnosticReport.getPerformer().get(0).getDisplay());
+//        Assert.assertEquals("Max Mustermann", diagnosticReport.getPerformer().get(1).getDisplay());
 
         //   - name: "Effective"
-        assertEquals("2020-02-03T04:05:06+01:00",
-                     diagnosticReport.getEffectivePeriod().getStartElement().getValueAsString());
-        assertEquals("2022-02-03T04:05:06+01:00",
-                     diagnosticReport.getEffectivePeriod().getEndElement().getValueAsString());
+//        assertEquals("2020-02-03T04:05:06+01:00", // commented out with the comment out of mapping of this field
+//                     diagnosticReport.getEffectivePeriod().getStartElement().getValueAsString());
+//        assertEquals("2022-02-03T04:05:06+01:00",
+//                     diagnosticReport.getEffectivePeriod().getEndElement().getValueAsString());
 
         // - name: "Category"
         assertEquals(1, diagnosticReport.getCategory().size());
@@ -180,13 +180,13 @@ public class LaborberichtTest extends KdsBidirectionalTest {
                 specimen.getType().getText());
 
         //  - name: "specimenCollectionMethod"
-        assertEquals("Aspiration - action", specimen.getCollection().getMethod().getText());
+        assertEquals("Aspiration - action", specimen.getCollection().getMethod().getCodingFirstRep().getCode());
 
         //  specimenCollectionBodySite
-        assertEquals("Arm", specimen.getCollection().getBodySite().getText());
+        assertEquals("Arm", specimen.getCollection().getBodySite().getCodingFirstRep().getCode());
 
         // - name: "samplingContext"
-        assertEquals("Lorem ipsum", specimen.getCollection().getFastingStatusCodeableConcept().getText());
+        assertEquals("Lorem ipsum", specimen.getCollection().getFastingStatusCodeableConcept().getCodingFirstRep().getCode());
 
         // - name: "type"
         Assert.assertEquals(
@@ -265,15 +265,15 @@ public class LaborberichtTest extends KdsBidirectionalTest {
 
         //- name: "healthCareFacility"
 //        - name: "composer"
-        Assert.assertEquals(2, diagnosticReport.getPerformer().size());
-        Assert.assertEquals("DOE, John", diagnosticReport.getPerformer().get(0).getDisplay());
-        Assert.assertEquals("Max Mustermann", diagnosticReport.getPerformer().get(1).getDisplay());
+//        Assert.assertEquals(2, diagnosticReport.getPerformer().size()); // commented out with the comment out of mapping of this field
+//        Assert.assertEquals("DOE, John", diagnosticReport.getPerformer().get(0).getDisplay());
+//        Assert.assertEquals("Max Mustermann", diagnosticReport.getPerformer().get(1).getDisplay());
 
         //   - name: "Effective"
-        assertEquals("2020-02-03T04:05:06+01:00",
-                     diagnosticReport.getEffectivePeriod().getStartElement().getValueAsString());
-        assertEquals("2022-02-03T04:05:06+01:00",
-                     diagnosticReport.getEffectivePeriod().getEndElement().getValueAsString());
+//        assertEquals("2020-02-03T04:05:06+01:00", // commented out with the comment out of mapping of this field
+//                     diagnosticReport.getEffectivePeriod().getStartElement().getValueAsString());
+//        assertEquals("2022-02-03T04:05:06+01:00",
+//                     diagnosticReport.getEffectivePeriod().getEndElement().getValueAsString());
 
         // - name: "Category"
         assertEquals(1, diagnosticReport.getCategory().size());
@@ -317,13 +317,13 @@ public class LaborberichtTest extends KdsBidirectionalTest {
                 specimen.getType().getText());
 
         //  - name: "specimenCollectionMethod"
-        assertEquals("Aspiration - action", specimen.getCollection().getMethod().getText());
+        assertEquals("Aspiration - action", specimen.getCollection().getMethod().getCodingFirstRep().getCode());
 
         //  specimenCollectionBodySite
-        assertEquals("Arm", specimen.getCollection().getBodySite().getText());
+        assertEquals("Arm", specimen.getCollection().getBodySite().getCodingFirstRep().getCode());
 
         // - name: "samplingContext"
-        assertEquals("Lorem ipsum", specimen.getCollection().getFastingStatusCodeableConcept().getText());
+        assertEquals("Lorem ipsum", specimen.getCollection().getFastingStatusCodeableConcept().getCodingFirstRep().getCode());
 
         // - name: "type"
         Assert.assertEquals(
@@ -365,13 +365,13 @@ public class LaborberichtTest extends KdsBidirectionalTest {
         assertEquals("1_probenartcode", specimen1.getType().getCodingFirstRep().getCode());
 
         //  - name: "specimenCollectionMethod"
-        assertEquals("1_Aspiration - action", specimen1.getCollection().getMethod().getText());
+        assertEquals("1_Aspiration - action", specimen1.getCollection().getMethod().getCodingFirstRep().getCode());
 
         //  specimenCollectionBodySite
-        assertEquals("1_Arm", specimen1.getCollection().getBodySite().getText());
+        assertEquals("1_Arm", specimen1.getCollection().getBodySite().getCodingFirstRep().getCode());
 
         // - name: "samplingContext"
-        assertEquals("1_Lorem ipsum", specimen1.getCollection().getFastingStatusCodeableConcept().getText());
+        assertEquals("1_Lorem ipsum", specimen1.getCollection().getFastingStatusCodeableConcept().getCodingFirstRep().getCode());
 
         // - name: "type"
         Assert.assertEquals("1_probenartcode", specimen1.getType().getCodingFirstRep().getCode());

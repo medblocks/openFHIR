@@ -89,10 +89,10 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
 
         final Medication med1 = (Medication) req1.getMedicationReference().getResource();
         final Medication med2 = (Medication) req2.getMedicationReference().getResource();
-        Assert.assertEquals("req0, medication code text", med2.getCode().getText());
+        Assert.assertEquals("req0, medication code text", med2.getCode().getCodingFirstRep().getDisplay());
         Assert.assertEquals("42", med2.getForm().getCodingFirstRep().getCode());
         Assert.assertEquals("52", med1.getForm().getCodingFirstRep().getCode());
-        Assert.assertEquals("req1, medication code text", med1.getCode().getText());
+        Assert.assertEquals("req1, medication code text", med1.getCode().getCodingFirstRep().getDisplay());
         Assert.assertEquals("25.0", med1.getAmount().getNumerator().getValue().toPlainString());
         Assert.assertEquals("mm", med1.getAmount().getNumerator().getUnit());
         Assert.assertEquals("20.0", med2.getAmount().getNumerator().getValue().toPlainString());
@@ -214,7 +214,7 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
 
         Assert.assertEquals("req1, medication code text", med2.getText());
 
-        Assert.assertEquals("req0, medication code text", med1.getCode().getText());
+        Assert.assertEquals("req0, medication code text", med1.getCode().getCodingFirstRep().getDisplay());
         Assert.assertEquals("20.0", med1.getAmount().getNumerator().getValue().toPlainString());
         Assert.assertEquals("mm", med1.getAmount().getNumerator().getUnit());
 
@@ -229,7 +229,7 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
         Assert.assertEquals("Take 1 tablet every 6 hours as needed for pain", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/dosierung:0/dosierung_freitext").getAsString());
         Assert.assertEquals("500.0", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/dosierung:0/dosis/quantity_value|magnitude").getAsString());
         Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/dosierung:0/dosis/quantity_value|unit").getAsString());
-        Assert.assertEquals("Paracetamol 500mg tablet", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/arzneimittel-name").getAsString());
+        Assert.assertEquals("Paracetamol", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/arzneimittel-name").getAsString());
         Assert.assertEquals("385055001", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/darreichungsform|code").getAsString());
         Assert.assertEquals("http://snomed.info/sct", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/darreichungsform|terminology").getAsString());
         Assert.assertEquals("Paracetamol", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/bestandteil:0/bestandteil").getAsString());

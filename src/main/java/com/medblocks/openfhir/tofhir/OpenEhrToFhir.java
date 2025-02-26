@@ -1,6 +1,7 @@
 package com.medblocks.openfhir.tofhir;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_EMPTY;
+import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_NOT_EMPTY;
 import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_NOT_OF;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_ARCHETYPE_FC;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_COMPOSITION_FC;
@@ -541,7 +542,9 @@ public class OpenEhrToFhir {
                                         final boolean isFollowedBy,
                                         final String parentFhirEhr,
                                         final String parentOpenEhr) {
-        if (condition == null || CONDITION_OPERATOR_EMPTY.equals(condition.getOperator())) {
+        if (condition == null
+                || CONDITION_OPERATOR_NOT_EMPTY.equalsIgnoreCase(condition.getOperator())
+                || CONDITION_OPERATOR_EMPTY.equals(condition.getOperator())) {
             return;
         }
         final String stringFromCriteria = openFhirStringUtils.getStringFromCriteria(condition.getCriteria()).getCode();
@@ -863,7 +866,8 @@ public class OpenEhrToFhir {
                 if (mapping.getSlotArchetype() != null) {
                     handleSlotMapping(mapping, resourceType, parentFollowedByFhir, theMapper, firstFlatPath,
                                       definedMappingWithOpenEhr,
-                                      fhirPath, helpers, webTemplate, flatJsonObject, slotContext, openehr,
+                                      openFhirStringUtils.getFhirPathWithConditions(fhirPath, mapping.getFhirCondition(), resourceType, parentFollowedByFhir),
+                                      helpers, webTemplate, flatJsonObject, slotContext, openehr,
                                       possibleRecursion);
                 } else {
                     // adds regex pattern to simplified path in a way that we can extract data from a given flat path
@@ -928,6 +932,7 @@ public class OpenEhrToFhir {
             }
         }
         openEhrCondition.setTargetAttributes(newAttributes);
+        openEhrCondition.setTargetAttribute(null); // nullify the one
     }
 
     public String getPathFromAqlPath(String openEhrPath, WebTemplate webTemplate, String rmType) {
@@ -1064,7 +1069,7 @@ public class OpenEhrToFhir {
 
                 openFhirMapperUtils.prepareFollowedByMappings(followedByMappings,
                                                               fhirPath,
-                                                              openehr,
+                                                              definedMappingWithOpenEhr,
                                                               firstFlatPath);
 
                 prepareOpenEhrToFhirHelpers(theMapper, resourceType, firstFlatPath, followedByMappings, helpers,

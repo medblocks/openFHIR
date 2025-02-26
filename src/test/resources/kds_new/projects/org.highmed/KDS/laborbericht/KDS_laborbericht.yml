@@ -64,7 +64,7 @@ mappings:
 #  - name: "eventTime" #TODO @deprecated needs to go once mapping is updated
 #    extension: "overwrite"
 #    with:
-#      fhir: "$resource.effective.as(DateTime)"
+#      fhir: "$resource.effective.as(DateTimeType)"
 #      openEHR: "$archetype/data[at0001]/events[at0002]/time" # period -> interval event, datetime to pointInTime event
 
   - name: "berichtIdParent"

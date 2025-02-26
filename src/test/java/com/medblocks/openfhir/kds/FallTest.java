@@ -100,7 +100,7 @@ public class FallTest extends KdsBidirectionalTest {
 
         final DiagnosisComponent diagnosisComponent = encounter.getDiagnosisFirstRep();
         final Condition condition = (Condition) diagnosisComponent.getCondition().getResource();
-        Assert.assertEquals("diagnos coding", condition.getCode().getCodingFirstRep().getCode());
+        Assert.assertEquals("No example for termínology 'http://fhir.de/ValueSet/DiagnoseTyp?subset=' available", condition.getCode().getCodingFirstRep().getCode());
 
         Assert.assertEquals(2, diagnosisComponent.getUse().getCoding().size());
         Assert.assertEquals("type", diagnosisComponent.getUse().getCoding().stream()

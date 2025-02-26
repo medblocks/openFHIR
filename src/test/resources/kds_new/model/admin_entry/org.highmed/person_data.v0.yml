@@ -31,7 +31,7 @@ mappings:
 
   - name: "deathDateTime"
     with:
-      fhir: "$resource.deceased.as(DateTime)"
+      fhir: "$resource.deceased.as(DateTimeType)"
       openehr: "$archetype/data[at0001]/items[at0024]"
     manual:
       - name: "deathboolean"

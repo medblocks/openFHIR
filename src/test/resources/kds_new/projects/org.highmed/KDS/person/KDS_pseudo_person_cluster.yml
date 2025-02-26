@@ -2,75 +2,75 @@ engine: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name:  person_pseudo_cluster.v1
-  version: 0.0.1-alpha 
-spec: 
+  version: 0.0.1-alpha
+spec:
   system: FHIR
   version: R4
   extends: CLUSTER.person.v1
 
 mappings:
-#  # not sure if this will work, since we got now 3 mappings in one part
-#  - name: "identifier" #@Gasper see comment of url::value, we could delete all of the mappings below if we used this logic
-#    # since then its just an identifier -> identifier.
-#    extension: "add"
-#    with:
-#      fhir: "$resource"
-#      openehr: "$archetype"
-#      type: "NONE"
-#    followedBy:
-#      mappings:
-#        - name: "anonymizedPseudnomyzed"
-#          with:
-#            fhir: "identifier"
-#            openehr: "/items[at0003]"
-#          openEHRCondition:
-#            targetRoot: "/items[at0003]"
-#            targetAttribute: "type"
-#            operator: "one of"
-#            criteria: "[ANONYED, PSEUDED]"
-#          fhirCondition:
-#            targetRoot: "identifier"
-#            targetAttribute: "type.coding.code"
-#            operator: "one of"
-#            criteria:  "[ANONYED, PSEUDED]"
-#          followedBy:
-#            mappings:
-#              - name: "staticUrl" #@Gasper check if this is working, otherwise i would suggest:
-#                # to parse http://terminology.hl7.org/CodeSystem/v3-ObservationValue::ANONYED into the type and back
-#                # cause i think this one may just create another identifier coding
-#                # there we could also delete this followedby.
-#                with:
-#                  fhir: "$fhirRoot.type.coding"
-#                  openehr: "$reference"
-#                manual:
-#                  - name: "system"
-#                    fhir:
-#                      - path: "system"
-#                        value: "http://terminology.hl7.org/CodeSystem/v3-ObservationValue"
-#
-#        - name: "otherIdentifiers"
-#          with:
-#            fhir: "identifier"
-#            openehr: "/items[at0003]"
-#          openEHRCondition:
-#            targetRoot: "/items[at0003]"
-#            targetAttribute: "type"
-#            operator: "not of"
-#            criteria: "[PSEUDED, ANONYED]"
-#          fhirCondition:
-#            targetRoot: "identifier"
-#            targetAttribute: "type.coding.code"
-#            operator: "not of"
-#            criteria: "[PSEUDED, ANONYED]"
+  # not sure if this will work, since we got now 3 mappings in one part
+  - name: "identifier" #@Gasper see comment of url::value, we could delete all of the mappings below if we used this logic
+    # since then its just an identifier -> identifier.
+    extension: "add"
+    with:
+      fhir: "$resource"
+      openehr: "$archetype"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "anonymizedPseudnomyzed"
+          with:
+            fhir: "identifier"
+            openehr: "/items[at0003]"
+          openehrCondition:
+            targetRoot: "/items[at0003]"
+            targetAttribute: "type"
+            operator: "one of"
+            criteria: "[ANONYED, PSEUDED]"
+          fhirCondition:
+            targetRoot: "identifier"
+            targetAttribute: "type.coding.code"
+            operator: "one of"
+            criteria:  "[ANONYED, PSEUDED]"
+          followedBy:
+            mappings:
+              - name: "staticUrl" #@Gasper check if this is working, otherwise i would suggest:
+                # to parse http://terminology.hl7.org/CodeSystem/v3-ObservationValue::ANONYED into the type and back
+                # cause i think this one may just create another identifier coding
+                # there we could also delete this followedby.
+                with:
+                  fhir: "$fhirRoot.type.coding"
+                  openehr: "$reference"
+                manual:
+                  - name: "system"
+                    fhir:
+                      - path: "system"
+                        value: "http://terminology.hl7.org/CodeSystem/v3-ObservationValue"
+
+        - name: "otherIdentifiers"
+          with:
+            fhir: "identifier"
+            openehr: "/items[at0003]"
+          openehrCondition:
+            targetRoot: "/items[at0003]"
+            targetAttribute: "type"
+            operator: "not of"
+            criteria: "[PSEUDED, ANONYED]"
+          fhirCondition:
+            targetRoot: "identifier"
+            targetAttribute: "type.coding.code"
+            operator: "not of"
+            criteria: "[PSEUDED, ANONYED]"
 
   - name: "address" #Straßenanschrift
     extension: "overwrite"
     with:
-      fhir: "$resource"
+      fhir: "$resource.address"
       openehr: "$archetype/items[openEHR-EHR-CLUSTER.address.v1 and name/value='Straßenanschrift']"
     slotArchetype: "CLUSTER.address.v1"
     fhirCondition:
-      targetRoot: "address"
+      targetRoot: "$resource.address"
       targetAttribute: "type"
       operator: "one of"
       criteria: "[both]"
@@ -78,11 +78,11 @@ mappings:
   - name: "addressPostfach"
     extension: "add"
     with:
-      fhir: "$resource"
+      fhir: "$resource.address"
       openehr: "$archetype/items[openEHR-EHR-CLUSTER.address.v1 and name/value='Postfach']"
     slotArchetype: "CLUSTER.address.v1"
     fhirCondition:
-      targetRoot: "address"
+      targetRoot: "$resource.address"
       targetAttribute: "type"
       operator: "one of"
       criteria: "[postal]"

@@ -94,8 +94,9 @@ mappings:
             
   - name: "effective"
     with:
-      fhir: "$resource.effective.as(DateTime)"
+      fhir: "$resource.effective.as(DateTimeType)"
       openehr: "$composition/context/start_time"
+      type: "DATETIME"
 
   - name: "category"
     with:
@@ -117,7 +118,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0107]"
+          criteria: "at0107"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -129,7 +130,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[registered]"
+          criteria: "registered"
       - name: "partial"
         fhir:
           - path: "status"

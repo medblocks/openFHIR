@@ -20,3 +20,14 @@ mappings:
       targetAttribute: "url"
       operator: "one of"
       criteria: "[http://fhir.de/StructureDefinition/gender-amtlich-de]"
+    followedBy:
+      mappings:
+        - name: "staticExtensionUrl"
+          with:
+            fhir: "$fhirRoot.extension"
+            openehr: "$reference"
+          manual:
+            - name: "staticUrl"
+              fhir:
+                - path: "url"
+                  value: "http://fhir.de/StructureDefinition/gender-amtlich-de"
