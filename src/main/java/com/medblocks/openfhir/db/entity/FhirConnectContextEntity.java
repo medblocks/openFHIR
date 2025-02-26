@@ -43,7 +43,7 @@ public class FhirConnectContextEntity {
         }
         // Serialize object to JSON before persisting
         this.fhirConnectContextJson = new Gson().toJson(fhirConnectContext);
-        this.templateId = fhirConnectContext.getContext().getTemplateId();
+        this.templateId = fhirConnectContext.getContext().getTemplate().getId();
     }
 
     @PostLoad
