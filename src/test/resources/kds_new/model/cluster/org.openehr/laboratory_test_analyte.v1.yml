@@ -214,7 +214,8 @@ mappings:
 #          targetRoot: "../"
 #          targetAttribute: "value"
 #          operator: "one of"
-criteria: "unknown"
+#          criteria: "unknown"
+
 #        openehr:
 #          - path: "null_flavour/value"
 #            value: "unknown"
@@ -226,7 +227,7 @@ criteria: "unknown"
 #          targetRoot: "$fhirRoot"
 #          targetAttribute: "status"
 #          operator: "one of"
-criteria: "unknown"
+#          criteria: "unknown"
 
 
       - name: "entered-in-error"
