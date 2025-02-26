@@ -11,13 +11,6 @@ spec:
 #todo: example of fhir data please, what should this map to??
 mappings:
 
-  - name: "name"
-    extension: "overwrite"
-    with:
-      fhir: "$resource.code.coding.display" # missing coded_text in template
-      openehr: "$archetype/items[at0132]"
-      type: "STRING"
-
   - name: "wirkstofftyp"
     extension: "append"
     appendTo: "ingredients"

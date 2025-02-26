@@ -37,15 +37,6 @@ mappings:
 #              meaning: "the case this composition relates to"
 #              type: "case"
 
-
-
-  - name: "problemDiagnose.problemDiagnoseName.problemDiagnoseNameCode"
-    extension: "overwrite"
-    with:
-      fhir: "code.coding.display"
-      openehr: "$archetype/data[at0001]/items[at0002]" #should be coded text, change in progress bug in AD cant upload template
-      type: "STRING"
-
   - name: "date"
     extension: "add"
     with:
