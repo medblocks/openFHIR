@@ -37,7 +37,7 @@
       </language>
       <purpose>Zur Repräsentation der Medikation, die für eine Person verordnet oder durch die Person angewendet wird. Das Template stellt Medikamente dar, die der Patient zurzeit einnimmt, in der Vergangenheit genommen hat oder in Zukunft einnehmen wird. Dabei kann es sich sowohl um verschreibungspflichtige Medikamente handeln, wie auch um OTC-Präparate, welche ein Patient in Eigenverantwortung einnimmt.</purpose>
       <keywords>Medikation; Medikamentöse Behandlung; Arzneiliste; Medikamentenverordnung; Arzneiverordnung; Medikamentenanwendung; Arzneimittel; Medikamentenanamnese; Medikationsliste; Medikamentenliste; Arzneimittelverordnung; Medikationseintrag, Medikamentenplan, Medikationseintrag, Kerndatensatz, Medication Statement</keywords>
-      <use>Zur Repräsentation der Anwendung von Medikamenten, die für eine Person verordnet oder durch die Person angewendet werden.  Es kann sich dabei um eine aktuelle, frühere oder geplante Anwendung handeln.
+      <use>Zur Repräsentation der Anwendung von Medikamenten, die für eine Person verordnet oder durch die Person angewendet werden.  Es kann sich dabei um eine aktuelle, frühere oder geplante Anwendung handeln. 
 Das Template hat eher den Charakter eines Medikationsplans. Es ist nicht klar, ob der Patient diese Arzneimittel tatsächlich eingenommen hat oder diese verabreicht wurden.
 Wenn ein Fallbezug oder eine Verbindung zu anderen Compositions (z.B. Prozeduren, Diagnose-Templates) hergestellt werden soll, bitte die LINK class aus dem Referenzmodell nutzen.</use>
       <misuse>Nicht zur Repräsentation spezifischer Medikamententherapie oder Medikamentenklassen, die weitere Angaben erfordern (z. B. Protokoll bei Chemotherapie). Dafür bitte eigene Templates anlegen.
@@ -83,7 +83,7 @@ Nicht für die Darstellung der eigentlichen Medikamentenverabreichung, die auf v
           <lower>1</lower>
           <upper>1</upper>
         </occurrences>
-
+        <node_id/>
         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
           <rm_attribute_name>defining_code</rm_attribute_name>
           <existence>
@@ -104,7 +104,7 @@ Nicht für die Darstellung der eigentlichen Medikamentenverabreichung, die auf v
               <lower>1</lower>
               <upper>1</upper>
             </occurrences>
-
+            <node_id/>
             <terminology_id>
               <value>openehr</value>
             </terminology_id>
@@ -133,7 +133,7 @@ Nicht für die Darstellung der eigentlichen Medikamentenverabreichung, die auf v
           <lower>1</lower>
           <upper>1</upper>
         </occurrences>
-
+        <node_id/>
         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
           <rm_attribute_name>other_context</rm_attribute_name>
           <existence>
@@ -217,7 +217,7 @@ Nicht für die Darstellung der eigentlichen Medikamentenverabreichung, die auf v
                           <lower>1</lower>
                           <upper>1</upper>
                         </occurrences>
-
+                        <node_id/>
                       </children>
                     </attributes>
                   </children>
@@ -252,7 +252,7 @@ Nicht für die Darstellung der eigentlichen Medikamentenverabreichung, die auf v
                           <lower>1</lower>
                           <upper>1</upper>
                         </occurrences>
-
+                        <node_id/>
                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                           <rm_attribute_name>defining_code</rm_attribute_name>
                           <existence>
@@ -273,7 +273,7 @@ Nicht für die Darstellung der eigentlichen Medikamentenverabreichung, die auf v
                               <lower>1</lower>
                               <upper>1</upper>
                             </occurrences>
-
+                            <node_id/>
                             <terminology_id>
                               <value>http://hl7.org/fhir/CodeSystem/medication-statement-status</value>
                             </terminology_id>
@@ -317,8 +317,8 @@ Nicht für die Darstellung der eigentlichen Medikamentenverabreichung, die auf v
                   <items id="text">Fall-Beginn</items>
                 </term_definitions>
                 <term_definitions code="at0003">
-                  <items id="description">Der Status des Falls.
-Der Status "abgeschlossen" bedeutet, dass dem Patienten die entsprechende Fallnummer zugeordnet wurde.
+                  <items id="description">Der Status des Falls. 
+Der Status "abgeschlossen" bedeutet, dass dem Patienten die entsprechende Fallnummer zugeordnet wurde. 
 Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnummer fälschlicherweise zugeordnet wurde.</items>
                   <items id="text">Status</items>
                 </term_definitions>
@@ -509,7 +509,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                 <upper>1</upper>
                               </existence>
                               <children xsi:type="C_COMPLEX_OBJECT">
-                                <rm_type_name>DV_TEXT</rm_type_name>
+                                <rm_type_name>DV_CODED_TEXT</rm_type_name>
                                 <occurrences>
                                   <lower_included>true</lower_included>
                                   <upper_included>true</upper_included>
@@ -518,7 +518,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                               </children>
                             </attributes>
                             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -541,7 +541,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                   <rm_attribute_name>value</rm_attribute_name>
                                   <existence>
@@ -562,7 +562,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <item xsi:type="C_STRING">
                                       <list>Arzneimittel-Name</list>
                                     </item>
@@ -602,7 +602,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                   <rm_attribute_name>defining_code</rm_attribute_name>
                                   <existence>
@@ -623,7 +623,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <referenceSetUri>terminology://fhir.hl7.org/ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/medicine-doseform</referenceSetUri>
                                   </children>
                                 </attributes>
@@ -661,7 +661,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                               </children>
                             </attributes>
                             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -684,7 +684,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                   <rm_attribute_name>value</rm_attribute_name>
                                   <existence>
@@ -705,7 +705,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <item xsi:type="C_STRING">
                                       <list>Wirkstärke (Konzentration)</list>
                                     </item>
@@ -764,7 +764,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                   </children>
                                 </attributes>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -787,7 +787,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -808,7 +808,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_STRING">
                                           <list>Bestandteil</list>
                                         </item>
@@ -848,7 +848,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>defining_code</rm_attribute_name>
                                       <existence>
@@ -869,7 +869,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <terminology_id>
                                           <value>local</value>
                                         </terminology_id>
@@ -891,7 +891,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                   </children>
                                 </attributes>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -914,7 +914,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -935,7 +935,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_STRING">
                                           <list>Wirkstofftyp</list>
                                         </item>
@@ -996,7 +996,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -1019,7 +1019,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                           <rm_attribute_name>value</rm_attribute_name>
                                           <existence>
@@ -1040,7 +1040,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <item xsi:type="C_STRING">
                                               <list>Zähler</list>
                                             </item>
@@ -1080,7 +1080,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -1103,7 +1103,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                           <rm_attribute_name>value</rm_attribute_name>
                                           <existence>
@@ -1124,7 +1124,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <item xsi:type="C_STRING">
                                               <list>Nenner</list>
                                             </item>
@@ -1164,7 +1164,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -1185,7 +1185,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_STRING">
                                           <list>Bestandteil-Menge</list>
                                         </item>
@@ -1254,7 +1254,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -1275,7 +1275,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_STRING">
                                           <list>Ja</list>
                                           <list>Nein</list>
@@ -1304,7 +1304,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -1325,7 +1325,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_STRING">
                                           <list>Ist aktiver Bestandteil?</list>
                                         </item>
@@ -1377,7 +1377,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                         <upper>1</upper>
                                       </existence>
                                       <children xsi:type="C_COMPLEX_OBJECT">
-                                        <rm_type_name>DV_TEXT</rm_type_name>
+                                        <rm_type_name>DV_CODED_TEXT</rm_type_name>
                                         <occurrences>
                                           <lower_included>true</lower_included>
                                           <upper_included>true</upper_included>
@@ -1386,7 +1386,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -1409,7 +1409,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                           <rm_attribute_name>value</rm_attribute_name>
                                           <existence>
@@ -1430,7 +1430,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <item xsi:type="C_STRING">
                                               <list>Allgemeiner Wirkstoff</list>
                                             </item>
@@ -1491,7 +1491,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                           </children>
                                         </attributes>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -1514,7 +1514,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                               <rm_attribute_name>value</rm_attribute_name>
                                               <existence>
@@ -1535,7 +1535,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                                   <lower>1</lower>
                                                   <upper>1</upper>
                                                 </occurrences>
-
+                                                <node_id/>
                                                 <item xsi:type="C_STRING">
                                                   <list>Zähler</list>
                                                 </item>
@@ -1575,7 +1575,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                           </children>
                                         </attributes>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -1598,7 +1598,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                               <rm_attribute_name>value</rm_attribute_name>
                                               <existence>
@@ -1619,7 +1619,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                                   <lower>1</lower>
                                                   <upper>1</upper>
                                                 </occurrences>
-
+                                                <node_id/>
                                                 <item xsi:type="C_STRING">
                                                   <list>Nenner</list>
                                                 </item>
@@ -1659,7 +1659,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                           <rm_attribute_name>value</rm_attribute_name>
                                           <existence>
@@ -1680,7 +1680,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <item xsi:type="C_STRING">
                                               <list>Wirkstoffmenge</list>
                                             </item>
@@ -1720,7 +1720,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                   </children>
@@ -1755,7 +1755,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                   </children>
@@ -1788,7 +1788,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                       <children xsi:type="C_COMPLEX_OBJECT">
                                         <rm_type_name>DV_IDENTIFIER</rm_type_name>
@@ -1800,7 +1800,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                   </children>
@@ -1835,7 +1835,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                   </children>
@@ -1899,7 +1899,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                   </children>
@@ -1934,7 +1934,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                   </children>
@@ -1969,7 +1969,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                           <rm_attribute_name>defining_code</rm_attribute_name>
                                           <existence>
@@ -1990,7 +1990,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <terminology_id>
                                               <value>local</value>
                                             </terminology_id>
@@ -2010,7 +2010,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                   </children>
@@ -2045,7 +2045,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                   </children>
@@ -2109,7 +2109,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -2130,7 +2130,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_STRING">
                                           <list>Wirkstoffrelation</list>
                                         </item>
@@ -2286,7 +2286,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                   <rm_attribute_name>value</rm_attribute_name>
                                   <existence>
@@ -2307,7 +2307,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <item xsi:type="C_STRING">
                                       <list>Bestandteil</list>
                                     </item>
@@ -2463,7 +2463,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                               </children>
                             </attributes>
                             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -2486,7 +2486,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                   <rm_attribute_name>value</rm_attribute_name>
                                   <existence>
@@ -2507,7 +2507,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <item xsi:type="C_STRING">
                                       <list>Rezeptur Freitextzeile</list>
                                     </item>
@@ -2723,7 +2723,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                   <rm_attribute_name>magnitude</rm_attribute_name>
                                   <existence>
@@ -2744,7 +2744,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <item xsi:type="C_INTEGER">
                                       <range>
                                         <lower_included>true</lower_included>
@@ -2789,7 +2789,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                               </children>
                               <children xsi:type="C_COMPLEX_OBJECT">
                                 <rm_type_name>DV_INTERVAL&lt;DV_QUANTITY></rm_type_name>
@@ -2801,7 +2801,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                               </children>
                             </attributes>
                           </children>
@@ -2836,7 +2836,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                               </children>
                             </attributes>
                             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -2859,7 +2859,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                   <rm_attribute_name>value</rm_attribute_name>
                                   <existence>
@@ -2880,7 +2880,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <item xsi:type="C_STRING">
                                       <list>Dosierung Freitext</list>
                                     </item>
@@ -2939,7 +2939,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -2960,7 +2960,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_DURATION">
                                           <pattern>PTHMS</pattern>
                                           <range>
@@ -2996,7 +2996,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -3017,7 +3017,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_STRING">
                                           <list>Periode</list>
                                         </item>
@@ -3057,7 +3057,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                   </children>
                                 </attributes>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -3080,7 +3080,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -3101,7 +3101,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_STRING">
                                           <list>Zeitpunkt</list>
                                         </item>
@@ -3141,7 +3141,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                   </children>
                                 </attributes>
                               </children>
@@ -3176,7 +3176,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -3197,7 +3197,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_BOOLEAN">
                                           <true_valid>true</true_valid>
                                           <false_valid>false</false_valid>
@@ -3257,7 +3257,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -3280,7 +3280,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                           <rm_attribute_name>value</rm_attribute_name>
                                           <existence>
@@ -3301,7 +3301,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <item xsi:type="C_STRING">
                                               <list>Ereignis</list>
                                             </item>
@@ -3341,7 +3341,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                           <rm_attribute_name>value</rm_attribute_name>
                                           <existence>
@@ -3362,7 +3362,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <item xsi:type="C_DURATION">
                                               <pattern>PTHMS</pattern>
                                               <range>
@@ -3370,7 +3370,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                                 <upper_included>true</upper_included>
                                                 <lower_unbounded>false</lower_unbounded>
                                                 <upper_unbounded>false</upper_unbounded>
-                                                <lower>PT0H</lower>
+                                                <lower>-PT24H</lower>
                                                 <upper>PT24H</upper>
                                               </range>
                                             </item>
@@ -3398,7 +3398,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                           <rm_attribute_name>value</rm_attribute_name>
                                           <existence>
@@ -3419,7 +3419,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <item xsi:type="C_STRING">
                                               <list>Offset</list>
                                             </item>
@@ -3471,7 +3471,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                   <rm_attribute_name>value</rm_attribute_name>
                                   <existence>
@@ -3492,7 +3492,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <item xsi:type="C_STRING">
                                       <list>Tägliche Dosierung</list>
                                     </item>
@@ -3624,7 +3624,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -3645,7 +3645,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_DURATION">
                                           <pattern>PYMWD</pattern>
                                           <range>
@@ -3680,7 +3680,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -3701,7 +3701,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_STRING">
                                           <list>Periode</list>
                                         </item>
@@ -3741,7 +3741,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                   </children>
                                   <children xsi:type="C_COMPLEX_OBJECT">
                                     <rm_type_name>DV_INTERVAL</rm_type_name>
@@ -3753,7 +3753,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>0</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                   </children>
                                 </attributes>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -3776,7 +3776,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                       <rm_attribute_name>value</rm_attribute_name>
                                       <existence>
@@ -3797,7 +3797,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <item xsi:type="C_STRING">
                                           <list>Zeitpunkt</list>
                                         </item>
@@ -3837,7 +3837,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                   </children>
                                 </attributes>
                               </children>
@@ -3891,7 +3891,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                       </children>
                                     </attributes>
                                     <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -3914,7 +3914,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                           <rm_attribute_name>value</rm_attribute_name>
                                           <existence>
@@ -3935,7 +3935,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <item xsi:type="C_STRING">
                                               <list>Ereignis</list>
                                             </item>
@@ -3975,7 +3975,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                           <rm_attribute_name>value</rm_attribute_name>
                                           <existence>
@@ -3996,7 +3996,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <item xsi:type="C_DURATION">
                                               <pattern>PYMWD</pattern>
                                               <range>
@@ -4030,7 +4030,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                           <lower>1</lower>
                                           <upper>1</upper>
                                         </occurrences>
-
+                                        <node_id/>
                                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                           <rm_attribute_name>value</rm_attribute_name>
                                           <existence>
@@ -4051,7 +4051,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                               <lower>1</lower>
                                               <upper>1</upper>
                                             </occurrences>
-
+                                            <node_id/>
                                             <item xsi:type="C_STRING">
                                               <list>Offset</list>
                                             </item>
@@ -4103,7 +4103,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                                   <rm_attribute_name>value</rm_attribute_name>
                                   <existence>
@@ -4124,7 +4124,7 @@ Der Status "abgebrochen" bedeutet, dass dem Patienten die entsprechende Fallnumm
                                       <lower>1</lower>
                                       <upper>1</upper>
                                     </occurrences>
-
+                                    <node_id/>
                                     <item xsi:type="C_STRING">
                                       <list>Nicht tägliche Dosierung</list>
                                     </item>
@@ -4324,7 +4324,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                               <lower>1</lower>
                               <upper>1</upper>
                             </occurrences>
-
+                            <node_id/>
                             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                               <rm_attribute_name>defining_code</rm_attribute_name>
                               <existence>
@@ -4345,7 +4345,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <referenceSetUri>terminology://fhir.hl7.org/ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/medicine-route-of-administration</referenceSetUri>
                               </children>
                             </attributes>
@@ -4383,7 +4383,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                               <lower>1</lower>
                               <upper>1</upper>
                             </occurrences>
-
+                            <node_id/>
                           </children>
                         </attributes>
                       </children>
@@ -4416,7 +4416,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                               <lower>1</lower>
                               <upper>1</upper>
                             </occurrences>
-
+                            <node_id/>
                           </children>
                         </attributes>
                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -4439,7 +4439,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                               <lower>1</lower>
                               <upper>1</upper>
                             </occurrences>
-
+                            <node_id/>
                             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                               <rm_attribute_name>value</rm_attribute_name>
                               <existence>
@@ -4460,7 +4460,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <item xsi:type="C_STRING">
                                   <list>Behandlungsgrund</list>
                                 </item>
@@ -4529,7 +4529,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                               <lower>1</lower>
                               <upper>1</upper>
                             </occurrences>
-
+                            <node_id/>
                           </children>
                         </attributes>
                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
@@ -4552,7 +4552,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                               <lower>1</lower>
                               <upper>1</upper>
                             </occurrences>
-
+                            <node_id/>
                             <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                               <rm_attribute_name>value</rm_attribute_name>
                               <existence>
@@ -4573,7 +4573,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                                   <lower>1</lower>
                                   <upper>1</upper>
                                 </occurrences>
-
+                                <node_id/>
                                 <item xsi:type="C_STRING">
                                   <list>Hinweis</list>
                                 </item>
@@ -4692,7 +4692,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                           <lower>1</lower>
                           <upper>1</upper>
                         </occurrences>
-
+                        <node_id/>
                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                           <rm_attribute_name>defining_code</rm_attribute_name>
                           <existence>
@@ -4713,7 +4713,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                               <lower>1</lower>
                               <upper>1</upper>
                             </occurrences>
-
+                            <node_id/>
                             <referenceSetUri>terminology://fhir.hl7.org/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/medication-statement-category</referenceSetUri>
                           </children>
                         </attributes>
@@ -4739,7 +4739,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                           <lower>1</lower>
                           <upper>1</upper>
                         </occurrences>
-
+                        <node_id/>
                         <attributes xsi:type="C_SINGLE_ATTRIBUTE">
                           <rm_attribute_name>value</rm_attribute_name>
                           <existence>
@@ -4760,7 +4760,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                               <lower>1</lower>
                               <upper>1</upper>
                             </occurrences>
-
+                            <node_id/>
                             <item xsi:type="C_STRING">
                               <list>Kategorie der Medikation</list>
                             </item>
@@ -4800,7 +4800,7 @@ Wenn mehrere Dosierungen angegeben werden, gibt die "Dosierungsreihenfolge" die 
                           <lower>1</lower>
                           <upper>1</upper>
                         </occurrences>
-
+                        <node_id/>
                       </children>
                     </attributes>
                   </children>
