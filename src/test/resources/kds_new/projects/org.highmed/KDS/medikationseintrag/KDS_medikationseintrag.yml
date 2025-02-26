@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name:  KDS_medikamentenstatement

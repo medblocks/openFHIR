@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: extension
 metadata:
   name: KDS_problem_diagnose
@@ -73,7 +73,7 @@ mappings:
     with:
       fhir: "$resource"
       openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
-      unidirectional: "fhir->openehr" # only if importing, for fhir export openEHR wont check for icd-10 and will just use the archetypes where the icd-10 was mapped to.
+    unidirectional: "fhir->openehr" # only if importing, for fhir export openEHR wont check for icd-10 and will just use the archetypes where the icd-10 was mapped to.
     slotArchetype: "CLUSTER.anatomical_location.v1"
     fhirCondition:
       targetRoot: "$resource.code.coding"
@@ -87,7 +87,7 @@ mappings:
     with:
       fhir: "$resource.bodySite"
       openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
-      unidirectional: "openEHR->fhir"
+    unidirectional: "openEHR->fhir"
     slotArchetype: "CLUSTER.anatomical_location.v1"
 
   - name: "icd10ProblemDiagnose"
