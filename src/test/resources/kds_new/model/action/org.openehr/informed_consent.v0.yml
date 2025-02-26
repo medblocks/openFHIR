@@ -35,11 +35,11 @@ mappings:
     manual:
       - name: "draft"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Initial"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "524"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -52,17 +52,17 @@ mappings:
             value: "draft"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "524"
 
       - name: "proposed"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Planned"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "526"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -74,17 +74,17 @@ mappings:
             value: "proposed"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "526"
 
       - name: "active"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Active"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "245"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -96,17 +96,17 @@ mappings:
             value: "active"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "245"
 
       - name: "rejected"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Cancelled"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "528"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -118,17 +118,17 @@ mappings:
             value: "rejected"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "528"
 
       - name: "inactive"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Completed"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "532"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -140,17 +140,17 @@ mappings:
             value: "inactive"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "532"
 
       - name: "entered-in-error"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Cancelled"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "528"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -162,7 +162,7 @@ mappings:
             value: "entered-in-error"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "528"
 

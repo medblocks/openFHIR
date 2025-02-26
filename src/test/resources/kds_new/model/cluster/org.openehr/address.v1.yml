@@ -54,9 +54,9 @@ mappings:
           manual:
             - name: "physical"
               openehr:
-                - path: "terminology_id"
+                - path: "defining_code/terminology_id/value"
                   value: "local"
-                - path: "defining_code"
+                - path: "defining_code/code_string"
                   value: "at0011"
                 - path: "value"
                   value: "Physical"
@@ -71,15 +71,15 @@ mappings:
                   value: "physical"
               openehrCondition:
                 targetRoot: "$openehrRoot"
-                targetAttribute: "defining_code"
+                targetAttribute: "defining_code/code_string"
                 operator: "one of"
                 criteria: "at0011"
 
             - name: "postal"
               openehr:
-                - path: "terminology_id"
+                - path: "defining_code/terminology_id/value"
                   value: "local"
-                - path: "defining_code"
+                - path: "defining_code/code_string"
                   value: "at0012"
                 - path: "value"
                   value: "Postal"
@@ -93,15 +93,15 @@ mappings:
                   value: "postal"
               openehrCondition:
                 targetRoot: "$openehrRoot"
-                targetAttribute: "defining_code"
+                targetAttribute: "defining_code/code_string"
                 operator: "one of"
                 criteria: "at0012"
 
             - name: "both"
               openehr:
-                - path: "terminology_id"
+                - path: "defining_code/terminology_id/value"
                   value: "local"
-                - path: "defining_code"
+                - path: "defining_code/code_string"
                   value: "at0013"
                 - path: "value"
                   value: "Both"
@@ -115,7 +115,7 @@ mappings:
                   value: "both"
               openehrCondition:
                 targetRoot: "$openehrRoot"
-                targetAttribute: "defining_code"
+                targetAttribute: "defining_code/code_string"
                 operator: "one of"
                 criteria: "at0013"
 

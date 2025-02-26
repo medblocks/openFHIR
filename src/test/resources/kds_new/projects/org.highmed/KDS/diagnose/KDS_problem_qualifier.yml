@@ -24,13 +24,13 @@ mappings:
       targetRoot: "$resource"
       targetAttribute: "extension.url"
       operator: "not of"
-      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+      criteria: "http://hl7.org/fhir/StructureDefinition/condition-related"
     manual:
       - name: "maindiagnose"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0064"
           - path: "value"
             value: "Hauptdiagnose"
@@ -46,13 +46,13 @@ mappings:
       targetRoot: "$resource"
       targetAttribute: "extension.url"
       operator: "one of"
-      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+      criteria: "http://hl7.org/fhir/StructureDefinition/condition-related"
     manual:
       - name: "nebendiagnose"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0066"
           - path: "value"
             value: "Nebendiagnose"

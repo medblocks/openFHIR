@@ -76,7 +76,7 @@ mappings:
       targetRoot: "$resource.identifier"
       targetAttribute: "type.coding.code"
       operator: "one of"
-      criteria: "[FILL]"
+      criteria: "FILL"
     followedBy:
       mappings:
         - name: "type"

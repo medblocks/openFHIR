@@ -27,7 +27,9 @@ mappings:
             targetRoot: "/items[at0003]"
             targetAttribute: "type"
             operator: "one of"
-            criteria: "[ANONYED, PSEUDED]"
+            criterias:
+              - "ANONYED"
+              - "PSEUDED"
           fhirCondition:
             targetRoot: "identifier"
             targetAttribute: "type.coding.code"
@@ -56,12 +58,16 @@ mappings:
             targetRoot: "/items[at0003]"
             targetAttribute: "type"
             operator: "not of"
-            criteria: "[PSEUDED, ANONYED]"
+            criterias:
+              - "ANONYED"
+              - "PSEUDED"
           fhirCondition:
             targetRoot: "identifier"
             targetAttribute: "type.coding.code"
             operator: "not of"
-            criteria: "[PSEUDED, ANONYED]"
+            criterias:
+              - "ANONYED"
+              - "PSEUDED"
 
   - name: "address" #Straßenanschrift
     extension: "overwrite"
@@ -73,7 +79,7 @@ mappings:
       targetRoot: "$resource.address"
       targetAttribute: "type"
       operator: "one of"
-      criteria: "[both]"
+      criteria: "both"
 
   - name: "addressPostfach"
     extension: "add"
@@ -85,6 +91,6 @@ mappings:
       targetRoot: "$resource.address"
       targetAttribute: "type"
       operator: "one of"
-      criteria: "[postal]"
+      criteria: "postal"
 
 
