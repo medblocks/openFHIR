@@ -88,7 +88,7 @@ mappings:
             value: "order"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "activities[at0001]/description[at0009]/items[at0065]/defining_code"
+          targetAttribute: "activities[at0001]/description[at0009]/items[at0065]/defining_code/code_string"
           operator: "one of"
           criteria: "order"
 
@@ -119,7 +119,7 @@ mappings:
             value: "laboratory"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "activities[at0001]/description[at0009]/items[at0148]/defining_code"
+          targetAttribute: "activities[at0001]/description[at0009]/items[at0148]/defining_code/code_string"
           operator: "one of"
           criteria: "laboratory"
 
@@ -148,6 +148,6 @@ mappings:
             value: "completed"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "protocol[at0008]/items[at0127]/defining_code"
+          targetAttribute: "protocol[at0008]/items[at0127]/defining_code/code_string"
           operator: "one of"
           criteria: "completed"
