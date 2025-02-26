@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: model
 metadata:
   name:  ACTION.procedure.v1
@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ACTION.procedure.v1
+    revision: 1.4.7
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Procedure
     multiple: true

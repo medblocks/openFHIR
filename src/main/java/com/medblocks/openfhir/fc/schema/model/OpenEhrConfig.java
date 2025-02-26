@@ -5,6 +5,7 @@ package com.medblocks.openfhir.fc.schema.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Data;
 
 
 /**
@@ -15,9 +16,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "archetype"
+    "archetype",
+    "revision"
 })
-
+@Data
 public class OpenEhrConfig {
 
     /**
@@ -28,30 +30,14 @@ public class OpenEhrConfig {
     @JsonProperty("archetype")
     private String archetype;
 
+    @JsonProperty("revision")
+    private String revision;
+
     public OpenEhrConfig copy() {
         final OpenEhrConfig openEhrConfig = new OpenEhrConfig();
         openEhrConfig.setArchetype(archetype);
+        openEhrConfig.setRevision(revision);
         return openEhrConfig;
-    }
-
-    /**
-     * 
-     * (Required)
-     * 
-     */
-    @JsonProperty("archetype")
-    public String getArchetype() {
-        return archetype;
-    }
-
-    /**
-     * 
-     * (Required)
-     * 
-     */
-    @JsonProperty("archetype")
-    public void setArchetype(String archetype) {
-        this.archetype = archetype;
     }
 
     public OpenEhrConfig withArchetype(String archetype) {

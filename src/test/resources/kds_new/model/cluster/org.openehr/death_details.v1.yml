@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: model
 metadata:
   name: CLUSTER.death_details.v1.Person
@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.death_details.v1
+    revision: 1.0.3
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/DateTime
 

@@ -45,7 +45,7 @@ public class ProdOpenFhirMappingContext extends OpenFhirMappingContext {
     public void initMappingCache(final FhirConnectContext context,
                                  final OPERATIONALTEMPLATE operationaltemplate,
                                  final WebTemplate webTemplate) {
-        final String templateId = context.getContext().getTemplateId();
+        final String templateId = context.getContext().getTemplate().getId();
         final String normalizedRepoId = normalizeTemplateId(templateId);
         if (repository.containsKey(normalizedRepoId)) {
             log.info("Repository for template {} already initialized", normalizedRepoId);

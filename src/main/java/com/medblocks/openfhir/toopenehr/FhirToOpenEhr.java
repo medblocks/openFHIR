@@ -93,7 +93,7 @@ public class FhirToOpenEhr {
         final Bundle toRunEngineOn = prepareBundle(resource);
 
         final WebTemplate webTemplate = openEhrApplicationScopedUtils.parseWebTemplate(operationaltemplate);
-        final String templateId = OpenFhirMappingContext.normalizeTemplateId(context.getContext().getTemplateId());
+        final String templateId = OpenFhirMappingContext.normalizeTemplateId(context.getContext().getTemplate().getId());
 
         // helper objects for mapping to openEHR, where 'helpers' are regular ones constructed as part of the
         // mapping and 'coverHelpers' are those that don't directly reference the FHIR Resource but another one
@@ -500,8 +500,8 @@ public class FhirToOpenEhr {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
                 continue;
             }
-            if (with.getUnidirectional() != null && FhirConnectConst.UNIDIRECTIONAL_TOFHIR.equals(
-                    with.getUnidirectional())) {
+            if (mapping.getUnidirectional() != null && FhirConnectConst.UNIDIRECTIONAL_TOFHIR.equals(
+                    mapping.getUnidirectional())) {
                 // this is unidirectional mapping toFhir only, ignore
                 continue;
             }
