@@ -116,9 +116,9 @@ public class FhirConnectService {
 
             // only if the same one for that template id doesn't already exist!!
             if (StringUtils.isBlank(id)
-                    && contextRepository.findByTemplateId(fhirContext.getContext().getTemplateId()) != null) {
+                    && contextRepository.findByTemplateId(fhirContext.getContext().getTemplate().getId()) != null) {
                 log.error("[{}] A context mapper for this templateId {} already exists.", reqId,
-                          fhirContext.getContext().getTemplateId());
+                          fhirContext.getContext().getTemplate().getId());
                 throw new RequestValidationException("Couldn't create a FhirConnectContext. Invalid one.",
                                                      List.of("A context mapper for this template already exists."));
             }

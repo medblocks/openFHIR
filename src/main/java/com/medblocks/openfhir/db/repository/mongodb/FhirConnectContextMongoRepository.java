@@ -7,6 +7,6 @@ import org.springframework.data.mongodb.repository.Query;
 
 public interface FhirConnectContextMongoRepository extends FhirConnectContextRepository, MongoRepository<FhirConnectContextEntity, String> {
 
-    @Query("{'fhirConnectContext.openEHR.templateId': ?0}")
+    @Query("{'fhirConnectContext.context.template.id': ?0}")
     FhirConnectContextEntity findByTemplateId(final String templateId);
 }
