@@ -16,7 +16,7 @@ spec:
       - targetRoot: "$resource.verificationStatus" # exclude all conditions with entered-in-error, since there is no mapping for this code
         targetAttribute: "coding.code"
         operator: "not of"
-        criteria: "[entered-in-error]"
+        criteria: "entered-in-error"
 
 mappings:
 

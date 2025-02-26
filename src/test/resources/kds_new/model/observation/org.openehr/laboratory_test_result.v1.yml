@@ -140,7 +140,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0037]"
+          criteria: "at0037"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -152,7 +152,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[partial]"
+          criteria: "partial"
 
       - name: "preliminary"
         fhir:
@@ -162,7 +162,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0120]"
+          criteria: "at0120"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -174,7 +174,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[preliminary]"
+          criteria: "preliminary"
 
       - name: "final"
         fhir:
@@ -184,7 +184,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0038]"
+          criteria: "at0038"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -196,7 +196,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[final]"
+          criteria: "final"
 
       - name: "amended"
         fhir:
@@ -206,7 +206,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0040]"
+          criteria: "at0040"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -218,7 +218,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[amended]"
+          criteria: "amended"
 
       - name: "corrected"
         fhir:
@@ -228,7 +228,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0115]"
+          criteria: "at0115"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -240,7 +240,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[corrected]"
+          criteria: "corrected"
 
       - name: "appended"
         fhir:
@@ -250,7 +250,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0119]"
+          criteria: "at0119"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -262,7 +262,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[appended]"
+          criteria: "appended"
 
       - name: "cancelled"
         fhir:
@@ -272,7 +272,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0074]"
+          criteria: "at0074"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -284,7 +284,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[cancelled]"
+          criteria: "cancelled"
 
       - name: "entered-in-error"
         fhir:
@@ -294,7 +294,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0116]"
+          criteria: "at0116"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -306,7 +306,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[entered-in-error]"
+          criteria: "entered-in-error"
 
   #      - name: "unknown"
   #        fhir:
@@ -316,7 +316,7 @@ mappings:
   #          targetRoot: "../"
   #          targetAttribute: "value"
   #          operator: "one of"
-  #          criteria: "[unknown]"
+  criteria: "unknown"
   #        openehr:
   #          - path: "value"
   #            value: "unknown"
@@ -324,7 +324,7 @@ mappings:
   #          targetRoot: "$fhirRoot"
   #          targetAttribute: "status"
   #          operator: "one of"
-  #          criteria: "[unknown]"
+  criteria: "unknown"
 
 
 

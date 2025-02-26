@@ -45,7 +45,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[draft]"
+          criteria: "draft"
 
         fhir:
           - path: "status"
@@ -54,7 +54,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[524]"
+          criteria: "524"
 
       - name: "proposed"
         openehr:
@@ -68,7 +68,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[proposed]"
+          criteria: "proposed"
         fhir:
           - path: "status"
             value: "proposed"
@@ -76,7 +76,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[526]"
+          criteria: "526"
 
       - name: "active"
         openehr:
@@ -90,7 +90,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[[active]]"
+          criteria: "active"
         fhir:
           - path: "status"
             value: "active"
@@ -98,7 +98,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[245]"
+          criteria: "245"
 
       - name: "rejected"
         openehr:
@@ -112,7 +112,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[rejected]"
+          criteria: "rejected"
         fhir:
           - path: "status"
             value: "rejected"
@@ -120,7 +120,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[528]"
+          criteria: "528"
 
       - name: "inactive"
         openehr:
@@ -134,7 +134,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[inactive]"
+          criteria: "inactive"
         fhir:
           - path: "status"
             value: "inactive"
@@ -142,7 +142,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[532]"
+          criteria: "532"
 
       - name: "entered-in-error"
         openehr:
@@ -156,7 +156,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[entered-in-error]"
+          criteria: "entered-in-error"
         fhir:
           - path: "status"
             value: "entered-in-error"
@@ -164,7 +164,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[528]"
+          criteria: "528"
 
 
 

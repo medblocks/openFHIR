@@ -76,7 +76,7 @@ mappings:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
       operator: "one of"
-      criteria: "[ro]"
+      criteria: "ro"
     followedBy:
       mappings:
         - name: "hardcodingRoomSystem"
@@ -98,7 +98,7 @@ mappings:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
       operator: "one of"
-      criteria: "[bd]"
+      criteria: "bd"
     followedBy:
       mappings:
         - name: "hardcodingBedSystem"
@@ -120,7 +120,7 @@ mappings:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
       operator: "one of"
-      criteria: "[wa]"
+      criteria: "wa"
     followedBy:
       mappings:
         - name: "hardcodingWardSystem"

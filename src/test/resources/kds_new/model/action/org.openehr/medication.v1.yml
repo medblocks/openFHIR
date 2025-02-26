@@ -76,7 +76,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[228]"
+          criteria: "228"
         openehr:
           - path: "terminology_id"
             value: "openehr"
@@ -88,7 +88,7 @@ mappings:
           targetRoot: "$resource"
           targetAttribute: "category.coding.code"
           operator: "one of"
-          criteria: "[outpatient]"
+          criteria: "outpatient"
 
       - name: "inpatient"
         fhir:
@@ -102,7 +102,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[232]"
+          criteria: "232"
         openehr:
           - path: "terminology_id"
             value: "openehr"
@@ -114,7 +114,7 @@ mappings:
           targetRoot: "$resource"
           targetAttribute: "category.coding.code"
           operator: "one of"
-          criteria: "[inpatient]"
+          criteria: "inpatient"
 
       - name: "community"
         fhir:
@@ -128,7 +128,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[238]"
+          criteria: "238"
         openehr:
           - path: "terminology_id"
             value: "openehr"
@@ -140,7 +140,7 @@ mappings:
           targetRoot: "$resource"
           targetAttribute: "category.coding.code"
           operator: "one of"
-          criteria: "[community]"
+          criteria: "community"
 
   - name: "note"
     with:
@@ -297,7 +297,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[245]"
+          criteria: "245"
         openehr:
           - path: "terminology_id"
             value: "openehr"
@@ -309,7 +309,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[active]"
+          criteria: "active"
 
       - name: "inactive"
         fhir:
@@ -319,7 +319,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[532]"
+          criteria: "532"
         openehr:
           - path: "terminology_id"
             value: "openehr"
@@ -331,7 +331,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[inactive]"
+          criteria: "inactive"
 
       - name: "entered-in-error"
         fhir:
@@ -341,7 +341,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[528]"
+          criteria: "528"
         openehr:
           - path: "terminology_id"
             value: "openehr"
@@ -353,4 +353,4 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[entered-in-error]"
+          criteria: "entered-in-error"

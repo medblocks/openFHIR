@@ -23,4 +23,4 @@ mappings:
       targetRoot: "$fhirRoot" # fhirRoot is already an Identifier
       targetAttribute: "system"
       operator: "one of"
-      criteria: "[external identifier]"
+      criteria: "external identifier"

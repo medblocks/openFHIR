@@ -21,7 +21,7 @@ mappings:
       targetRoot: "$resource.verificationStatus"
       targetAttribute: "coding.code"
       operator: "not of"
-      criteria: "[entered-in-error]"
+      criteria: "entered-in-error"
     manual:
       - name: "provisional"
         openehr:
@@ -36,7 +36,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[provisional]"
+          criteria: "provisional"
 
         fhir:
           - path: "code"
@@ -49,7 +49,7 @@ mappings:
           targetRoot: "$archetype"
           targetAttribute: "items[at0004]/code_string"
           operator: "one of"
-          criteria: "[at0017]"
+          criteria: "at0017"
 
       - name: "differential"
         openehr:
@@ -63,7 +63,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[differential]"
+          criteria: "differential"
 
         fhir:
           - path: "code"
@@ -76,7 +76,7 @@ mappings:
           targetRoot: "$archetype"
           targetAttribute: "items[at0004]/code_string"
           operator: "one of"
-          criteria: "[at0017]"
+          criteria: "at0017"
 
       - name: "preliminary"
         openehr:
@@ -90,7 +90,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[unconfirmed]"
+          criteria: "unconfirmed"
 
         fhir:
           - path: "code"
@@ -103,7 +103,7 @@ mappings:
           targetRoot: "$archetype"
           targetAttribute: "items[at0004]/code_string"
           operator: "one of"
-          criteria: "[at0016]"
+          criteria: "at0016"
 
       - name: "established"
         openehr:
@@ -117,7 +117,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[confirmed]"
+          criteria: "confirmed"
 
         fhir:
           - path: "code"
@@ -130,7 +130,7 @@ mappings:
           targetRoot: "$archetype"
           targetAttribute: "items[at0004]/code_string"
           operator: "one of"
-          criteria: "[at0018]"
+          criteria: "at0018"
 
       - name: "refuted"
         openehr:
@@ -144,7 +144,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[refuted]"
+          criteria: "refuted"
 
         fhir:
           - path: "code"
@@ -157,4 +157,4 @@ mappings:
           targetRoot: "$archetype"
           targetAttribute: "items[at0004]/code_string"
           operator: "one of"
-          criteria: "[at0088]"
+          criteria: "at0088"
