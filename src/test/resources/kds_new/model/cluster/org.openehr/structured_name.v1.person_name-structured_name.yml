@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.structured_name.v1
+    revision: 1.0.1
 
 mappings:
   - name: "name"

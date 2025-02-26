@@ -8,7 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ACTION.medication.v1
-    revision:
+    revision: 1.3.0
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/MedicationAdministration
 

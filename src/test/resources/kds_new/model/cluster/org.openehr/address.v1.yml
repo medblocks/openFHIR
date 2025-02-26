@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.address.v1
+    revision: 1.1.2
 
 mappings:
   - name: "streetaddress"

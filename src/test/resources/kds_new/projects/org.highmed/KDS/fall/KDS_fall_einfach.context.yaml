@@ -8,8 +8,12 @@ spec:
   version: R4
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
-  templateId: "KDS_Fall_einfach"
+  profile:
+    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+    version: "2025.0.0"
+  template:
+    id: "KDS_Fall_einfach"
+    sem_ver: "9.0.0"
   archetypes:
     - "EVALUATION.problem_diagnosis.v1"
     - "ADMIN_ENTRY.episode_institution_local.v0"

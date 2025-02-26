@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.person.v1
+    revision: 1.0.3
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement #if you put Person, it will map it again
 

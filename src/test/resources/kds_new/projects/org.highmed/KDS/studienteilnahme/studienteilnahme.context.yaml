@@ -8,8 +8,12 @@ spec:
   version: R4
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
-  templateId: "Studienteilnahme"
+  profile:
+    url: "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+    version: "2025.0.0"
+  template:
+    id: "Studienteilnahme"
+    sem_ver: "13.0.0"
   archetypes:
     - "ACTION.informed_consent.v0"
     - "CLUSTER.study_details.v1"

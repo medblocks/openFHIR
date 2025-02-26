@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.study_participation.v1
+    revision: 1.0.4
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 

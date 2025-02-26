@@ -8,8 +8,12 @@ spec:
   version: R4
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache"
-  templateId: "KDS_Todesursache"
+  profile:
+    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache"
+    version: "2025.0.0"
+  template:
+    id: "KDS_Todesursache"
+    sem_ver: "7.0.0"
   archetypes:
     - "EVALUATION.cause_of_death.v1"
     - "CLUSTER.problem_qualifier.v2"
