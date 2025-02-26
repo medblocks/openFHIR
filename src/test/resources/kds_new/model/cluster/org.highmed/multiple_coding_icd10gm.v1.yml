@@ -30,7 +30,7 @@ mappings:
           targetRoot: "$fhirRoot.value.as(CodeableConcept).coding"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[*]"
+          criteria: "*"
         fhir:
           - path: "code"
             value: "*"
@@ -42,7 +42,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0003]"
+          criteria: "at0003"
 
       - name: "ätiology"
         openehr:
@@ -56,7 +56,7 @@ mappings:
           targetRoot: "$fhirRoot.value.as(CodeableConcept).coding"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[†]"
+          criteria: "†"
         fhir:
           - path: "code"
             value: "†"
@@ -68,7 +68,7 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0002]"
+          criteria: "at0002"
 
       - name: "additionalInformation"
         openehr:
@@ -82,7 +82,7 @@ mappings:
           targetRoot: "$fhirRoot.value.as(CodeableConcept).coding"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[!]"
+          criteria: "!"
         fhir:
           - path: "code"
             value: "!"
@@ -94,4 +94,4 @@ mappings:
           targetRoot: "$openehrRoot"
           targetAttribute: "defining_code"
           operator: "one of"
-          criteria: "[at0004]"
+          criteria: "at0004"

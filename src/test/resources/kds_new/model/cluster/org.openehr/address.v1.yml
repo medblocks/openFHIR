@@ -64,7 +64,7 @@ mappings:
                 targetRoot: "$fhirRoot"
                 targetAttribute: "code"
                 operator: "one of"
-                criteria: "[physical]"
+                criteria: "physical"
 
               fhir:
                 - path: "code"
@@ -73,7 +73,7 @@ mappings:
                 targetRoot: "$openehrRoot"
                 targetAttribute: "defining_code"
                 operator: "one of"
-                criteria: "[at0011]"
+                criteria: "at0011"
 
             - name: "postal"
               openehr:
@@ -87,7 +87,7 @@ mappings:
                 targetRoot: "$fhirRoot"
                 targetAttribute: "code"
                 operator: "one of"
-                criteria: "[postal]"
+                criteria: "postal"
               fhir:
                 - path: "code"
                   value: "postal"
@@ -95,7 +95,7 @@ mappings:
                 targetRoot: "$openehrRoot"
                 targetAttribute: "defining_code"
                 operator: "one of"
-                criteria: "[at0012]"
+                criteria: "at0012"
 
             - name: "both"
               openehr:
@@ -109,7 +109,7 @@ mappings:
                 targetRoot: "$fhirRoot"
                 targetAttribute: "code"
                 operator: "one of"
-                criteria: "[both]"
+                criteria: "both"
               fhir:
                 - path: "code"
                   value: "both"
@@ -117,7 +117,7 @@ mappings:
                 targetRoot: "$openehrRoot"
                 targetAttribute: "defining_code"
                 operator: "one of"
-                criteria: "[at0013]"
+                criteria: "at0013"
 
         
 

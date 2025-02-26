@@ -142,7 +142,7 @@ mappings:
       targetRoot: "$resource"
       targetAttribute: "status"
       operator: "not in"
-      criteria: "[entered-in-error]"
+      criteria: "entered-in-error"
     manual:
       - name: "available"
         fhir:
@@ -152,7 +152,7 @@ mappings:
           targetRoot: "$archetype"
           targetAttribute: "items[at0041]/defining_code"
           operator: "one of"
-          criteria: "[at0062]"
+          criteria: "at0062"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -164,7 +164,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[available]"
+          criteria: "available"
 
       - name: "unavailable"
         fhir:
@@ -174,7 +174,7 @@ mappings:
           targetRoot: "$archetype"
           targetAttribute: "items[at0041]/defining_code"
           operator: "one of"
-          criteria: "[at0064]"
+          criteria: "at0064"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -186,7 +186,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[unavailable]"
+          criteria: "unavailable"
 
       - name: "unsatisfactory"
         fhir:
@@ -196,7 +196,7 @@ mappings:
           targetRoot: "$archetype"
           targetAttribute: "items[at0041]/defining_code"
           operator: "one of"
-          criteria: "[at0064]"
+          criteria: "at0064"
         openehr:
           - path: "terminology_id"
             value: "local"
@@ -208,7 +208,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[unsatisfactory]"
+          criteria: "unsatisfactory"
 
 
 
