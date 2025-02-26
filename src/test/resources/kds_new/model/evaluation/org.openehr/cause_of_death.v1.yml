@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: model
 metadata:
   name:  EVALUATION.cause_of_death.v1
@@ -87,7 +87,7 @@ mappings:
     with:
       fhir: "$resource.category"
       openehr: "$archetype"
-      unidirectional: "openEHR->fhir"
+    unidirectional: "openEHR->fhir"
     followedBy:
       mappings:
         - name: "category_code_coding_loinc"
