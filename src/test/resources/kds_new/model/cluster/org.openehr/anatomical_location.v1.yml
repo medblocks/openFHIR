@@ -12,21 +12,22 @@ spec:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/CodeableConcept
 
 mappings:
-  - name: "bodySiteText"
-    with:
-      fhir: "$resource.bodySite.text"
-      openehr: "$archetype/items[at0001]" #Name of body site
-    fhirCondition:
-      targetRoot: "$resource.bodySite"
-      targetAttribute: "coding"
-      operator: "empty"
-
+#  - name: "bodySiteText"
+#    with:
+#      fhir: "$resource.bodySite.text"
+#      openehr: "$archetype.body_site_name" #Name of body site
+#    fhirCondition:
+#      targetRoot: "$resource.bodySite"
+#      targetAttribute: "coding"
+#      operator: "empty"
+#
   - name: "bodySiteCoded"
     with:
-      fhir: "$resource.bodySite"
+      fhir: "$fhirRoot"
       openehr: "$archetype/items[at0001]" #Name of body site
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttribute: "items[at0001]"
-      operator: "type"
-      criteria: ["DV_CODED_TEXT"]
+      type: "CODEABLECONCEPT"
+#    openehrCondition:
+#      targetRoot: "$archetype"
+#      targetAttribute: "/items[at0001]"
+#      operator: "type"
+#      criteria: ["DV_CODED_TEXT"]

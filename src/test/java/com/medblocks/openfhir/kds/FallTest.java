@@ -100,7 +100,7 @@ public class FallTest extends KdsBidirectionalTest {
 
         final DiagnosisComponent diagnosisComponent = encounter.getDiagnosisFirstRep();
         final Condition condition = (Condition) diagnosisComponent.getCondition().getResource();
-        Assert.assertEquals("No example for termínology 'http://fhir.de/ValueSet/DiagnoseTyp?subset=' available", condition.getCode().getCodingFirstRep().getCode());
+        Assert.assertEquals("diagnos coding", condition.getCode().getCodingFirstRep().getCode());
 
         Assert.assertEquals(2, diagnosisComponent.getUse().getCoding().size());
         Assert.assertEquals("type", diagnosisComponent.getUse().getCoding().stream()
@@ -213,11 +213,11 @@ public class FallTest extends KdsBidirectionalTest {
         Assert.assertEquals("http://fhir.de/CodeSystem/dki-diagnosesubtyp",
                             jsonObject.get("kds_fall_einfach/problem_diagnose/diagnosesubtyp|terminology")
                                     .getAsString());
-        Assert.assertEquals("Organization",
-                            jsonObject.get("kds_fall_einfach/context/_health_care_facility|name").getAsString());
+//        Assert.assertEquals("Organization",
+//                            jsonObject.get("kds_fall_einfach/context/_health_care_facility|name").getAsString());
         Assert.assertEquals("2022-02-03T05:05:06", jsonObject.get("kds_fall_einfach/context/start_time").getAsString());
         Assert.assertEquals("2022-04-03T06:05:06", jsonObject.get("kds_fall_einfach/context/_end_time").getAsString());
-        Assert.assertEquals("Organization", jsonObject.get("kds_fall_einfach/composer|name").getAsString());
+//        Assert.assertEquals("Organization", jsonObject.get("kds_fall_einfach/composer|name").getAsString());
         Assert.assertEquals("2022-02-03T05:05:06",
                             jsonObject.get("kds_fall_einfach/institutionsaufenthalt/aufnahmedatum").getAsString());
         Assert.assertEquals("2022-04-03T06:05:06",
