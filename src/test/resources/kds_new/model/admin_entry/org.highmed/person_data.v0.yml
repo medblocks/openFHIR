@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ADMIN_ENTRY.person_data.v0
+    revision: 0.0.1-alpha
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Patient
     condition:

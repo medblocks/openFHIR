@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.observation_status_fhir.v1
+    revision: 1.0.0
 
 mappings:
 

@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-EVALUATION.vital_status.v1
+    revision: 1.0.1-alpha
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Observation
 

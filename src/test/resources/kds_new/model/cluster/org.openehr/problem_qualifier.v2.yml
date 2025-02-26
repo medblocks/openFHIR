@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.problem_qualifier.v2
+    revision: 2.0.1
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 

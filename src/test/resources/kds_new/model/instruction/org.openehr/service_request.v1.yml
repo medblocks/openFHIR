@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-INSTRUCTION.service_request.v1
+    revision: 1.1.3-alpha
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/ServiceRequest
     multiple: false # whether output of openEHR -> FHIR should return multiple Resources or a single one.

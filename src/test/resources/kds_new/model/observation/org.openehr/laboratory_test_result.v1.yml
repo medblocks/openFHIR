@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-OBSERVATION.laboratory_test_result.v1
+    revision: 1.2.5
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/DiagnosticReport
     multiple: false # whether output of openEHR -> FHIR should return multiple Resources or a single one.

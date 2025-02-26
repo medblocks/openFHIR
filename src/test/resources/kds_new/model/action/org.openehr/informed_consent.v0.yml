@@ -8,7 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ACTION.informed_consent.v0
-    revision:
+    revision: 0.0.1-alpha
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Consent
 

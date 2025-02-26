@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.specimen.v1
+    revision: 1.1.2
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 
