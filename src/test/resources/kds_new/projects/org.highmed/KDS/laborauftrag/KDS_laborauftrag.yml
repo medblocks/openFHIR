@@ -71,9 +71,9 @@ mappings:
     manual:
       - name: "intentStatic"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "http://hl7.org/fhir/request-intent"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "order"
           - path: "value"
             value: "Order"
@@ -81,7 +81,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "category.coding.code"
           operator: "one of"
-          criteria: "[laboratory]"
+          criteria: "laboratory"
 
         fhir:
           - path: "intent"
@@ -90,7 +90,7 @@ mappings:
           targetRoot: "$archetype"
           targetAttribute: "activities[at0001]/description[at0009]/items[at0065]/defining_code"
           operator: "one of"
-          criteria: "[order]"
+          criteria: "order"
 
   - name: "category"
     extension: "overwrite"
@@ -100,9 +100,9 @@ mappings:
     manual:
       - name: "categoryStatic"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "http://terminology.hl7.org/ValueSet/observation-category"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "laboratory"
           - path: "value"
             value: "Laboratory"
@@ -110,7 +110,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "category.coding.code"
           operator: "one of"
-          criteria: "[laboratory]"
+          criteria: "laboratory"
 
         fhir:
           - path: "system"
@@ -121,7 +121,7 @@ mappings:
           targetRoot: "$archetype"
           targetAttribute: "activities[at0001]/description[at0009]/items[at0148]/defining_code"
           operator: "one of"
-          criteria: "[laboratory]"
+          criteria: "laboratory"
 
   - name: "status"
     extension: "overwrite"
@@ -131,9 +131,9 @@ mappings:
     manual:
       - name: "categoryStatic"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "http://hl7.org/fhir/ValueSet/request-status"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "completed"
           - path: "value"
             value: "Completed"
@@ -141,7 +141,7 @@ mappings:
           targetRoot: "$resource"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[completed]"
+          criteria: "completed"
 
         fhir:
           - path: "status"
@@ -150,4 +150,4 @@ mappings:
           targetRoot: "$archetype"
           targetAttribute: "protocol[at0008]/items[at0127]/defining_code"
           operator: "one of"
-          criteria: "[completed]"
+          criteria: "completed"

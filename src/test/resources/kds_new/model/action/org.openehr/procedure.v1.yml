@@ -107,15 +107,15 @@ mappings:
             value: "unknown"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "524"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Initial"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "524"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -129,15 +129,15 @@ mappings:
             value: "preparation"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "526"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Planned"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "526"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -151,15 +151,15 @@ mappings:
             value: "not-done"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "527"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Postponed"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "527"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -173,15 +173,15 @@ mappings:
             value: "preparation"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "529"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Scheduled"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "529"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -195,15 +195,15 @@ mappings:
             value: "entered-in-error"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "528"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Cancelled"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "528"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -217,15 +217,15 @@ mappings:
             value: "in-progress"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "245"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Active"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "245"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -239,15 +239,15 @@ mappings:
             value: "on-hold"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "530"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Suspended"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "530"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -261,15 +261,15 @@ mappings:
             value: "stopped"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "531"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Aborted"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "531"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -283,15 +283,15 @@ mappings:
             value: "completed"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "532"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Completed"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "532"
         fhirCondition:
           targetRoot: "$fhirRoot"
@@ -305,15 +305,15 @@ mappings:
             value: "unknown"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
           criteria: "533"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Expired"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "533"
         fhirCondition:
           targetRoot: "$fhirRoot"

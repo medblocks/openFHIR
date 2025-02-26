@@ -56,7 +56,7 @@ mappings:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht]"
+      criteria: "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht"
     followedBy:
       mappings:
         - name: "staticUrl"
@@ -78,7 +78,7 @@ mappings:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum]"
+      criteria: "http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum"
     followedBy:
       mappings:
         - name: "staticUrl"

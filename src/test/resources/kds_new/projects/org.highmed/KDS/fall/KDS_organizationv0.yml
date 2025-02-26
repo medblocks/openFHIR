@@ -28,7 +28,7 @@ mappings:
       targetRoot: "coding"
       targetAttribute: "system"
       operator: "one of"
-      criteria: "[http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel]"
+      criteria: "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel"
     followedBy:
       mappings:
         - name: "fachabteilungsschluessel"
