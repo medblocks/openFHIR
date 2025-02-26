@@ -9,9 +9,9 @@ spec:
   extends: CLUSTER.anatomical_location.v1
 
 mappings:
-  - name: "seitenlokalisation"
-    extension: "add"
-    with:
-      fhir: "$fhirRoot.value.as(Coding)"
-      openehr: "items[at0002]"
-      type: "CODING"
+#  - name: "seitenlokalisation"
+#    extension: "add"
+#    with:
+#      fhir: "$fhirRoot.value"
+#      openehr: "items[at0002]"
+#      type: "CODING"
