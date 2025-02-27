@@ -90,6 +90,17 @@ mappings:
                 - path: "code"
                   value: "ro"
 
+  - name: "roomLocation"
+    unidirectional: "fhir->openehr" #only fhir->openehr, because openehr->fhir we wouldn't be creating a new Location just for the identifier
+    with:
+      fhir: "$resource.location.location.identifier.value" # if resolved within the Location itself
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0023]"
+    fhirCondition:
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
+      operator: "one of"
+      criteria: "ro"
+
   - name: "bed"
     with:
       fhir: "$resource.location.location.as(Reference).identifier.value"
@@ -112,6 +123,17 @@ mappings:
                 - path: "code"
                   value: "bd"
 
+  - name: "bedLocation"
+    unidirectional: "fhir->openehr" #only fhir->openehr, because openehr->fhir we wouldn't be creating a new Location just for the identifier
+    with:
+      fhir: "$resource.location.location.identifier.value" # if resolved within the Location itself
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0024]"
+    fhirCondition:
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
+      operator: "one of"
+      criteria: "bd"
+
   - name: "station"
     with:
       fhir: "$resource.location.location.as(Reference).identifier.value"
@@ -133,3 +155,14 @@ mappings:
                   value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
                 - path: "code"
                   value: "wa"
+
+  - name: "stationLocation"
+    unidirectional: "fhir->openehr" #only fhir->openehr, because openehr->fhir we wouldn't be creating a new Location just for the identifier
+    with:
+      fhir: "$resource.location.location.identifier.value" # if resolved within the Location itself
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0022]"
+    fhirCondition:
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
+      operator: "one of"
+      criteria: "wa"
