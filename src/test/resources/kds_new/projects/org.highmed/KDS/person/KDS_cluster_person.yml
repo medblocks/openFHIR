@@ -33,7 +33,7 @@ mappings:
       targetRoot: "address"
       targetAttribute: "type"
       operator: "one of"
-      criteria: "[both]"
+      criteria: "both"
 
   - name: "addressPostfach"
     extension: "add"
@@ -45,4 +45,4 @@ mappings:
       targetRoot: "address"
       targetAttribute: "type"
       operator: "one of"
-      criteria: "[postal]"
+      criteria: "postal"

@@ -40,7 +40,7 @@ mappings:
       targetRoot: "$resource.identifier"
       targetAttribute: "type.coding.code"
       operator: "one of"
-      criteria: "[VN]"
+      criteria: "VN"
 
   - name: "serviceProvider" # TODO deprecated needs to be deleted
     extension: "add"
@@ -66,7 +66,7 @@ mappings:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://fhir.de/StructureDefinition/Aufnahmegrund]"
+      criteria: "http://fhir.de/StructureDefinition/Aufnahmegrund"
     followedBy:
       mappings:
         - name: "aufnahmegrund"
@@ -87,7 +87,7 @@ mappings:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[ErsteUndZweiteStelle]"
+            criteria: "ErsteUndZweiteStelle"
 
         - name: "dritteStelle"
           with:
@@ -98,7 +98,7 @@ mappings:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[DritteStelle]"
+            criteria: "DritteStelle"
 
 
         - name: "vierteStelle"
@@ -110,7 +110,7 @@ mappings:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[VierteStelle]"
+            criteria: "VierteStelle"
 
 
   - name: "recordingDismissal"
@@ -136,7 +136,7 @@ mappings:
             targetRoot: "dischargeDisposition.extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[http://fhir.de/StructureDefinition/Entlassungsgrund]"
+            criteria: "http://fhir.de/StructureDefinition/Entlassungsgrund"
           followedBy:
             mappings:
               - name: "entlassungsgrundUrl"

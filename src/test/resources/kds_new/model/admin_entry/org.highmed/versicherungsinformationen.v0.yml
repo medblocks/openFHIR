@@ -21,7 +21,7 @@ mappings:
       targetRoot: "$fhirRoot"
       targetAttribute: "system"
       operator: "one of"
-      criteria: "[http://fhir.de/sid/gkv/kvid-10]"
+      criteria: "http://fhir.de/sid/gkv/kvid-10"
     followedBy:
       mappings:
         - name: "staticUrl"

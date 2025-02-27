@@ -19,7 +19,7 @@ mappings:
       targetRoot: "$fhirRoot.start.extension" #parent selector from jsonpath-plus its like ..
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
+      criteria: "http://fhir.de/StructureDefinition/lebensphase"
     followedBy:
       mappings:
         - name: "extension"
@@ -41,7 +41,7 @@ mappings:
       targetRoot: "$fhirRoot.end.extension" #parent selector from jsonpath-plus
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
+      criteria: "http://fhir.de/StructureDefinition/lebensphase"
     followedBy:
       mappings:
         - name: "extension"

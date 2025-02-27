@@ -33,4 +33,6 @@ mappings:
 #      targetRoot: "identifier"
 #      targetAttribute: "type.coding.code"
 #      operator: "one of"
-#      criteria: "[PSEUDED, ANONYED]"
+#      criterias:
+#       - "PSEUDED"
+#       - "ANONYED"

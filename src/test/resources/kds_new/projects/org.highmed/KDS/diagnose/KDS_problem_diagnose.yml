@@ -56,7 +56,7 @@ mappings:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-assertedDate]"
+      criteria: "http://hl7.org/fhir/StructureDefinition/condition-assertedDate"
     followedBy:
       mappings:
         - name: "staticURL"
@@ -79,7 +79,7 @@ mappings:
       targetRoot: "$resource.code.coding"
       targetAttribute: "system"
       operator: "not contains"
-      criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]" # execute cluster here if no icd-10 code is provided, otherwise the cluster is below specified
+      criteria: "http://fhir.de/CodeSystem/bfarm/icd-10-gm" # execute cluster here if no icd-10 code is provided, otherwise the cluster is below specified
 
 # because we're overwriting bodySiteCluster altogether above, meaning when going to openehr to fhir, we're missing out on bodySite mappings
   - name: "bodySiteClusterToFhir"
@@ -97,7 +97,7 @@ mappings:
       targetRoot: "coding"
       targetAttribute: "system"
       operator: "one of"
-      criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]"
+      criteria: "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
     followedBy:
       mappings:
         - name: "codeIcd10Diagnosesicherheit"
@@ -109,7 +109,7 @@ mappings:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+            criteria: "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit"
           followedBy:
             mappings:
               - name: "extension"
@@ -130,7 +130,7 @@ mappings:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen]"
+            criteria: "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen"
           followedBy:
             mappings:
               - name: "extension"
@@ -158,7 +158,7 @@ mappings:
                   targetRoot: "$fhirRoot"
                   targetAttribute: "url"
                   operator: "one of"
-                  criteria: "[http://fhir.de/StructureDefinition/seitenlokalisation]"
+                  criteria: "http://fhir.de/StructureDefinition/seitenlokalisation"
 
   - name: "dateTime"
     extension: "overwrite"
@@ -215,7 +215,7 @@ mappings:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+      criteria: "http://hl7.org/fhir/StructureDefinition/condition-related"
     followedBy:
       mappings:
         - name: "extensionUrl"
@@ -242,6 +242,6 @@ mappings:
                 slotArchetype: "EVALUATION.problem_diagnosis.v1"
                 openehrCondition:
                   targetRoot: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
-                  targetAttribute: "data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/defining_code"
+                  targetAttribute: "data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/defining_code/code_string"
                   operator: "one of"
-                  criteria: "[at0064]"
+                  criteria: "at0064"

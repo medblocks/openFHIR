@@ -19,7 +19,7 @@ mappings:
       targetRoot: "$fhirRoot.extension"
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://fhir.de/StructureDefinition/gender-amtlich-de]"
+      criteria: "http://fhir.de/StructureDefinition/gender-amtlich-de"
     followedBy:
       mappings:
         - name: "staticExtensionUrl"
