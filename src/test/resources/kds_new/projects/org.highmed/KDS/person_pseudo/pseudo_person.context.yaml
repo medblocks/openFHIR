@@ -22,7 +22,6 @@ context:
     - "CLUSTER.person_birth_data_iso.v0"
   extensions:
     - "KDS_admin_entry_perso_pseudo"
-    - "KDS_person_data.v0"
     - "KDS_person_pseudo_cluster.v1"
     - "KDS_gender.v1"
   start: "ADMIN_ENTRY.person_data.v0"
