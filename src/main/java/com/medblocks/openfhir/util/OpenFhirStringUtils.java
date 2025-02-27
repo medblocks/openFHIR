@@ -76,6 +76,7 @@ public class OpenFhirStringUtils {
 //        openEhrTypes.add("terminology");
         openEhrTypes.add("terminology_id");
         openEhrTypes.add("terminology_id/value");
+        openEhrTypes.add("defining_code/code_string");
         openEhrTypes.add("defining_code");
         openEhrTypes.add("value");
         for (String openEhrType : openEhrTypes) {

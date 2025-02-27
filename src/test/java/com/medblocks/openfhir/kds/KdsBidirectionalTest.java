@@ -123,7 +123,7 @@ public abstract class KdsBidirectionalTest {
 
         final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(new Gson().toJson(flatPaths),
                                                                                      webTemplate);
-        fhirToOpenEhr.enrichComposition(compositionFromFlat);
+        fhirToOpenEhr.enrichComposition(compositionFromFlat,null);
 
 
         if (testAgainstEhrBase()) {

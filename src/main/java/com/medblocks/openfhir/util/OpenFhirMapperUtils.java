@@ -77,16 +77,22 @@ public class OpenFhirMapperUtils {
         }
         final String[] paths = pathWithAqlSuffix.split("/");
         final List<String> pathsAsList = Arrays.asList(paths);
-        final String aqlSuffix = pathsAsList.get(pathsAsList.size()-1);
+        String aqlSuffix;
+        if(!pathWithAqlSuffix.startsWith("|")) {
+            aqlSuffix = pathsAsList.get(pathsAsList.size() - 1);
+        } else{
+            aqlSuffix = pathWithAqlSuffix;
+        }
         switch (aqlSuffix) {
             case "defining_code":
             case "|defining_code":
             case "code_string":
             case "|code_string":
+            case "|defining_code/code_string":
                 return "|"+FhirConnectConst.OPENEHR_CODE;
             case "terminology_id":
             case "|terminology_id":
-            case "terminology_id/value":
+            case "|terminology_id/value":
                 return "|"+FhirConnectConst.OPENEHR_TERMINOLOGY;
         }
         return "";
@@ -99,7 +105,8 @@ public class OpenFhirMapperUtils {
         return path.endsWith("defining_code")
                 || path.endsWith("code_string")
                 || path.endsWith("terminology_id")
-                || path.endsWith("terminology_id/value");
+                || path.endsWith("terminology_id/value")
+                || path.endsWith("defining_code/code_string");
     }
 
     public String removeAqlSuffix(final String path) {
