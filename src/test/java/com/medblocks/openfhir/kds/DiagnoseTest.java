@@ -87,7 +87,7 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                                     .getExtensionsByUrl("http://fhir.de/StructureDefinition/lebensphase")
                                     .get(0).getValue()).getCodingFirstRep().getCode());
 
-//         - name: "severity"
+//         - name: "schweregrad"
         Assert.assertEquals((second ? "referenced_" : "") + "42",
                             condition.getSeverity().getCodingFirstRep().getCode());
         Assert.assertEquals(
@@ -190,18 +190,18 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("Confirmed diagnosis",
                             jsonObject.get("diagnose/diagnose:0/diagnosesicherheit|value").getAsString());
         Assert.assertEquals("at0002", jsonObject.get(
-                "diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|code").getAsString());
+                "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|code").getAsString());
         Assert.assertEquals("local", jsonObject.get(
-                "diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|terminology").getAsString());
+                "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|terminology").getAsString());
         Assert.assertEquals("†", jsonObject.get(
-                "diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|value").getAsString());
-        Assert.assertEquals("†", jsonObject.get("diagnose/diagnose:0/anatomical_location/body_site_name|code")
+                "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|value").getAsString());
+        Assert.assertEquals("†", jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|code")
                 .getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc",
-                            jsonObject.get("diagnose/diagnose:0/anatomical_location/body_site_name|terminology")
+                            jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|terminology")
                                     .getAsString());
         Assert.assertEquals("Primary code in multiple coding",
-                            jsonObject.get("diagnose/diagnose:0/anatomical_location/body_site_name|value")
+                            jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|value")
                                     .getAsString());
         Assert.assertEquals("Secondary malignant neoplasm of lymph node",
                             jsonObject.get("diagnose/diagnose:0/freitextbeschreibung").getAsString());
@@ -220,12 +220,12 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                             jsonObject.get("diagnose/diagnose:0/lebensphase/ende|terminology").getAsString());
         Assert.assertEquals("End of middle age phase",
                             jsonObject.get("diagnose/diagnose:0/lebensphase/ende|value").getAsString());
-        Assert.assertEquals("24484000", jsonObject.get("diagnose/diagnose:0/severity|code").getAsString());
+        Assert.assertEquals("24484000", jsonObject.get("diagnose/diagnose:0/schweregrad|code").getAsString());
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/condition-severity",
-                            jsonObject.get("diagnose/diagnose:0/severity|terminology").getAsString());
-        Assert.assertEquals("Severe", jsonObject.get("diagnose/diagnose:0/severity|value").getAsString());
+                            jsonObject.get("diagnose/diagnose:0/schweregrad|terminology").getAsString());
+        Assert.assertEquals("Severe", jsonObject.get("diagnose/diagnose:0/schweregrad|value").getAsString());
         Assert.assertEquals("encounter-id-1245",
-                            jsonObject.get("diagnose/context/case_identification/case_identifier").getAsString());
+                            jsonObject.get("diagnose/context/fallidentifikation/fall-kennung").getAsString());
         Assert.assertEquals("2025-02-03T05:05:06",
                             jsonObject.get("diagnose/diagnose:0/feststellungsdatum").getAsString());
         Assert.assertEquals("active", jsonObject.get("diagnose/diagnose:0/klinischer_status/klinischer_status|code")
@@ -250,18 +250,18 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("Confirmed diagnosis",
                             jsonObject.get("diagnose/diagnose:0/diagnosesicherheit|value").getAsString());
         Assert.assertEquals("at0002", jsonObject.get(
-                "diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|code").getAsString());
+                "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|code").getAsString());
         Assert.assertEquals("local", jsonObject.get(
-                "diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|terminology").getAsString());
+                "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|terminology").getAsString());
         Assert.assertEquals("†", jsonObject.get(
-                "diagnose/diagnose:0/multiple_coding_icd-10-gm/multiple_coding_identifier|value").getAsString());
-        Assert.assertEquals("†", jsonObject.get("diagnose/diagnose:0/anatomical_location/body_site_name|code")
+                "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|value").getAsString());
+        Assert.assertEquals("†", jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|code")
                 .getAsString());
         Assert.assertEquals("local",
-                            jsonObject.get("diagnose/diagnose:0/anatomical_location/body_site_name|terminology")
+                            jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|terminology")
                                     .getAsString());
         Assert.assertEquals("Primary code in multiple coding",
-                            jsonObject.get("diagnose/diagnose:0/anatomical_location/body_site_name|value")
+                            jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|value")
                                     .getAsString());
         Assert.assertEquals("Secondary malignant neoplasm of lymph node",
                             jsonObject.get("diagnose/diagnose:0/freitextbeschreibung").getAsString());
@@ -277,12 +277,12 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                             jsonObject.get("diagnose/diagnose:0/lebensphase/ende|terminology").getAsString());
         Assert.assertEquals("End of middle age phase",
                             jsonObject.get("diagnose/diagnose:0/lebensphase/ende|value").getAsString());
-        Assert.assertEquals("24484000", jsonObject.get("diagnose/diagnose:0/severity|code").getAsString());
+        Assert.assertEquals("24484000", jsonObject.get("diagnose/diagnose:0/schweregrad|code").getAsString());
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/condition-severity",
-                            jsonObject.get("diagnose/diagnose:0/severity|terminology").getAsString());
-        Assert.assertEquals("Severe", jsonObject.get("diagnose/diagnose:0/severity|value").getAsString());
+                            jsonObject.get("diagnose/diagnose:0/schweregrad|terminology").getAsString());
+        Assert.assertEquals("Severe", jsonObject.get("diagnose/diagnose:0/schweregrad|value").getAsString());
         Assert.assertEquals("encounter-id-1245",
-                            jsonObject.get("diagnose/context/case_identification/case_identifier").getAsString());
+                            jsonObject.get("diagnose/context/fallidentifikation/fall-kennung").getAsString());
         Assert.assertEquals("2025-02-03T05:05:06",
                             jsonObject.get("diagnose/diagnose:0/feststellungsdatum").getAsString());
         Assert.assertEquals("active", jsonObject.get("diagnose/diagnose:0/klinischer_status/klinischer_status|code")
@@ -294,12 +294,12 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                 .getAsString());
 //
 //        Assert.assertEquals("L",
-//                            jsonObject.get("diagnose/diagnose:0/anatomical_location/laterality|code").getAsString());
+//                            jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/laterality|code").getAsString());
 //        Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
-//                            jsonObject.get("diagnose/diagnose:0/anatomical_location/laterality|terminology")
+//                            jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/laterality|terminology")
 //                                    .getAsString());
 //        Assert.assertEquals("Left side",
-//                            jsonObject.get("diagnose/diagnose:0/anatomical_location/laterality|value").getAsString());
+//                            jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/laterality|value").getAsString());
 
         Assert.assertEquals("ref_C34.1", jsonObject.get("diagnose/diagnose:1/kodierte_diagnose").getAsString());
         Assert.assertEquals("ref_S", jsonObject.get("diagnose/diagnose:1/diagnosesicherheit|code").getAsString());
@@ -308,18 +308,18 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("ref_Suspected diagnosis",
                             jsonObject.get("diagnose/diagnose:1/diagnosesicherheit|value").getAsString());
         Assert.assertEquals("at0003", jsonObject.get(
-                "diagnose/diagnose:1/multiple_coding_icd-10-gm/multiple_coding_identifier|code").getAsString());
+                "diagnose/diagnose:1/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|code").getAsString());
         Assert.assertEquals("local", jsonObject.get(
-                "diagnose/diagnose:1/multiple_coding_icd-10-gm/multiple_coding_identifier|terminology").getAsString());
+                "diagnose/diagnose:1/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|terminology").getAsString());
         Assert.assertEquals("*", jsonObject.get(
-                "diagnose/diagnose:1/multiple_coding_icd-10-gm/multiple_coding_identifier|value").getAsString());
-        Assert.assertEquals("*", jsonObject.get("diagnose/diagnose:1/anatomical_location/body_site_name|code")
+                "diagnose/diagnose:1/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|value").getAsString());
+        Assert.assertEquals("*", jsonObject.get("diagnose/diagnose:1/anatomische_lokalisation/name_der_körperstelle|code")
                 .getAsString());
         Assert.assertEquals("local",
-                            jsonObject.get("diagnose/diagnose:1/anatomical_location/body_site_name|terminology")
+                            jsonObject.get("diagnose/diagnose:1/anatomische_lokalisation/name_der_körperstelle|terminology")
                                     .getAsString());
         Assert.assertEquals("ref_Primary code in multiple coding",
-                            jsonObject.get("diagnose/diagnose:1/anatomical_location/body_site_name|value")
+                            jsonObject.get("diagnose/diagnose:1/anatomische_lokalisation/name_der_körperstelle|value")
                                     .getAsString());
         Assert.assertEquals("Malignant neoplasm of upper lobe, bronchus or lung",
                             jsonObject.get("diagnose/diagnose:1/freitextbeschreibung").getAsString());
@@ -337,10 +337,10 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                             jsonObject.get("diagnose/diagnose:1/lebensphase/ende|terminology").getAsString());
         Assert.assertEquals("ref_End of middle age phase",
                             jsonObject.get("diagnose/diagnose:1/lebensphase/ende|value").getAsString());
-        Assert.assertEquals("ref_24484000", jsonObject.get("diagnose/diagnose:1/severity|code").getAsString());
+        Assert.assertEquals("ref_24484000", jsonObject.get("diagnose/diagnose:1/schweregrad|code").getAsString());
         Assert.assertEquals("http://snomed.info/sct",
-                            jsonObject.get("diagnose/diagnose:1/severity|terminology").getAsString());
-        Assert.assertEquals("ref_Severe", jsonObject.get("diagnose/diagnose:1/severity|value").getAsString());
+                            jsonObject.get("diagnose/diagnose:1/schweregrad|terminology").getAsString());
+        Assert.assertEquals("ref_Severe", jsonObject.get("diagnose/diagnose:1/schweregrad|value").getAsString());
         Assert.assertEquals("2125-02-03T05:05:06",
                             jsonObject.get("diagnose/diagnose:1/feststellungsdatum").getAsString());
         Assert.assertEquals("ref_active", jsonObject.get("diagnose/diagnose:1/klinischer_status/klinischer_status|code")
