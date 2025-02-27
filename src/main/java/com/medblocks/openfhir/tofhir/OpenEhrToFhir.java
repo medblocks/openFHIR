@@ -595,6 +595,10 @@ public class OpenEhrToFhir {
                 || CONDITION_OPERATOR_TYPE.equals(condition.getOperator())) {
             return;
         }
+        if(condition.getCriterias() != null && condition.getCriterias().size() > 1) {
+            // you don't know which one to hardcode, so do nothing
+            return;
+        }
         final String stringFromCriteria = openFhirStringUtils.getStringFromCriteria(condition.getCriteria()).getCode();
 
         final String fhirPathSuffix = ("." + condition.getTargetAttribute());

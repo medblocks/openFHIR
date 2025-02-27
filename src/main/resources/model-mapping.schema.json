@@ -200,18 +200,6 @@
           "required": [
             "targetRoot",
             "operator"
-          ],
-          "oneOf": [
-            {
-              "required": [
-                "targetAttribute"
-              ]
-            },
-            {
-              "required": [
-                "targetAttributes"
-              ]
-            }
           ]
         },
         "openehrCondition": {
