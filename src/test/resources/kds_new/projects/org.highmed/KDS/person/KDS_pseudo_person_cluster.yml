@@ -34,7 +34,9 @@ mappings:
             targetRoot: "identifier"
             targetAttribute: "type.coding.code"
             operator: "one of"
-            criteria:  "[ANONYED, PSEUDED]"
+            criterias:
+              - "ANONYED"
+              - "PSEUDED"
           followedBy:
             mappings:
               - name: "staticUrl" #@Gasper check if this is working, otherwise i would suggest:
