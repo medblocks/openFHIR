@@ -32,7 +32,7 @@ mappings:
             targetRoot: "$fhirRoot.ingredients.extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp]"
+            criteria: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp"
           followedBy:
             mappings:
               - name: "extension"
@@ -58,7 +58,7 @@ mappings:
 #            targetRoot: "$fhirRoot.ingredients.extension"
 #            targetAttribute: "url"
 #            operator: "one of"
-#            criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstoffrelation]"
+#            criteria: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstoffrelation"
 #          followedBy:
 #            mappings:
 #              - name: "ingriedientsReference"
@@ -69,7 +69,7 @@ mappings:
 #                  targetRoot: "extension"
 #                  targetAttribute: "url"
 #                  operator: "one of"
-#                  criteria: "[ingredientReference]"
+#                  criteria: "ingredientReference"
 #                followedBy:
 #                  mappings:
 #                    - name: "relationMedication"
@@ -105,4 +105,4 @@ mappings:
 #                  targetRoot: "extension"
 #                  targetAttribute: "url"
 #                  operator: "one of"
-#                  criteria: "[ingredientUri]"
+#                  criteria: "ingredientUri"

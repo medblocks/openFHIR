@@ -26,13 +26,13 @@ mappings:
             value: "registered"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0015]"
+          criteria: "at0015"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0015"
           - path: "value"
             value: "Registered"
@@ -40,7 +40,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[registered]"
+          criteria: "registered"
 
       - name: "partial"
         fhir:
@@ -48,9 +48,9 @@ mappings:
             value: "partial"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0016]"
+          criteria: "at0016"
 
       - name: "preliminary"
         fhir:
@@ -58,13 +58,13 @@ mappings:
             value: "preliminary"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0017]"
+          criteria: "at0017"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0017"
           - path: "value"
             value: "Preliminary"
@@ -72,7 +72,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[preliminary]"
+          criteria: "preliminary"
 
       - name: "final"
         fhir:
@@ -80,13 +80,13 @@ mappings:
             value: "final"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0018]"
+          criteria: "at0018"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0018"
           - path: "value"
             value: "Final"
@@ -94,7 +94,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[final]"
+          criteria: "final"
 
       - name: "amended"
         fhir:
@@ -102,13 +102,13 @@ mappings:
             value: "amended"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0020]"
+          criteria: "at0020"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0020"
           - path: "value"
             value: "Amended"
@@ -116,7 +116,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[amended]"
+          criteria: "amended"
 
       - name: "corrected"
         fhir:
@@ -124,13 +124,13 @@ mappings:
             value: "corrected"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0019]"
+          criteria: "at0019"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0019"
           - path: "value"
             value: "Corrected"
@@ -138,7 +138,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[corrected]"
+          criteria: "corrected"
 
       - name: "appended"
         fhir:
@@ -146,13 +146,13 @@ mappings:
             value: "appended"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0021]"
+          criteria: "at0021"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0021"
           - path: "value"
             value: "Appended"
@@ -160,7 +160,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[appended]"
+          criteria: "appended"
 
       - name: "cancelled"
         fhir:
@@ -168,13 +168,13 @@ mappings:
             value: "cancelled"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0023]"
+          criteria: "at0023"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0023"
           - path: "value"
             value: "Cancelled"
@@ -182,7 +182,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[cancelled]"
+          criteria: "cancelled"
 
       - name: "entered-in-error"
         fhir:
@@ -190,13 +190,13 @@ mappings:
             value: "entered-in-error"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0022]"
+          criteria: "at0022"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0022"
           - path: "value"
             value: "Entered in error"
@@ -204,7 +204,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[entered-in-error]"
+          criteria: "entered-in-error"
 
 #      - name: "unknown"
 #        fhir:
@@ -214,7 +214,8 @@ mappings:
 #          targetRoot: "../"
 #          targetAttribute: "value"
 #          operator: "one of"
-#          criteria: "[unknown]"
+#          criteria: "unknown"
+
 #        openehr:
 #          - path: "null_flavour/value"
 #            value: "unknown"
@@ -226,7 +227,7 @@ mappings:
 #          targetRoot: "$fhirRoot"
 #          targetAttribute: "status"
 #          operator: "one of"
-#          criteria: "[unknown]"
+#          criteria: "unknown"
 
 
       - name: "entered-in-error"
@@ -235,13 +236,13 @@ mappings:
             value: "entered-in-error"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0005]/defining_code"
+          targetAttribute: "items[at0005]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0022]"
+          criteria: "at0022"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0022"
           - path: "value"
             value: "Entered in error"
@@ -249,7 +250,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[entered-in-error]"
+          criteria: "entered-in-error"
 
   - name: "issued"
     with:

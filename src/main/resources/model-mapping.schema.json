@@ -189,6 +189,9 @@
             "criteria": {
               "type": "string"
             },
+            "criterias": {
+              "type": "array"
+            },
             "identifying": {
               "type": "boolean"
             }
@@ -196,8 +199,7 @@
           "additionalProperties": false,
           "required": [
             "targetRoot",
-            "operator",
-            "criteria"
+            "operator"
           ],
           "oneOf": [
             {
@@ -231,6 +233,9 @@
               "type": "string"
             },
             "criteria": {
+              "type": "string"
+            },
+            "criterias": {
               "type": "string"
             },
             "identifying": {

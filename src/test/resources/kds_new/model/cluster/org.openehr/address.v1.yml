@@ -54,9 +54,9 @@ mappings:
           manual:
             - name: "physical"
               openehr:
-                - path: "terminology_id"
+                - path: "defining_code/terminology_id"
                   value: "local"
-                - path: "defining_code"
+                - path: "defining_code/code_string"
                   value: "at0011"
                 - path: "value"
                   value: "Physical"
@@ -64,22 +64,22 @@ mappings:
                 targetRoot: "$fhirRoot"
                 targetAttribute: "code"
                 operator: "one of"
-                criteria: "[physical]"
+                criteria: "physical"
 
               fhir:
                 - path: "code"
                   value: "physical"
               openehrCondition:
                 targetRoot: "$openehrRoot"
-                targetAttribute: "defining_code"
+                targetAttribute: "defining_code/code_string"
                 operator: "one of"
-                criteria: "[at0011]"
+                criteria: "at0011"
 
             - name: "postal"
               openehr:
-                - path: "terminology_id"
+                - path: "defining_code/terminology_id"
                   value: "local"
-                - path: "defining_code"
+                - path: "defining_code/code_string"
                   value: "at0012"
                 - path: "value"
                   value: "Postal"
@@ -87,21 +87,21 @@ mappings:
                 targetRoot: "$fhirRoot"
                 targetAttribute: "code"
                 operator: "one of"
-                criteria: "[postal]"
+                criteria: "postal"
               fhir:
                 - path: "code"
                   value: "postal"
               openehrCondition:
                 targetRoot: "$openehrRoot"
-                targetAttribute: "defining_code"
+                targetAttribute: "defining_code/code_string"
                 operator: "one of"
-                criteria: "[at0012]"
+                criteria: "at0012"
 
             - name: "both"
               openehr:
-                - path: "terminology_id"
+                - path: "defining_code/terminology_id"
                   value: "local"
-                - path: "defining_code"
+                - path: "defining_code/code_string"
                   value: "at0013"
                 - path: "value"
                   value: "Both"
@@ -109,15 +109,15 @@ mappings:
                 targetRoot: "$fhirRoot"
                 targetAttribute: "code"
                 operator: "one of"
-                criteria: "[both]"
+                criteria: "both"
               fhir:
                 - path: "code"
                   value: "both"
               openehrCondition:
                 targetRoot: "$openehrRoot"
-                targetAttribute: "defining_code"
+                targetAttribute: "defining_code/code_string"
                 operator: "one of"
-                criteria: "[at0013]"
+                criteria: "at0013"
 
         
 

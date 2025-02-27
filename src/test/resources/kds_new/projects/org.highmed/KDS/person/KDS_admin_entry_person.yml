@@ -19,7 +19,7 @@ mappings:
       targetRoot: "$resource.identifier"
       targetAttribute: "type.coding.code"
       operator: "one of"
-      criteria: "[MR]"
+      criteria: "MR"
     followedBy:
       mappings:
         - name: "type"

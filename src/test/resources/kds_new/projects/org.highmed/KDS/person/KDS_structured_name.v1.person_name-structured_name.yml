@@ -18,7 +18,7 @@ mappings:
       targetRoot: "$fhirRoot.prefix.extension"
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier]"
+      criteria: "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier"
     followedBy:
       mappings:
         - name: "staticExtensionUrl"
@@ -43,7 +43,7 @@ mappings:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[http://fhir.de/StructureDefinition/humanname-namenszusatz]"
+            criteria: "http://fhir.de/StructureDefinition/humanname-namenszusatz"
           followedBy:
             mappings:
               - name: "staticExtensionUrl"
@@ -64,7 +64,7 @@ mappings:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-name]"
+            criteria: "http://hl7.org/fhir/StructureDefinition/humanname-own-name"
           followedBy:
             mappings:
               - name: "staticExtensionUrl"
@@ -84,7 +84,7 @@ mappings:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-prefix]"
+            criteria: "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix"
           followedBy:
             mappings:
               - name: "staticExtensionUrl"

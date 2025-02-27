@@ -15,7 +15,7 @@ spec:
       - targetRoot: "$resource"
         targetAttribute: "active"  # exclude non-active patients
         operator: "one of"
-        criteria: "[false]"
+        criteria: "false"
 
 mappings:
   - name: "personData"
