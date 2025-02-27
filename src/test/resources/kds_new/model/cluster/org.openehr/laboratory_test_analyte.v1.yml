@@ -30,7 +30,7 @@ mappings:
           operator: "one of"
           criteria: "at0015"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0015"
@@ -62,7 +62,7 @@ mappings:
           operator: "one of"
           criteria: "at0017"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0017"
@@ -84,7 +84,7 @@ mappings:
           operator: "one of"
           criteria: "at0018"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0018"
@@ -106,7 +106,7 @@ mappings:
           operator: "one of"
           criteria: "at0020"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0020"
@@ -128,7 +128,7 @@ mappings:
           operator: "one of"
           criteria: "at0019"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0019"
@@ -150,7 +150,7 @@ mappings:
           operator: "one of"
           criteria: "at0021"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0021"
@@ -172,7 +172,7 @@ mappings:
           operator: "one of"
           criteria: "at0023"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0023"
@@ -194,7 +194,7 @@ mappings:
           operator: "one of"
           criteria: "at0022"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0022"
@@ -240,7 +240,7 @@ mappings:
           operator: "one of"
           criteria: "at0022"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0022"

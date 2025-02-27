@@ -61,7 +61,7 @@ public class OpenEhrRmWorker {
 
             // we compare so that we can see if if was found within the template; if not, we don't want for it to end up in the flat json
             final int initialOpenEhrPathWithProperTreeLength = split.length + 1;
-            if (fhirToOpenEhrHelper.getOpenEhrPath().split("/").length < initialOpenEhrPathWithProperTreeLength ) {
+            if (fhirToOpenEhrHelper.getOpenEhrPath().replace("|", "/").split("/").length < initialOpenEhrPathWithProperTreeLength ) {
                 // means it didn't find it fully.. so it probably doesn't exist
                 if (!FhirConnectConst.DV_MULTIMEDIA.equals(fhirToOpenEhrHelper.getOpenEhrType())) { // multimedia and its 'content' is a tad bit special...
                     fhirToOpenEhrHelper.setOpenEhrType(OPENEHR_TYPE_NONE);

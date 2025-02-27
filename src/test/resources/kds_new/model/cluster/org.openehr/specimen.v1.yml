@@ -154,7 +154,7 @@ mappings:
           operator: "one of"
           criteria: "at0062"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0062" # Zufriedenstellend
@@ -176,7 +176,7 @@ mappings:
           operator: "one of"
           criteria: "at0064"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0064"
@@ -198,7 +198,7 @@ mappings:
           operator: "one of"
           criteria: "at0064"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0064"

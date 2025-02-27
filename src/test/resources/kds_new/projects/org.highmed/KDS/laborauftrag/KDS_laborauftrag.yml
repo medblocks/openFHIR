@@ -71,7 +71,7 @@ mappings:
     manual:
       - name: "intentStatic"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "http://hl7.org/fhir/request-intent"
           - path: "defining_code/code_string"
             value: "order"
@@ -100,7 +100,7 @@ mappings:
     manual:
       - name: "categoryStatic"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "http://terminology.hl7.org/ValueSet/observation-category"
           - path: "defining_code/code_string"
             value: "laboratory"
@@ -131,7 +131,7 @@ mappings:
     manual:
       - name: "categoryStatic"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "http://hl7.org/fhir/ValueSet/request-status"
           - path: "defining_code/code_string"
             value: "completed"
