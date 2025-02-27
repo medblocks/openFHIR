@@ -171,23 +171,52 @@ mappings:
               - name: "diagnoseTyp"
                 with:
                   fhir: "coding"
-                  openehr: "data[at0001]/items[at0009 and name/value='Diagnosetyp']"
+                  openehr: "data[at0001]/items[at0009]"
                   type: "CODING"
                 fhirCondition:
                   targetRoot: "coding"
-                  targetAttribute: "system"
+                  targetAttribute: "code"
                   operator: "one of"
-                  criteria: "[http://fhir.de/CodeSystem/dki-diagnosetyp]"
+                  criterias:
+                    - "referral-diagnosis"
+                    - "treatment-diagnosis"
+                followedBy:
+                  mappings:
+                    - name: "system"
+                      with:
+                        fhir: "$fhirRoot"
+                      manual:
+                        - name: "system"
+                          fhir:
+                            - path: "system"
+                              value: "http://fhir.de/CodeSystem/dki-diagnosetyp"
 
               - name: "diagnoseSubtyp"
                 with:
                   fhir: "coding"
-                  openehr: "data[at0001]/items[at0079 and name/value='Diagnosesubtyp']"
+                  openehr: "data[at0001]/items[at0079]"
                   type: "CODING"
                 fhirCondition:
                   targetRoot: "coding"
-                  targetAttribute: "system"
+                  targetAttribute: "code"
                   operator: "one of"
-                  criteria: "[http://fhir.de/CodeSystem/dki-diagnosesubtyp]"
+                  criterias:
+                    - "surgery-diagnosis"
+                    - "department-main-diagnosis"
+                    - "cause-of-death"
+                    - "infection-control-diagnosis"
+                    - "AD"
+                    - "DD"
+                followedBy:
+                  mappings:
+                    - name: "system"
+                      with:
+                        fhir: "$fhirRoot"
+                      manual:
+                        - name: "system"
+                          fhir:
+                            - path: "system"
+                              value: "http://fhir.de/CodeSystem/dki-diagnosesubtyp"
+
 
 

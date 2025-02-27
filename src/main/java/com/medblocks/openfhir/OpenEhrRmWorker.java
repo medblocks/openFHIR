@@ -55,7 +55,7 @@ public class OpenEhrRmWorker {
             // walk through all web template nodes and enrich them with types and occurrence indexes
             walkThroughNodes(tree.getChildren(), String.join("/", split), constructing, forcedTypes, fhirToOpenEhrHelper,pathToFindSuffix);
 
-
+// kds_fall_einfach/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]/data[at0001]/items[at0009 and name*value='Diagnosetyp']
             final String actualSuffix = openFhirMapperUtils.endsWithAqlSuffix(suffix) ? openFhirMapperUtils.replaceAqlSuffixWithFlatSuffix(suffix) : suffix;
             fhirToOpenEhrHelper.setOpenEhrPath(tree.getId() + "/" + fhirToOpenEhrHelper.getOpenEhrPath() + (hasSuffix ? actualSuffix : ""));
 

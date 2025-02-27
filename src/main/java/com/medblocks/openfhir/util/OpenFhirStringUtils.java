@@ -297,10 +297,17 @@ public class OpenFhirStringUtils {
 
     public String fixOpenEhrPath(final String openEhrPath,
                                  final String mainOpenEhrPath) {
-        return openEhrPath
-                .replace(FhirConnectConst.REFERENCE + "/", "")
-                .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, mainOpenEhrPath)
-                .replace(FhirConnectConst.OPENEHR_COMPOSITION_FC, mainOpenEhrPath);
+        if(openEhrPath.startsWith(FhirConnectConst.OPENEHR_COMPOSITION_FC + "/content")) {
+            // means openehr path already has the full one
+            final String compositionReplacement = mainOpenEhrPath.split("/")[0];
+            return openEhrPath
+                    .replace(FhirConnectConst.OPENEHR_COMPOSITION_FC, compositionReplacement);
+        } else {
+            return openEhrPath
+                    .replace(FhirConnectConst.REFERENCE + "/", "")
+                    .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, mainOpenEhrPath)
+                    .replace(FhirConnectConst.OPENEHR_COMPOSITION_FC, mainOpenEhrPath);
+        }
     }
 
     public String fixFhirPath(final String fhirPath) {

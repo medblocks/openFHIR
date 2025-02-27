@@ -56,7 +56,7 @@ public class ProcedureTest extends KdsBidirectionalTest {
 
 //        - name: "Name"
         Assert.assertEquals("80146002", theProcedure.getCode().getCodingFirstRep().getCode());
-        Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/ops",
+        Assert.assertEquals("//fhir.hl7.org/ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/ops",
                             theProcedure.getCode().getCodingFirstRep().getSystem());
 
 //        - name: "Comment"
