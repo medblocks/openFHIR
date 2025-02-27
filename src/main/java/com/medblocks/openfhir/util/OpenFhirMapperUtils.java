@@ -99,7 +99,8 @@ public class OpenFhirMapperUtils {
         return path.endsWith("defining_code")
                 || path.endsWith("code_string")
                 || path.endsWith("terminology_id")
-                || path.endsWith("terminology_id/value");
+                || path.endsWith("terminology_id/value")
+                || path.endsWith("defining_code/code_string");
     }
 
     public String removeAqlSuffix(final String path) {
@@ -108,8 +109,9 @@ public class OpenFhirMapperUtils {
         }
         final String[] paths = path.split("/");
         final List<String> pathsAsList = Arrays.asList(paths);
-        return pathsAsList.subList(0, pathsAsList.size() - 1).stream().collect(
+        final String removed = pathsAsList.subList(0, pathsAsList.size() - 1).stream().collect(
                 Collectors.joining("/"));
+        return removeAqlSuffix(removed);
     }
 
     public String dateToString(final Date date) {

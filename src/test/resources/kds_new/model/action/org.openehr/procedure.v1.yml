@@ -111,7 +111,7 @@ mappings:
           operator: "one of"
           criteria: "524"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Initial"
@@ -133,7 +133,7 @@ mappings:
           operator: "one of"
           criteria: "526"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Planned"
@@ -155,7 +155,7 @@ mappings:
           operator: "one of"
           criteria: "527"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Postponed"
@@ -177,7 +177,7 @@ mappings:
           operator: "one of"
           criteria: "529"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Scheduled"
@@ -199,7 +199,7 @@ mappings:
           operator: "one of"
           criteria: "528"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Cancelled"
@@ -221,7 +221,7 @@ mappings:
           operator: "one of"
           criteria: "245"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Active"
@@ -243,7 +243,7 @@ mappings:
           operator: "one of"
           criteria: "530"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Suspended"
@@ -265,7 +265,7 @@ mappings:
           operator: "one of"
           criteria: "531"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Aborted"
@@ -287,7 +287,7 @@ mappings:
           operator: "one of"
           criteria: "532"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Completed"
@@ -309,7 +309,7 @@ mappings:
           operator: "one of"
           criteria: "533"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Expired"

@@ -25,7 +25,7 @@ mappings:
     manual:
       - name: "provisional"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0017"
@@ -53,7 +53,7 @@ mappings:
 
       - name: "differential"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0017"
@@ -80,7 +80,7 @@ mappings:
 
       - name: "preliminary"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0016"
@@ -107,7 +107,7 @@ mappings:
 
       - name: "established"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0018"
@@ -134,7 +134,7 @@ mappings:
 
       - name: "refuted"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0088"

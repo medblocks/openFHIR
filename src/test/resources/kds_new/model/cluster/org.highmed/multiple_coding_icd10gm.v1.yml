@@ -20,7 +20,7 @@ mappings:
     manual:
       - name: "manifestation"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0003"
@@ -46,7 +46,7 @@ mappings:
 
       - name: "ätiology"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0002"
@@ -72,7 +72,7 @@ mappings:
 
       - name: "additionalInformation"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0004"

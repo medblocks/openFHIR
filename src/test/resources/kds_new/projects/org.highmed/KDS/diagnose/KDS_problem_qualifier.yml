@@ -28,7 +28,7 @@ mappings:
     manual:
       - name: "maindiagnose"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0064"
@@ -50,7 +50,7 @@ mappings:
     manual:
       - name: "nebendiagnose"
         openehr:
-          - path: "defining_code/terminology_id/value"
+          - path: "defining_code/terminology_id"
             value: "local"
           - path: "defining_code/code_string"
             value: "at0066"

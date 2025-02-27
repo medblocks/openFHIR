@@ -54,7 +54,7 @@ mappings:
           manual:
             - name: "physical"
               openehr:
-                - path: "defining_code/terminology_id/value"
+                - path: "defining_code/terminology_id"
                   value: "local"
                 - path: "defining_code/code_string"
                   value: "at0011"
@@ -77,7 +77,7 @@ mappings:
 
             - name: "postal"
               openehr:
-                - path: "defining_code/terminology_id/value"
+                - path: "defining_code/terminology_id"
                   value: "local"
                 - path: "defining_code/code_string"
                   value: "at0012"
@@ -99,7 +99,7 @@ mappings:
 
             - name: "both"
               openehr:
-                - path: "defining_code/terminology_id/value"
+                - path: "defining_code/terminology_id"
                   value: "local"
                 - path: "defining_code/code_string"
                   value: "at0013"
