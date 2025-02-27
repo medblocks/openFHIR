@@ -26,5 +26,4 @@ context:
   extensions:
     - "KDS_medication.v2"
     - "KDS_medikamentenstatement"
-    - "KDS_medication.v2.substance"
   start: "OBSERVATION.medication_statement.v0"
