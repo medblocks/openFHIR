@@ -13,7 +13,7 @@ context:
     version: "2025.0.0"
   template:
     id: "KDS_Fall_einfach"
-    sem_ver: "9.0.0"
+    sem_ver: "8.0.0"
   archetypes:
     - "EVALUATION.problem_diagnosis.v1"
     - "ADMIN_ENTRY.episode_institution_local.v0"
