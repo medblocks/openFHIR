@@ -33,7 +33,7 @@ mappings:
     manual:
       - name: "draft"
         openehr:
-          - path: "terminology_id"
+          - path: "terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Initial"
@@ -56,7 +56,7 @@ mappings:
 
       - name: "proposed"
         openehr:
-          - path: "terminology_id"
+          - path: "terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Planned"
@@ -78,7 +78,7 @@ mappings:
 
       - name: "active"
         openehr:
-          - path: "terminology_id"
+          - path: "terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Active"
@@ -100,7 +100,7 @@ mappings:
 
       - name: "rejected"
         openehr:
-          - path: "terminology_id"
+          - path: "terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Cancelled"
@@ -122,7 +122,7 @@ mappings:
 
       - name: "inactive"
         openehr:
-          - path: "terminology_id"
+          - path: "terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Completed"
@@ -144,7 +144,7 @@ mappings:
 
       - name: "entered-in-error"
         openehr:
-          - path: "terminology_id"
+          - path: "terminology_id/value"
             value: "openehr"
           - path: "value"
             value: "Cancelled"

@@ -23,7 +23,7 @@ mappings:
     with:
       fhir: "$resource.authoredOn"
       openehr: "$composition/context/start_time"
-      type: "DATE"
+      type: "DATETIME"
 
   - name: "composer"
     with:

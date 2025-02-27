@@ -188,18 +188,13 @@ public class OpenFhirEngine {
             final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(fhirConnectContext.getFhirConnectContext(),
                     resource,
                     operationalTemplate);
-            if(!compositionAdditionalData.isEmpty()) {
-                fhirToOpenEhr.enrichFlatComposition(jsonObject, webTemplate.getTree().getId(), compositionAdditionalData);
-            }
-
+            fhirToOpenEhr.enrichFlatComposition(jsonObject, webTemplate.getTree().getId(), compositionAdditionalData);
             return gson.toJson(jsonObject);
         } else {
             final Composition composition = fhirToOpenEhr.fhirToCompositionRm(fhirConnectContext.getFhirConnectContext(),
                     resource,
                     operationalTemplate);
-            if(!compositionAdditionalData.isEmpty()) {
-                fhirToOpenEhr.enrichCompositionWithAdditionalConfig(composition, compositionAdditionalData);
-            }
+            fhirToOpenEhr.enrichComposition(composition, compositionAdditionalData);
             return new CanonicalJson().marshal(composition);
         }
     }
