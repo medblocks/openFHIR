@@ -195,12 +195,12 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                 "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|terminology").getAsString());
         Assert.assertEquals("†", jsonObject.get(
                 "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|value").getAsString());
-        Assert.assertEquals("†", jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|code")
+        Assert.assertEquals("L", jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|code")
                 .getAsString());
-        Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc",
+        Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
                             jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|terminology")
                                     .getAsString());
-        Assert.assertEquals("Primary code in multiple coding",
+        Assert.assertEquals("Left side",
                             jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|value")
                                     .getAsString());
         Assert.assertEquals("Secondary malignant neoplasm of lymph node",
@@ -255,12 +255,12 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                 "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|terminology").getAsString());
         Assert.assertEquals("†", jsonObject.get(
                 "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|value").getAsString());
-        Assert.assertEquals("†", jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|code")
+        Assert.assertEquals("L", jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|code")
                 .getAsString());
-        Assert.assertEquals("local",
+        Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
                             jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|terminology")
                                     .getAsString());
-        Assert.assertEquals("Primary code in multiple coding",
+        Assert.assertEquals("Left side",
                             jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|value")
                                     .getAsString());
         Assert.assertEquals("Secondary malignant neoplasm of lymph node",
@@ -313,12 +313,12 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                 "diagnose/diagnose:1/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|terminology").getAsString());
         Assert.assertEquals("*", jsonObject.get(
                 "diagnose/diagnose:1/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|value").getAsString());
-        Assert.assertEquals("*", jsonObject.get("diagnose/diagnose:1/anatomische_lokalisation/name_der_körperstelle|code")
+        Assert.assertEquals("ref_U", jsonObject.get("diagnose/diagnose:1/anatomische_lokalisation/name_der_körperstelle|code")
                 .getAsString());
-        Assert.assertEquals("local",
+        Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
                             jsonObject.get("diagnose/diagnose:1/anatomische_lokalisation/name_der_körperstelle|terminology")
                                     .getAsString());
-        Assert.assertEquals("ref_Primary code in multiple coding",
+        Assert.assertEquals("ref_Upper lobe",
                             jsonObject.get("diagnose/diagnose:1/anatomische_lokalisation/name_der_körperstelle|value")
                                     .getAsString());
         Assert.assertEquals("Malignant neoplasm of upper lobe, bronchus or lung",
