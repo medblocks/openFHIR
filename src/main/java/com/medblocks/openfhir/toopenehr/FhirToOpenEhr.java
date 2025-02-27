@@ -2,6 +2,7 @@ package com.medblocks.openfhir.toopenehr;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.medblocks.openfhir.OpenEhrRmWorker;
 import com.medblocks.openfhir.OpenFhirMappingContext;
 import com.medblocks.openfhir.fc.FhirConnectConst;
@@ -15,8 +16,12 @@ import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenEhrPopulator;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
+import com.nedap.archie.rm.archetyped.FeederAudit;
+import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvIdentifier;
+import com.nedap.archie.rm.generic.PartyIdentified;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +34,9 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -153,7 +161,7 @@ public class FhirToOpenEhr {
         // unmarshall flat path to a canonical json format
         final Composition composition = flatJsonUnmarshaller.unmarshal(gson.toJson(flattenedWithValues), webTemplate);
 
-        enrichComposition(composition);
+        enrichComposition(composition, null);
 
         return composition;
     }
@@ -164,7 +172,7 @@ public class FhirToOpenEhr {
      *
      * @param composition enriched with metadata that wasn't mapped
      */
-    public void enrichComposition(final Composition composition) {
+    public void enrichComposition(final Composition composition, final Map<String, String> compositionAdditionalConfig) {
         // default values; set if not already set by mappings
         if (composition.getLanguage() == null) {
             composition.setLanguage(new CodePhrase(new TerminologyId("ISO_639-1"), "en"));
@@ -172,9 +180,82 @@ public class FhirToOpenEhr {
         if (composition.getTerritory() == null) {
             composition.setTerritory(new CodePhrase(new TerminologyId("ISO_3166-1"), "DE"));
         }
-        if (composition.getComposer() == null) {
-            composition.setComposer(new PartySelf());
+        if(compositionAdditionalConfig!=null) {
+            if (composition.getComposer() == null && compositionAdditionalConfig.containsKey("composer")) {
+                String composer = compositionAdditionalConfig.getOrDefault("composer", null);
+                PartyIdentified partyIdentified = new PartyIdentified();
+                partyIdentified.setName(composer);
+                composition.setComposer(partyIdentified);
+            }
+            if (compositionAdditionalConfig.containsKey("systemId")) {
+                FeederAudit feederAudit = new FeederAudit();
+
+                if (feederAudit.getOriginatingSystemAudit() == null) {
+
+                    FeederAuditDetails originatingFeederAuditDetails = new FeederAuditDetails();
+                    originatingFeederAuditDetails.setSystemId("FHIR-Bridge");
+                    feederAudit.setOriginatingSystemAudit(originatingFeederAuditDetails);
+                }
+
+                List<DvIdentifier> originatingSystemItemIds = new ArrayList<>();
+                DvIdentifier dvIdentifier = new DvIdentifier();
+                dvIdentifier.setId(compositionAdditionalConfig.get("systemId"));
+                dvIdentifier.setType("fhir_logical_id");
+                originatingSystemItemIds.add(dvIdentifier);
+
+                feederAudit.setOriginatingSystemItemIds(originatingSystemItemIds);
+                composition.setFeederAudit(feederAudit);
+            }
+        } else{
+            if (composition.getComposer() == null) {
+                PartyIdentified partyIdentified = new PartyIdentified();
+                partyIdentified.setName("openFhir");
+                composition.setComposer(partyIdentified);
+            }
         }
+    }
+
+    /**
+     * Method that adds all required metadata to a Composition, but only if this was not already set as part
+     * of the mapping logic itself.
+     *
+     * @param finalFlat - enriched with metadata that wasn't mapped
+     * @param templateId - identifier to the template
+     * @param compositionAdditionalConfig - map that contains additional info to be mapped
+     */
+    public void enrichFlatComposition(final JsonObject finalFlat, final String templateId, final Map<String, String> compositionAdditionalConfig) {
+        if(!finalFlat.keySet().contains(templateId + "/territory|code")){
+            finalFlat.add(templateId + "/territory|code", new JsonPrimitive("DE"));
+            finalFlat.add(templateId + "/territory|terminology", new JsonPrimitive("ISO_3166-1"));
+        }
+
+        if(!finalFlat.keySet().contains(templateId + "/context/start_time")){
+            finalFlat.add(templateId + "/context/start_time", new JsonPrimitive(getUpdatedDateTime().toString()));
+        }
+
+        if(compositionAdditionalConfig != null){
+            if(!finalFlat.keySet().contains(templateId + "/composer|name") && compositionAdditionalConfig.containsKey("composer")){
+                finalFlat.add(templateId + "/composer|name", new JsonPrimitive(compositionAdditionalConfig.get("composer")));
+            }
+
+            if(compositionAdditionalConfig.containsKey("systemId")){
+                finalFlat.add(templateId+"/_feeder_audit/originating_system_audit|system_id", new JsonPrimitive("FHIR-Bridge"));
+                finalFlat.add(templateId+"/_feeder_audit/originating_system_item_id:0|id", new JsonPrimitive(compositionAdditionalConfig.get("systemId")));
+                finalFlat.add(templateId+"/_feeder_audit/originating_system_item_id:0|type", new JsonPrimitive("fhir_logical_id"));
+            }
+        }
+        else{
+            if(!finalFlat.keySet().contains(templateId + "/composer|name")){
+                finalFlat.add(templateId + "/composer|name", new JsonPrimitive("openFhir"));
+            }
+        }
+    }
+
+    private static LocalDateTime getUpdatedDateTime() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+        ZonedDateTime utcDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
+        return utcDateTime.toLocalDateTime();
     }
 
     /**
