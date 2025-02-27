@@ -3,6 +3,7 @@ package com.medblocks.openfhir.tofhir;
 import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_EMPTY;
 import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_NOT_EMPTY;
 import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_NOT_OF;
+import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_TYPE;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_ARCHETYPE_FC;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_COMPOSITION_FC;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_MEDIA;
@@ -11,8 +12,10 @@ import static com.medblocks.openfhir.fc.FhirConnectConst.THIS;
 import static com.medblocks.openfhir.fc.FhirConnectConst.UNIDIRECTIONAL_TOOPENEHR;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX_ESCAPED;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.WHERE;
 
+import ca.uhn.fhir.model.primitive.BooleanDt;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -45,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -53,6 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
 import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Base;
@@ -64,6 +69,7 @@ import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Quantity;
+import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.TimeType;
@@ -384,6 +390,11 @@ public class OpenEhrToFhir {
                 final String mapKey = createKey(index, conditioningFhirPath);
 
                 final Resource instance = getOrCreateResource(createdPerIndex, generatingResource, mapKey);
+
+                if(!typePasses(instance, helper.getCondition())) {
+                    continue;
+                }
+
                 handleMapping(data, createdPerIndex, instance, fullOpenEhrPath, generatingResource,
                               helper, instantiatedIntermediateElements, separatelyCreatedResources, mapKey);
             }
@@ -398,6 +409,10 @@ public class OpenEhrToFhir {
                     resources.add(nowInstantiated); //add at least one if none was created as part of the previous step
                 }
                 for (final Resource instance : resources) {
+                    if(!typePasses(instance, helper.getCondition())) {
+                        continue;
+                    }
+
                     handleMapping(dataForAllResources, null, instance, fullOpenEhrPath, generatingResource,
                                   helper, instantiatedIntermediateElements, separatelyCreatedResources, null);
                 }
@@ -410,6 +425,38 @@ public class OpenEhrToFhir {
 
         createdResources.addAll(separatelyCreatedResources);
         return createdResources;
+    }
+
+    private boolean typePasses(final Resource instance, final Condition fhirCondition) {
+        if(fhirCondition == null || !CONDITION_OPERATOR_TYPE.equals(fhirCondition.getOperator())) {
+            return true;
+        }
+        final String fhirPath = String.format("%s[0].is(%s)", fhirCondition.getTargetRoot(),
+                                            fhirCondition.getCriteria());
+        if(fhirPath.contains(RESOLVE)) {
+            final String fhirPathAfterResolve = fhirPath.split(".resolve\\(\\)")[1].substring(1); // to remove the leading dot
+            final Resource resolvedInstance = getReferencedResource(instance, fhirPath);
+            final Optional<BooleanType> isCorrectType = fhirPathR4.evaluateFirst(resolvedInstance, fhirPathAfterResolve, BooleanType.class);
+            return isCorrectType.map(BooleanType::booleanValue).orElse(true); // to be safe, default to true
+        } else {
+            final Optional<BooleanType> isCorrectType = fhirPathR4.evaluateFirst(instance, fhirPath, BooleanType.class);
+            return isCorrectType.map(BooleanType::booleanValue).orElse(true); // to be safe, default to true
+        }
+    }
+
+    private Resource getReferencedResource(final Resource initialResource, final String fhirPath) {
+        if(!fhirPath.contains(OpenFhirStringUtils.RESOLVE)) {
+            return initialResource;
+        }
+        final String fhirPathWithoutResolve = fhirPath.split(OpenFhirStringUtils.RESOLVE)[0];
+        try {
+            final Reference reference = (Reference) fhirPathR4.evaluateFirst(initialResource, fhirPathWithoutResolve,
+                                                                             Reference.class).get().getResource();
+            return (Resource) reference.getResource();
+        } catch (Exception e) {
+            log.warn("Nothing resolved by evaluating {}", fhirPathWithoutResolve);
+            return initialResource;
+        }
     }
 
     private void cacheReturnedItems(final FindingOuterMost findingOuterMost,
@@ -544,7 +591,8 @@ public class OpenEhrToFhir {
                                         final String parentOpenEhr) {
         if (condition == null
                 || CONDITION_OPERATOR_NOT_EMPTY.equalsIgnoreCase(condition.getOperator())
-                || CONDITION_OPERATOR_EMPTY.equals(condition.getOperator())) {
+                || CONDITION_OPERATOR_EMPTY.equals(condition.getOperator())
+                || CONDITION_OPERATOR_TYPE.equals(condition.getOperator())) {
             return;
         }
         final String stringFromCriteria = openFhirStringUtils.getStringFromCriteria(condition.getCriteria()).getCode();

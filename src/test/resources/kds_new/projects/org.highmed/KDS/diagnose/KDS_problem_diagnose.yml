@@ -138,18 +138,21 @@ mappings:
             fhir: "extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
           slotArchetype: "CLUSTER.anatomical_location.v1"
+          fhirCondition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "http://fhir.de/StructureDefinition/seitenlokalisation"
           followedBy:
             mappings:
-              - name: "seitenlokalisation"
+              - name: "extension"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]" #todo: check why full path is needed here, this should not be required. It's also probably the reason why bodysite is wrongly mapped to the neben diagnosis
-                  type: "CODEABLECONCEPT"
-                fhirCondition:
-                  targetRoot: "$fhirRoot"
-                  targetAttribute: "url"
-                  operator: "one of"
-                  criteria: "http://fhir.de/StructureDefinition/seitenlokalisation"
+                manual:
+                  - name: "extensionUrl"
+                    fhir:
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/seitenlokalisation"
 
   - name: "dateTime"
     extension: "overwrite"
