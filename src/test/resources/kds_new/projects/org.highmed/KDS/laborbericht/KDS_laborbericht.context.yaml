@@ -20,5 +20,4 @@ context:
     - "OBSERVATION.laboratory_test_result.v1"
   extensions:
     - "KDS_laborbericht"
-    - "KDS_Specimen"
   start: "OBSERVATION.laboratory_test_result.v1"
