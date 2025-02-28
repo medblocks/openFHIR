@@ -1,4 +1,4 @@
-grammar: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: context
 metadata:
   name:  KDS_Vitalstatus.context

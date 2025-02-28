@@ -1,4 +1,4 @@
-grammar: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
   name: KDS_fall_problem_diagnose
@@ -9,12 +9,55 @@ spec:
   extends: EVALUATION.problem_diagnosis.v1
 
 mappings:
+  # -------- workaround for v0.9 to prevent getParent method, fixed in v1 ---------#
+  - name: "contextStartTime"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.recordedDate"
+      openehr: "$composition/context/start_time"
+      type: "DATETIME"
+
+  - name: "note"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.note.text"
+      openehr: "$archetype/data[at0001]/items[at0069]"
+      type: "NONE"
+
+  - name: "dateTime"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.onset"
+      openehr: "$archetype/data[at0001]/items[at0077]"
+      type: "DATETIME"
+
+  - name: "bodySite"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.bodySite"
+      openehr: "$archetype/data[at0012]"
+      type: "CODEABLECONCEPT"
+
+  - name: "bodySiteCluster"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.bodySite"
+      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
+    slotArchetype: "CLUSTER.anatomical_location.v1"
+
+  - name: "severity"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.severity"
+      openehr: "$archetype/data[at0001]/items[at0005]"
+      type: "CODEABLECONCEPT"
+
+# -------------------------------#
   - name: "problemDiagnose"
     extension: "overwrite"
     with:
       fhir: "$fhirRoot"
-      openehr: "$reference"
-      type: "NONE"
+      openehr: "$archetype"
     reference:
       resourceType: "Condition"
       mappings:
@@ -23,6 +66,64 @@ mappings:
             fhir: "$fhirRoot.code.coding"
             openehr: "$archetype/data[at0001]/items[at0002]"
             type: "CODING"
+
+  - name: "problemDiagnoseUse"
+    with:
+      fhir: "$fhirRoot.use"
+      openehr: "$archetype"
+    followedBy:
+      mappings:
+        # these have to be here, they can not be in the slot archetype because they're mapping to the DiagnosisComponent and not on Condition (resolved reference)
+        - name: "diagnoseTyp"
+          with:
+            fhir: "coding"
+            openehr: "data[at0001]/items[at0009]"
+            type: "CODING"
+          fhirCondition:
+            targetRoot: "coding"
+            targetAttribute: "code"
+            operator: "one of"
+            criterias:
+              - "referral-diagnosis"
+              - "treatment-diagnosis"
+          followedBy:
+            mappings:
+              - name: "system"
+                with:
+                  fhir: "$fhirRoot"
+                manual:
+                  - name: "system"
+                    fhir:
+                      - path: "system"
+                        value: "http://fhir.de/CodeSystem/dki-diagnosetyp"
+
+        - name: "diagnoseSubtyp"
+          with:
+            fhir: "coding"
+            openehr: "data[at0001]/items[at0079]"
+            type: "CODING"
+          fhirCondition:
+            targetRoot: "coding"
+            targetAttribute: "code"
+            operator: "one of"
+            criterias:
+              - "surgery-diagnosis"
+              - "department-main-diagnosis"
+              - "cause-of-death"
+              - "infection-control-diagnosis"
+              - "AD"
+              - "DD"
+          followedBy:
+            mappings:
+              - name: "system"
+                with:
+                  fhir: "$fhirRoot"
+                manual:
+                  - name: "system"
+                    fhir:
+                      - path: "system"
+                        value: "http://fhir.de/CodeSystem/dki-diagnosesubtyp"
+
 
 
 
