@@ -30,17 +30,33 @@ mappings:
       openehr: "$composition/context/other_context[at0001]/items[at0010]"
       type: "CODING"
 
-  - name: "fallId"
+  - name: "fallIdParent"
     extension: "add"
     with:
-      fhir: "$resource.identifier.value"
-      openehr: "$composition/context/other_context[at0001]/items[at0003]"
-      type: "STRING"
+      fhir: "$resource.identifier"
+      openehr: "$composition"
+      type: "NONE"
     fhirCondition:
       targetRoot: "$resource.identifier"
       targetAttribute: "type.coding.code"
       operator: "one of"
       criteria: "VN"
+    followedBy:
+      mappings:
+        - name: "fallId"
+          with:
+            fhir: "value"
+            openehr: "$composition/context/other_context[at0001]/items[at0003]"
+            type: "STRING"
+        - name: "vncodingcode"
+          with:
+            fhir: "type.coding"
+          manual:
+            - name: "vncoding"
+              fhir:
+                - path: "code"
+                  value: "VN"
+
 
   - name: "serviceProvider" # TODO deprecated needs to be deleted
     extension: "add"
@@ -112,6 +128,84 @@ mappings:
             operator: "one of"
             criteria: "VierteStelle"
 
+#        - name: "ersteUndZweiteStelle"
+#          with:
+#            fhir: "extension" # since its two extensions nested
+#            openehr: "$archetype"
+#            type: "NONE"
+#          fhirCondition:
+#            targetRoot: "extension"
+#            targetAttribute: "url"
+#            operator: "one of"
+#            criteria: "ErsteUndZweiteStelle"
+#          followedBy:
+#            mappings:
+#              - name: "ersteUndZweiteStelle"
+#                with:
+#                  fhir: "value" # since its two extensions nested
+#                  openehr: "data[at0001]/items[at0008 and name/value='Aufnahmegrund - ErsteUndZweiteStelle']"
+#                  type: "CODING"
+#              - name: "extensionStatic"
+#                with:
+#                  fhir: "url"
+#                manual:
+#                  - name: "extension"
+#                    fhir:
+#                      - path: ""
+#                        value: "ErsteUndZweiteStelle"
+#
+#        - name: "dritteStelleParent"
+#          with:
+#            fhir: "extension" # since its two extensions nested
+#            openehr: "$archetype"
+#            type: "NONE"
+#          fhirCondition:
+#            targetRoot: "extension"
+#            targetAttribute: "url"
+#            operator: "one of"
+#            criteria: "DritteStelle"
+#          followedBy:
+#            mappings:
+#              - name: "dritteStelle"
+#                with:
+#                  fhir: "value" # since its two extensions nested
+#                  openehr: "data[at0001]/items[at0008 and name/value='Aufnahmegrund - Dritte Stelle']"
+#                  type: "CODING"
+#              - name: "extensionStatic"
+#                with:
+#                  fhir: "url"
+#                manual:
+#                  - name: "extension"
+#                    fhir:
+#                      - path: ""
+#                        value: "DritteStelle"
+#
+#        - name: "vierteStelleParent"
+#          with:
+#            fhir: "extension" # since its two extensions nested
+#            openehr: "$archetype"
+#            type: "NONE"
+#          fhirCondition:
+#            targetRoot: "extension"
+#            targetAttribute: "url"
+#            operator: "one of"
+#            criteria: "VierteStelle"
+#          followedBy:
+#            mappings:
+#              - name: "vierteStelle"
+#                with:
+#                  fhir: "value" # since its two extensions nested
+#                  openehr: "data[at0001]/items[at0008 and name/value='Aufnahmegrund - Vierte Stelle']"
+#                  type: "CODING"
+#              - name: "extensionStatic"
+#                with:
+#                  fhir: "url"
+#                manual:
+#                  - name: "extension"
+#                    fhir:
+#                      - path: ""
+#                        value: "VierteStelle"
+
 
   - name: "recordingDismissal"
     extension: "add"
@@ -152,7 +246,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.diagnosis"
-      openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
+      openehr: "$composition"
     followedBy:
       mappings:
         - name: "problemDiagnose"
