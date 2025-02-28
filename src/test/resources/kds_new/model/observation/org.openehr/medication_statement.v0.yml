@@ -103,9 +103,9 @@ mappings:
 
   - name: "medicationCode"
     with:
-      fhir: "$resource.medication.as(CodeableConcept).text"
+      fhir: "$resource.medication.as(CodeableConcept)"
       openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
-      type: "STRING"
+      type: "CODEABLECONCEPT"
     openehrCondition:
       targetRoot: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
       targetAttributes:

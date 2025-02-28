@@ -87,6 +87,13 @@ mappings:
     unidirectional: "openEHR->fhir"
     slotArchetype: "CLUSTER.anatomical_location.v1"
 
+  - name: "problemDiagnoseNameCode"
+    extension: "overwrite"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$archetype/data[at0001]/items[at0002]"
+      type: "CODING"
+
   - name: "icd10ProblemDiagnose"
     extension: "append"
     appendTo: "problemDiagnose.problemDiagnoseName"

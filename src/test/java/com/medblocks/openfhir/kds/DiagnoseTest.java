@@ -111,14 +111,16 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         // bodySiteCluster; nothing to do here because the cluster is overwritten to be a unidiretional toopenehr only
 
 //          - name: "problemDiagnose", - name: "problemDiagnoseNameCode"
-        Assert.assertEquals(1, condition.getCode().getCoding().size());
-        final Coding icd10code = condition.getCode().getCodingFirstRep();
+        Assert.assertEquals(2, condition.getCode().getCoding().size());
+        Coding icd10code = condition.getCode().getCoding().get(1);
         Assert.assertEquals((second ? "referenced_" : "") + "kodierte_diagnose value", icd10code.getCode());
 //      - name: "problemDiagnoseText"
         Assert.assertEquals((second ? "referenced_" : "") + "freitextbeschreibung value",
                             condition.getCode().getText());
 //         - name: "icd10ProblemDiagnose"
         Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm", icd10code.getSystem());
+
+        icd10code = condition.getCode().getCoding().get(0);
 
 //        - name: "codeIcd10Diagnosesicherheit"
         final CodeableConcept diagnosessicherheit = (CodeableConcept) icd10code.getExtensionByUrl(
@@ -183,7 +185,9 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("2022-02-03T01:00:00", jsonObject.get("diagnose/context/start_time").getAsString());
 
 
-        Assert.assertEquals("C34.1", jsonObject.get("diagnose/diagnose:0/kodierte_diagnose").getAsString());
+        Assert.assertEquals("C34.1", jsonObject.get("diagnose/diagnose:0/kodierte_diagnose|code").getAsString());
+        Assert.assertEquals("C34.1", jsonObject.get("diagnose/diagnose:0/kodierte_diagnose|value").getAsString());
+        Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm", jsonObject.get("diagnose/diagnose:0/kodierte_diagnose|terminology").getAsString());
         Assert.assertEquals("G", jsonObject.get("diagnose/diagnose:0/diagnosesicherheit|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
                             jsonObject.get("diagnose/diagnose:0/diagnosesicherheit|terminology").getAsString());
@@ -243,7 +247,9 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
         Assert.assertEquals("2027-05-02T02:00:00", jsonObject.get("diagnose/context/start_time").getAsString());
-        Assert.assertEquals("C34.1", jsonObject.get("diagnose/diagnose:0/kodierte_diagnose").getAsString());
+        Assert.assertEquals("C34.1", jsonObject.get("diagnose/diagnose:0/kodierte_diagnose|code").getAsString());
+        Assert.assertEquals("C34.1", jsonObject.get("diagnose/diagnose:0/kodierte_diagnose|value").getAsString());
+        Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm", jsonObject.get("diagnose/diagnose:0/kodierte_diagnose|terminology").getAsString());
         Assert.assertEquals("G", jsonObject.get("diagnose/diagnose:0/diagnosesicherheit|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
                             jsonObject.get("diagnose/diagnose:0/diagnosesicherheit|terminology").getAsString());
@@ -301,7 +307,9 @@ public class DiagnoseTest extends KdsBidirectionalTest {
 //        Assert.assertEquals("Left side",
 //                            jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/laterality|value").getAsString());
 
-        Assert.assertEquals("ref_C34.1", jsonObject.get("diagnose/diagnose:1/kodierte_diagnose").getAsString());
+        Assert.assertEquals("ref_C34.1", jsonObject.get("diagnose/diagnose:1/kodierte_diagnose|code").getAsString());
+        Assert.assertEquals("ref_C34.1", jsonObject.get("diagnose/diagnose:1/kodierte_diagnose|value").getAsString());
+        Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm", jsonObject.get("diagnose/diagnose:1/kodierte_diagnose|terminology").getAsString());
         Assert.assertEquals("ref_S", jsonObject.get("diagnose/diagnose:1/diagnosesicherheit|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
                             jsonObject.get("diagnose/diagnose:1/diagnosesicherheit|terminology").getAsString());

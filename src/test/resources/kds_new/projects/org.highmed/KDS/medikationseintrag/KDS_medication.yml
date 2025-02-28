@@ -1,7 +1,7 @@
 grammar: FHIRConnect/v0.0.1
 type: extension
 metadata:
-  name:  KDS_medication.v2
+  name:  KDS_medication.v3
   version: 0.0.1-alpha 
 spec: 
   system: FHIR

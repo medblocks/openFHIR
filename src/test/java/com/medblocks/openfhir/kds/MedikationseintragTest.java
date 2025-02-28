@@ -229,7 +229,9 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
         Assert.assertEquals("Take 1 tablet every 6 hours as needed for pain", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/dosierung:0/dosierung_freitext").getAsString());
         Assert.assertEquals("500.0", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/dosierung:0/dosis/quantity_value|magnitude").getAsString());
         Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/dosierung:0/dosis/quantity_value|unit").getAsString());
-        Assert.assertEquals("Paracetamol", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/arzneimittel-name").getAsString());
+        Assert.assertEquals("at0143", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/arzneimittel-name|code").getAsString());
+        Assert.assertEquals("local", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/arzneimittel-name|terminology").getAsString());
+        Assert.assertEquals("Paracetamol 500mg tablet", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/arzneimittel-name|value").getAsString());
         Assert.assertEquals("385055001", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/darreichungsform|code").getAsString());
         Assert.assertEquals("http://snomed.info/sct", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/darreichungsform|terminology").getAsString());
         Assert.assertEquals("Paracetamol", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/arzneimittel/bestandteil:0/bestandteil").getAsString());
@@ -251,7 +253,9 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
         Assert.assertEquals("Take 1 capsule daily", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:1/dosierung:0/dosierung_freitext").getAsString());
         Assert.assertEquals("5.0", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:1/dosierung:0/dosis/quantity_value|magnitude").getAsString());
         Assert.assertEquals("mg", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:1/dosierung:0/dosis/quantity_value|unit").getAsString());
-        Assert.assertEquals("Ramipril 5mg capsule", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:1/arzneimittel/arzneimittel-name").getAsString());
+        Assert.assertEquals("local", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:1/arzneimittel/arzneimittel-name|terminology").getAsString());
+        Assert.assertEquals("C09AA05", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:1/arzneimittel/arzneimittel-name|code").getAsString());
+        Assert.assertEquals("Ramipril 5mg capsule", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:1/arzneimittel/arzneimittel-name|value").getAsString());
 
         Assert.assertEquals("High cholesterol", jsonObject.getAsJsonPrimitive("medikamentenliste/aussage_zur_medikamenteneinnahme:0/behandlungsgrund:0").getAsString());
 
