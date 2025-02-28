@@ -217,9 +217,13 @@ public class OpenFhirMapperUtils {
     public void prepareFollowedByMappings(final List<Mapping> followedByMappings,
                                           final String fhirPath,
                                           final String openehr,
-                                          final String slotContext) {
+                                          final String slotContext,
+                                          final Mapping parentMapping) {
         for (final Mapping followedByMapping : followedByMappings) {
             final With with = followedByMapping.getWith();
+            if(with == null) {
+                continue;
+            }
             final String hardcodedValue = with.getValue();
             if (followedByMapping.getWith().getOpenehr() == null && hardcodedValue != null) {
                 // hardcoding to FHIR
@@ -229,6 +233,11 @@ public class OpenFhirMapperUtils {
                 followedByMapping.getWith().setFhir(fhirPath + "." + followedByMapping.getWith().getFhir());
             }
 
+            final Condition parentFhirCondition = parentMapping.getFhirCondition();
+            if(parentFhirCondition != null
+                    && FhirConnectConst.CONDITION_OPERATOR_TYPE.equals(parentFhirCondition.getOperator())) {
+                followedByMapping.addTypeCondition(parentFhirCondition);
+            }
 
 
             if (!followedByMapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_ARCHETYPE_FC)

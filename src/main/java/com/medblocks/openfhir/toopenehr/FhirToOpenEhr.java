@@ -496,7 +496,7 @@ public class FhirToOpenEhr {
         for (final Mapping mapping : mappings) {
 
             final With with = mapping.getWith();
-            if (with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
+            if (with == null || with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
                 continue;
             }
@@ -558,7 +558,7 @@ public class FhirToOpenEhr {
     private void createFollowedByMappings(final Mapping mapping, final String openehr, final String openEhrPath) {
         for (final Mapping followedByMapping : mapping.getFollowedBy().getMappings()) {
             final With with = followedByMapping.getWith();
-            if (with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
+            if (with == null || with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
                 continue;
             }

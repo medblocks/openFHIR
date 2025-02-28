@@ -17,6 +17,7 @@ mappings:
     with:
       fhir: "$resource.code"
       openehr: "$archetype/items[at0132]"
+      type: "CODEABLECONCEPT"
 
   - name: "ingredients"
     with:
@@ -31,7 +32,7 @@ mappings:
             openehr: "$archetype"
           followedBy:
             mappings:
-              - name: "item text"
+              - name: "itemText"
                 with:
                   fhir: "text"
                   openehr: "items[at0132]"
