@@ -40,9 +40,8 @@ mappings:
   - name: "date"
     extension: "add"
     with:
-      fhir: "$resource.extension.value.as(DateTimeType)"
+      fhir: "$resource.extension"
       openehr: "$archetype/data[at0001]/items[at0003]"
-      type: "DATETIME"
     fhirCondition:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
@@ -50,9 +49,16 @@ mappings:
       criteria: "http://hl7.org/fhir/StructureDefinition/condition-assertedDate"
     followedBy:
       mappings:
+        - name: "date"
+          extension: "add"
+          with:
+            fhir: "value.as(DateTimeType)"
+            openehr: "$archetype/data[at0001]/items[at0003]"
+            type: "DATETIME"
+
         - name: "staticURL"
           with:
-            fhir: "$resource.extension"
+            fhir: "$fhirRoot"
           manual:
             - name: "url"
               fhir:
@@ -91,6 +97,15 @@ mappings:
       criteria: "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
     followedBy:
       mappings:
+        - name: "codingSystem"
+          with:
+            fhir: "coding"
+          manual:
+            - name: "system"
+              fhir:
+                - path: "system"
+                  value: "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+
         - name: "codeIcd10Diagnosesicherheit"
           with:
             fhir: "extension"

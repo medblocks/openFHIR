@@ -13,14 +13,29 @@ spec:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Identifier
 
 mappings:
-  - name: "identifierCase"
+  - name: "identifierCaseParent"
     with:
-      fhir: "$fhirRoot.value"
-      openehr: "$archetype/items[at0001]"
-      type: "STRING"
+      fhir: "$fhirRoot"
+      openehr: "$archetype"
+      type: "NONE"
     fhirCondition:
       targetRoot: "$fhirRoot"
       targetAttribute: "type.coding.code"
       operator: "one of"
       criteria: "VN"
+    followedBy:
+      mappings:
+        - name: "identifierCase"
+          with:
+            fhir: "value"
+            openehr: "items[at0001]"
+            type: "STRING"
+        - name: "vncodingcode"
+          with:
+            fhir: "type.coding"
+          manual:
+            - name: "extension"
+              fhir:
+                - path: "code"
+                  value: "VN"
 
