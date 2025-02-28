@@ -20,7 +20,8 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.status"
-      openehr: "$composition/context/other_context[at0001]/items[at0005]/defining_code" # this status is mandatory, because it's 1...1 in the template
+      openehr: "$composition/context/other_context[at0001]/items[at0005]" # this status is mandatory, because it's 1...1 in the template
+      type: "CODING"
 
   - name: "fallIdentifikationIdentifier"
     extension: "add"
