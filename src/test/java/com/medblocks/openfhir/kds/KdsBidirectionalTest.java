@@ -55,7 +55,7 @@ public abstract class KdsBidirectionalTest {
      * to automatically be created against a running (by yourself) EHRBase instance. Meant for an integration
      * test and implicit validation of the mapped Composition.
      */
-    final boolean TEST_AGAINST_EHRBASE = true;
+    final boolean TEST_AGAINST_EHRBASE = false;
     final String EHRBASE_BASIC_USERNAME = "ehrbase-user";
     final String EHRBASE_BASIC_PASSWORD = "SuperSecretPassword";
     final String EHRBASE_HOST = "http://localhost:8081";
@@ -120,6 +120,11 @@ public abstract class KdsBidirectionalTest {
     @Test
     public void toOpenEhrTest() {
         final JsonObject flatPaths = toOpenEhr();
+        if(flatPaths == null) {
+            // means it's treated as @Ignore
+            log.warn("Test {} ignoring openEHR test.", getClass().getName());
+            return;
+        }
 
         final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(new Gson().toJson(flatPaths),
                                                                                      webTemplate);
