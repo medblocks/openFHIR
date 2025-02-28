@@ -224,7 +224,7 @@
               "type": "string"
             },
             "criterias": {
-              "type": "string"
+              "type": "array"
             },
             "identifying": {
               "type": "boolean"
