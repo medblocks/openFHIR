@@ -8,15 +8,14 @@ import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import com.medblocks.openfhir.fc.schema.model.FhirConnectModel;
 import com.medblocks.openfhir.rest.RequestValidationException;
 import com.medblocks.openfhir.util.FhirConnectValidator;
-
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.yaml.snakeyaml.Yaml;
+
+import java.util.List;
 
 @Component
 @Slf4j
@@ -140,12 +139,4 @@ public class FhirConnectService {
         return mapperRepository.findAll();
     }
 
-    public List<String> getValidProfiles(final String reqId) {
-        List<FhirConnectContextEntity> contextEntities = contextRepository.findAll();
-        List<String> profiles = new ArrayList<>();
-        for (final FhirConnectContextEntity contextEntity : contextEntities){
-            profiles.add(contextEntity.getFhirConnectContext().getContext().getProfileUrl().toString());
-        }
-        return profiles;
-    }
 }

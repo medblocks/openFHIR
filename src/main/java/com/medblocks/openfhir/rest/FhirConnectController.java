@@ -95,9 +95,4 @@ public class FhirConnectController {
         return service.all(reqId);
     }
 
-    @GetMapping("/fc/profiles")
-    List<String> getValidProfiles(@RequestHeader(value = "x-req-id", required = false) final String reqId) {
-        return service.getValidProfiles(reqId);
-    }
-
 }
