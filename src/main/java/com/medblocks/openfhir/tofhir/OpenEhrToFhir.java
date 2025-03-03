@@ -1481,6 +1481,10 @@ public class OpenEhrToFhir {
         final String value = fetchValue(joinedValues, "value");
         final String code = fetchValue(joinedValues, "code");
         final String terminology = fetchValue(joinedValues, "terminology");
+        // iterate and find all mappings as well
+            // fetchValue(joinedValues, "_mapping:i/target|terminology")
+            // fetchValue(joinedValues, "_mapping:i/target|code")
+            // fetchValue(joinedValues, "_mapping:i/target|preferred_term")
         final String id = fetchValue(joinedValues, "id");
 
         return switch (targetType) {
@@ -1490,7 +1494,7 @@ public class OpenEhrToFhir {
             case "TIME" -> handleTime(valueHolder, lastIndex, path);
             case "BOOL" -> handleBoolean(valueHolder, lastIndex, path);
             case "DATE" -> handleDate(valueHolder, lastIndex, path);
-            case "CODEABLECONCEPT" -> handleCodeableConcept(valueHolder, lastIndex, path, value, terminology, code);
+            case "CODEABLECONCEPT" -> handleCodeableConcept(valueHolder, lastIndex, path, value, terminology, code //to add mappings);
             case "CODING" -> handleCoding(valueHolder, lastIndex, path, terminology, code, value);
             case "MEDIA" -> handleMedia(valueHolder, lastIndex, path);
             case "IDENTIFIER" -> handleIdentifier(valueHolder, lastIndex, path, id);
@@ -1625,12 +1629,16 @@ public class OpenEhrToFhir {
                                                                     final String path,
                                                                     final String value,
                                                                     final String terminology,
-                                                                    final String code) {
+                                                                    final String code
+                                                                    //final Mappings mappings
+                                                                    ) {
         final CodeableConcept data = new CodeableConcept();
         final String text = getFromValueHolder(valueHolder, value);
         data.setText(text);
         data.addCoding(new Coding(getFromValueHolder(valueHolder, terminology),
                                   getFromValueHolder(valueHolder, code), text));
+        // for each in mapping
+        // data.addCoding(new Coding ...)
         return new OpenEhrToFhirHelper.DataWithIndex(data, lastIndex, path);
     }
 
