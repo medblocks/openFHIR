@@ -305,6 +305,11 @@ public class OpenEhrPopulator {
                 if (codeableConcept.getText() == null || codeableConcept.getText().isEmpty()) {
                     addToConstructingFlat(path + "|value", coding.getDisplay(), flat);
                 }
+                // iterate here on all codings
+                //  path + /_mapping:${i}/match = "=" -- fixed
+                //  path + /_mapping:${i}/target/preferred_term = "display"
+                //  path + /_mapping:${i}/target/code = "value"
+                //  path + /_mapping:${i}/target/terminology = "value"
             }
             addToConstructingFlat(path + "|value", codeableConcept.getText(), flat);
             return true;
