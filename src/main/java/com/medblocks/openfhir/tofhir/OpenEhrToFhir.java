@@ -1481,10 +1481,6 @@ public class OpenEhrToFhir {
         final String value = fetchValue(joinedValues, "value");
         final String code = fetchValue(joinedValues, "code");
         final String terminology = fetchValue(joinedValues, "terminology");
-        // iterate and find all mappings as well
-            // fetchValue(joinedValues, "_mapping:i/target|terminology")
-            // fetchValue(joinedValues, "_mapping:i/target|code")
-            // fetchValue(joinedValues, "_mapping:i/target|preferred_term")
         final String id = fetchValue(joinedValues, "id");
 
         return switch (targetType) {
@@ -1651,44 +1647,51 @@ public class OpenEhrToFhir {
     }
 
     /**
-     * Process mappings for a given path and add them as codings to the CodeableConcept
+     * Process terminology mappings for a given path and add them as additional codings to the CodeableConcept.
      * 
-     * @param valueHolder JSON object containing the values
-     * @param path Base path to look for mappings
+     * In openEHR, a coded term can have multiple mappings to other terminologies. This method extracts those
+     * mappings from the flat JSON structure and adds them as additional codings to the FHIR CodeableConcept.
+     * 
+     * @param valueHolder JSON object containing the values from the openEHR composition
+     * @param path Base path to the coded element
      * @param codeableConcept CodeableConcept to add mappings to
      */
     private void processMappings(final JsonObject valueHolder, final String path, final CodeableConcept codeableConcept) {
-        int mappingIndex = 0;
-        String mappingPrefix;
-        
-        // Iterate through all possible mappings
-        while (true) {
-            mappingPrefix = path + "/_mapping:" + mappingIndex;
+        // Mappings in openEHR flat format are represented as _mapping:0, _mapping:1, etc.
+        for (int mappingIndex = 0; ; mappingIndex++) {
+            String mappingPrefix = path + "/_mapping:" + mappingIndex;
             
-            // Check if this mapping exists by looking for any related key
-            boolean mappingExists = false;
-            for (String key : valueHolder.keySet()) {
-                if (key.startsWith(mappingPrefix)) {
-                    mappingExists = true;
-                    break;
-                }
+            // Check if this mapping exists by looking for any key that starts with the mapping prefix
+            if (!mappingExistsInValueHolder(valueHolder, mappingPrefix)) {
+                break;  // No more mappings found
             }
             
-            if (!mappingExists) {
-                break;
-            }
-            
+            // Extract mapping details
             String terminology = getFromValueHolder(valueHolder, mappingPrefix + "/target|terminology");
             String code = getFromValueHolder(valueHolder, mappingPrefix + "/target|code");
             String preferredTerm = getFromValueHolder(valueHolder, mappingPrefix + "/target|preferred_term");
             
-            // Add mapping as a coding if we have at least system or code
+            // Add mapping as a coding if we have at least a system or code
             if (terminology != null || code != null) {
                 codeableConcept.addCoding(new Coding(terminology, code, preferredTerm));
             }
-            
-            mappingIndex++;
         }
+    }
+    
+    /**
+     * Check if a mapping exists in the valueHolder by looking for any key that starts with the mapping prefix
+     * 
+     * @param valueHolder JSON object containing the values
+     * @param mappingPrefix Prefix to check for
+     * @return true if a mapping with this prefix exists
+     */
+    private boolean mappingExistsInValueHolder(final JsonObject valueHolder, final String mappingPrefix) {
+        for (String key : valueHolder.keySet()) {
+            if (key.startsWith(mappingPrefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private OpenEhrToFhirHelper.DataWithIndex handleCoding(final JsonObject valueHolder,

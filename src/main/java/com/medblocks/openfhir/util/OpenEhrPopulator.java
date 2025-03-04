@@ -304,21 +304,9 @@ public class OpenEhrPopulator {
                 addToConstructingFlat(path + "|code", primaryCoding.getCode(), flat);
                 addToConstructingFlat(path + "|terminology", primaryCoding.getSystem(), flat);
                 addToConstructingFlat(path + "|value", primaryCoding.getDisplay(), flat);
-                // if (codeableConcept.getText() == null || codeableConcept.getText().isEmpty()) {
-                //     addToConstructingFlat(path + "|value", primaryCoding.getDisplay(), flat);
-                // }
                 
                 // Handle additional codings as mappings
-                for (int i = 1; i < codings.size(); i++) {
-                    Coding additionalCoding = codings.get(i);
-                    addToConstructingFlat(path + "/_mapping:" + (i-1) + "/match", "=", flat);
-                    addToConstructingFlat(path + "/_mapping:" + (i-1) + "/target|preferred_term", 
-                                         additionalCoding.getDisplay(), flat);
-                    addToConstructingFlat(path + "/_mapping:" + (i-1) + "/target|code", 
-                                         additionalCoding.getCode(), flat);
-                    addToConstructingFlat(path + "/_mapping:" + (i-1) + "/target|terminology", 
-                                         additionalCoding.getSystem(), flat);
-                }
+                addAdditionalCodingsAsMappings(path, codings, flat);
             }
             addToConstructingFlat(path + "|value", codeableConcept.getText(), flat);
             return true;
@@ -335,6 +323,25 @@ public class OpenEhrPopulator {
                      value.getClass());
         }
         return false;
+    }
+
+    /**
+     * Adds additional codings from a CodeableConcept as mappings in the openEHR flat format
+     * 
+     * @param path The base path for the mappings
+     * @param codings The list of codings (first one is skipped as it's the primary coding)
+     * @param flat The JSON object to add the mappings to
+     */
+    private void addAdditionalCodingsAsMappings(String path, List<Coding> codings, JsonObject flat) {
+        for (int i = 1; i < codings.size(); i++) {
+            Coding coding = codings.get(i);
+            String mappingPath = path + "/_mapping:" + (i-1);
+            
+            addToConstructingFlat(mappingPath + "/match", "=", flat);
+            addToConstructingFlat(mappingPath + "/target|preferred_term", coding.getDisplay(), flat);
+            addToConstructingFlat(mappingPath + "/target|code", coding.getCode(), flat);
+            addToConstructingFlat(mappingPath + "/target|terminology", coding.getSystem(), flat);
+        }
     }
 
     private boolean handleIdentifier(final String path, final Base value, final JsonObject flat) {
