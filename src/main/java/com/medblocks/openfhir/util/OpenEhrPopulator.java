@@ -299,17 +299,26 @@ public class OpenEhrPopulator {
         if (value instanceof CodeableConcept codeableConcept) {
             List<Coding> codings = codeableConcept.getCoding();
             if (!codings.isEmpty()) {
-                Coding coding = codings.get(0);
-                addToConstructingFlat(path + "|code", coding.getCode(), flat);
-                addToConstructingFlat(path + "|terminology", coding.getSystem(), flat);
-                if (codeableConcept.getText() == null || codeableConcept.getText().isEmpty()) {
-                    addToConstructingFlat(path + "|value", coding.getDisplay(), flat);
+                // Handle the first coding as the primary coded text
+                Coding primaryCoding = codings.get(0);
+                addToConstructingFlat(path + "|code", primaryCoding.getCode(), flat);
+                addToConstructingFlat(path + "|terminology", primaryCoding.getSystem(), flat);
+                addToConstructingFlat(path + "|value", primaryCoding.getDisplay(), flat);
+                // if (codeableConcept.getText() == null || codeableConcept.getText().isEmpty()) {
+                //     addToConstructingFlat(path + "|value", primaryCoding.getDisplay(), flat);
+                // }
+                
+                // Handle additional codings as mappings
+                for (int i = 1; i < codings.size(); i++) {
+                    Coding additionalCoding = codings.get(i);
+                    addToConstructingFlat(path + "/_mapping:" + (i-1) + "/match", "=", flat);
+                    addToConstructingFlat(path + "/_mapping:" + (i-1) + "/target|preferred_term", 
+                                         additionalCoding.getDisplay(), flat);
+                    addToConstructingFlat(path + "/_mapping:" + (i-1) + "/target|code", 
+                                         additionalCoding.getCode(), flat);
+                    addToConstructingFlat(path + "/_mapping:" + (i-1) + "/target|terminology", 
+                                         additionalCoding.getSystem(), flat);
                 }
-                // iterate here on all codings
-                //  path + /_mapping:${i}/match = "=" -- fixed
-                //  path + /_mapping:${i}/target/preferred_term = "display"
-                //  path + /_mapping:${i}/target/code = "value"
-                //  path + /_mapping:${i}/target/terminology = "value"
             }
             addToConstructingFlat(path + "|value", codeableConcept.getText(), flat);
             return true;
