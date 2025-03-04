@@ -157,7 +157,7 @@ public class FhirToOpenEhr {
         // unmarshall flat path to a canonical json format
         final Composition composition = flatJsonUnmarshaller.unmarshal(gson.toJson(flattenedWithValues), webTemplate);
 
-        enrichComposition(composition, null);
+        enrichComposition(composition);
 
         return composition;
     }
@@ -168,7 +168,7 @@ public class FhirToOpenEhr {
      *
      * @param composition enriched with metadata that wasn't mapped
      */
-    public void enrichComposition(final Composition composition, final Map<String, String> compositionAdditionalConfig) {
+    public void enrichComposition(final Composition composition) {
         // default values; set if not already set by mappings
         if (composition.getLanguage() == null) {
             composition.setLanguage(new CodePhrase(new TerminologyId("ISO_639-1"), "en"));
