@@ -1,15 +1,18 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: context
 metadata:
   name:  KDS_diagnose.context
-  version: 0.0.1a # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1a 
+spec: 
   system: FHIR
   version: R4
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
-  templateId: "KDS_Diagnose"
+  profile:
+    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+    version: "2025.0.0"
+  template:
+    id: "KDS_Diagnose"
   archetypes:
     - "CLUSTER.multiple_coding_icd10gm.v1"
     - "EVALUATION.problem_diagnosis.v1"
@@ -22,5 +25,6 @@ context:
     - "KDS_problem_qualifier"
     - "KDS_lebensphase"
     - "KDS_anatomical_location"
+    - "KDS_Specimen"
   start: "EVALUATION.problem_diagnosis.v1"
 

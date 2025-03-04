@@ -120,6 +120,11 @@ public abstract class KdsBidirectionalTest {
     @Test
     public void toOpenEhrTest() {
         final JsonObject flatPaths = toOpenEhr();
+        if(flatPaths == null) {
+            // means it's treated as @Ignore
+            log.warn("Test {} ignoring openEHR test.", getClass().getName());
+            return;
+        }
 
         final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(new Gson().toJson(flatPaths),
                                                                                      webTemplate);

@@ -3,7 +3,7 @@
   "title": "FHIRConnect Context Schema",
   "type": "object",
   "properties": {
-    "engine": {
+    "grammar": {
       "type": "string",
       "pattern": "^FHIRConnect/v[0-9]+\\.[0-9]+\\.[0-9]+$"
     },
@@ -52,12 +52,27 @@
     "context": {
       "type": "object",
       "properties": {
-        "profileUrl": {
-          "type": "string",
-          "format": "uri"
+        "profile": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          }
         },
-        "templateId": {
-          "type": "string"
+        "template": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "sem_ver": {
+              "type": "string"
+            }
+          }
         },
         "archetypes": {
           "type": "array",
@@ -76,15 +91,15 @@
         }
       },
       "required": [
-        "profileUrl",
-        "templateId",
+        "profile",
+        "template",
         "archetypes",
         "start"
       ]
     }
   },
   "required": [
-    "engine",
+    "grammar",
     "type",
     "metadata",
     "spec",

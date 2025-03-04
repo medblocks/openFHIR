@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
   name: KDS_admin_entry_person.v0
@@ -19,7 +19,7 @@ mappings:
       targetRoot: "$resource.identifier"
       targetAttribute: "type.coding.code"
       operator: "one of"
-      criteria: "[MR]"
+      criteria: "MR"
     followedBy:
       mappings:
         - name: "type"
@@ -32,14 +32,6 @@ mappings:
                   value: "http://terminology.hl7.org/CodeSystem/v2-0203"
                 - path: "code"
                   value: "MR"
-
-
-  - name: "personData"
-    extension: "overwrite"
-    with: #todo: why are you overwriting it?
-      fhir: "$resource"
-      openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.person.v1 and name/value='Person']"
-    slotArchetype: "CLUSTER.person.v1"
 
   - name: "versicherungsInformationen"
     with:
@@ -58,5 +50,4 @@ mappings:
 #    with:
 #      fhir: "$resource.identifier"
 #      openehr: "$reference"
-#    type: "PROGRAMMED_MAPPING"
 #    mappingCode: "ehrStatusAddExternalREF" #these identifiers of FHIR need to go to the EHR status to be honest as external references.

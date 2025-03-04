@@ -50,7 +50,7 @@ public class MedicationOrderToOpenEhrTest extends GenericTest {
     @Test
     public void medicationOrder_flat() {
         final List<FhirToOpenEhrHelper> helpers = new ArrayList<>();
-        final String templateId = context.getContext().getTemplateId().toLowerCase().replace(" ", "_");
+        final String templateId = context.getContext().getTemplate().getId().toLowerCase().replace(" ", "_");
         final ArrayList<FhirToOpenEhrHelper> coverHelpers = new ArrayList<>();
         final OpenFhirFhirConnectModelMapper mapper = repo.getMapperForArchetype("medication order",
                                                                                  "openEHR-EHR-INSTRUCTION.medication_order.v2")

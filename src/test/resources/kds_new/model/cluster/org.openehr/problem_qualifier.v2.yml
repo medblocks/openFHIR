@@ -1,13 +1,14 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: model
 metadata:
   name:  CLUSTER.problem_qualifier.v2
-  version: 0.0.1-alpha # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1-alpha 
+spec: 
   system: FHIR
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.problem_qualifier.v2
+    revision: 2.0.1
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 
@@ -18,16 +19,15 @@ mappings:
       openehr: "$archetype/items[at0004]"
     fhirCondition:
       targetRoot: "$resource.verificationStatus"
-      targetAttributes:
-        - "coding.code"
+      targetAttribute: "coding.code"
       operator: "not of"
-      criteria: "[entered-in-error]"
+      criteria: "entered-in-error"
     manual:
       - name: "provisional"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0017"
           - path: "value"
             value: "Working"
@@ -36,7 +36,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[provisional]"
+          criteria: "provisional"
 
         fhir:
           - path: "code"
@@ -47,16 +47,15 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/code_string"
           operator: "one of"
-          criteria: "[at0017]"
+          criteria: "at0017"
 
       - name: "differential"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0017"
           - path: "value"
             value: "Working"
@@ -64,7 +63,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[differential]"
+          criteria: "differential"
 
         fhir:
           - path: "code"
@@ -75,16 +74,15 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/code_string"
           operator: "one of"
-          criteria: "[at0017]"
+          criteria: "at0017"
 
       - name: "preliminary"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0016"
           - path: "value"
             value: "Preliminary"
@@ -92,7 +90,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[unconfirmed]"
+          criteria: "unconfirmed"
 
         fhir:
           - path: "code"
@@ -103,16 +101,15 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/code_string"
           operator: "one of"
-          criteria: "[at0016]"
+          criteria: "at0016"
 
       - name: "established"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0018"
           - path: "value"
             value: "Established"
@@ -120,7 +117,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[confirmed]"
+          criteria: "confirmed"
 
         fhir:
           - path: "code"
@@ -131,16 +128,15 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/code_string"
           operator: "one of"
-          criteria: "[at0018]"
+          criteria: "at0018"
 
       - name: "refuted"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0088"
           - path: "value"
             value: "Refuted"
@@ -148,7 +144,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "code"
           operator: "one of"
-          criteria: "[refuted]"
+          criteria: "refuted"
 
         fhir:
           - path: "code"
@@ -159,7 +155,6 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/code_string"
           operator: "one of"
-          criteria: "[at0088]"
+          criteria: "at0088"

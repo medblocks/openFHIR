@@ -168,7 +168,9 @@ public class FhirInstancePopulator {
     private void populateStringType(Object toPopulate, StringType data) {
         if (toPopulate instanceof Enumeration) {
             ((Enumeration<?>) toPopulate).setValueAsString(data.getValueAsString());
-        } else if (toPopulate instanceof PrimitiveType<?>) {
+        } else if (toPopulate instanceof DateTimeType) {
+            ((DateTimeType) toPopulate).setValueAsString(data.getValueAsString());
+        }else if (toPopulate instanceof PrimitiveType<?>) {
             ((PrimitiveType<String>) toPopulate).setValue(data.getValue());
         }
     }

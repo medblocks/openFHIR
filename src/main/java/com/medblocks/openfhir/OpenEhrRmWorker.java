@@ -55,13 +55,12 @@ public class OpenEhrRmWorker {
             // walk through all web template nodes and enrich them with types and occurrence indexes
             walkThroughNodes(tree.getChildren(), String.join("/", split), constructing, forcedTypes, fhirToOpenEhrHelper,pathToFindSuffix);
 
-
             final String actualSuffix = openFhirMapperUtils.endsWithAqlSuffix(suffix) ? openFhirMapperUtils.replaceAqlSuffixWithFlatSuffix(suffix) : suffix;
             fhirToOpenEhrHelper.setOpenEhrPath(tree.getId() + "/" + fhirToOpenEhrHelper.getOpenEhrPath() + (hasSuffix ? actualSuffix : ""));
 
             // we compare so that we can see if if was found within the template; if not, we don't want for it to end up in the flat json
             final int initialOpenEhrPathWithProperTreeLength = split.length + 1;
-            if (fhirToOpenEhrHelper.getOpenEhrPath().split("/").length < initialOpenEhrPathWithProperTreeLength ) {
+            if (fhirToOpenEhrHelper.getOpenEhrPath().replace("|", "/").split("/").length < initialOpenEhrPathWithProperTreeLength ) {
                 // means it didn't find it fully.. so it probably doesn't exist
                 if (!FhirConnectConst.DV_MULTIMEDIA.equals(fhirToOpenEhrHelper.getOpenEhrType())) { // multimedia and its 'content' is a tad bit special...
                     fhirToOpenEhrHelper.setOpenEhrType(OPENEHR_TYPE_NONE);

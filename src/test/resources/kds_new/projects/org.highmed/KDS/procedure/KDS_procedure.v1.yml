@@ -1,9 +1,9 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
   name:  KDS_procedure.v1
-  version: 0.0.1-alpha # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1-alpha 
+spec: 
   system: FHIR
   version: R4
   extends: ACTION.procedure.v1
@@ -17,24 +17,23 @@ mappings:
       openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
     slotArchetype: "CLUSTER.case_identification.v0"
 
-#  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
-#    extension: "add"
-#    with:
-#      fhir: "$resource.encounter.reference"
-#      openehr: "$reference"
-#    reference:
-#      resourceType: "Encounter"
-#      mappings:
-#        - name: "identifierInReference"
-#          with:
-#            fhir: "$fhirRoot.identifier"
-#            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-#          slotArchetype: "CLUSTER.case_identification.v0"
+  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+    extension: "add"
+    with:
+      fhir: "$resource.encounter"
+      openehr: "$reference"
+    reference:
+      resourceType: "Encounter"
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.identifier"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+          slotArchetype: "CLUSTER.case_identification.v0"
 #        - name: "encounterMapping"
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
 #            openehrLink:
 #              meaning: "the case this composition relates to"
 #              type: "case"
@@ -57,7 +56,7 @@ mappings:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht]"
+      criteria: "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht"
     followedBy:
       mappings:
         - name: "staticUrl"
@@ -79,7 +78,7 @@ mappings:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum]"
+      criteria: "http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum"
     followedBy:
       mappings:
         - name: "staticUrl"

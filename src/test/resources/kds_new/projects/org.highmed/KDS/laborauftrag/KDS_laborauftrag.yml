@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
   name: KDS_laborauftrag
@@ -15,25 +15,24 @@ mappings:
       fhir: "$resource.encounter.as(Reference).identifier"
       openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
     slotArchetype: "CLUSTER.case_identification.v0"
-#
-#  - name: "fallIdentifikationReference" # if reference is accessible will overwrite fallIdentifikationIdentifier
-#    extension: "add"
-#    with:
-#      fhir: "$resource.encounter.reference"
-#      openehr: "$reference"
-#    reference: #type None
-#      resourceType: "Encounter"
-#      mappings:
-#        - name: "identifierInReference"
-#          with:
-#            fhir: "$fhirRoot.identifier"
-#            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-#          slotArchetype: "CLUSTER.case_identification.v0"
+
+  - name: "fallIdentifikationReference" # if reference is accessible will overwrite fallIdentifikationIdentifier
+    extension: "add"
+    with:
+      fhir: "$resource.encounter.reference"
+      openehr: "$reference"
+    reference: #type None
+      resourceType: "Encounter"
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.identifier"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+          slotArchetype: "CLUSTER.case_identification.v0"
 #        - name: "encounterMapping"
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
 #            openehrLink:
 #              meaning: "the case this composition relates to"
 #              type: "case"
@@ -72,16 +71,15 @@ mappings:
     manual:
       - name: "intentStatic"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "http://hl7.org/fhir/request-intent"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "order"
           - path: "value"
             value: "Order"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttributes:
-            - "category.coding.code"
+          targetAttribute: "category.coding.code"
           operator: "one of"
           criteria: "laboratory"
 
@@ -90,8 +88,7 @@ mappings:
             value: "order"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "activities[at0001]/description[at0009]/items[at0065]/defining_code"
+          targetAttribute: "activities[at0001]/description[at0009]/items[at0065]/defining_code/code_string"
           operator: "one of"
           criteria: "order"
 
@@ -103,16 +100,15 @@ mappings:
     manual:
       - name: "categoryStatic"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "http://terminology.hl7.org/ValueSet/observation-category"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "laboratory"
           - path: "value"
             value: "Laboratory"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttributes:
-            - "category.coding.code"
+          targetAttribute: "category.coding.code"
           operator: "one of"
           criteria: "laboratory"
 
@@ -123,8 +119,7 @@ mappings:
             value: "laboratory"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "activities[at0001]/description[at0009]/items[at0148]/defining_code"
+          targetAttribute: "activities[at0001]/description[at0009]/items[at0148]/defining_code/code_string"
           operator: "one of"
           criteria: "laboratory"
 
@@ -136,16 +131,15 @@ mappings:
     manual:
       - name: "categoryStatic"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "http://hl7.org/fhir/ValueSet/request-status"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "completed"
           - path: "value"
             value: "Completed"
         fhirCondition:
           targetRoot: "$resource"
-          targetAttributes:
-            - "status"
+          targetAttribute: "status"
           operator: "one of"
           criteria: "completed"
 
@@ -154,7 +148,6 @@ mappings:
             value: "completed"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "protocol[at0008]/items[at0127]/defining_code"
+          targetAttribute: "protocol[at0008]/items[at0127]/defining_code/code_string"
           operator: "one of"
           criteria: "completed"
