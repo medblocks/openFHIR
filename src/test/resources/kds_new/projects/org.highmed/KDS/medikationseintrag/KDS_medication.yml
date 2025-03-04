@@ -1,15 +1,16 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
-  name:  KDS_medication.v2
-  version: 0.0.1-alpha # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  name:  KDS_medication.v3
+  version: 0.0.1-alpha 
+spec: 
   system: FHIR
   version: R4
   extends: CLUSTER.medication.v2
 
 #todo: example of fhir data please, what should this map to??
 mappings:
+
   - name: "wirkstofftyp"
     extension: "append"
     appendTo: "ingredients"
@@ -24,7 +25,7 @@ mappings:
             targetRoot: "$fhirRoot.ingredients.extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp]"
+            criteria: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp"
           followedBy:
             mappings:
               - name: "extension"
@@ -50,7 +51,7 @@ mappings:
 #            targetRoot: "$fhirRoot.ingredients.extension"
 #            targetAttribute: "url"
 #            operator: "one of"
-#            criteria: "[https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstoffrelation]"
+#            criteria: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstoffrelation"
 #          followedBy:
 #            mappings:
 #              - name: "ingriedientsReference"
@@ -61,7 +62,7 @@ mappings:
 #                  targetRoot: "extension"
 #                  targetAttribute: "url"
 #                  operator: "one of"
-#                  criteria: "[ingredientReference]"
+#                  criteria: "ingredientReference"
 #                followedBy:
 #                  mappings:
 #                    - name: "relationMedication"
@@ -97,4 +98,4 @@ mappings:
 #                  targetRoot: "extension"
 #                  targetAttribute: "url"
 #                  operator: "one of"
-#                  criteria: "[ingredientUri]"
+#                  criteria: "ingredientUri"

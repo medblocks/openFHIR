@@ -27,7 +27,7 @@ import org.junit.Test;
 public class PersonTest extends KdsBidirectionalTest {
 
     final String MODEL_MAPPINGS = "/kds_new/";
-    final String CONTEXT = "/kds_new/projects/org.highmed/KDS/person/KDS_medikationseintrag.context.yaml";
+    final String CONTEXT = "/kds_new/projects/org.highmed/KDS/person/KDS_medikationsverabreichung.context.yaml";
     final String HELPER_LOCATION = "/kds/person/";
     final String OPT = "KDS_Person.opt";
     final String FLAT = "KDS_Person.flat.json";

@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
   name: KDS_organisation
@@ -28,7 +28,7 @@ mappings:
       targetRoot: "coding"
       targetAttribute: "system"
       operator: "one of"
-      criteria: "[http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel]"
+      criteria: "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel"
     followedBy:
       mappings:
         - name: "fachabteilungsschluessel"

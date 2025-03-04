@@ -72,22 +72,22 @@ public class OpenFhirMapperUtils {
         if (pathWithAqlSuffix == null) {
             return "";
         }
-        if(!endsWithAqlSuffix(pathWithAqlSuffix)) {
+        if (!endsWithAqlSuffix(pathWithAqlSuffix)) {
             return "";
         }
         final String[] paths = pathWithAqlSuffix.split("/");
         final List<String> pathsAsList = Arrays.asList(paths);
-        final String aqlSuffix = pathsAsList.get(pathsAsList.size()-1);
+        final String aqlSuffix = pathsAsList.get(pathsAsList.size() - 1);
         switch (aqlSuffix) {
             case "defining_code":
             case "|defining_code":
             case "code_string":
             case "|code_string":
-                return "|"+FhirConnectConst.OPENEHR_CODE;
+                return "|" + FhirConnectConst.OPENEHR_CODE;
             case "terminology_id":
             case "|terminology_id":
             case "terminology_id/value":
-                return "|"+FhirConnectConst.OPENEHR_TERMINOLOGY;
+                return "|" + FhirConnectConst.OPENEHR_TERMINOLOGY;
         }
         return "";
     }
@@ -99,7 +99,8 @@ public class OpenFhirMapperUtils {
         return path.endsWith("defining_code")
                 || path.endsWith("code_string")
                 || path.endsWith("terminology_id")
-                || path.endsWith("terminology_id/value");
+                || path.endsWith("terminology_id/value")
+                || path.endsWith("defining_code/code_string");
     }
 
     public String removeAqlSuffix(final String path) {
@@ -108,8 +109,9 @@ public class OpenFhirMapperUtils {
         }
         final String[] paths = path.split("/");
         final List<String> pathsAsList = Arrays.asList(paths);
-        return pathsAsList.subList(0, pathsAsList.size() - 1).stream().collect(
+        final String removed = pathsAsList.subList(0, pathsAsList.size() - 1).stream().collect(
                 Collectors.joining("/"));
+        return removeAqlSuffix(removed);
     }
 
     public String dateToString(final Date date) {
@@ -215,9 +217,13 @@ public class OpenFhirMapperUtils {
     public void prepareFollowedByMappings(final List<Mapping> followedByMappings,
                                           final String fhirPath,
                                           final String openehr,
-                                          final String slotContext) {
+                                          final String slotContext,
+                                          final Mapping parentMapping) {
         for (final Mapping followedByMapping : followedByMappings) {
             final With with = followedByMapping.getWith();
+            if (with == null) {
+                continue;
+            }
             final String hardcodedValue = with.getValue();
             if (followedByMapping.getWith().getOpenehr() == null && hardcodedValue != null) {
                 // hardcoding to FHIR
@@ -227,6 +233,14 @@ public class OpenFhirMapperUtils {
                 followedByMapping.getWith().setFhir(fhirPath + "." + followedByMapping.getWith().getFhir());
             }
 
+            final Condition parentFhirCondition = parentMapping.getFhirCondition();
+            if (parentFhirCondition != null
+                    && FhirConnectConst.CONDITION_OPERATOR_TYPE.equals(parentFhirCondition.getOperator())) {
+                followedByMapping.addTypeCondition(parentFhirCondition);
+            }
+            if (parentMapping.getTypeConditions() != null) {
+                parentMapping.getTypeConditions().forEach(followedByMapping::addTypeCondition);
+            }
 
 
             if (!followedByMapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_ARCHETYPE_FC)
@@ -274,8 +288,8 @@ public class OpenFhirMapperUtils {
 
                     final String delimeter = followedByMapping.getWith().getOpenehr().startsWith("|") ? "" : "/";
                     openehrCondition.setTargetRoot(openehr + delimeter + conditionRoot
-                                    .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + ".", "")
-                                    .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
+                            .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + ".", "")
+                            .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
                 } else if (conditionRoot.equals(FhirConnectConst.OPENEHR_ARCHETYPE_FC)) {
                     openehrCondition.setTargetRoot(openehr);
                 } else {
@@ -457,7 +471,7 @@ public class OpenFhirMapperUtils {
 
             // reference
             final FhirConnectReference reference = slotArchetypeMappersMapping.getReference();
-            if(reference == null) {
+            if (reference == null) {
                 continue;
             }
             fixOpenEhrForwardingPaths(reference.getMappings(), openEhrPath);
@@ -466,7 +480,7 @@ public class OpenFhirMapperUtils {
 
     private void fixOpenEhrForwardingPathsCondition(final Condition openehrCondition,
                                                     final String openEhrPath) {
-        if(openehrCondition == null) {
+        if (openehrCondition == null) {
             return;
         }
         if (FhirConnectConst.OPENEHR_ARCHETYPE_FC.equals(openehrCondition.getTargetRoot())) {

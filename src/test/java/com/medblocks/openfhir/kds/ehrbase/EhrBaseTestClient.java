@@ -4,6 +4,7 @@ import com.nedap.archie.rm.composition.Composition;
 import lombok.extern.slf4j.Slf4j;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.springframework.http.*;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +25,8 @@ public class EhrBaseTestClient {
                              final String username,
                              final String password) {
         this.restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters()
+                .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
         this.baseUrl = baseUrl;
         this.username = username;
         this.password = password;

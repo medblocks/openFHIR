@@ -1,15 +1,19 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: context
 metadata:
   name:  KDS_Vitalstatus.context
-  version: 0.0.1a # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1a 
+spec: 
   system: FHIR
   version: R4
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus"
-  templateId: "KDS_Vitalstatus"
+  profile:
+    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus"
+    version: "2025.0.0"
+  template:
+    id: "KDS_Vitalstatus"
+    sem_ver: "15.1.0"
   archetypes:
     - "EVALUATION.vital_status.v1"
     - "CLUSTER.case_identification.v0"
