@@ -56,8 +56,12 @@ mappings:
   - name: "problemDiagnose"
     extension: "overwrite"
     with:
-      fhir: "$fhirRoot"
+      fhir: "$fhirRoot.condition"
       openehr: "$archetype"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      operator: "type"
+      criteria: "Encounter.diagnosis"
     reference:
       resourceType: "Condition"
       mappings:
@@ -68,9 +72,14 @@ mappings:
             type: "CODING"
 
   - name: "problemDiagnoseUse"
+    extension: "add"
     with:
       fhir: "$fhirRoot.use"
       openehr: "$archetype"
+    fhirCondition:
+      targetRoot: "$fhirRoot"
+      operator: "type"
+      criteria: "Encounter.diagnosis"
     followedBy:
       mappings:
         # these have to be here, they can not be in the slot archetype because they're mapping to the DiagnosisComponent and not on Condition (resolved reference)
