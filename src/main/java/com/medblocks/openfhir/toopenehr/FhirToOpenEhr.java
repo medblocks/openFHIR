@@ -93,7 +93,7 @@ public class FhirToOpenEhr {
         final Bundle toRunEngineOn = prepareBundle(resource);
 
         final WebTemplate webTemplate = openEhrApplicationScopedUtils.parseWebTemplate(operationaltemplate);
-        final String templateId = OpenFhirMappingContext.normalizeTemplateId(context.getContext().getTemplateId());
+        final String templateId = OpenFhirMappingContext.normalizeTemplateId(context.getContext().getTemplate().getId());
 
         // helper objects for mapping to openEHR, where 'helpers' are regular ones constructed as part of the
         // mapping and 'coverHelpers' are those that don't directly reference the FHIR Resource but another one
@@ -496,12 +496,12 @@ public class FhirToOpenEhr {
         for (final Mapping mapping : mappings) {
 
             final With with = mapping.getWith();
-            if (with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
+            if (with == null || with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
                 continue;
             }
-            if (with.getUnidirectional() != null && FhirConnectConst.UNIDIRECTIONAL_TOFHIR.equals(
-                    with.getUnidirectional())) {
+            if (mapping.getUnidirectional() != null && FhirConnectConst.UNIDIRECTIONAL_TOFHIR.equals(
+                    mapping.getUnidirectional())) {
                 // this is unidirectional mapping toFhir only, ignore
                 continue;
             }
@@ -558,7 +558,7 @@ public class FhirToOpenEhr {
     private void createFollowedByMappings(final Mapping mapping, final String openehr, final String openEhrPath) {
         for (final Mapping followedByMapping : mapping.getFollowedBy().getMappings()) {
             final With with = followedByMapping.getWith();
-            if (with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
+            if (with == null || with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
                 continue;
             }
@@ -696,7 +696,11 @@ public class FhirToOpenEhr {
                                      final FhirToOpenEhrHelper initialHelper) {
         if (mapping.getWith().getFhir() == null) {
             // is hardcoding
-            mapping.getWith().setFhir(FHIR_ROOT_FC);
+            if(mapping.getFhirCondition() != null) {
+                mapping.getWith().setFhir(FHIR_ROOT_FC + mapping.getFhirCondition().getTargetRoot());
+            } else {
+                mapping.getWith().setFhir(FHIR_ROOT_FC);
+            }
             initialHelper.setHardcodingValue(mapping.getWith().getValue());
         }
     }

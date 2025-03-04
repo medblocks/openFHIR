@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
   name: KDS_structured_name.v1.person_name-structured_name
@@ -6,54 +6,94 @@ metadata:
 spec:
   system: FHIR
   version: R4
-  extends: CLUSTER.structured_name.v1.person_name-structured_name
+  extends: CLUSTER.structured_name.v1
 
 mappings:
-#  - name: "name.prefix" #TODO is wrong in the template only qualifier is displayed has to be fixed.
-#    extension: "overwrite"
-#    with:
-#      fhir: "$fhirRoot.prefix.extension"
-#      openehr: "$openehrRoot/items[at0006]"
-#    fhirCondition:
-#      targetRoot: "extension"
-#      targetAttribute: "url"
-#      operator: "one of"
-#      criteria: "[http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier]"
+  - name: "name.prefix"
+    extension: "overwrite"
+    with:
+      fhir: "$fhirRoot.prefix.extension"
+      openehr: "$openehrRoot/items[at0006]"
+    fhirCondition:
+      targetRoot: "$fhirRoot.prefix.extension"
+      targetAttribute: "url"
+      operator: "one of"
+      criteria: "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier"
+    followedBy:
+      mappings:
+        - name: "staticExtensionUrl"
+          with:
+            fhir: "$fhirRoot.prefix.extension"
+          manual:
+            - name: "url"
+              fhir:
+                - path: "url"
+                  value: "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier"
 
   - name: "appendFamily"
+    extension: "append"
     appendTo: "name.familyName"
     followedBy:
       mappings:
-        - name: "family"
+        - name: "familiennameZusatz"
           with:
-            fhir: "family.extension.value"
-            openehr: "items[at0005, 'Familienname-Nachname']"
-            type: "STRING"
+            fhir: "extension"
+            openehr: "items[at0005 and name/value='Familienname-Namenszusatz']"
           fhirCondition:
-            targetRoot: "family.extension"
+            targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-name]"
+            criteria: "http://fhir.de/StructureDefinition/humanname-namenszusatz"
+          followedBy:
+            mappings:
+              - name: "staticExtensionUrl"
+                with:
+                  fhir: "extension"
+                manual:
+                  - name: "staticUrl"
+                    fhir:
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/humanname-namenszusatz"
 
-        - name: "namens zusatz"
-          with:
-            fhir: "family.extension.value"
-            openehr: "items[at0005, 'Familienname-Namenszusatz']"
-            type: "STRING"
-          fhirCondition:
-            targetRoot: "family.extension"
-            targetAttribute: "url"
-            operator: "one of"
-            criteria: "[http://fhir.de/StructureDefinition/humanname-namenszusatz]"
 
-        - name: "familienname vorsatzwort"
+        - name: "nachnameOhneZusätze"
           with:
-            fhir: "family.extension.value"
-            openehr: "items[at0005, 'Familienname-Vorsatzwort']"
-            type: "STRING"
+            fhir: "extension"
+            openehr: "items[at0005 and name/value='Familienname-Nachname']"
           fhirCondition:
-            targetRoot: "family.extension"
+            targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[http://hl7.org/fhir/StructureDefinition/humanname-own-prefix]"
+            criteria: "http://hl7.org/fhir/StructureDefinition/humanname-own-name"
+          followedBy:
+            mappings:
+              - name: "staticExtensionUrl"
+                with:
+                  fhir: "extension"
+                manual:
+                  - name: "staticUrl"
+                    fhir:
+                      - path: "url"
+                        value: "http://hl7.org/fhir/StructureDefinition/humanname-own-name"
+
+        - name: "vorsatzwort"
+          with:
+            fhir: "extension"
+            openehr: "items[at0005 and name/value='Familienname-Vorsatzwort']"
+          fhirCondition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix"
+          followedBy:
+            mappings:
+              - name: "staticExtensionUrl"
+                with:
+                  fhir: "extension"
+                manual:
+                  - name: "staticUrl"
+                    fhir:
+                      - path: "url"
+                        value: "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix"
+
 

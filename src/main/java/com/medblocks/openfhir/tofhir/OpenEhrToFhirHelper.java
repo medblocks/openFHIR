@@ -1,13 +1,14 @@
 package com.medblocks.openfhir.tofhir;
 
+import com.medblocks.openfhir.fc.FhirConnectConst;
 import com.medblocks.openfhir.fc.schema.model.Condition;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hl7.fhir.r4.model.Base;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -50,6 +51,8 @@ public class OpenEhrToFhirHelper {
      */
     private Condition condition;
 
+    private List<Condition> typeConditions;
+
     /**
      * openEHR Condition
      */
@@ -75,9 +78,31 @@ public class OpenEhrToFhirHelper {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DataWithIndex {
+
         private Base data;
         private int index;
         private String fullOpenEhrPath;
+    }
+
+    /**
+     * for fallback purposes
+     */
+    public List<Condition> getTypeConditions() {
+        if (typeConditions != null) {
+            return typeConditions;
+        }
+        if (condition != null && FhirConnectConst.CONDITION_OPERATOR_TYPE.equals(condition.getOperator())) {
+            return new ArrayList<>(List.of(condition));
+        }
+        return null;
+    }
+
+    public OpenEhrToFhirHelper addTypeCondition(final Condition typeCondition) {
+        if(typeConditions == null) {
+            typeConditions = new ArrayList<>();
+        }
+        typeConditions.add(typeCondition);
+        return this;
     }
 
 }

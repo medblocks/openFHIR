@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
   name: KDS_problem_diagnose
@@ -16,47 +16,49 @@ mappings:
       openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
     slotArchetype: "CLUSTER.case_identification.v0"
 
-#--------------------------------
-#  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
-#    extension: "add"
-#    with:
-#      fhir: "$resource.encounter.reference"
-#      openehr: "$reference"
-#    reference: #type None
-#      resourceType: "Encounter"
-#      mappings:
-#        - name: "identifierInReference"
-#          with:
-#            fhir: "$fhirRoot.identifier"
-#            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-#          slotArchetype: "CLUSTER.case_identification.v0"
-#        - name: "encounterMapping"
+  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+    extension: "add"
+    with:
+      fhir: "$resource.encounter"
+      openehr: "$reference"
+    reference: #type None
+      resourceType: "Encounter"
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.identifier"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+          slotArchetype: "CLUSTER.case_identification.v0"
+#        - name: "encounterMapping" # link mappings not suppoorted
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
 #            openehrLink:
 #              meaning: "the case this composition relates to"
 #              type: "case"
-#  -------------------------------------
-
 
   - name: "date"
     extension: "add"
     with:
-      fhir: "$resource.extension.value.as(DateTimeType)"
+      fhir: "$resource.extension"
       openehr: "$archetype/data[at0001]/items[at0003]"
-      type: "DATETIME"
     fhirCondition:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-assertedDate]"
+      criteria: "http://hl7.org/fhir/StructureDefinition/condition-assertedDate"
     followedBy:
       mappings:
+        - name: "date"
+          extension: "add"
+          with:
+            fhir: "value.as(DateTimeType)"
+            openehr: "$archetype/data[at0001]/items[at0003]"
+            type: "DATETIME"
+
         - name: "staticURL"
           with:
-            fhir: "$resource.extension"
+            fhir: "$fhirRoot"
           manual:
             - name: "url"
               fhir:
@@ -68,13 +70,13 @@ mappings:
     with:
       fhir: "$resource"
       openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
-      unidirectional: "fhir->openehr" # only if importing, for fhir export openEHR wont check for icd-10 and will just use the archetypes where the icd-10 was mapped to.
+    unidirectional: "fhir->openehr" # only if importing, for fhir export openEHR wont check for icd-10 and will just use the archetypes where the icd-10 was mapped to.
     slotArchetype: "CLUSTER.anatomical_location.v1"
     fhirCondition:
       targetRoot: "$resource.code.coding"
       targetAttribute: "system"
       operator: "not contains"
-      criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]" # execute cluster here if no icd-10 code is provided, otherwise the cluster is below specified
+      criteria: "http://fhir.de/CodeSystem/bfarm/icd-10-gm" # execute cluster here if no icd-10 code is provided, otherwise the cluster is below specified
 
 # because we're overwriting bodySiteCluster altogether above, meaning when going to openehr to fhir, we're missing out on bodySite mappings
   - name: "bodySiteClusterToFhir"
@@ -82,8 +84,15 @@ mappings:
     with:
       fhir: "$resource.bodySite"
       openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
-      unidirectional: "openEHR->fhir"
+    unidirectional: "openEHR->fhir"
     slotArchetype: "CLUSTER.anatomical_location.v1"
+
+  - name: "problemDiagnoseNameCode"
+    extension: "overwrite"
+    with:
+      fhir: "$fhirRoot"
+      openehr: "$archetype/data[at0001]/items[at0002]"
+      type: "CODING"
 
   - name: "icd10ProblemDiagnose"
     extension: "append"
@@ -92,9 +101,18 @@ mappings:
       targetRoot: "coding"
       targetAttribute: "system"
       operator: "one of"
-      criteria: "[http://fhir.de/CodeSystem/bfarm/icd-10-gm]"
+      criteria: "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
     followedBy:
       mappings:
+        - name: "codingSystem"
+          with:
+            fhir: "coding"
+          manual:
+            - name: "system"
+              fhir:
+                - path: "system"
+                  value: "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+
         - name: "codeIcd10Diagnosesicherheit"
           with:
             fhir: "extension"
@@ -104,7 +122,7 @@ mappings:
             targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
-            criteria: "[http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit]"
+            criteria: "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit"
           followedBy:
             mappings:
               - name: "extension"
@@ -121,45 +139,81 @@ mappings:
             fhir: "extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1]"
           slotArchetype: "CLUSTER.multiple_coding_icd10gm.v1"
+          fhirCondition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen"
+          followedBy:
+            mappings:
+              - name: "extension"
+                with:
+                  fhir: "$fhirRoot"
+                manual:
+                  - name: "extensionUrl"
+                    fhir:
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen"
   #
         - name: "bodySiteClusterIcd10" # is here added too, in case the icd-10 is present in fhir so we map the localization
           with:
             fhir: "extension"
             openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]"
           slotArchetype: "CLUSTER.anatomical_location.v1"
+          fhirCondition:
+            targetRoot: "extension"
+            targetAttribute: "url"
+            operator: "one of"
+            criteria: "http://fhir.de/StructureDefinition/seitenlokalisation"
           followedBy:
             mappings:
-              - name: "seitenlokalisation"
+              - name: "extension"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.anatomical_location.v1]/items[at0002]" #todo: check why full path is needed here, this should not be required. It's also probably the reason why bodysite is wrongly mapped to the neben diagnosis
-                  type: "CODEABLECONCEPT"
-                fhirCondition:
-                  targetRoot: "$fhirRoot"
-                  targetAttribute: "url"
-                  operator: "one of"
-                  criteria: "[http://fhir.de/StructureDefinition/seitenlokalisation]"
+                manual:
+                  - name: "extensionUrl"
+                    fhir:
+                      - path: "url"
+                        value: "http://fhir.de/StructureDefinition/seitenlokalisation"
 
   - name: "dateTime"
     extension: "overwrite"
     with:
-      fhir: "$resource.onset.as(Period)"
+      fhir: "$resource"
       openehr: "$archetype"
-      type: "DATETIME"
+      type: "NONE"
     followedBy:
       mappings:
-        - name: "start"
+        - name: "period"
           with:
-            fhir: "$fhirRoot.start"
-            openehr: "data[at0001]/items[at0077]"
+            fhir: "onset.as(Period)"
+            openehr: "$archetype"
             type: "DATETIME"
+          followedBy:
+            mappings:
+              - name: "start"
+                with:
+                  fhir: "$fhirRoot.start"
+                  openehr: "data[at0001]/items[at0077]"
+                  type: "DATETIME"
 
-        - name: "lebensphaseCluster"
+              - name: "lebensphaseCluster"
+                with:
+                  fhir: "$fhirRoot"
+                  openehr: "data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
+                slotArchetype: "CLUSTER.lebensphase.v0"
+
+        - name: "dateTime"
           with:
-            fhir: "$fhirRoot"
-            openehr: "data[at0001]/items[openEHR-EHR-CLUSTER.lebensphase.v0]"
-          slotArchetype: "CLUSTER.lebensphase.v0"
-#
+            fhir: "onset.as(DateTimeType)"
+            openehr: "data[at0001]/items[at0077]"
+          openehrCondition:
+            targetRoot: "$archetype/data[at0001]"
+            targetAttributes:
+            - "items[openEHR-EHR-CLUSTER.lebensphase.v0]/items[at0001]"
+            - "items[openEHR-EHR-CLUSTER.lebensphase.v0]/items[at0002]"
+            operator: "empty"
+
   - name: "problemQualifier"
     extension: "add"
     with:
@@ -177,7 +231,7 @@ mappings:
       targetRoot: "$resource.extension"
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://hl7.org/fhir/StructureDefinition/condition-related]"
+      criteria: "http://hl7.org/fhir/StructureDefinition/condition-related"
     followedBy:
       mappings:
         - name: "extensionUrl"
@@ -204,7 +258,6 @@ mappings:
                 slotArchetype: "EVALUATION.problem_diagnosis.v1"
                 openehrCondition:
                   targetRoot: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
-                  targetAttributes:
-                    - "data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/defining_code"
+                  targetAttribute: "data[at0001]/items[openEHR-EHR-CLUSTER.problem_qualifier.v2]/items[at0063]/defining_code/code_string"
                   operator: "one of"
-                  criteria: "[at0064]"
+                  criteria: "at0064"

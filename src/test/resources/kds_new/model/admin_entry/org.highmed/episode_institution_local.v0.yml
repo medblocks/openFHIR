@@ -1,22 +1,24 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: model
 metadata:
   name: ADMIN_ENTRY.episode_institution_local.v0
-  version: 0.0.1-alpha # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1-alpha 
+spec: 
   system: FHIR
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ADMIN_ENTRY.episode_institution_local.v0
+    revision: 0.0.1-alpha
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Encounter
 
 mappings:
 
-  - name: "healthcareFacility"
-    with:
-      fhir: "$resource.serviceProvider.as(Reference).display"
-      openehr: "$composition/context/health_care_facility"
+# reference to party identified, not supported
+#  - name: "healthcareFacility"
+#    with:
+#      fhir: "$resource.serviceProvider"
+#      openehr: "$composition/context/health_care_facility"
 
   - name: "contextPeriod"
     with:
@@ -36,19 +38,17 @@ mappings:
             openehr: "end_time"
             type: "DATETIME"
 
-  #todo: mapped to same field as above?
-  - name: "composer"
-    with:
-      fhir: "$resource.serviceProvider.as(Reference).display"
-      openehr: "$composition/composer"
+# reference to party identified, not supported
+#  - name: "composer"
+#    with:
+#      fhir: "$resource.serviceProvider"
+#      openehr: "$composition/composer"
 
-  # todo ??? no such 'provider' exists, or does it?
-  #  - name: "entryProvider"
-  #    with:
-  #      fhir: "$resource.serviceProvider"
-  #      openehr: "$archetype/provider"
-
-  #todo: these two will overwrite contextStartTime and contextEndTime
+# reference to party identified, not supported
+#  - name: "entryProvider"
+#    with:
+#      fhir: "$resource.serviceProvider"
+#      openehr: "$archetype/provider"
 
   - name: "period"
     with:
@@ -76,7 +76,7 @@ mappings:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
       operator: "one of"
-      criteria: "[ro]"
+      criteria: "ro"
     followedBy:
       mappings:
         - name: "hardcodingRoomSystem"
@@ -90,6 +90,17 @@ mappings:
                 - path: "code"
                   value: "ro"
 
+  - name: "roomLocation"
+    unidirectional: "fhir->openehr" #only fhir->openehr, because openehr->fhir we wouldn't be creating a new Location just for the identifier
+    with:
+      fhir: "$resource.location.location.identifier.value" # if resolved within the Location itself
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0023]"
+    fhirCondition:
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
+      operator: "one of"
+      criteria: "ro"
+
   - name: "bed"
     with:
       fhir: "$resource.location.location.as(Reference).identifier.value"
@@ -98,7 +109,7 @@ mappings:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
       operator: "one of"
-      criteria: "[bd]"
+      criteria: "bd"
     followedBy:
       mappings:
         - name: "hardcodingBedSystem"
@@ -112,6 +123,17 @@ mappings:
                 - path: "code"
                   value: "bd"
 
+  - name: "bedLocation"
+    unidirectional: "fhir->openehr" #only fhir->openehr, because openehr->fhir we wouldn't be creating a new Location just for the identifier
+    with:
+      fhir: "$resource.location.location.identifier.value" # if resolved within the Location itself
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0024]"
+    fhirCondition:
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
+      operator: "one of"
+      criteria: "bd"
+
   - name: "station"
     with:
       fhir: "$resource.location.location.as(Reference).identifier.value"
@@ -120,7 +142,7 @@ mappings:
       targetRoot: "$resource.location"
       targetAttribute: "physicalType.coding.code"
       operator: "one of"
-      criteria: "[wa]"
+      criteria: "wa"
     followedBy:
       mappings:
         - name: "hardcodingWardSystem"
@@ -133,3 +155,14 @@ mappings:
                   value: "http://terminology.hl7.org/CodeSystem/location-physical-type"
                 - path: "code"
                   value: "wa"
+
+  - name: "stationLocation"
+    unidirectional: "fhir->openehr" #only fhir->openehr, because openehr->fhir we wouldn't be creating a new Location just for the identifier
+    with:
+      fhir: "$resource.location.location.identifier.value" # if resolved within the Location itself
+      openehr: "$archetype/data[at0001]/items[at0018]/items[at0022]"
+    fhirCondition:
+      targetRoot: "$resource.location"
+      targetAttribute: "physicalType.coding.code"
+      operator: "one of"
+      criteria: "wa"

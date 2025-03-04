@@ -1,15 +1,19 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: context
 metadata:
-  name:  KDS_medikation.context
-  version: 0.0.1a # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  name:  KDS_medikationseintrag.context
+  version: 0.0.1a 
+spec: 
   system: FHIR
   version: R4
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/MedicationStatement"
-  templateId: "KDS_Medikationseintrag"
+  profile:
+    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/MedicationStatement"
+    version: "2025.0.0"
+  template:
+    id: "KDS_Medikationseintrag"
+    sem_ver: "16.0.0"
   archetypes:
     - "OBSERVATION.medication_statement.v0"
     - "CLUSTER.medication.v2"
@@ -18,7 +22,8 @@ context:
     - "CLUSTER.medication_status_fhir.v0"
     - "CLUSTER.entry_category.v0"
     - "CLUSTER.identifier_fhir.v0"
+    - "CLUSTER.case_identification.v0"
   extensions:
-    - "KDS_medication.v2"
+    - "KDS_medication.v3"
     - "KDS_medikamentenstatement"
   start: "OBSERVATION.medication_statement.v0"

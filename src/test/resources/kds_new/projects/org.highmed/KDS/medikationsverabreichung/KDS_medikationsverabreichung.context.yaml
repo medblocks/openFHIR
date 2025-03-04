@@ -1,15 +1,19 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: context
 metadata:
-  name:  KDS_medikation.context
-  version: 0.0.1a # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  name:  KDS_medikationsverabreichung.context
+  version: 0.0.1a 
+spec: 
   system: FHIR
   version: R4
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration"
-  templateId: "KDS_Medikamentenverabreichungen"
+  profile:
+    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration"
+    version: "2025.0.0"
+  template:
+    id: "KDS_Medikamentenverabreichungen"
+    sem_ver: "5.0.1"
   archetypes:
     - "ACTION.medication.v1"
     - "CLUSTER.medication.v2"
@@ -18,6 +22,7 @@ context:
     - "CLUSTER.medication.v2.substance"
   extensions:
     - "KDS_medikamentenverabreichung"
+    - "KDS_medication.v2.substance"
   start: "ACTION.medication.v1"
 
 #todo: should we extend also CLUSTER.medication.v2.medication-to-medication

@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: model
 metadata:
   name: "openEHR-EHR-OBSERVATION.blood_pressure.v2"
@@ -25,7 +25,7 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
       criteria: "[vital-signs]"
 
 mappings:
-  #  MUST IMPROVE IN ENGINE: if mappings are referencing both recurring elements as
+  #  MUST IMPROVE IN grammar: if mappings are referencing both recurring elements as
   #  well as non-recurring elements, i.e. blood_pressure.any_event:0.systolic
   #  and blood_pressure.location_of_measurement, make sure the non-recurring ones
   #  are at the bottom of the mappings; improvement so this wont matter needed in OpenEhrToFhir.java, 128 or 175

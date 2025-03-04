@@ -1,37 +1,39 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: model
 metadata:
   name:  ACTION.medication.v1
-  version: 0.0.1-alpha # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1-alpha 
+spec: 
   system: FHIR
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ACTION.medication.v1
+    revision: 1.3.0
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/MedicationAdministration
 
 mappings:
-  #  - name: "hierarchyMappings" # is defined by the
-  #    with:
-  #      fhir: "$resource.dosage"
-  #      openEHR: "$archetype
-  #    #    type: "HIERARCHY"
-  #    hierarchy:
-  #      fhirCreate: "resource"
-  #      openehrCreate: "archetype"
-  #      uniqueValueFHIR: "[route, site]" # if route value is different per dosage slice make a new archetype
-  #      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
+#  - name: "hierarchyMappings" # is defined by the
+#    with:
+#      fhir: "$resource.dosage"
+#      openEHR: "$archetype
+#    hierarchy:
+#      fhirCreate: "resource"
+#      openehrCreate: "archetype"
+#      uniqueValueFHIR: "[route, site]" # if route value is different per dosage slice make a new archetype
+#      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
 
-  #  - name: "healthcareFacility"
-  #    with:
-  #      fhir: "$resource.requester.as(Organization).display" #todo: no such fhir attribute
-  #      openehr: "$archetype.context._health_care_facility"
+# unsupported, reference to party_identified mappings
+#  - name: "healthcareFacility"
+#    with:
+#      fhir: "$resource.requester.as(Organization)"
+#      openehr: "$archetype.context._health_care_facility"
 
   - name: "context"
     with:
       fhir: "$resource.effective.as(Period)"
       openehr: "$composition/context"
+      type: "NONE"
     followedBy:
       mappings:
         - name: "contextStart"
@@ -46,17 +48,16 @@ mappings:
             openehr: "end_time"
             type: "DATETIME"
 
-
-
-  #  - name: "composer" #TODO introduce unidirectional mapping or just take the last one ?!
-  #    with:
-  #      fhir: "$resource.request.requester" # take identifier
-  #      openehr: "$archetype/composer"
-  #
-  #  - name: "provider"
-  #    with:
-  #      fhir: "$resource.actor.performer"
-  #      openehr: "$archetype/provider"
+#party_identified to reference unsupported
+#  - name: "composer"
+#    with:
+#      fhir: "$resource.request.requester" # take identifier
+#      openehr: "$composition/composer"
+#
+#  - name: "provider"
+#    with:
+#      fhir: "$resource.actor.performer"
+#      openehr: "$archetype/provider"
 
   - name: "category"
     with:
@@ -73,13 +74,13 @@ mappings:
             value: "Outpatient"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[228]"
+          criteria: "228"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "228"
           - path: "value"
             value: "primary medical care"
@@ -87,7 +88,7 @@ mappings:
           targetRoot: "$resource"
           targetAttribute: "category.coding.code"
           operator: "one of"
-          criteria: "[outpatient]"
+          criteria: "outpatient"
 
       - name: "inpatient"
         fhir:
@@ -99,13 +100,13 @@ mappings:
             value: "Inpatient"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[232]"
+          criteria: "232"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "232"
           - path: "value"
             value: "secondary medical care"
@@ -113,7 +114,7 @@ mappings:
           targetRoot: "$resource"
           targetAttribute: "category.coding.code"
           operator: "one of"
-          criteria: "[inpatient]"
+          criteria: "inpatient"
 
       - name: "community"
         fhir:
@@ -125,13 +126,13 @@ mappings:
             value: "Community"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[238]"
+          criteria: "238"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "238"
           - path: "value"
             value: "Community"
@@ -139,7 +140,7 @@ mappings:
           targetRoot: "$resource"
           targetAttribute: "category.coding.code"
           operator: "one of"
-          criteria: "[community]"
+          criteria: "community"
 
   - name: "note"
     with:
@@ -188,26 +189,40 @@ mappings:
 
   - name: "medicationCode"
     with:
-      fhir: "$resource.medication.as(CodeableConcept).text"
+      fhir: "$resource.medication.as(CodeableConcept)"
       openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
-      type: "STRING"
+      type: "CODEABLECONCEPT"
     openehrCondition:
       targetRoot: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]"
       targetAttributes:
-        - "items[at0071]" #"darreichungsform"
-        - "items[at0115]" #"wirkstärke_konzentration"
+        - "/items[at0071]"
+        - "/items[at0142]"
+        - "/items[at0153]"
+        - "/items[at0153]"
+        - "/items[at0157]"
+        - "/items[at0115]"
+        - "/items[at0151]"
+        - "/items[at0150]"
+        - "/items[at0003]"
+        - "/items[at0003]"
+        - "/items[at0138]"
+        - "/items[at0139]"
+        - "/items[at0148]"
+        - "/items[at0127]"
+        - "/items[at0133]"
+        - "/items[at0141]"
       operator: "empty"
 
 
-  - name: "klinischeIndikation"
+  - name: "clinicalIndication"
     with:
-      fhir: "$resource.reasonCode.text"
+      fhir: "$resource.reasonCode"
       openehr: "$archetype/description[at0017]/items[at0156]"
-      type: "STRING"
+      type: "CODEABLECONCEPT"
 
   #  - name: "partOf"
   #    with:
-  #      fhir: "$resource.partOf.reference"
+  #      fhir: "$resource.partOf"
   #      openehr: "$reference"
   #    reference:
   #      mappings:
@@ -215,25 +230,59 @@ mappings:
   #          with:
   #            fhir: "$fhirRoot"
   #            openehr: "$archetype/links" # will use link
-  #            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-  #            openehrLink:
-  #              meaning: "part of a other medication administration"
-  #              type: "partOf"
+  #          openehrLink:
+  #            meaning: "part of a other medication administration"
+  #            type: "partOf"
 
-  - name: "request" # always the last one is executed for the mapping back.
+  - name: "request"
     with:
-      fhir: "$resource.request.as(Reference).identifier.value"
+      fhir: "$resource.request.as(Reference).identifier" # or should resolve reference and take the identifier from there.
       openehr: "$archetype/protocol[at0030]/items[at0103]"
-      type: "STRING"
-  #        - name: "encounterMapping"
-  #          with:
-  #            fhir: "$fhirRoot"
-  #            openehr: "$archetype/protocol[at0030]/items[at0103]/links" # will use link
-  #            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI if there is any
-  #            openehrLink:
-  #              meaning: "the medication request for this medication"
-  #              type: "medicationRequest"
+      type: "IDENTIFIER"
+    fhirCondition:
+      targetRoot: "$resource.request.as(Reference)"
+      targetAttribute: "identifier"
+      operator: "not empty"
 
+
+  - name: "request"
+    with:
+      fhir: "$resource.request"
+      openehr: "$archetype/protocol[at0030]/items[at0103]"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "identifier"
+          with:
+            fhir: "$fhirRoot.as(Reference).identifier"
+            openehr: "$openehrRoot"
+          openehrCondition:
+            targetRoot: "$openehrRoot"
+            targetAttribute: "links"
+            operator: "empty"
+
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.as(MedicationRequest)"
+            openehr: "$reference"
+          openehrCondition:
+            targetRoot: "$openehrRoot"
+            targetAttribute: "links"
+            operator: "not empty"
+          reference:
+            resourceType: "MedicationRequest"
+            mappings:
+              - name: "identifierInReference"
+                with:
+                  fhir: "$fhirRoot.identifier"
+                  openehr: "$openehrRoot"
+#              - name: "medicationRequestMapping"
+#                with:
+#                  fhir: "$fhirRoot"
+#                  openehr: "$openehrRoot/links" # will use link
+#                openehrLink:
+#                  meaning: "the medication request for this medication"
+#                  type: "medicationRequest"
 
   - name: "ISMTransition"
     with:
@@ -246,13 +295,13 @@ mappings:
             value: "active"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[245]"
+          criteria: "245"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "245"
           - path: "value"
             value: "Active"
@@ -260,7 +309,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[active]"
+          criteria: "active"
 
       - name: "inactive"
         fhir:
@@ -268,13 +317,13 @@ mappings:
             value: "inactive"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[532]"
+          criteria: "532"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "532"
           - path: "value"
             value: "Completed"
@@ -282,7 +331,7 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[inactive]"
+          criteria: "inactive"
 
       - name: "entered-in-error"
         fhir:
@@ -290,13 +339,13 @@ mappings:
             value: "entered-in-error"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[528]"
+          criteria: "528"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "528"
           - path: "value"
             value: "Cancelled"
@@ -304,4 +353,4 @@ mappings:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[entered-in-error]"
+          criteria: "entered-in-error"

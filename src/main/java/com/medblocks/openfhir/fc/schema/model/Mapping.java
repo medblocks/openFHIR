@@ -7,10 +7,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 
 
 /**
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
         "extension",
         "appendTo",
         "with",
+        "unidirectional",
         "manual",
         "fhirCondition",
         "openehrCondition",
@@ -47,10 +51,15 @@ public class Mapping {
      */
     @JsonProperty("with")
     private With with;
+    @JsonProperty("unidirectional")
+    private String unidirectional;
     @JsonProperty("manual")
     private List<Manual> manual;
     @JsonProperty("fhirCondition")
     private Condition fhirCondition;
+    @Getter
+    @Setter
+    private List<Condition> typeConditions; // just a helper, not actually de/serialized
     @JsonProperty("openehrCondition")
     private Condition openehrCondition;
     @JsonProperty("followedBy")
@@ -71,6 +80,9 @@ public class Mapping {
         mapping.setOpenehrCondition(openehrCondition == null ? null : openehrCondition.copy());
         mapping.setFollowedBy(followedBy == null ? null : followedBy.copy());
         mapping.setReference(reference == null ? null : reference.copy());
+        mapping.setUnidirectional(unidirectional);
+        mapping.setTypeConditions(typeConditions == null ? null : typeConditions.stream().map(e -> e.copy())
+                .collect(Collectors.toList()));
         return mapping;
     }
 
@@ -85,6 +97,16 @@ public class Mapping {
         this.setFollowedBy(copyingFrom.getFollowedBy());
         this.setReference(copyingFrom.getReference());
         this.setManual(copyingFrom.getManual());
+        this.setUnidirectional(copyingFrom.getUnidirectional());
+        this.setTypeConditions(copyingFrom.getTypeConditions());
+        return this;
+    }
+
+    public Mapping addTypeCondition(final Condition condition) {
+        if(this.typeConditions == null) {
+            this.typeConditions = new ArrayList<>();
+        }
+        this.typeConditions.add(condition);
         return this;
     }
 
@@ -142,6 +164,24 @@ public class Mapping {
 
     public Mapping withAppendTo(String appendTo) {
         this.appendTo = name;
+        return this;
+    }
+
+    @JsonProperty("unidirectional")
+    public String getUnidirectional() {
+        return unidirectional;
+    }
+
+    /**
+     * (Required)
+     */
+    @JsonProperty("unidirectional")
+    public void setUnidirectional(String unidirectional) {
+        this.unidirectional = unidirectional;
+    }
+
+    public Mapping withUnidirectional(String unidirectional) {
+        this.unidirectional = unidirectional;
         return this;
     }
 
