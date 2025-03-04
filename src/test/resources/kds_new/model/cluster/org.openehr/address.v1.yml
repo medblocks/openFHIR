@@ -19,7 +19,7 @@ mappings:
         - name: "city"
           with:
             fhir: "city"
-            openehr: "items[at0002"
+            openehr: "items[at0002]"
             type: "STRING"
 
         - name: "state"
