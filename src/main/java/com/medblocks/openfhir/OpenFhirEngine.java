@@ -269,7 +269,7 @@ public class OpenFhirEngine {
         List<FhirConnectContextEntity> contextEntities = fhirConnectContextRepository.findAll();
         List<String> profiles = new ArrayList<>();
         for (final FhirConnectContextEntity contextEntity : contextEntities){
-            profiles.add(contextEntity.getFhirConnectContext().getContext().getProfileUrl().toString());
+            profiles.add(contextEntity.getFhirConnectContext().getContext().getProfile().getUrl());
         }
         return profiles;
     }
