@@ -125,7 +125,7 @@
                     "coding": [
                       {
                         "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc",
-                        "code": "M",
+                        "code": "†",
                         "display": "Primary code in multiple coding"
                       }
                     ],

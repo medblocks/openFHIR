@@ -1,9 +1,9 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
   name:  KDS_lebensphase
-  version: 0.0.1-alpha # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1-alpha 
+spec: 
   system: FHIR
   version: R4
   extends: CLUSTER.lebensphase.v0
@@ -19,7 +19,7 @@ mappings:
       targetRoot: "$fhirRoot.start.extension" #parent selector from jsonpath-plus its like ..
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
+      criteria: "http://fhir.de/StructureDefinition/lebensphase"
     followedBy:
       mappings:
         - name: "extension"
@@ -41,7 +41,7 @@ mappings:
       targetRoot: "$fhirRoot.end.extension" #parent selector from jsonpath-plus
       targetAttribute: "url"
       operator: "one of"
-      criteria: "[http://fhir.de/StructureDefinition/lebensphase]"
+      criteria: "http://fhir.de/StructureDefinition/lebensphase"
     followedBy:
       mappings:
         - name: "extension"

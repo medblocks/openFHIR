@@ -1,9 +1,9 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
   name:  KDS_medikamentenverabreichung
-  version: 0.0.1-alpha # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1-alpha 
+spec: 
   system: FHIR
   version: R4
   extends: ACTION.medication.v1
@@ -20,7 +20,8 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.status"
-      openehr: "$composition/context/other_context[at0001]/items[at0005]/defining_code" # this status is mandatory, because it's 1...1 in the template
+      openehr: "$composition/context/other_context[at0001]/items[at0005]" # this status is mandatory, because it's 1...1 in the template
+      type: "CODING"
 
   - name: "fallIdentifikationIdentifier"
     extension: "add"
@@ -29,24 +30,58 @@ mappings:
       openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
     slotArchetype: "CLUSTER.case_identification.v0"
 
-#  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
-#    extension: "add"
-#    with:
-#      fhir: "$resource.encounter.reference"
-#      openehr: "$reference"
-#    reference: #type None
-#      resourceType: "Encounter"
-#      mappings:
-#        - name: "identifierInReference"
-#          with:
-#            fhir: "$fhirRoot.identifier"
-#            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
-#          slotArchetype: "CLUSTER.case_identification.v0"
+  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+    extension: "add"
+    with:
+      fhir: "$resource.encounter"
+      openehr: "$reference"
+    reference: #type None
+      resourceType: "Encounter"
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.identifier"
+            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+          slotArchetype: "CLUSTER.case_identification.v0"
 #        - name: "encounterMapping"
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$archetype/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
 #            openehrLink:
 #              meaning: "the case this composition relates to"
 #              type: "case"
+
+  - name: "medicationCode"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.medication.as(CodeableConcept).coding.display"
+      openehr: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
+      type: "STRING"
+    openehrCondition:
+      targetRoot: "$archetype/description[at0017]/items[openEHR-EHR-CLUSTER.medication.v2]"
+      targetAttributes:
+        - "/items[at0071]"
+        - "/items[at0142]"
+        - "/items[at0153]"
+        - "/items[at0153]"
+        - "/items[at0157]"
+        - "/items[at0115]"
+        - "/items[at0151]"
+        - "/items[at0150]"
+        - "/items[at0003]"
+        - "/items[at0003]"
+        - "/items[at0138]"
+        - "/items[at0139]"
+        - "/items[at0148]"
+        - "/items[at0127]"
+        - "/items[at0133]"
+        - "/items[at0141]"
+      operator: "empty"
+
+
+  - name: "clinicalIndication"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.reasonCode.coding.display"
+      openehr: "$archetype/description[at0017]/items[at0156]"
+      type: "STRING"

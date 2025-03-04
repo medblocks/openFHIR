@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: model
 metadata:
   name: "openEHR-EHR-EVALUATION.advance_care_directive.v2"

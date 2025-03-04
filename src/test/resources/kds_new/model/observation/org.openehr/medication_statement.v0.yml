@@ -1,13 +1,14 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: model
 metadata:
   name: OBSERVATION.medication_statement.v0
-  version: 0.0.1-alpha # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1-alpha 
+spec: 
   system: FHIR
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-OBSERVATION.medication_statement.v0
+    revision: 0.0.1-alpha
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/MedicationStatement
 
@@ -24,11 +25,11 @@ mappings:
   #      uniqueValueFHIR: "[route, timing.event]" # if route value is different per dosage slice make a new event
   #      uniqueValueOpenEHR: "['/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]']"
 
-
-  - name: "healthcareFacility"
-    with:
-      fhir: "$resource.informationSource.as(Reference).display"
-      openehr: "$composition/context/health_care_facility"
+# reference to party identified, not supported
+#  - name: "healthcareFacility"
+#    with:
+#      fhir: "$resource.informationSource"
+#      openehr: "$composition/context/health_care_facility"
 
   - name: "dateAsserted"
     with:
@@ -45,7 +46,7 @@ mappings:
   #  - name: "composer"
   #    with:
   #      fhir: "$resource.informationSource"
-  #      openehr: "$archetype/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
+  #      openehr: "$composition/composer" # often required therefore simplified mapping engine is to resolve Reference -> Composer
 
   #todo: from which openehr path??
   #  - name: "eventTime"
@@ -102,9 +103,9 @@ mappings:
 
   - name: "medicationCode"
     with:
-      fhir: "$resource.medication.as(CodeableConcept).text"
+      fhir: "$resource.medication.as(CodeableConcept)"
       openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]/items[at0132]"
-      type: "STRING"
+      type: "CODEABLECONCEPT"
     openehrCondition:
       targetRoot: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
       targetAttributes:
@@ -128,7 +129,7 @@ mappings:
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$archetype/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+
 #            openehrLink:
 #              meaning: "what the medication is part of"
 #              type: "partOf"
@@ -143,7 +144,7 @@ mappings:
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$archetype/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+
 #            openehrLink:
 #              meaning: "what the medication is based on"
 #              type: "basedOn"
@@ -158,7 +159,7 @@ mappings:
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$archetype/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
+
 #            openehrLink:
 #              meaning: "what the medication is derived from"
 #              type: "derivedFrom"

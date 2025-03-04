@@ -133,11 +133,11 @@
             },
             "type": {
               "type": "string"
-            },
-            "unidirectional": {
-              "type": "string"
             }
           }
+        },
+        "unidirectional": {
+          "type": "string"
         },
         "manual": {
           "type": "array",
@@ -189,6 +189,9 @@
             "criteria": {
               "type": "string"
             },
+            "criterias": {
+              "type": "array"
+            },
             "identifying": {
               "type": "boolean"
             }
@@ -196,20 +199,7 @@
           "additionalProperties": false,
           "required": [
             "targetRoot",
-            "operator",
-            "criteria"
-          ],
-          "oneOf": [
-            {
-              "required": [
-                "targetAttribute"
-              ]
-            },
-            {
-              "required": [
-                "targetAttributes"
-              ]
-            }
+            "operator"
           ]
         },
         "openehrCondition": {
@@ -232,6 +222,9 @@
             },
             "criteria": {
               "type": "string"
+            },
+            "criterias": {
+              "type": "array"
             },
             "identifying": {
               "type": "boolean"
@@ -313,7 +306,7 @@
     }
   },
   "required": [
-    "engine",
+    "grammar",
     "type",
     "metadata",
     "spec"

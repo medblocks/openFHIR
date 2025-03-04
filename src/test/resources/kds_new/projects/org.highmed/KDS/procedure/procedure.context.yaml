@@ -1,16 +1,20 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: context
 metadata:
   name:  KDS_Prozedur.context
-  version: 0.0.1a # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1a 
+spec: 
   system: FHIR
   version: R4
 
 
 context:
-  profileUrl: "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure"
-  templateId: "KDS_Prozedur"
+  profile:
+    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure"
+    version: "2025.0.0"
+  template:
+    id: "KDS_Prozedur"
+    sem_ver: "10.0.0"
   archetypes:
     - "ACTION.procedure.v1"
     - "CLUSTER.case_identification.v0"

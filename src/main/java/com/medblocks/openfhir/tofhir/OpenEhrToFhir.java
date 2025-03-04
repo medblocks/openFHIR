@@ -1,7 +1,9 @@
 package com.medblocks.openfhir.tofhir;
 
 import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_EMPTY;
+import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_NOT_EMPTY;
 import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_NOT_OF;
+import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_TYPE;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_ARCHETYPE_FC;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_COMPOSITION_FC;
 import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_MEDIA;
@@ -10,6 +12,7 @@ import static com.medblocks.openfhir.fc.FhirConnectConst.THIS;
 import static com.medblocks.openfhir.fc.FhirConnectConst.UNIDIRECTIONAL_TOOPENEHR;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX_ESCAPED;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
 import static com.medblocks.openfhir.util.OpenFhirStringUtils.WHERE;
 
 import com.google.gson.Gson;
@@ -44,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -61,11 +65,14 @@ import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
+import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Quantity;
+import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.TimeType;
+import org.hl7.fhir.r4.utils.FHIRPathUtilityClasses.ClassTypeInfo;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -138,7 +145,8 @@ public class OpenEhrToFhir {
         final WebTemplate webTemplate = openEhrApplicationScopedUtils.parseWebTemplate(operationaltemplate);
         final String flatJson = flatJsonMarshaller.toFlatJson(composition, webTemplate);
         final JsonObject flatJsonObject = gson.fromJson(flatJson, JsonObject.class);
-        final String templateId = OpenFhirMappingContext.normalizeTemplateId(context.getContext().getTemplateId());
+        final String templateId = OpenFhirMappingContext.normalizeTemplateId(
+                context.getContext().getTemplate().getId());
         final Bundle creatingBundle = prepareBundle();
         final Map<String, Boolean> isMultipleByResourceType = new HashMap<>();
         final Map<String, Map<String, Object>> intermediateCaches = new HashMap<>();
@@ -383,6 +391,11 @@ public class OpenEhrToFhir {
                 final String mapKey = createKey(index, conditioningFhirPath);
 
                 final Resource instance = getOrCreateResource(createdPerIndex, generatingResource, mapKey);
+
+                if (!typePasses(instance, helper.getTypeConditions())) {
+                    continue;
+                }
+
                 handleMapping(data, createdPerIndex, instance, fullOpenEhrPath, generatingResource,
                               helper, instantiatedIntermediateElements, separatelyCreatedResources, mapKey);
             }
@@ -397,6 +410,10 @@ public class OpenEhrToFhir {
                     resources.add(nowInstantiated); //add at least one if none was created as part of the previous step
                 }
                 for (final Resource instance : resources) {
+                    if (!typePasses(instance, helper.getTypeConditions())) {
+                        continue;
+                    }
+
                     handleMapping(dataForAllResources, null, instance, fullOpenEhrPath, generatingResource,
                                   helper, instantiatedIntermediateElements, separatelyCreatedResources, null);
                 }
@@ -406,9 +423,50 @@ public class OpenEhrToFhir {
         final List<Resource> createdResources = new ArrayList<>(createdPerIndex.values());
         // now handle "hardcoded" things within conditions
         postProcessMappingFromCoverConditions(createdResources, conditions);
-
         createdResources.addAll(separatelyCreatedResources);
         return createdResources;
+    }
+
+    /**
+     * Checks all types and if all of them pass, then typePasses
+     */
+    private boolean typePasses(final Resource instance, final List<Condition> typeConditions) {
+        if (typeConditions == null || typeConditions.isEmpty()) {
+            return true;
+        }
+        return typeConditions.stream().allMatch(fhirCondition -> {
+            final String targetRoot = fhirCondition.getTargetRoot().replace(FhirConnectConst.FHIR_ROOT_FC, instance.fhirType());
+
+            final String fhirPathType = String.format("%s[0].type()", targetRoot);
+            if (fhirPathType.contains(RESOLVE)) {
+                final String fhirPathAfterResolve = fhirPathType.split(".resolve\\(\\)")[1].substring(
+                        1); // to remove the leading dot
+                final Resource resolvedInstance = getReferencedResource(instance, fhirPathType);
+                final Optional<ClassTypeInfo> isCorrectType = fhirPathR4.evaluateFirst(resolvedInstance, fhirPathAfterResolve,
+                                                                                     ClassTypeInfo.class);
+                return isCorrectType.map(cr -> ((StringType) cr.getProperty(0, "name", false)[0]).getValue().equals(fhirCondition.getCriteria()))
+                        .orElse(true); // to be safe, default to true
+            } else {
+                final Optional<ClassTypeInfo> isCorrectType = fhirPathR4.evaluateFirst(instance, fhirPathType, ClassTypeInfo.class);
+                return isCorrectType.map(cr -> ((StringType) cr.getProperty(0, "name", false)[0]).getValue().equals(fhirCondition.getCriteria()))
+                        .orElse(true); // to be safe, default to true
+            }
+        });
+    }
+
+    private Resource getReferencedResource(final Resource initialResource, final String fhirPath) {
+        if (!fhirPath.contains(OpenFhirStringUtils.RESOLVE)) {
+            return initialResource;
+        }
+        final String fhirPathWithoutResolve = fhirPath.split(OpenFhirStringUtils.RESOLVE)[0];
+        try {
+            final Reference reference = (Reference) fhirPathR4.evaluateFirst(initialResource, fhirPathWithoutResolve,
+                                                                             Reference.class).get().getResource();
+            return (Resource) reference.getResource();
+        } catch (Exception e) {
+            log.warn("Nothing resolved by evaluating {}", fhirPathWithoutResolve);
+            return initialResource;
+        }
     }
 
     private void cacheReturnedItems(final FindingOuterMost findingOuterMost,
@@ -541,7 +599,14 @@ public class OpenEhrToFhir {
                                         final boolean isFollowedBy,
                                         final String parentFhirEhr,
                                         final String parentOpenEhr) {
-        if (condition == null || CONDITION_OPERATOR_EMPTY.equals(condition.getOperator())) {
+        if (condition == null
+                || CONDITION_OPERATOR_NOT_EMPTY.equalsIgnoreCase(condition.getOperator())
+                || CONDITION_OPERATOR_EMPTY.equals(condition.getOperator())
+                || CONDITION_OPERATOR_TYPE.equals(condition.getOperator())) {
+            return;
+        }
+        if (condition.getCriterias() != null && condition.getCriterias().size() > 1) {
+            // you don't know which one to hardcode, so do nothing
             return;
         }
         final String stringFromCriteria = openFhirStringUtils.getStringFromCriteria(condition.getCriteria()).getCode();
@@ -614,11 +679,12 @@ public class OpenEhrToFhir {
 
     private void setCriteriaOnPath(final FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn,
                                    final Condition condition, final String targetResource, final String parentFhirEhr) {
-        if(hardcodedReturn == null) {
+        if (hardcodedReturn == null) {
             return;
         }
-        if(condition.getTargetRoot().endsWith(hardcodedReturn.getPath())) {
-            final String targetRoot = condition.getTargetRoot().replace(FhirConnectConst.FHIR_RESOURCE_FC, targetResource);
+        if (condition.getTargetRoot().endsWith(hardcodedReturn.getPath())) {
+            final String targetRoot = condition.getTargetRoot()
+                    .replace(FhirConnectConst.FHIR_RESOURCE_FC, targetResource);
             hardcodedReturn.setPath(openFhirStringUtils.getFhirPathWithConditions(targetRoot, condition, targetResource,
                                                                                   parentFhirEhr)
                                             .replace(targetRoot, hardcodedReturn.getPath()));
@@ -793,6 +859,9 @@ public class OpenEhrToFhir {
         for (final Mapping mapping : mappings) {
 
             final With with = mapping.getWith();
+            if (with == null) {
+                continue;
+            }
             final String hardcodedValue = with.getValue();
             if (with.getFhir() == null) {
                 // it means it's hardcoding to openEHR, we can therefore skip it when mapping to FHIR
@@ -803,8 +872,8 @@ public class OpenEhrToFhir {
                 with.setOpenehr(OPENEHR_ARCHETYPE_FC);
             }
 
-            if (with.getUnidirectional() != null && UNIDIRECTIONAL_TOOPENEHR.equalsIgnoreCase(
-                    with.getUnidirectional())) {
+            if (mapping.getUnidirectional() != null && UNIDIRECTIONAL_TOOPENEHR.equalsIgnoreCase(
+                    mapping.getUnidirectional())) {
                 // this is unidirectional mapping to openEHR only, ignore
                 continue;
             }
@@ -863,7 +932,10 @@ public class OpenEhrToFhir {
                 if (mapping.getSlotArchetype() != null) {
                     handleSlotMapping(mapping, resourceType, parentFollowedByFhir, theMapper, firstFlatPath,
                                       definedMappingWithOpenEhr,
-                                      fhirPath, helpers, webTemplate, flatJsonObject, slotContext, openehr,
+                                      openFhirStringUtils.getFhirPathWithConditions(fhirPath,
+                                                                                    mapping.getFhirCondition(),
+                                                                                    resourceType, parentFollowedByFhir),
+                                      helpers, webTemplate, flatJsonObject, slotContext, openehr,
                                       possibleRecursion);
                 } else {
                     // adds regex pattern to simplified path in a way that we can extract data from a given flat path
@@ -928,6 +1000,7 @@ public class OpenEhrToFhir {
             }
         }
         openEhrCondition.setTargetAttributes(newAttributes);
+        openEhrCondition.setTargetAttribute(null); // nullify the one
     }
 
     public String getPathFromAqlPath(String openEhrPath, WebTemplate webTemplate, String rmType) {
@@ -979,6 +1052,7 @@ public class OpenEhrToFhir {
                     .openEhrType(mapping.getWith().getType())
                     .data(values)
                     .isFollowedBy(isFollowedBy)
+                    .typeConditions(mapping.getTypeConditions())
                     .parentFollowedByFhirPath(parentFollowedByFhir == null ? null
                                                       : parentFollowedByFhir.replace(FhirConnectConst.FHIR_RESOURCE_FC,
                                                                                      resourceType))
@@ -996,7 +1070,8 @@ public class OpenEhrToFhir {
             openFhirMapperUtils.prepareFollowedByMappings(followedByMappings,
                                                           fhirPath,
                                                           definedMappingWithOpenEhr,
-                                                          slotContext);
+                                                          slotContext,
+                                                          mapping);
 
             prepareOpenEhrToFhirHelpers(theMapper,
                                         resourceType,
@@ -1044,7 +1119,9 @@ public class OpenEhrToFhir {
                 break;
             }
 
-            openFhirMapperUtils.prepareForwardingSlotArchetypeMapper(slotArchetypeMappers, theMapper, fhirPath,
+            openFhirMapperUtils.prepareForwardingSlotArchetypeMapper(slotArchetypeMappers,
+                                                                     theMapper,
+                                                                     fhirPath,
                                                                      getOpenEhrKey(definedMappingWithOpenEhr, null,
                                                                                    firstFlatPath));
 
@@ -1064,8 +1141,9 @@ public class OpenEhrToFhir {
 
                 openFhirMapperUtils.prepareFollowedByMappings(followedByMappings,
                                                               fhirPath,
-                                                              openehr,
-                                                              firstFlatPath);
+                                                              definedMappingWithOpenEhr,
+                                                              firstFlatPath,
+                                                              mapping);
 
                 prepareOpenEhrToFhirHelpers(theMapper, resourceType, firstFlatPath, followedByMappings, helpers,
                                             webTemplate,
@@ -1109,15 +1187,15 @@ public class OpenEhrToFhir {
 
         // narrow refeence mapping if openehr condition exists
         final Condition openEhrCondition = mapping.getReference().getMappings().get(0).getOpenehrCondition();
-        if(openEhrCondition != null) {
+        if (openEhrCondition != null) {
             prepareOpenEhrCondition(openEhrCondition, firstFlatPath, webTemplate);
 
             final JsonObject newFlatJsonObject = openEhrConditionEvaluator.splitByOpenEhrCondition(flatJsonObject,
-                                                                                                openEhrCondition,
-                                                                                                parentFollowedByOpenEhr
-                                                                                                        == null
-                                                                                                        ? firstFlatPath
-                                                                                                        : parentFollowedByOpenEhr);
+                                                                                                   openEhrCondition,
+                                                                                                   parentFollowedByOpenEhr
+                                                                                                           == null
+                                                                                                           ? firstFlatPath
+                                                                                                           : parentFollowedByOpenEhr);
             // newFlatJsonObject now has that one that is being referenced, but indexes will map to the wrong one
             // so now we fix indexes to point to all "other" ones that are having this one linked to it
             final HashSet<String> allOtherKeys = new HashSet<>(flatJsonObject.keySet());
@@ -1126,7 +1204,7 @@ public class OpenEhrToFhir {
             final JsonObject modifiedObject = new JsonObject();
             for (final String key : allOtherKeys) {
                 final Integer anotherIndex = openFhirStringUtils.getFirstIndex(key);
-                if(anotherIndex == null) {
+                if (anotherIndex == null) {
                     continue;
                 }
                 // now modify the newFlatJsonObject with this new index
@@ -1290,13 +1368,45 @@ public class OpenEhrToFhir {
 
         handleReturnedListWithWhereCondition(findingOuterMost);
 
+        if (findingOuterMost.getLastObject() instanceof List
+                && helper.getCondition() != null
+                && CONDITION_OPERATOR_TYPE.equals(helper.getCondition().getOperator())) {
+            final Object theRelevantOne = ((List<?>) findingOuterMost.getLastObject()).stream()
+                    .filter(e -> e.getClass().getSimpleName().equals(helper.getCondition().getCriteria()))
+                    .findFirst().orElse(null);
+            if (theRelevantOne != null) {
+                findingOuterMost.setLastObject(theRelevantOne);
+            }
+        }
+
         // instantiate an element defined in the findingOuterMost.getRemovedPath
-        final FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn = fhirInstanceCreator.instantiateAndSetElement(
+        FhirInstanceCreator.InstantiateAndSetReturn hardcodedReturn = fhirInstanceCreator.instantiateAndSetElement(
                 findingOuterMost.getLastObject(),
                 findingOuterMost.getLastObject().getClass(),
                 removedPathIsOnlyWhere ? THIS : findingOuterMost.getRemovedPath(),
                 openFhirMapperUtils.getFhirConnectTypeToFhir(helper.getOpenEhrType()),
                 helper.getTargetResource());
+
+        if(hardcodedReturn == null && findingOuterMost.getLastObject() instanceof List) {
+            // try other returned items as well; this is an edge case though and should rarely happen
+            for (final Object objectInLastReturns : ((List<?>) findingOuterMost.getLastObject())) {
+                hardcodedReturn = fhirInstanceCreator.instantiateAndSetElement(
+                        objectInLastReturns,
+                        objectInLastReturns.getClass(),
+                        removedPathIsOnlyWhere ? THIS : findingOuterMost.getRemovedPath(),
+                        openFhirMapperUtils.getFhirConnectTypeToFhir(helper.getOpenEhrType()),
+                        helper.getTargetResource());
+                if(hardcodedReturn != null) {
+                    break;
+                }
+            }
+        }
+
+        if (hardcodedReturn == null) {
+            log.error("No such fhir path: '{}' exists on given Base: {}", findingOuterMost.getRemovedPath(),
+                      findingOuterMost.getLastObject().getClass());
+
+        }
 
         cacheReturnedItems(findingOuterMost,
                            hardcodedReturn,

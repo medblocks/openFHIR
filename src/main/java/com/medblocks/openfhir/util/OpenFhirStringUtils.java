@@ -1,5 +1,7 @@
 package com.medblocks.openfhir.util;
 
+import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_EMPTY;
+import static com.medblocks.openfhir.fc.FhirConnectConst.CONDITION_OPERATOR_NOT_EMPTY;
 import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
 
 import com.google.gson.JsonElement;
@@ -79,6 +81,7 @@ public class OpenFhirStringUtils {
         openEhrTypes.add("defining_code/code_string");
         openEhrTypes.add("defining_code");
         openEhrTypes.add("value");
+        openEhrTypes.add("code_string");
         for (String openEhrType : openEhrTypes) {
             if (path.endsWith(openEhrType)) {
                 return openEhrType;
@@ -295,10 +298,17 @@ public class OpenFhirStringUtils {
 
     public String fixOpenEhrPath(final String openEhrPath,
                                  final String mainOpenEhrPath) {
-        return openEhrPath
-                .replace(FhirConnectConst.REFERENCE + "/", "")
-                .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, mainOpenEhrPath)
-                .replace(FhirConnectConst.OPENEHR_COMPOSITION_FC, mainOpenEhrPath);
+        if(openEhrPath.startsWith(FhirConnectConst.OPENEHR_COMPOSITION_FC + "/content")) {
+            // means openehr path already has the full one
+            final String compositionReplacement = mainOpenEhrPath.split("/")[0];
+            return openEhrPath
+                    .replace(FhirConnectConst.OPENEHR_COMPOSITION_FC, compositionReplacement);
+        } else {
+            return openEhrPath
+                    .replace(FhirConnectConst.REFERENCE + "/", "")
+                    .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, mainOpenEhrPath)
+                    .replace(FhirConnectConst.OPENEHR_COMPOSITION_FC, mainOpenEhrPath);
+        }
     }
 
     public String fixFhirPath(final String fhirPath) {
@@ -387,7 +397,8 @@ public class OpenFhirStringUtils {
                                      .replace(condition.getTargetRoot(),
                                               condition.getTargetRoot() + ".where(" + targetAttribute
                                                       + ".toString().contains('" + getStringFromCriteria(
-                                                      condition.getCriteria()).getCode() + "')"+ (negate ? "=false":"") +")")
+                                                      condition.getCriteria()).getCode() + "')" + (negate ? "=false"
+                                                      : "") + ")")
                                      .replace(FhirConnectConst.FHIR_RESOURCE_FC, resource));
 
         }
@@ -555,14 +566,15 @@ public class OpenFhirStringUtils {
                     StringUtils.isBlank(remainingToEndUpInWhere) ? "" : (remainingToEndUpInWhere + ".");
             final String whereClause =
                     ".where(" + remainingToAdd + condition.getTargetAttribute() + ".toString().contains('"
-                            + getStringFromCriteria(condition.getCriteria()).getCode() + "')"+ (negate ? "=false":"") +")";
+                            + getStringFromCriteria(condition.getCriteria()).getCode() + "')" + (negate ? "=false" : "")
+                            + ")";
             final String remainingItemsFromParent = originalFhirPath.replace(commonPath, "");
             return commonPath + whereClause + remainingItemsFromParent;
         } else {
             // then do your own where path
             final String whereClause =
                     ".where(" + condition.getTargetAttribute() + ".toString().contains('" + getStringFromCriteria(
-                            condition.getCriteria()).getCode() + "')"+ (negate ? "=false":"") +")";
+                            condition.getCriteria()).getCode() + "')" + (negate ? "=false" : "") + ")";
             // then suffix with whatever is left from the children's path
             return withParentsWhereInPlace + whereClause + (StringUtils.isBlank(remainingItems) ? ""
                     : (remainingItems.startsWith(".") ? remainingItems : ("." + remainingItems)));
@@ -591,7 +603,10 @@ public class OpenFhirStringUtils {
             // fallback until it's entirely deprecated
             condition.setTargetAttribute(condition.getTargetAttributes().get(0));
         }
-        if (condition == null || condition.getTargetAttribute() == null) {
+        if (condition == null
+                || condition.getTargetAttribute() == null
+                || condition.getOperator().equals(CONDITION_OPERATOR_NOT_EMPTY)
+                || condition.getOperator().equals(CONDITION_OPERATOR_EMPTY)) {
             // only make sure parent's where path is added to the child
             return constructFhirPathNoConditions(originalFhirPath, parentPath);
         } else {
