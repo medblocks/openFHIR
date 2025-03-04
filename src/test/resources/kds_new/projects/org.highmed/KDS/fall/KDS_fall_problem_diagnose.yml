@@ -57,7 +57,7 @@ mappings:
     extension: "overwrite"
     with:
       fhir: "$fhirRoot.condition"
-      openehr: "$archetype"
+      openehr: "$reference"
     fhirCondition:
       targetRoot: "$fhirRoot"
       operator: "type"
