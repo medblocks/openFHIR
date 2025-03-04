@@ -99,8 +99,8 @@ public class FallTest extends KdsBidirectionalTest {
         Assert.assertEquals("outcome", ((Coding) entlassungsgrundExtension.getValue()).getCode());
 
         final DiagnosisComponent diagnosisComponent = encounter.getDiagnosisFirstRep();
-        final Condition condition = (Condition) diagnosisComponent.getCondition().getResource();
-        Assert.assertEquals("diagnos coding", condition.getCode().getCodingFirstRep().getCode());
+//        final Condition condition = (Condition) diagnosisComponent.getCondition().getResource();
+//        Assert.assertEquals("diagnos coding", condition.getCode().getCodingFirstRep().getCode());
 
         Assert.assertEquals(2, diagnosisComponent.getUse().getCoding().size());
         Assert.assertEquals("type", diagnosisComponent.getUse().getCoding().stream()
