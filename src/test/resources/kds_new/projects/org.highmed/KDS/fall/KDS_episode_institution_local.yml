@@ -1,4 +1,4 @@
-grammar: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
   name: KDS_episode_institution_local
@@ -246,71 +246,7 @@ mappings:
     extension: "add"
     with:
       fhir: "$resource.diagnosis"
-      openehr: "$composition"
-    followedBy:
-      mappings:
-        - name: "problemDiagnose"
-          with:
-            fhir: "condition"
-            openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
-          slotArchetype: "EVALUATION.problem_diagnosis.v1"
-
-        - name: "problemDiagnoseUse"
-          with:
-            fhir: "use"
-            openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
-          followedBy:
-            mappings:
-              # these have to be here, they can not be in the slot archetype because they're mapping to the DiagnosisComponent and not on Condition (resolved reference)
-              - name: "diagnoseTyp"
-                with:
-                  fhir: "coding"
-                  openehr: "data[at0001]/items[at0009]"
-                  type: "CODING"
-                fhirCondition:
-                  targetRoot: "coding"
-                  targetAttribute: "code"
-                  operator: "one of"
-                  criterias:
-                    - "referral-diagnosis"
-                    - "treatment-diagnosis"
-                followedBy:
-                  mappings:
-                    - name: "system"
-                      with:
-                        fhir: "$fhirRoot"
-                      manual:
-                        - name: "system"
-                          fhir:
-                            - path: "system"
-                              value: "http://fhir.de/CodeSystem/dki-diagnosetyp"
-
-              - name: "diagnoseSubtyp"
-                with:
-                  fhir: "coding"
-                  openehr: "data[at0001]/items[at0079]"
-                  type: "CODING"
-                fhirCondition:
-                  targetRoot: "coding"
-                  targetAttribute: "code"
-                  operator: "one of"
-                  criterias:
-                    - "surgery-diagnosis"
-                    - "department-main-diagnosis"
-                    - "cause-of-death"
-                    - "infection-control-diagnosis"
-                    - "AD"
-                    - "DD"
-                followedBy:
-                  mappings:
-                    - name: "system"
-                      with:
-                        fhir: "$fhirRoot"
-                      manual:
-                        - name: "system"
-                          fhir:
-                            - path: "system"
-                              value: "http://fhir.de/CodeSystem/dki-diagnosesubtyp"
-
+      openehr: "$composition/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1]"
+    slotArchetype: "EVALUATION.problem_diagnosis.v1"
 
 
