@@ -65,12 +65,14 @@ import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
+import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.TimeType;
+import org.hl7.fhir.r4.utils.FHIRPathUtilityClasses.ClassTypeInfo;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -421,7 +423,6 @@ public class OpenEhrToFhir {
         final List<Resource> createdResources = new ArrayList<>(createdPerIndex.values());
         // now handle "hardcoded" things within conditions
         postProcessMappingFromCoverConditions(createdResources, conditions);
-
         createdResources.addAll(separatelyCreatedResources);
         return createdResources;
     }
@@ -434,18 +435,21 @@ public class OpenEhrToFhir {
             return true;
         }
         return typeConditions.stream().allMatch(fhirCondition -> {
-            final String fhirPath = String.format("%s[0].is(%s)", fhirCondition.getTargetRoot(),
-                                                  fhirCondition.getCriteria());
-            if (fhirPath.contains(RESOLVE)) {
-                final String fhirPathAfterResolve = fhirPath.split(".resolve\\(\\)")[1].substring(
+            final String targetRoot = fhirCondition.getTargetRoot().replace(FhirConnectConst.FHIR_ROOT_FC, instance.fhirType());
+
+            final String fhirPathType = String.format("%s[0].type()", targetRoot);
+            if (fhirPathType.contains(RESOLVE)) {
+                final String fhirPathAfterResolve = fhirPathType.split(".resolve\\(\\)")[1].substring(
                         1); // to remove the leading dot
-                final Resource resolvedInstance = getReferencedResource(instance, fhirPath);
-                final Optional<BooleanType> isCorrectType = fhirPathR4.evaluateFirst(resolvedInstance, fhirPathAfterResolve,
-                                                                                     BooleanType.class);
-                return isCorrectType.map(BooleanType::booleanValue).orElse(true); // to be safe, default to true
+                final Resource resolvedInstance = getReferencedResource(instance, fhirPathType);
+                final Optional<ClassTypeInfo> isCorrectType = fhirPathR4.evaluateFirst(resolvedInstance, fhirPathAfterResolve,
+                                                                                     ClassTypeInfo.class);
+                return isCorrectType.map(cr -> ((StringType) cr.getProperty(0, "name", false)[0]).getValue().equals(fhirCondition.getCriteria()))
+                        .orElse(true); // to be safe, default to true
             } else {
-                final Optional<BooleanType> isCorrectType = fhirPathR4.evaluateFirst(instance, fhirPath, BooleanType.class);
-                return isCorrectType.map(BooleanType::booleanValue).orElse(true); // to be safe, default to true
+                final Optional<ClassTypeInfo> isCorrectType = fhirPathR4.evaluateFirst(instance, fhirPathType, ClassTypeInfo.class);
+                return isCorrectType.map(cr -> ((StringType) cr.getProperty(0, "name", false)[0]).getValue().equals(fhirCondition.getCriteria()))
+                        .orElse(true); // to be safe, default to true
             }
         });
     }
