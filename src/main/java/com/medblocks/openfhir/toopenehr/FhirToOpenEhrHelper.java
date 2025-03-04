@@ -49,6 +49,11 @@ public class FhirToOpenEhrHelper {
     private Boolean multiple;
 
     /**
+     * if a mapping contains an external program name
+     */
+    private String mappingCode;
+
+    /**
      * inner elements populated if a mapping is followed by other mappings or slot mappings
      */
     private List<FhirToOpenEhrHelper> fhirToOpenEhrHelpers;

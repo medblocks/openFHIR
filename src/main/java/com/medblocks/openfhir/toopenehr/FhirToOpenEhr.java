@@ -368,7 +368,34 @@ public class FhirToOpenEhr {
                 // is it ok we use string type here? could it be something else? probably it could be..
                 openEhrPopulator.setFhirPathValue(thePath, new StringType(helper.getHardcodingValue()),
                                                   helper.getOpenEhrType(), flatComposition);
-            } else {
+            } else if (helper.getMappingCode() != null) {
+                // get programmed mapping function from plugin using above result fhir object
+                // String className = "com.medblocks.openfhir."+helper.getMappingCode();
+                //
+                //        try {
+                //            // Step 1: Load the class
+                //            Class<?> clazz = Class.forName(className);
+                //
+                //            // Step 2: Create an instance of the class
+                //            Object instance = clazz.getDeclaredConstructor().newInstance();
+                //
+                //            // Step 3: Use the instance (optional)
+                //            if (instance instanceof MyClass) {
+                //                MyClass myClassInstance = (MyClass) instance;
+                //                myClassInstance.setFhirPathValue(thePath, result, helper.getOpenEhrType(), flatComposition); // Call the plugin function
+                //            }
+                //        } catch (ClassNotFoundException e) {
+                //            System.err.println("Class not found: " + className);
+                //        } catch (InstantiationException | IllegalAccessException e) {
+                //            System.err.println("Failed to instantiate class: " + e.getMessage());
+                //        } catch (NoSuchMethodException e) {
+                //            System.err.println("No public no-argument constructor found: " + e.getMessage());
+                //        } catch (Exception e) {
+                //            System.err.println("An unexpected error occurred: " + e.getMessage());
+                //        }
+            }
+
+            else {
                 openEhrPopulator.setFhirPathValue(thePath, result, helper.getOpenEhrType(), flatComposition);
             }
 
@@ -730,6 +757,7 @@ public class FhirToOpenEhr {
             final String replacedFhirRoot = fhirPath.replace("." + FHIR_ROOT_FC, "")
                     .replace(FHIR_ROOT_FC, "");
             initialHelper.setFhirPath(replacedFhirRoot);
+            initialHelper.setMappingCode(mapping.getMappingCode()!=null?mapping.getMappingCode():null);
             initialHelper.setMultiple(multiple);
             fixLimitingCriteriaForInnerCreatedResources(fhirConnectMapper.getFhirConfig().getResource(), initialHelper);
             if (needsToBeAddedToParentHelpers) {
