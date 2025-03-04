@@ -1494,7 +1494,7 @@ public class OpenEhrToFhir {
             case "TIME" -> handleTime(valueHolder, lastIndex, path);
             case "BOOL" -> handleBoolean(valueHolder, lastIndex, path);
             case "DATE" -> handleDate(valueHolder, lastIndex, path);
-            case "CODEABLECONCEPT" -> handleCodeableConcept(valueHolder, lastIndex, path, value, terminology, code //to add mappings);
+            case "CODEABLECONCEPT" -> handleCodeableConcept(valueHolder, lastIndex, path, value, terminology, code); //to add mappings);
             case "CODING" -> handleCoding(valueHolder, lastIndex, path, terminology, code, value);
             case "MEDIA" -> handleMedia(valueHolder, lastIndex, path);
             case "IDENTIFIER" -> handleIdentifier(valueHolder, lastIndex, path, id);
@@ -1629,17 +1629,66 @@ public class OpenEhrToFhir {
                                                                     final String path,
                                                                     final String value,
                                                                     final String terminology,
-                                                                    final String code
-                                                                    //final Mappings mappings
-                                                                    ) {
+                                                                    final String code) {
         final CodeableConcept data = new CodeableConcept();
-        final String text = getFromValueHolder(valueHolder, value);
-        data.setText(text);
-        data.addCoding(new Coding(getFromValueHolder(valueHolder, terminology),
-                                  getFromValueHolder(valueHolder, code), text));
-        // for each in mapping
-        // data.addCoding(new Coding ...)
+        
+        // Get values using the full path
+        final String textValue = getFromValueHolder(valueHolder, path + "|value");
+        final String codeValue = getFromValueHolder(valueHolder, path + "|code");
+        final String systemValue = getFromValueHolder(valueHolder, path + "|terminology");
+        
+        data.setText(textValue);
+        
+        // Add the primary coding
+        if (codeValue != null || systemValue != null) {
+            data.addCoding(new Coding(systemValue, codeValue, textValue));
+        }
+        
+        // Process additional mappings
+        processMappings(valueHolder, path, data);
+        
         return new OpenEhrToFhirHelper.DataWithIndex(data, lastIndex, path);
+    }
+
+    /**
+     * Process mappings for a given path and add them as codings to the CodeableConcept
+     * 
+     * @param valueHolder JSON object containing the values
+     * @param path Base path to look for mappings
+     * @param codeableConcept CodeableConcept to add mappings to
+     */
+    private void processMappings(final JsonObject valueHolder, final String path, final CodeableConcept codeableConcept) {
+        int mappingIndex = 0;
+        String mappingPrefix;
+        
+        // Iterate through all possible mappings
+        while (true) {
+            mappingPrefix = path + "/_mapping:" + mappingIndex;
+            
+            // Check if this mapping exists by looking for any related key
+            boolean mappingExists = false;
+            for (String key : valueHolder.keySet()) {
+                if (key.startsWith(mappingPrefix)) {
+                    mappingExists = true;
+                    break;
+                }
+            }
+            
+            if (!mappingExists) {
+                break;
+            }
+            
+            String terminology = getFromValueHolder(valueHolder, mappingPrefix + "/target|terminology");
+            String code = getFromValueHolder(valueHolder, mappingPrefix + "/target|code");
+            String preferredTerm = getFromValueHolder(valueHolder, mappingPrefix + "/target|preferred_term");
+            
+            // Add mapping as a coding if we have at least system or code
+            if (terminology != null || code != null) {
+                codeableConcept.addCoding(new Coding(terminology, code, preferredTerm));
+            }
+            
+            mappingIndex++;
+        }
     }
 
     private OpenEhrToFhirHelper.DataWithIndex handleCoding(final JsonObject valueHolder,
