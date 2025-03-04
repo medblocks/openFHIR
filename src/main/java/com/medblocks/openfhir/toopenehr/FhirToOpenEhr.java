@@ -18,6 +18,7 @@ import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -174,6 +175,9 @@ public class FhirToOpenEhr {
         }
         if (composition.getTerritory() == null) {
             composition.setTerritory(new CodePhrase(new TerminologyId("ISO_3166-1"), "DE"));
+        }
+        if (composition.getComposer() == null) {
+            composition.setComposer(new PartySelf());
         }
         if (composition.getContext()!= null && composition.getContext().getStartTime() == null ){
             composition.getContext().setStartTime(new DvDateTime(getUpdatedDateTime().toString()));
