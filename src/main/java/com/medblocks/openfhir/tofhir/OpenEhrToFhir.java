@@ -1490,7 +1490,7 @@ public class OpenEhrToFhir {
             case "TIME" -> handleTime(valueHolder, lastIndex, path);
             case "BOOL" -> handleBoolean(valueHolder, lastIndex, path);
             case "DATE" -> handleDate(valueHolder, lastIndex, path);
-            case "CODEABLECONCEPT" -> handleCodeableConcept(valueHolder, lastIndex, path, value, terminology, code); //to add mappings);
+            case "CODEABLECONCEPT" -> handleCodeableConcept(valueHolder, lastIndex, path, value, terminology, code);
             case "CODING" -> handleCoding(valueHolder, lastIndex, path, terminology, code, value);
             case "MEDIA" -> handleMedia(valueHolder, lastIndex, path);
             case "IDENTIFIER" -> handleIdentifier(valueHolder, lastIndex, path, id);
