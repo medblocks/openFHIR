@@ -299,14 +299,12 @@ public class OpenEhrPopulator {
         if (value instanceof CodeableConcept codeableConcept) {
             List<Coding> codings = codeableConcept.getCoding();
             if (!codings.isEmpty()) {
-                // Handle the first coding as the primary coded text
-                Coding primaryCoding = codings.get(0);
-                addToConstructingFlat(path + "|code", primaryCoding.getCode(), flat);
-                addToConstructingFlat(path + "|terminology", primaryCoding.getSystem(), flat);
-                addToConstructingFlat(path + "|value", primaryCoding.getDisplay(), flat);
-                
-                // Handle additional codings as mappings
-                addAdditionalCodingsAsMappings(path, codings, flat);
+                Coding coding = codings.get(0);
+                addToConstructingFlat(path + "|code", coding.getCode(), flat);
+                addToConstructingFlat(path + "|terminology", coding.getSystem(), flat);
+                if (codeableConcept.getText() == null || codeableConcept.getText().isEmpty()) {
+                    addToConstructingFlat(path + "|value", coding.getDisplay(), flat);
+                }
             }
             addToConstructingFlat(path + "|value", codeableConcept.getText(), flat);
             return true;
@@ -323,25 +321,6 @@ public class OpenEhrPopulator {
                      value.getClass());
         }
         return false;
-    }
-
-    /**
-     * Adds additional codings from a CodeableConcept as mappings in the openEHR flat format
-     * 
-     * @param path The base path for the mappings
-     * @param codings The list of codings (first one is skipped as it's the primary coding)
-     * @param flat The JSON object to add the mappings to
-     */
-    private void addAdditionalCodingsAsMappings(String path, List<Coding> codings, JsonObject flat) {
-        for (int i = 1; i < codings.size(); i++) {
-            Coding coding = codings.get(i);
-            String mappingPath = path + "/_mapping:" + (i-1);
-            
-            addToConstructingFlat(mappingPath + "/match", "=", flat);
-            addToConstructingFlat(mappingPath + "/target|preferred_term", coding.getDisplay(), flat);
-            addToConstructingFlat(mappingPath + "/target|code", coding.getCode(), flat);
-            addToConstructingFlat(mappingPath + "/target|terminology", coding.getSystem(), flat);
-        }
     }
 
     private boolean handleIdentifier(final String path, final Base value, final JsonObject flat) {
