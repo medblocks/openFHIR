@@ -69,7 +69,7 @@ mappings:
         - name: "organization"
           with:
             fhir: "$fhirRoot"
-            openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.organisation.v1 and name/value='Überweiser']"
+            openehr: "$archetype/data[at0001]/items[openEHR-EHR-CLUSTER.organisation.v1]"
           slotArchetype: "CLUSTER.organisation.v1"
 
   - name: "aufnahmegrundExtension"
