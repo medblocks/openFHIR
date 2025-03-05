@@ -91,10 +91,6 @@ public class OpenEhrToFhir {
     final private IntermediateCacheProcessing intermediateCacheProcessing;
     final private OpenEhrConditionEvaluator openEhrConditionEvaluator;
 
-    // Add this constant to the top of the class with other constants
-    private static final String SUFFIX_TERMINOLOGY = "|terminology";
-    private static final String SUFFIX_CODE = "|code";
-    private static final String SUFFIX_VALUE = "|value";
 
     @Autowired
     public OpenEhrToFhir(final FlatJsonMarshaller flatJsonMarshaller,
@@ -1494,7 +1490,7 @@ public class OpenEhrToFhir {
             case "TIME" -> handleTime(valueHolder, lastIndex, path);
             case "BOOL" -> handleBoolean(valueHolder, lastIndex, path);
             case "DATE" -> handleDate(valueHolder, lastIndex, path);
-            case "CODEABLECONCEPT" -> handleCodeableConcept(valueHolder, lastIndex, path, value, terminology, code);
+            case "CODEABLECONCEPT" -> handleCodeableConcept(valueHolder, lastIndex, path, value, terminology, code); //to add mappings);
             case "CODING" -> handleCoding(valueHolder, lastIndex, path, terminology, code, value);
             case "MEDIA" -> handleMedia(valueHolder, lastIndex, path);
             case "IDENTIFIER" -> handleIdentifier(valueHolder, lastIndex, path, id);
@@ -1633,9 +1629,9 @@ public class OpenEhrToFhir {
         final CodeableConcept data = new CodeableConcept();
         
         // Try to get values from the path first, then fall back to the pre-fetched paths
-        String textValue = getFromValueHolder(valueHolder, path + SUFFIX_VALUE);
-        String codeValue = getFromValueHolder(valueHolder, path + SUFFIX_CODE);
-        String systemValue = getFromValueHolder(valueHolder, path + SUFFIX_TERMINOLOGY);
+        String textValue = getFromValueHolder(valueHolder, path + "|value");
+        String codeValue = getFromValueHolder(valueHolder, path + "|code");
+        String systemValue = getFromValueHolder(valueHolder, path + "|terminology");
         
         // Fall back to pre-fetched paths if needed
         if (textValue == null && value != null) {
