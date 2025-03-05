@@ -17,6 +17,7 @@ import com.medblocks.openfhir.util.OpenFhirMapperUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,9 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -175,6 +179,16 @@ public class FhirToOpenEhr {
         if (composition.getComposer() == null) {
             composition.setComposer(new PartySelf());
         }
+        if (composition.getContext()!= null && composition.getContext().getStartTime() == null ){
+            composition.getContext().setStartTime(new DvDateTime(getUpdatedDateTime().toString()));
+        }
+    }
+
+    private static LocalDateTime getUpdatedDateTime() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+        ZonedDateTime utcDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
+        return utcDateTime.toLocalDateTime();
     }
 
     /**

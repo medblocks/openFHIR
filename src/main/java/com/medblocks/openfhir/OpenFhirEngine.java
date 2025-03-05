@@ -12,7 +12,6 @@ import com.medblocks.openfhir.toopenehr.FhirToOpenEhr;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import com.nedap.archie.rm.composition.Composition;
-import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
@@ -30,6 +29,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.util.*;
 
 @Component
@@ -265,5 +265,12 @@ public class OpenFhirEngine {
         }
     }
 
-
+    public List<String> getValidProfiles(final String reqId) {
+        List<FhirConnectContextEntity> contextEntities = fhirConnectContextRepository.findAll();
+        List<String> profiles = new ArrayList<>();
+        for (final FhirConnectContextEntity contextEntity : contextEntities){
+            profiles.add(contextEntity.getFhirConnectContext().getContext().getProfile().getUrl());
+        }
+        return profiles;
+    }
 }
