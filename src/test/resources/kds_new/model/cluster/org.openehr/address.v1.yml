@@ -9,6 +9,8 @@ spec:
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.address.v1
     revision: 1.1.2
+  fhirConfig:
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Address
 
 mappings:
   - name: "streetaddress"
@@ -20,7 +22,7 @@ mappings:
         - name: "city"
           with:
             fhir: "city"
-            openehr: "items[at0002"
+            openehr: "items[at0002]"
             type: "STRING"
 
         - name: "state"
