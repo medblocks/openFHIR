@@ -101,12 +101,13 @@ mappings:
             type: "NONE"
           slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
 
-  - name: "medicationCode"
+
+  - name: "medicationCodeR"
     with:
       fhir: "$resource.medication.as(CodeableConcept)"
       openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0006]"
       type: "CODEABLECONCEPT"
-    openEHRCondition:
+    openehrCondition:
       targetRoot: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
       targetAttribute: "items[at0132]"
       operator: "empty"

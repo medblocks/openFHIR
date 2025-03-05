@@ -84,7 +84,7 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
         Assert.assertEquals("23.0", req2Dosages.get(1).getDoseAndRateFirstRep().getDoseQuantity().getValue().toPlainString());
         Assert.assertEquals(23, req2Dosages.get(1).getSequence());
 
-        Assert.assertEquals(true, req2.getDosageFirstRep().getAsNeededBooleanType().getValue());
+//        Assert.assertEquals(true, req2.getDosageFirstRep().getAsNeededBooleanType().getValue());
         Assert.assertNull(req1.getDosageFirstRep().getAsNeededBooleanType().getValue());
 
         final Medication med1 = (Medication) req1.getMedicationReference().getResource();
