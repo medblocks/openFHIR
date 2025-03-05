@@ -1,7 +1,7 @@
 grammar: FHIRConnect/v0.9.0
 type: model
 metadata:
-  name:  CLUSTER.dosage.v2.dosage
+  name:  CLUSTER.dosage.v2
   version: 0.0.1-alpha 
 spec: 
   system: FHIR
@@ -18,12 +18,6 @@ mappings:
       fhir: "$fhirRoot.text"
       openehr: "$archetype/items[at0178]"
       type: "STRING"
-
-  - name: "asNeeded"
-    with:
-      fhir: "$fhirRoot.asNeeded.as(BooleanType)"
-      openehr: "$archetype/items[openEHR-EHR-CLUSTER.timing_daily.v1]/items[at0024]"
-      type: "BOOL"
 
 #  - name: "dosageTiming"
 #    with:

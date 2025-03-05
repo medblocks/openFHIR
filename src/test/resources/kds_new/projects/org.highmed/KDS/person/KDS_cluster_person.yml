@@ -14,14 +14,14 @@ mappings:
     with:
       fhir: "$resource.name"
       openehr: "$archetype/items[openEHR-EHR-CLUSTER.structured_name.v1 and name/value='Name']"
-    slotArchetype: "CLUSTER.structured_name.v1.person_name-structured_name"
+    slotArchetype: "CLUSTER.structured_name.v1"
 
   - name: "geburtsname"
     extension: "add"
     with:
       fhir: "$resource.name"
       openehr: "$archetype/items[openEHR-EHR-CLUSTER.structured_name.v1 and name/value='Geburtsname']"
-    slotArchetype: "CLUSTER.structured_name.v1.person_name-structured_name"
+    slotArchetype: "CLUSTER.structured_name.v1"
 
   - name: "address" #Straßenanschrift
     extension: "overwrite"
