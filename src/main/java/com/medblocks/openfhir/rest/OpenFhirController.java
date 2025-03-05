@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Controller for the openFHIR Engine; mapping from openEHR to FHIR and vice versa REST endpoints are created here
  */
@@ -55,5 +57,10 @@ public class OpenFhirController {
                              @RequestParam(required = false) Boolean flat,
                              @RequestHeader(value = "x-req-id", required = false) final String reqId) {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(openFhirEngine.toOpenEhr(fhirResource, templateId, flat));
+    }
+
+    @GetMapping("/fc/profiles")
+    List<String> getValidProfiles(@RequestHeader(value = "x-req-id", required = false) final String reqId) {
+        return openFhirEngine.getValidProfiles(reqId);
     }
 }
