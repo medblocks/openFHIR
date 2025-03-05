@@ -16,11 +16,11 @@ mappings:
   - name: "orgName"
     with:
       fhir: "$fhirRoot.name"
-      openehr: "items[at0001]"
+      openehr: "$archetype/items[at0001]"
       type: "TEXT"
 
   - name: "orgId"
     with:
       fhir: "$fhirRoot.identifier"
-      openehr: "items[at0003]"
+      openehr: "$archetype/items[at0003]"
       type: "IDENTIFIER"
