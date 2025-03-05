@@ -730,7 +730,7 @@ public class FhirToOpenEhr {
         if (mapping.getWith().getType() == null) {
             // when type is not explicitly defined in the fhir connect model mapper, we assume a string
             if (openFhirStringUtils.endsWithOpenEhrType(openehr) != null) {
-                openehr = stringUtils.replaceLastIndexOf(openehr, "/"+openFhirStringUtils.endsWithOpenEhrType(openehr), "|"+openFhirStringUtils.endsWithOpenEhrType(openehr));
+                openehr = stringUtils.replaceLastIndexOf(openehr, "/", "|");
             }
         } else {
             initialHelper.setOpenEhrType(mapping.getWith().getType());
