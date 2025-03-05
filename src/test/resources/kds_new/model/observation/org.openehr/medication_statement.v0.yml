@@ -70,7 +70,7 @@ mappings:
     with:
       fhir: "$resource.dosage"
       openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.dosage.v2]"
-    slotArchetype: "CLUSTER.dosage.v2.dosage"
+    slotArchetype: "CLUSTER.dosage.v2"
     followedBy:
       mappings:
         - name: "route"
@@ -84,6 +84,7 @@ mappings:
       fhir: "$resource.dosage.text"
       openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0033]"
       type: "STRING"
+# at0006
 
   - name: "medication"
     with:
@@ -100,6 +101,15 @@ mappings:
             type: "NONE"
           slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
 
+  - name: "medicationCode"
+    with:
+      fhir: "$resource.medication.as(CodeableConcept)"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0006]"
+      type: "CODEABLECONCEPT"
+    openEHRCondition:
+      targetRoot: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
+      targetAttribute: "items[at0132]"
+      operator: "empty"
 
   - name: "medicationCode"
     with:
@@ -109,8 +119,8 @@ mappings:
     openehrCondition:
       targetRoot: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
       targetAttributes:
-        - "items[at0071]" #"darreichungsform"
-        - "items[at0115]" #"wirkstärke_konzentration"
+        - "items[at0071]" #"form"
+        - "items[at0115]" #"Strength"
       operator: "empty"
 
   - name: "reasonReference"

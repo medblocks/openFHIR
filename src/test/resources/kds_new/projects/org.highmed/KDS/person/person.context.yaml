@@ -18,7 +18,7 @@ context:
     - "EVALUATION.gender.v1"
     - "ADMIN_ENTRY.person_data.v0"
     - "CLUSTER.person.v1"
-    - "CLUSTER.structured_name.v1.person_name-structured_name"
+    - "CLUSTER.structured_name.v1"
     - "CLUSTER.address.v1"
     - "CLUSTER.person_birth_data_iso.v0"
     - "CLUSTER.death_details.v1"
