@@ -1628,10 +1628,23 @@ public class OpenEhrToFhir {
                                                                     final String code) {
         final CodeableConcept data = new CodeableConcept();
         
-        // Get values using the full path
-        final String textValue = getFromValueHolder(valueHolder, path + "|value");
-        final String codeValue = getFromValueHolder(valueHolder, path + "|code");
-        final String systemValue = getFromValueHolder(valueHolder, path + "|terminology");
+        // Try to get values from the path first, then fall back to the pre-fetched paths
+        String textValue = getFromValueHolder(valueHolder, path + "|value");
+        String codeValue = getFromValueHolder(valueHolder, path + "|code");
+        String systemValue = getFromValueHolder(valueHolder, path + "|terminology");
+        
+        // Fall back to pre-fetched paths if needed
+        if (textValue == null && value != null) {
+            textValue = getFromValueHolder(valueHolder, value);
+        }
+        
+        if (codeValue == null && code != null) {
+            codeValue = getFromValueHolder(valueHolder, code);
+        }
+        
+        if (systemValue == null && terminology != null) {
+            systemValue = getFromValueHolder(valueHolder, terminology);
+        }
         
         data.setText(textValue);
         
