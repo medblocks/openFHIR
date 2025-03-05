@@ -1289,6 +1289,31 @@ public class OpenEhrToFhir {
                 }
                 values.add(new OpenEhrToFhirHelper.DataWithIndex(new StringType(hardcodedValue), index,
                                                                  fullOpenEhrPath));
+            } else if(mapping.getMappingCode()!=null){
+                //get programmed mapping function from plugin using above result fhir object
+                // String className = "com.medblocks.openfhir."+helper.getMappingCode();
+                //
+                //        try {
+                //            // Step 1: Load the class
+                //            Class<?> clazz = Class.forName(className);
+                //
+                //            // Step 2: Create an instance of the class
+                //            Object instance = clazz.getDeclaredConstructor().newInstance();
+                //
+                //            // Step 3: Use the instance (optional)
+                //            if (instance instanceof MyClass) {
+                //                MyClass myClassInstance = (MyClass) instance;
+                //                myClassInstance.valueToDataPoint(strings, rmType, flatJsonObject, true); // Call the plugin function
+                //            }
+                //        } catch (ClassNotFoundException e) {
+                //            System.err.println("Class not found: " + className);
+                //        } catch (InstantiationException | IllegalAccessException e) {
+                //            System.err.println("Failed to instantiate class: " + e.getMessage());
+                //        } catch (NoSuchMethodException e) {
+                //            System.err.println("No public no-argument constructor found: " + e.getMessage());
+                //        } catch (Exception e) {
+                //            System.err.println("An unexpected error occurred: " + e.getMessage());
+                //        }
             } else {
                 values = joinedEntries.values().stream()
                         .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
