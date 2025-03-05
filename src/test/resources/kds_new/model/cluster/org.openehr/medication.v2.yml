@@ -99,7 +99,7 @@ mappings:
               - name: "medicationSubstanceReference"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "$archetype"
+                  openehr: "items[openEHR-EHR-CLUSTER.medication.v2]"
                 slotArchetype: "CLUSTER.medication.v2.substance" # depending on the resourceType picks the correct one
 
         - name: "strength"
