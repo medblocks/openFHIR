@@ -39,6 +39,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class OpenEhrPopulator {
 
+    // Constants for common suffixes
+    private static final String SUFFIX_TERMINOLOGY = "|terminology";
+    private static final String SUFFIX_CODE = "|code";
+    private static final String SUFFIX_VALUE = "|value";
+    private static final String SUFFIX_SIZE = "|size";
+    private static final String SUFFIX_UNIT = "|unit";
+    private static final String SUFFIX_MAGNITUDE = "|magnitude";
+    private static final String SUFFIX_ORDINAL = "|ordinal";
+    private static final String SUFFIX_ID = "|id";
+
     private final OpenFhirMapperUtils openFhirMapperUtils;
 
     @Autowired
@@ -157,8 +167,8 @@ public class OpenEhrPopulator {
         if (value instanceof Attachment attachment) {
             int size = (attachment.getSize() == 0 && attachment.getData() != null) ? attachment.getData().length
                     : attachment.getSize();
-            addToConstructingFlat(path + "|size", String.valueOf(size), flat);
-            addToConstructingFlat(path + "|mediatype", attachment.getContentType(), flat);
+            addToConstructingFlat(path + SUFFIX_SIZE, String.valueOf(size), flat);
+            addToConstructingFlat(path + SUFFIX_TERMINOLOGY, attachment.getContentType(), flat);
             if (StringUtils.isNotEmpty(attachment.getUrl())) {
                 addToConstructingFlat(path + "|url", attachment.getUrl(), flat);
             } else {
@@ -172,9 +182,9 @@ public class OpenEhrPopulator {
     private boolean handleDvQuantity(final String path, final Base value, final JsonObject flat) {
         if (value instanceof Quantity quantity) {
             if (quantity.getValue() != null) {
-                addToConstructingFlatDouble(path + "|magnitude", quantity.getValue().doubleValue(), flat);
+                addToConstructingFlatDouble(path + SUFFIX_MAGNITUDE, quantity.getValue().doubleValue(), flat);
             }
-            addToConstructingFlat(path + "|unit", quantity.getUnit(), flat);
+            addToConstructingFlat(path + SUFFIX_UNIT, quantity.getUnit(), flat);
             return true;
         } else if (value instanceof Ratio ratio) {
             setFhirPathValue(path, ratio.getNumerator(), FhirConnectConst.DV_QUANTITY, flat);
@@ -189,10 +199,10 @@ public class OpenEhrPopulator {
     private boolean handleDvOrdinal(final String path, final Base value, final JsonObject flat) {
         if (value instanceof Quantity quantity) {
             if (quantity.getValue() != null) {
-                addToConstructingFlat(path + "|ordinal", quantity.getValue().toPlainString(), flat);
+                addToConstructingFlat(path + SUFFIX_ORDINAL, quantity.getValue().toPlainString(), flat);
             }
-            addToConstructingFlat(path + "|value", quantity.getUnit(), flat);
-            addToConstructingFlat(path + "|code", quantity.getCode(), flat);
+            addToConstructingFlat(path + SUFFIX_VALUE, quantity.getUnit(), flat);
+            addToConstructingFlat(path + SUFFIX_CODE, quantity.getCode(), flat);
             return true;
         } else {
             log.warn("openEhrType is DV_ORDINAL but extracted value is not Quantity; is {}", value.getClass());
@@ -203,10 +213,10 @@ public class OpenEhrPopulator {
     private boolean handleDvProportion(final String path, final Base value, final JsonObject flat) {
         if (value instanceof Quantity quantity) {
             if ("%".equals(quantity.getCode())) {
-                addToConstructingFlatDouble(path + "|denominator", 100.0, flat);
+                addToConstructingFlatDouble(path + SUFFIX_MAGNITUDE, 100.0, flat);
             }
             if (quantity.getValue() != null) {
-                addToConstructingFlatDouble(path + "|numerator", quantity.getValue().doubleValue(), flat);
+                addToConstructingFlatDouble(path + SUFFIX_MAGNITUDE, quantity.getValue().doubleValue(), flat);
             }
             addToConstructingFlat(path + "|type", "2", flat); // hardcoded?
             return true;
@@ -301,19 +311,19 @@ public class OpenEhrPopulator {
             if (!codings.isEmpty()) {
                 // Handle the first coding as the primary coded text
                 Coding primaryCoding = codings.get(0);
-                addToConstructingFlat(path + "|code", primaryCoding.getCode(), flat);
-                addToConstructingFlat(path + "|terminology", primaryCoding.getSystem(), flat);
-                addToConstructingFlat(path + "|value", primaryCoding.getDisplay(), flat);
+                addToConstructingFlat(path + SUFFIX_CODE, primaryCoding.getCode(), flat);
+                addToConstructingFlat(path + SUFFIX_TERMINOLOGY, primaryCoding.getSystem(), flat);
+                addToConstructingFlat(path + SUFFIX_VALUE, primaryCoding.getDisplay(), flat);
                 
                 // Handle additional codings as mappings
                 addAdditionalCodingsAsMappings(path, codings, flat);
             }
-            addToConstructingFlat(path + "|value", codeableConcept.getText(), flat);
+            addToConstructingFlat(path + SUFFIX_VALUE, codeableConcept.getText(), flat);
             return true;
         } else if (value instanceof Coding coding) {
-            addToConstructingFlat(path + "|code", coding.getCode(), flat);
-            addToConstructingFlat(path + "|terminology", coding.getSystem(), flat);
-            addToConstructingFlat(path + "|value", coding.getDisplay(), flat);
+            addToConstructingFlat(path + SUFFIX_CODE, coding.getCode(), flat);
+            addToConstructingFlat(path + SUFFIX_TERMINOLOGY, coding.getSystem(), flat);
+            addToConstructingFlat(path + SUFFIX_VALUE, coding.getDisplay(), flat);
             return true;
         } else if (value instanceof StringType extractedString && path.contains("|")) {
             addToConstructingFlat(path, extractedString.getValue(), flat);
@@ -346,7 +356,7 @@ public class OpenEhrPopulator {
 
     private boolean handleIdentifier(final String path, final Base value, final JsonObject flat) {
         if (value instanceof Identifier identifier) {
-            addToConstructingFlat(path + "|id", identifier.getValue(), flat);
+            addToConstructingFlat(path + SUFFIX_ID, identifier.getValue(), flat);
             return true;
         } else {
             log.warn("openEhrType is IDENTIFIER but extracted value is not Identifier; is {}", value.getClass());
@@ -388,9 +398,9 @@ public class OpenEhrPopulator {
     private boolean handleCodePhrase(final String path, final Base value, final JsonObject flat,
                                      final String openEhrType) {
         if (value instanceof Coding coding) {
-            addToConstructingFlat(path + "|code", coding.getCode(), flat);
-            addToConstructingFlat(path + "|value", coding.getCode(), flat);
-            addToConstructingFlat(path + "|terminology", coding.getSystem(), flat);
+            addToConstructingFlat(path + SUFFIX_CODE, coding.getCode(), flat);
+            addToConstructingFlat(path + SUFFIX_VALUE, coding.getCode(), flat);
+            addToConstructingFlat(path + SUFFIX_TERMINOLOGY, coding.getSystem(), flat);
             return true;
         } else if (value instanceof Extension extension) {
             setFhirPathValue(path, extension.getValue(), openEhrType, flat);
@@ -399,8 +409,8 @@ public class OpenEhrPopulator {
             setFhirPathValue(path, concept.getCodingFirstRep(), openEhrType, flat);
             return true;
         } else if (value instanceof Enumeration<?> enumeration) {
-            addToConstructingFlat(path + "|code", enumeration.getValueAsString(), flat);
-            addToConstructingFlat(path + "|value", enumeration.getValueAsString(), flat);
+            addToConstructingFlat(path + SUFFIX_CODE, enumeration.getValueAsString(), flat);
+            addToConstructingFlat(path + SUFFIX_VALUE, enumeration.getValueAsString(), flat);
             return true;
         } else {
             log.warn(
