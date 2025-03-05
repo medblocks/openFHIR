@@ -1737,11 +1737,84 @@ public class OpenEhrToFhir {
                                                                     final String terminology,
                                                                     final String code) {
         final CodeableConcept data = new CodeableConcept();
-        final String text = getFromValueHolder(valueHolder, value);
-        data.setText(text);
-        data.addCoding(new Coding(getFromValueHolder(valueHolder, terminology),
-                                  getFromValueHolder(valueHolder, code), text));
+        
+        // Try to get values from the path first, then fall back to the pre-fetched paths
+        String textValue = getFromValueHolder(valueHolder, path + "|value");
+        String codeValue = getFromValueHolder(valueHolder, path + "|code");
+        String systemValue = getFromValueHolder(valueHolder, path + "|terminology");
+        
+        // Fall back to pre-fetched paths if needed
+        if (textValue == null && value != null) {
+            textValue = getFromValueHolder(valueHolder, value);
+        }
+        
+        if (codeValue == null && code != null) {
+            codeValue = getFromValueHolder(valueHolder, code);
+        }
+        
+        if (systemValue == null && terminology != null) {
+            systemValue = getFromValueHolder(valueHolder, terminology);
+        }
+        
+        data.setText(textValue);
+        
+        // Add the primary coding
+        if (codeValue != null || systemValue != null) {
+            data.addCoding(new Coding(systemValue, codeValue, textValue));
+        }
+        
+        // Process additional mappings
+        processMappings(valueHolder, path, data);
+        
         return new OpenEhrToFhirHelper.DataWithIndex(data, lastIndex, path);
+    }
+
+    /**
+     * Process terminology mappings for a given path and add them as additional codings to the CodeableConcept.
+     * 
+     * In openEHR, a coded term can have multiple mappings to other terminologies. This method extracts those
+     * mappings from the flat JSON structure and adds them as additional codings to the FHIR CodeableConcept.
+     * 
+     * @param valueHolder JSON object containing the values from the openEHR composition
+     * @param path Base path to the coded element
+     * @param codeableConcept CodeableConcept to add mappings to
+     */
+    private void processMappings(final JsonObject valueHolder, final String path, final CodeableConcept codeableConcept) {
+        // Mappings in openEHR flat format are represented as _mapping:0, _mapping:1, etc.
+        for (int mappingIndex = 0; ; mappingIndex++) {
+            String mappingPrefix = path + "/_mapping:" + mappingIndex;
+            
+            // Check if this mapping exists by looking for any key that starts with the mapping prefix
+            if (!mappingExistsInValueHolder(valueHolder, mappingPrefix)) {
+                break;  // No more mappings found
+            }
+            
+            // Extract mapping details
+            String terminology = getFromValueHolder(valueHolder, mappingPrefix + "/target|terminology");
+            String code = getFromValueHolder(valueHolder, mappingPrefix + "/target|code");
+            String preferredTerm = getFromValueHolder(valueHolder, mappingPrefix + "/target|preferred_term");
+            
+            // Add mapping as a coding if we have at least a system or code
+            if (terminology != null || code != null) {
+                codeableConcept.addCoding(new Coding(terminology, code, preferredTerm));
+            }
+        }
+    }
+    
+    /**
+     * Check if a mapping exists in the valueHolder by looking for any key that starts with the mapping prefix
+     * 
+     * @param valueHolder JSON object containing the values
+     * @param mappingPrefix Prefix to check for
+     * @return true if a mapping with this prefix exists
+     */
+    private boolean mappingExistsInValueHolder(final JsonObject valueHolder, final String mappingPrefix) {
+        for (String key : valueHolder.keySet()) {
+            if (key.startsWith(mappingPrefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private OpenEhrToFhirHelper.DataWithIndex handleCoding(final JsonObject valueHolder,
