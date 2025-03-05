@@ -6,6 +6,7 @@ import com.github.fge.jsonschema.core.report.LogLevel;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
+import com.medblocks.openfhir.fc.FhirConnectConst;
 import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import com.medblocks.openfhir.fc.schema.model.FhirConnectModel;
 import java.nio.charset.StandardCharsets;
@@ -120,7 +121,7 @@ public class FhirConnectValidator {
             aqlPath = "";
         }
         else{
-            aqlPath = mapping.getWith().getOpenehr().replace("$archetype","").replace("$composition","").replace("$reference","");
+            aqlPath = mapping.getWith().getOpenehr().replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC,"").replace(FhirConnectConst.OPENEHR_COMPOSITION_FC,"").replace(FhirConnectConst.REFERENCE,"");
         }
         if(aqlPath.startsWith("/")){
             aqlPath = aqlPath.replaceFirst("/","");
