@@ -111,6 +111,16 @@ mappings:
         - "items[at0115]" #"wirkstärke_konzentration"
       operator: "empty"
 
+  - name: "medicationCodeR"
+    with:
+      fhir: "$resource.medication.as(CodeableConcept)"
+      openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0006]"
+      type: "CODEABLECONCEPT"
+    openehrCondition:
+      targetRoot: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.medication.v2]"
+      targetAttribute: "items[at0132]"
+      operator: "empty"
+
   - name: "reasonReference"
     with:
       fhir: "$resource.reasonReference.as(Reference).identifier.value"
