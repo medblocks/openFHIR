@@ -118,7 +118,7 @@ public class BloodPressureToOpenEhrTest extends GenericTest {
         CodeableConcept bodySite = new CodeableConcept();
         bodySite.addCoding(new Coding("local", "at0025", "Right arm"));
         bodySite.addCoding(new Coding("local", "at0026", "Left arm"));
-        bodySite.setText("Multiple measurement locations");
+        bodySite.setText("Right arm");
         observation.setBodySite(bodySite);
         
         // Convert to flat JSON
