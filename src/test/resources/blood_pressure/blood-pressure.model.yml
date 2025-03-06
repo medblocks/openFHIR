@@ -91,11 +91,11 @@ mappings:
 
   - name: "location"
     with:
-      fhir: "$resource.bodySite.coding"
+      fhir: "$resource.bodySite"
       openehr: "$archetype/protocol[at0011]/items[at0014]"
-      type: "CODING"
+      type: "CODEABLECONCEPT"
     fhirCondition:
       targetRoot: "$resource.bodySite"
       targetAttribute: "text"
       operator: "one of"
-      criteria: "[THIS IS LOCATION OF MEASUREMENT]"
+      criteria: "Right arm"
