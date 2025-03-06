@@ -256,6 +256,7 @@ mappings:
           with:
             fhir: "$fhirRoot.as(Reference).identifier"
             openehr: "$openehrRoot"
+            type: "IDENTIFIER"
           openehrCondition:
             targetRoot: "$openehrRoot"
             targetAttribute: "links"
@@ -276,6 +277,7 @@ mappings:
                 with:
                   fhir: "$fhirRoot.identifier"
                   openehr: "$openehrRoot"
+                  type: "IDENTIFIER"
 #              - name: "medicationRequestMapping"
 #                with:
 #                  fhir: "$fhirRoot"

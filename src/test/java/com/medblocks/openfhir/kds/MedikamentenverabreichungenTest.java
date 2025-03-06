@@ -10,6 +10,7 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Medication;
 import org.hl7.fhir.r4.model.MedicationAdministration;
+import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Period;
 import org.junit.Assert;
 import org.junit.Test;
@@ -79,7 +80,7 @@ public class MedikamentenverabreichungenTest extends KdsBidirectionalTest {
         Assert.assertEquals("l/h", dosage.getRateQuantity().getUnit());
 
         Assert.assertEquals("Reason code", medicationAdministration.getReasonCodeFirstRep().getCodingFirstRep().getDisplay());
-        Assert.assertEquals("dev/null", medicationAdministration.getRequest().getIdentifier().getValue());
+        Assert.assertEquals("dev/null", ((MedicationRequest) medicationAdministration.getRequest().getResource()).getIdentifierFirstRep().getValue());
     }
 
 

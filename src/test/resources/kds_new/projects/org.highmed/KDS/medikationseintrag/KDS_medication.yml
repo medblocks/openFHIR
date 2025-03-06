@@ -8,8 +8,34 @@ spec:
   version: R4
   extends: CLUSTER.medication.v2
 
-#todo: example of fhir data please, what should this map to??
 mappings:
+
+#because in kds template, at0132 is a string
+  - name: "name"
+    extension: "overwrite"
+    with:
+      fhir: "$resource.code.coding.code"
+      openehr: "$archetype/items[at0132]"
+      type: "STRING"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttribute: "items[at0132]"
+      operator: "type"
+      criteria: "DV_TEXT"
+
+# because medication.v2 has sometime at0132 as text and other times as coded text...i.e. Arzneimittel-Name vs Bestandteil
+  - name: "nameStructured"
+    extension: "add"
+    with:
+      fhir: "$resource.code"
+      openehr: "$archetype/items[at0132]"
+      type: "CODEABLECONCEPT"
+    openehrCondition:
+      targetRoot: "$archetype"
+      targetAttribute: "items[at0132]"
+      operator: "type"
+      criteria: "DV_CODED_TEXT"
+
 
   - name: "wirkstofftyp"
     extension: "append"
@@ -18,11 +44,11 @@ mappings:
       mappings:
         - name: "wirkstofftypExtended"
           with:
-            fhir: "$fhirRoot.ingredients.extension.value"
+            fhir: "extension.value"
             openehr: "$archetype/items[at0142]"
             type: "CODING"
           fhirCondition:
-            targetRoot: "$fhirRoot.ingredients.extension"
+            targetRoot: "extension"
             targetAttribute: "url"
             operator: "one of"
             criteria: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp"
@@ -30,7 +56,7 @@ mappings:
             mappings:
               - name: "extension"
                 with:
-                  fhir: "$fhirRoot.ingredients.extension"
+                  fhir: "extension"
                 manual:
                   - name: "extensionUrl"
                     fhir:
