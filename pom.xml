@@ -54,7 +54,7 @@
         <hapi-fhir.version>7.2.1</hapi-fhir.version>
         <jjwt.version>0.12.6</jjwt.version>
         <snakeyaml.version>2.2</snakeyaml.version>
-        <ucum.version>1.0.8</ucum.version>
+        <ucum.version>1.0.9</ucum.version>
         <ehrbase.version>2.14.0</ehrbase.version>
         <json-schema-validator.version>2.2.14</json-schema-validator.version>
         <junit.version>4.13.2</junit.version>
