@@ -101,9 +101,9 @@ public class BloodPressureToFhirTest extends GenericTest {
                 .filter(en -> en.getCode().getText().equals("Third bp"))
                 .findFirst().orElse(null);
 
-        Assert.assertEquals("THIS IS LOCATION OF MEASUREMENT", obs1.getBodySite().getText());
-        Assert.assertEquals("THIS IS LOCATION OF MEASUREMENT", obs2.getBodySite().getText());
-        Assert.assertEquals("THIS IS LOCATION OF MEASUREMENT", obs3.getBodySite().getText());
+        Assert.assertEquals("Right arm", obs1.getBodySite().getText());
+        Assert.assertEquals("Right arm", obs2.getBodySite().getText());
+        Assert.assertEquals("Right arm", obs3.getBodySite().getText());
 
         Assert.assertEquals("at0025", obs1.getBodySite().getCodingFirstRep().getCode());
         Assert.assertEquals("local", obs1.getBodySite().getCodingFirstRep().getSystem());
