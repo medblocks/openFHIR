@@ -186,21 +186,22 @@ public class OpenFhirMapperUtils {
                 } else if (openEhrPath.endsWith(FhirConnectConst.REFERENCE)) {
                     final String followingOpenEhr = mapping.getWith().getOpenehr()
                             .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, "");
-                    final String openEhrSuffix = StringUtils.isBlank(followingOpenEhr) ? "" : ("." + followingOpenEhr);
+                    final String openEhrSuffix = StringUtils.isBlank(followingOpenEhr) ? "" : ("/" + followingOpenEhr);
                     mapping.getWith().setOpenehr(openEhrPath
                                                          .replace("/" + FhirConnectConst.REFERENCE, "")
                                                          .replace("." + FhirConnectConst.REFERENCE, "")
-                                                         .replaceAll("/", ".")
                                                          + openEhrSuffix);
-                } else {
-                    mapping.getWith().setOpenehr(openEhrPath
-                                                         .replace(FhirConnectConst.REFERENCE + "/", ".")
-                                                         .replace("/" + FhirConnectConst.REFERENCE, ".")
-                                                         .replace("." + FhirConnectConst.REFERENCE, ".")
-                                                         .replace(FhirConnectConst.REFERENCE + ".", ".")
-                                                         .replaceAll("/", ".")
-                                                         + mapping.getWith().getOpenehr()
-                            .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
+                } else if (!mapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_COMPOSITION_FC)) {
+                    final String replacedOpenEhrPath = openEhrPath
+                            .replace(FhirConnectConst.REFERENCE + "/", "/")
+                            .replace("/" + FhirConnectConst.REFERENCE, "/")
+                            .replace("." + FhirConnectConst.REFERENCE, "/")
+                            .replace(FhirConnectConst.REFERENCE + ".", "/");
+                    final String delim = replacedOpenEhrPath.endsWith("/") ? "" : "/";
+                    final String toSet = replacedOpenEhrPath + delim
+                            + mapping.getWith().getOpenehr()
+                            .replace(OPENEHR_ARCHETYPE_FC, "");
+                    mapping.getWith().setOpenehr(toSet);
                 }
             }
         }
@@ -256,6 +257,8 @@ public class OpenFhirMapperUtils {
                             .setOpenehr(FhirConnectConst.REFERENCE + openEhrPathMiddle + openEhrWithReference
                                     .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + ".", "")
                                     .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
+                } else if(followedByMapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_ROOT_FC)) {
+                    followedByMapping.getWith().setOpenehr(openehr);
                 } else {
                     final String delimeter = followedByMapping.getWith().getOpenehr().startsWith("|") ? "" : "/";
                     followedByMapping.getWith()
@@ -264,6 +267,12 @@ public class OpenFhirMapperUtils {
                                     .replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC, ""));
                 }
             } else if (followedByMapping.getWith().getOpenehr().equals(FhirConnectConst.OPENEHR_ARCHETYPE_FC)) {
+                if(hardcodedValue != null) {
+                    followedByMapping.getWith().setOpenehr(openehr);
+                } else {
+                    followedByMapping.getWith().setOpenehr(slotContext);
+                }
+            } else if (followedByMapping.getWith().getOpenehr().startsWith(FhirConnectConst.OPENEHR_ROOT_FC)) {
                 followedByMapping.getWith().setOpenehr(openehr);
             } else {
                 followedByMapping.getWith().setOpenehr(

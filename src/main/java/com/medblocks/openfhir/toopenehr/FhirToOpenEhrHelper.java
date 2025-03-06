@@ -1,8 +1,13 @@
 package com.medblocks.openfhir.toopenehr;
 
+import com.medblocks.openfhir.fc.FhirConnectConst;
+import com.medblocks.openfhir.fc.schema.model.Condition;
+import com.medblocks.openfhir.tofhir.OpenEhrToFhirHelper;
+import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -48,6 +53,8 @@ public class FhirToOpenEhrHelper {
      */
     private Boolean multiple;
 
+    private Condition typeCondition;
+
     /**
      * inner elements populated if a mapping is followed by other mappings or slot mappings
      */
@@ -60,6 +67,7 @@ public class FhirToOpenEhrHelper {
                 .openEhrPath(openEhrPath)
                 .openEhrType(openEhrType)
                 .archetype(archetype)
+                .typeCondition(typeCondition)
                 .hardcodingValue(hardcodingValue)
                 .multiple(multiple)
                 .fhirToOpenEhrHelpers(fhirToOpenEhrHelpers == null ? null : fhirToOpenEhrHelpers.stream().map(FhirToOpenEhrHelper::doClone).collect(Collectors.toList()))

@@ -33,6 +33,7 @@ import com.medblocks.openfhir.util.FhirInstanceCreatorUtility;
 import com.medblocks.openfhir.util.FhirInstancePopulator;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenEhrConditionEvaluator;
+import com.medblocks.openfhir.util.OpenFhirConst;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
 import com.medblocks.openfhir.util.OpenFhirStringUtils;
 import com.nedap.archie.rm.composition.Composition;
@@ -878,7 +879,10 @@ public class OpenEhrToFhir {
                 continue;
             }
             final String definedMappingWithOpenEhr = with.getOpenehr();
-            String fixedOpenEhr = definedMappingWithOpenEhr.replace(OPENEHR_ARCHETYPE_FC, firstFlatPath)
+            String fixedOpenEhr = definedMappingWithOpenEhr
+                    .replace(FhirConnectConst.REFERENCE, "")
+                    .replace(FhirConnectConst.REFERENCE + "/", "")
+                    .replace(OPENEHR_ARCHETYPE_FC, firstFlatPath)
                     .replace(OPENEHR_COMPOSITION_FC, webTemplate.getTree().getId());
             String openehrAqlPath = getOpenEhrKey(fixedOpenEhr, parentFollowedByOpenEhr, firstFlatPath);
             String openehr = getPathFromAqlPath(openehrAqlPath, webTemplate, mapping.getWith().getType());
@@ -912,10 +916,11 @@ public class OpenEhrToFhir {
               handling of $reference mappings as defined in the fhir connect spec
              */
             if (definedMappingWithOpenEhr.startsWith(FhirConnectConst.REFERENCE) && mapping.getReference() != null) {
+                final String openEhrForReferenceMappings = OpenFhirConst.INVALID_DATA_POINT.equals(openehr) ? parentFollowedByOpenEhr : openehr;
                 handleReferenceMapping(mapping, resourceType, parentFollowedByFhir, parentFollowedByOpenEhr, theMapper,
                                        firstFlatPath, definedMappingWithOpenEhr, fhirPath, isFollowedBy, helpers,
                                        webTemplate,
-                                       flatJsonObject, slotContext, openehr, possibleRecursion);
+                                       flatJsonObject, slotContext, openEhrForReferenceMappings, possibleRecursion);
             } else {
                 final String OPENEHR_CONTENT_SUFFIX = "content/content";
                 if (openehr.endsWith(OPENEHR_CONTENT_SUFFIX) && OPENEHR_TYPE_MEDIA.equals(rmType)) {
@@ -930,12 +935,13 @@ public class OpenEhrToFhir {
                 }
 
                 if (mapping.getSlotArchetype() != null) {
+                    final String openEhrForReferenceMappings = OpenFhirConst.INVALID_DATA_POINT.equals(openehr) ? parentFollowedByOpenEhr : openehr;
                     handleSlotMapping(mapping, resourceType, parentFollowedByFhir, theMapper, firstFlatPath,
                                       definedMappingWithOpenEhr,
                                       openFhirStringUtils.getFhirPathWithConditions(fhirPath,
                                                                                     mapping.getFhirCondition(),
                                                                                     resourceType, parentFollowedByFhir),
-                                      helpers, webTemplate, flatJsonObject, slotContext, openehr,
+                                      helpers, webTemplate, flatJsonObject, slotContext, openEhrForReferenceMappings,
                                       possibleRecursion);
                 } else {
                     // adds regex pattern to simplified path in a way that we can extract data from a given flat path
@@ -1011,7 +1017,7 @@ public class OpenEhrToFhir {
         openEhrRmWorker.fixFlatWithOccurrences(Collections.singletonList(getTypeHelper), webTemplate);
         if (getTypeHelper.getOpenEhrType() != null && getTypeHelper.getOpenEhrType().equals(OPENEHR_TYPE_NONE)
                 && openEhrPath.split("/").length != getTypeHelper.getOpenEhrPath().split("/").length) {
-            return "INVALID_DATA_POINT";
+            return OpenFhirConst.INVALID_DATA_POINT;
         }
         return getTypeHelper.getOpenEhrPath();
     }

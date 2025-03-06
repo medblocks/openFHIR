@@ -53,13 +53,14 @@ mappings:
     with:
       fhir: "$resource.ingredient"
       openehr: "$archetype/items[openEHR-EHR-CLUSTER.medication.v2]" # cluster in cluster
+      type: "NONE"
     followedBy:
       mappings:
         - name: "ingredient"
           with:
             fhir: "item.as(CodeableConcept)" # todo: what do we map to when going from openEHR to FHIR? Because all these 3 below
                                             # todo are mapping the same thing. CodeableConcept, Medication?
-            openehr: "$archetype"
+            openehr: "$openehrRoot"
             type: "NONE"
           followedBy:
             mappings:
@@ -85,7 +86,7 @@ mappings:
               - name: "medicationMedicationReference"
                 with:
                   fhir: "$fhirRoot"
-                  openehr: "$archetype"
+                  openehr: "$openehrRoot"
                 slotArchetype: "CLUSTER.medication.v2" # depending on the resourceType picks the correct one
 
         - name: "medicationSubstance"

@@ -1,5 +1,11 @@
 package com.medblocks.openfhir.toopenehr;
 
+import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
+import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.RECURRING_SYNTAX_ESCAPED;
+import static com.medblocks.openfhir.util.OpenFhirStringUtils.RESOLVE;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.medblocks.openfhir.OpenEhrRmWorker;
@@ -20,25 +26,28 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
-import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.Base;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.StringType;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.medblocks.openfhir.fc.FhirConnectConst.FHIR_ROOT_FC;
-import static com.medblocks.openfhir.fc.FhirConnectConst.OPENEHR_TYPE_NONE;
-import static com.medblocks.openfhir.util.OpenFhirStringUtils.*;
 
 @Slf4j
 @Component
@@ -97,7 +106,8 @@ public class FhirToOpenEhr {
         final Bundle toRunEngineOn = prepareBundle(resource);
 
         final WebTemplate webTemplate = openEhrApplicationScopedUtils.parseWebTemplate(operationaltemplate);
-        final String templateId = OpenFhirMappingContext.normalizeTemplateId(context.getContext().getTemplate().getId());
+        final String templateId = OpenFhirMappingContext.normalizeTemplateId(
+                context.getContext().getTemplate().getId());
 
         // helper objects for mapping to openEHR, where 'helpers' are regular ones constructed as part of the
         // mapping and 'coverHelpers' are those that don't directly reference the FHIR Resource but another one
@@ -179,7 +189,7 @@ public class FhirToOpenEhr {
         if (composition.getComposer() == null) {
             composition.setComposer(new PartySelf());
         }
-        if (composition.getContext()!= null && composition.getContext().getStartTime() == null ){
+        if (composition.getContext() != null && composition.getContext().getStartTime() == null) {
             composition.getContext().setStartTime(new DvDateTime(getUpdatedDateTime().toString()));
         }
     }
@@ -213,6 +223,12 @@ public class FhirToOpenEhr {
                     handleBundleExtraction((Bundle) resource, lim, artifactHelpers, finalFlat);
                 } else {
                     for (FhirToOpenEhrHelper fhirToOpenEhrHelper : artifactHelpers) {
+                        final Condition openEhrTypeCondition = fhirToOpenEhrHelper.getTypeCondition();
+                        if (openEhrTypeCondition != null
+                                && openEhrTypeCondition.getCriteria().equals(fhirToOpenEhrHelper.getOpenEhrType())) {
+                            continue;
+                        }
+
                         final List<Base> result = fhirPathR4.evaluate(resource, fhirToOpenEhrHelper.getFhirPath(),
                                                                       Base.class);
 
@@ -249,6 +265,12 @@ public class FhirToOpenEhr {
         for (final Base relevantResource : relevantResources) {
             boolean somethingWasAdded = false;
             for (final FhirToOpenEhrHelper fhirToOpenEhrHelper : artifactHelpers) {
+                final Condition openEhrTypeCondition = fhirToOpenEhrHelper.getTypeCondition();
+                if (openEhrTypeCondition != null
+                        && openEhrTypeCondition.getCriteria().equals(fhirToOpenEhrHelper.getOpenEhrType())) {
+                    continue;
+                }
+
                 final FhirToOpenEhrHelper cloned = fhirToOpenEhrHelper.doClone();
                 if (fhirToOpenEhrHelper.getMultiple() && (mainMultiple == null || fhirToOpenEhrHelper.getOpenEhrPath()
                         .startsWith(mainMultiple))) {
@@ -390,6 +412,12 @@ public class FhirToOpenEhr {
             if (helper.getFhirToOpenEhrHelpers() != null) {
                 // iterate over inner elements
                 for (FhirToOpenEhrHelper fhirToOpenEhrHelper : helper.getFhirToOpenEhrHelpers()) {
+                    final Condition openEhrTypeCondition = fhirToOpenEhrHelper.getTypeCondition();
+                    if (openEhrTypeCondition != null
+                            && !openEhrTypeCondition.getCriteria().equals(fhirToOpenEhrHelper.getOpenEhrType())) {
+                        continue;
+                    }
+
                     FhirToOpenEhrHelper copy = fhirToOpenEhrHelper.doClone();
 
                     if (copy.getOpenEhrPath().startsWith(helper.getOpenEhrPath())) {
@@ -448,12 +476,13 @@ public class FhirToOpenEhr {
             for (OpenFhirFhirConnectModelMapper mapperForResource : mapperForResources) {
                 final String mainArchetype = mapperForResource.getOpenEhrConfig().getArchetype();
                 String mainArchetypePath;
-                if(!mainArchetype.contains("CLUSTER")){
-                    mainArchetypePath = templateId + "/content["+mainArchetype+"]";
+                if (!mainArchetype.contains("CLUSTER")) {
+                    mainArchetypePath = templateId + "/content[" + mainArchetype + "]";
                 } else {
                     mainArchetypePath = templateId;
                 }
-                createHelpers(mainArchetype, mapperForResource, templateId, mainArchetypePath, mapperForResource.getMappings(),
+                createHelpers(mainArchetype, mapperForResource, templateId, mainArchetypePath,
+                              mapperForResource.getMappings(),
                               parentCondition, helpers, coverHelpers, bundle,
                               mapperForResource.getFhirConfig().getMultiple(), false);
             }
@@ -524,6 +553,11 @@ public class FhirToOpenEhr {
                 continue;
             }
 
+            if (mapping.getOpenehrCondition() != null
+                    && FhirConnectConst.CONDITION_OPERATOR_TYPE.equals(mapping.getOpenehrCondition().getOperator())) {
+                initialHelper.setTypeCondition(mapping.getOpenehrCondition());
+            }
+
             hardcodingToOpenEhr(mapping, fhirConnectMapper, initialHelper);
 
             final Condition condition = parentCondition != null ? parentCondition : mapping.getFhirCondition();
@@ -546,7 +580,8 @@ public class FhirToOpenEhr {
             } else {
                 final String openehr = createMainMapping(mapping, fhirConnectMapper, initialHelper, mainOpenEhrPath,
                                                          fhirPath, multiple,
-                                                         needsToBeAddedToParentHelpers, helpers, coverHelpers, templateId);
+                                                         needsToBeAddedToParentHelpers, helpers, coverHelpers,
+                                                         templateId);
 
                 // inner helpers are those that follow a parent one (when mapping is followedBy or slot archetype)
                 final List<FhirToOpenEhrHelper> innerHelpers = new ArrayList<>();
@@ -576,7 +611,8 @@ public class FhirToOpenEhr {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
                 continue;
             }
-            if (!with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_ARCHETYPE_FC) && !with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_COMPOSITION_FC)) {
+            if (!with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_ARCHETYPE_FC) && !with.getOpenehr()
+                    .startsWith(FhirConnectConst.OPENEHR_COMPOSITION_FC)) {
                 final String followedByOpenEhrPath = with.getOpenehr();
                 final String delimeter = followedByOpenEhrPath.startsWith("|") ? "" : "/";
                 with.setOpenehr(
@@ -710,7 +746,7 @@ public class FhirToOpenEhr {
                                      final FhirToOpenEhrHelper initialHelper) {
         if (mapping.getWith().getFhir() == null) {
             // is hardcoding
-            if(mapping.getFhirCondition() != null) {
+            if (mapping.getFhirCondition() != null) {
                 mapping.getWith().setFhir(FHIR_ROOT_FC + mapping.getFhirCondition().getTargetRoot());
             } else {
                 mapping.getWith().setFhir(FHIR_ROOT_FC);
@@ -740,7 +776,7 @@ public class FhirToOpenEhr {
             initialHelper.setOpenEhrPath(
                     openehr.replace(FhirConnectConst.OPENEHR_ARCHETYPE_FC + "/", mainOpenEhrPath + "/"));
             initialHelper.setOpenEhrPath(
-                    openehr.replace(FhirConnectConst.OPENEHR_COMPOSITION_FC , templateId));
+                    openehr.replace(FhirConnectConst.OPENEHR_COMPOSITION_FC, templateId));
             final String replacedFhirRoot = fhirPath.replace("." + FHIR_ROOT_FC, "")
                     .replace(FHIR_ROOT_FC, "");
             initialHelper.setFhirPath(replacedFhirRoot);
