@@ -3,6 +3,7 @@ package com.medblocks.openfhir.bloodpressure;
 import com.medblocks.openfhir.GenericTest;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import java.io.IOException;
@@ -100,6 +101,59 @@ public class BloodPressureBidirectionalTest extends GenericTest {
                     item -> ((DvText) ((Element) item).getValue()).getValue().equals(locationValue)));
         }
 
+    }
+
+    @Test
+    public void testLocationMappingBidirectional() throws IOException {
+        // Create a flat JSON with location_of_measurement mapping
+        String flatJson = "{\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement|code\": \"at0025\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement|value\": \"Right arm\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement|terminology\": \"local\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement/_mapping:0/match\": \"=\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|preferred_term\": \"Left arm\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|code\": \"at0026\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|terminology\": \"local\",\n" +
+                "  \"blood_pressure/blood_pressure/any_event:0/systolic|magnitude\": \"120.0\",\n" +
+                "  \"blood_pressure/blood_pressure/any_event:0/systolic|unit\": \"mm[Hg]\",\n" +
+                "  \"blood_pressure/blood_pressure/any_event:0/diastolic|magnitude\": \"80.0\",\n" +
+                "  \"blood_pressure/blood_pressure/any_event:0/diastolic|unit\": \"mm[Hg]\"\n" +
+                "}";
+        
+        // Parse the flat JSON to a Composition
+        final Composition composition = new FlatJsonUnmarshaller().unmarshal(
+                flatJson,  // Pass the String directly instead of converting to InputStream
+                webTemplate);
+        
+        // Transform to FHIR
+        final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationaltemplate);
+        
+        // Transform back to OpenEHR
+        final Composition rmComposition = fhirToOpenEhr.fhirToCompositionRm(context, bundle, operationaltemplate);
+        
+        // Path to location_of_measurement
+        final String locationPath = "/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/protocol[at0011]/items[at0014]";
+        
+        // Verify the location value is preserved
+        final List<Object> locationObjects = composition.itemsAtPath(locationPath);
+        if (locationObjects.isEmpty()) {
+            Assert.fail("No location objects found in original composition");
+        }
+        
+        for (Object locationValue : locationObjects) {
+            final String code = ((DvCodedText) ((Element) locationValue).getValue()).getDefiningCode().getCodeString();
+            final String terminology = ((DvCodedText) ((Element) locationValue).getValue()).getDefiningCode().getTerminologyId().getValue();
+            final String value = ((DvCodedText) ((Element) locationValue).getValue()).getValue();
+            
+            // Verify the same values exist in the round-tripped composition
+            Assert.assertTrue(rmComposition.itemsAtPath(locationPath).stream()
+                    .anyMatch(item -> {
+                        DvCodedText dvText = (DvCodedText) ((Element) item).getValue();
+                        return dvText.getDefiningCode().getCodeString().equals(code) &&
+                               dvText.getDefiningCode().getTerminologyId().getValue().equals(terminology) &&
+                               dvText.getValue().equals(value);
+                    }));
+        }
     }
 
 

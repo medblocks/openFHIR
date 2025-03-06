@@ -94,6 +94,48 @@ public class BloodPressureToOpenEhrTest extends GenericTest {
                             ((DvText) ((Element) composition.itemAtPath(descriptionPath)).getValue()).getValue());
     }
 
+    @Test
+    public void testLocationMappingToOpenEhr() {
+        // Create a FHIR Observation with multiple bodySite codings
+        org.hl7.fhir.r4.model.Observation observation = new org.hl7.fhir.r4.model.Observation();
+        observation.setSubject(new Reference("Patient/123"));
+        
+        // Add systolic component
+        org.hl7.fhir.r4.model.Observation.ObservationComponentComponent systolic = 
+                new org.hl7.fhir.r4.model.Observation.ObservationComponentComponent();
+        systolic.setValue(new Quantity(120).setUnit("mm[Hg]"));
+        systolic.setCode(new CodeableConcept().addCoding(new Coding("loinc", "8480-6", null)));
+        observation.addComponent(systolic);
+        
+        // Add diastolic component
+        org.hl7.fhir.r4.model.Observation.ObservationComponentComponent diastolic = 
+                new org.hl7.fhir.r4.model.Observation.ObservationComponentComponent();
+        diastolic.setValue(new Quantity(80).setUnit("mm[Hg]"));
+        diastolic.setCode(new CodeableConcept().addCoding(new Coding("loinc", "8462-4", null)));
+        observation.addComponent(diastolic);
+        
+        // Set bodySite with multiple codings
+        CodeableConcept bodySite = new CodeableConcept();
+        bodySite.addCoding(new Coding("local", "at0025", "Right arm"));
+        bodySite.addCoding(new Coding("local", "at0026", "Left arm"));
+        bodySite.setText("Multiple measurement locations");
+        observation.setBodySite(bodySite);
+        
+        // Convert to flat JSON
+        JsonObject flat = fhirToOpenEhr.fhirToFlatJsonObject(context, observation, operationaltemplate);
+        
+        // Verify the location_of_measurement fields
+        Assert.assertEquals("at0025", flat.get("blood_pressure/blood_pressure/location_of_measurement|code").getAsString());
+        Assert.assertEquals("local", flat.get("blood_pressure/blood_pressure/location_of_measurement|terminology").getAsString());
+        Assert.assertEquals("Right arm", flat.get("blood_pressure/blood_pressure/location_of_measurement|value").getAsString());
+        
+        // Verify the mapping fields
+        Assert.assertEquals("=", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/match").getAsString());
+        Assert.assertEquals("at0026", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|code").getAsString());
+        Assert.assertEquals("local", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|terminology").getAsString());
+        Assert.assertEquals("Left arm", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|preferred_term").getAsString());
+    }
+
     public static org.hl7.fhir.r4.model.Observation testBloodPressureObservation() {
         final org.hl7.fhir.r4.model.Observation resource = new org.hl7.fhir.r4.model.Observation();
         resource.setCode(new CodeableConcept().setText("description"));

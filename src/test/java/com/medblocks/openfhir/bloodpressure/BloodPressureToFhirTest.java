@@ -43,6 +43,49 @@ public class BloodPressureToFhirTest extends GenericTest {
         assertBloodPressureFhir(bundle);
     }
 
+    @Test
+    public void testLocationMappingToFhir() {
+        // Create a flat JSON with location_of_measurement mapping
+        String flatJson = "{\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement|code\": \"at0025\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement|value\": \"Right arm\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement|terminology\": \"local\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement/_mapping:0/match\": \"=\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|preferred_term\": \"Left arm\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|code\": \"at0026\",\n" +
+                "  \"blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|terminology\": \"local\",\n" +
+                "  \"blood_pressure/blood_pressure/any_event:0/systolic|magnitude\": \"120.0\",\n" +
+                "  \"blood_pressure/blood_pressure/any_event:0/systolic|unit\": \"mm[Hg]\",\n" +
+                "  \"blood_pressure/blood_pressure/any_event:0/diastolic|magnitude\": \"80.0\",\n" +
+                "  \"blood_pressure/blood_pressure/any_event:0/diastolic|unit\": \"mm[Hg]\"\n" +
+                "}";
+        
+        // Parse the flat JSON to a Composition
+        final Composition composition = new FlatJsonUnmarshaller().unmarshal(
+                flatJson,  // Pass the String directly instead of converting to InputStream
+                new OPTParser(operationaltemplate).parse());
+        
+        // Transform to FHIR
+        final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationaltemplate);
+        
+        // Verify the bodySite mapping
+        Assert.assertEquals(1, bundle.getEntry().size());
+        Observation observation = (Observation) bundle.getEntry().get(0).getResource();
+        
+        // Verify bodySite has both codings
+        Assert.assertEquals(2, observation.getBodySite().getCoding().size());
+        
+        // Verify first coding (primary)
+        Assert.assertEquals("local", observation.getBodySite().getCoding().get(0).getSystem());
+        Assert.assertEquals("at0025", observation.getBodySite().getCoding().get(0).getCode());
+        Assert.assertEquals("Right arm", observation.getBodySite().getCoding().get(0).getDisplay());
+        
+        // Verify second coding (mapped)
+        Assert.assertEquals("local", observation.getBodySite().getCoding().get(1).getSystem());
+        Assert.assertEquals("at0026", observation.getBodySite().getCoding().get(1).getCode());
+        Assert.assertEquals("Left arm", observation.getBodySite().getCoding().get(1).getDisplay());
+    }
+
     public static void assertBloodPressureFhir(final Bundle bundle) {
         Assert.assertEquals(3, bundle.getEntry().size());
         final Observation obs1 = bundle.getEntry().stream()
