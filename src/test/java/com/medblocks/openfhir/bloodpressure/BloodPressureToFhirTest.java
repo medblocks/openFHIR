@@ -13,6 +13,8 @@ import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Quantity;
 import org.junit.Assert;
 import org.junit.Test;
+import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 
 public class BloodPressureToFhirTest extends GenericTest {
 
@@ -44,7 +46,7 @@ public class BloodPressureToFhirTest extends GenericTest {
     }
 
     @Test
-    public void testLocationMappingToFhir() {
+    public void testLocationMappingToFhir() throws IOException {
         // Create a flat JSON with location_of_measurement mapping
         String flatJson = "{\n" +
                 "  \"blood_pressure/blood_pressure/location_of_measurement|code\": \"at0025\",\n" +
@@ -61,8 +63,9 @@ public class BloodPressureToFhirTest extends GenericTest {
                 "}";
         
         // Parse the flat JSON to a Composition
+        String parsedJson = IOUtils.toString(IOUtils.toInputStream(flatJson, StandardCharsets.UTF_8), StandardCharsets.UTF_8);
         final Composition composition = new FlatJsonUnmarshaller().unmarshal(
-                IOUtils.toInputStream(flatJson, "UTF-8"),
+                parsedJson,
                 new OPTParser(operationaltemplate).parse());
         
         // Transform to FHIR

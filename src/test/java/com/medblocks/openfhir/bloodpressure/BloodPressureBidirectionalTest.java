@@ -15,6 +15,7 @@ import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.r4.model.Bundle;
 import org.junit.Assert;
 import org.junit.Test;
+import java.nio.charset.StandardCharsets;
 
 public class BloodPressureBidirectionalTest extends GenericTest {
 
@@ -120,9 +121,10 @@ public class BloodPressureBidirectionalTest extends GenericTest {
                 "  \"blood_pressure/blood_pressure/any_event:0/diastolic|unit\": \"mm[Hg]\"\n" +
                 "}";
         
-        // Parse the flat JSON to a Composition
+        // Convert to String and call unmarshal with the correct signature
+        String parsedJson = IOUtils.toString(IOUtils.toInputStream(flatJson, StandardCharsets.UTF_8), StandardCharsets.UTF_8);
         final Composition composition = new FlatJsonUnmarshaller().unmarshal(
-                IOUtils.toInputStream(flatJson, "UTF-8"),
+                parsedJson,
                 webTemplate);
         
         // Transform to FHIR
