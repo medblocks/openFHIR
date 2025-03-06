@@ -879,6 +879,12 @@ public class OpenEhrToFhir {
                 continue;
             }
             final String definedMappingWithOpenEhr = with.getOpenehr();
+            // Add null check here to prevent NullPointerException
+            if (definedMappingWithOpenEhr == null) {
+                log.warn("Skipping mapping with null openEHR path for FHIR path: {}", with.getFhir());
+                continue;
+            }
+
             String fixedOpenEhr = definedMappingWithOpenEhr
                     .replace(FhirConnectConst.REFERENCE, "")
                     .replace(FhirConnectConst.REFERENCE + "/", "")
@@ -1283,7 +1289,7 @@ public class OpenEhrToFhir {
 //                    final String rootWithAttrs = targetRoot + ((targetAttributes != null && !targetAttributes.isEmpty()) ? "" : ("/" + targetAttributes.get(0)));
                     final String piped = openFhirStringUtils.addRegexPatternToSimplifiedFlatFormat(targetRoot);
                     final List<String> allEntriesThatMatch = openFhirStringUtils.getAllEntriesThatMatch(piped,
-                                                                                                        flatJsonObject);
+                                                                                                         flatJsonObject);
                     fullOpenEhrPath = allEntriesThatMatch.get(0);
                 }
                 int index = getHardcodedIndex(mapping, flatJsonObject);
