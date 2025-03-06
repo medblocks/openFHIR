@@ -124,44 +124,16 @@ public class BloodPressureToOpenEhrTest extends GenericTest {
         // Convert to flat JSON
         JsonObject flat = fhirToOpenEhr.fhirToFlatJsonObject(context, observation, operationaltemplate);
         
-        // Print the flat JSON for debugging
-        System.out.println("Flat JSON: " + flat.toString());
-        
-        // Verify the location_of_measurement fields - only check what's actually present
-        Assert.assertTrue(flat.has("blood_pressure/blood_pressure/location_of_measurement|code"));
+        // Verify the location_of_measurement fields
         Assert.assertEquals("at0025", flat.get("blood_pressure/blood_pressure/location_of_measurement|code").getAsString());
+        Assert.assertEquals("local", flat.get("blood_pressure/blood_pressure/location_of_measurement|terminology").getAsString());
+        Assert.assertEquals("Right arm", flat.get("blood_pressure/blood_pressure/location_of_measurement|value").getAsString());
         
-        // Only check other fields if they exist
-        if (flat.has("blood_pressure/blood_pressure/location_of_measurement|terminology")) {
-            Assert.assertEquals("local", flat.get("blood_pressure/blood_pressure/location_of_measurement|terminology").getAsString());
-        }
-        
-        if (flat.has("blood_pressure/blood_pressure/location_of_measurement|value")) {
-            Assert.assertEquals("Right arm", flat.get("blood_pressure/blood_pressure/location_of_measurement|value").getAsString());
-        }
-        
-        // Check if mapping fields exist before asserting
-        if (flat.has("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/match") &&
-            flat.has("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|code") &&
-            flat.has("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|terminology") &&
-            flat.has("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|preferred_term")) {
-            
-            Assert.assertEquals("=", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/match").getAsString());
-            Assert.assertEquals("at0026", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|code").getAsString());
-            Assert.assertEquals("local", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|terminology").getAsString());
-            Assert.assertEquals("Left arm", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|preferred_term").getAsString());
-        } else {
-            // If mapping fields don't exist, at least verify the second coding is present somewhere
-            boolean foundSecondCoding = false;
-            for (String key : flat.keySet()) {
-                if (key.contains("at0026")) {
-                    foundSecondCoding = true;
-                    break;
-                }
-            }
-            // We don't fail the test if the second coding isn't found, as the implementation might not support mappings
-            System.out.println("Note: Mapping fields not found in flat JSON. Second coding present: " + foundSecondCoding);
-        }
+        // Verify the mapping fields
+        Assert.assertEquals("=", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/match").getAsString());
+        Assert.assertEquals("at0026", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|code").getAsString());
+        Assert.assertEquals("local", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|terminology").getAsString());
+        Assert.assertEquals("Left arm", flat.get("blood_pressure/blood_pressure/location_of_measurement/_mapping:0/target|preferred_term").getAsString());
     }
 
     public static org.hl7.fhir.r4.model.Observation testBloodPressureObservation() {

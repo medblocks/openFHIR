@@ -122,7 +122,7 @@ public class BloodPressureBidirectionalTest extends GenericTest {
         
         // Parse the flat JSON to a Composition
         final Composition composition = new FlatJsonUnmarshaller().unmarshal(
-                flatJson,  // Pass the String directly instead of converting to InputStream
+                IOUtils.toInputStream(flatJson, "UTF-8"),
                 webTemplate);
         
         // Transform to FHIR
@@ -155,6 +155,5 @@ public class BloodPressureBidirectionalTest extends GenericTest {
                     }));
         }
     }
-
 
 }
