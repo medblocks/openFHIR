@@ -160,7 +160,7 @@ public class BloodPressureToOpenEhrTest extends GenericTest {
                 new CodeableConcept().setText("interpretation text")));
 
         resource.setBodySite(
-                new CodeableConcept(new Coding("remotey", "at00256", null)).setText("THIS IS LOCATION OF MEASUREMENT"));
+                new CodeableConcept(new Coding("remotey", "at00256", null)).setText("Right arm"));
         return resource;
     }
 
