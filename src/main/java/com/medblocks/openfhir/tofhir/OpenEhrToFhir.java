@@ -878,6 +878,12 @@ public class OpenEhrToFhir {
                 continue;
             }
             final String definedMappingWithOpenEhr = with.getOpenehr();
+            // Add null check here to prevent NullPointerException
+            if (definedMappingWithOpenEhr == null) {
+                log.warn("Skipping mapping with null openEHR path for FHIR path: {}", with.getFhir());
+                continue;
+            }
+            
             String fixedOpenEhr = definedMappingWithOpenEhr.replace(OPENEHR_ARCHETYPE_FC, firstFlatPath)
                     .replace(OPENEHR_COMPOSITION_FC, webTemplate.getTree().getId());
             String openehrAqlPath = getOpenEhrKey(fixedOpenEhr, parentFollowedByOpenEhr, firstFlatPath);

@@ -523,7 +523,7 @@ public class FhirToOpenEhr {
         for (final Mapping mapping : mappings) {
 
             final With with = mapping.getWith();
-            if (with == null || with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
+             if (with == null || (with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue()))) {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
                 continue;
             }
@@ -532,8 +532,13 @@ public class FhirToOpenEhr {
                 // this is unidirectional mapping toFhir only, ignore
                 continue;
             }
+             // Add null check for with.getOpenehr()
+             if (with.getOpenehr() == null) {
+                log.warn("Skipping mapping with null openEHR path for FHIR path: {}", with.getFhir());
+                continue;
+            }
             final FhirToOpenEhrHelper initialHelper = createHelper(mainArtifact, fhirConnectMapper, bundle);
-            if (with.getOpenehr() != null && with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_CONTEXT_FC)) {
+            if (with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_CONTEXT_FC)) {
                 continue;
             }
 
