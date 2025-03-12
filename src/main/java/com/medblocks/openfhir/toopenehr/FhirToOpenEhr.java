@@ -28,6 +28,9 @@ import org.hl7.fhir.r4.model.*;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.pf4j.PluginManager;
+import com.medblocks.openfhir.conversion.FormatConverter;
+import com.medblocks.openfhir.util.SpringContext;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -368,31 +371,39 @@ public class FhirToOpenEhr {
                 // is it ok we use string type here? could it be something else? probably it could be..
                 openEhrPopulator.setFhirPathValue(thePath, new StringType(helper.getHardcodingValue()),
                                                   helper.getOpenEhrType(), flatComposition);
-            } else if (helper.getMappingCode() != null) {
-                // get programmed mapping function from plugin using above result fhir object
-                // String className = "com.medblocks.openfhir."+helper.getMappingCode();
-                //
-                //        try {
-                //            // Step 1: Load the class
-                //            Class<?> clazz = Class.forName(className);
-                //
-                //            // Step 2: Create an instance of the class
-                //            Object instance = clazz.getDeclaredConstructor().newInstance();
-                //
-                //            // Step 3: Use the instance (optional)
-                //            if (instance instanceof MyClass) {
-                //                MyClass myClassInstance = (MyClass) instance;
-                //                myClassInstance.setFhirPathValue(thePath, result, helper.getOpenEhrType(), flatComposition); // Call the plugin function
-                //            }
-                //        } catch (ClassNotFoundException e) {
-                //            System.err.println("Class not found: " + className);
-                //        } catch (InstantiationException | IllegalAccessException e) {
-                //            System.err.println("Failed to instantiate class: " + e.getMessage());
-                //        } catch (NoSuchMethodException e) {
-                //            System.err.println("No public no-argument constructor found: " + e.getMessage());
-                //        } catch (Exception e) {
-                //            System.err.println("An unexpected error occurred: " + e.getMessage());
-                //        }
+            } else if (helper.getMappingCode() != null && !helper.getMappingCode().isEmpty()) {
+                log.info("Using mapping code: {}", helper.getMappingCode());
+                
+                try {
+                    // Get the plugin manager
+                    PluginManager pluginManager = SpringContext.getBean(PluginManager.class);
+                    
+                    // Get all FormatConverter extensions
+                    List<FormatConverter> converters = pluginManager.getExtensions(FormatConverter.class);
+                    
+                    if (converters.isEmpty()) {
+                        log.warn("No FormatConverter extensions found for mapping code: {}", helper.getMappingCode());
+                    } else {
+                        // Use the first converter for now
+                        // In a more sophisticated implementation, you might want to choose the appropriate converter
+                        FormatConverter converter = converters.get(0);
+                        
+                        // Apply the mapping
+                        boolean success = converter.applyFhirToOpenEhrMapping(
+                            helper.getMappingCode(), 
+                            thePath, 
+                            result, 
+                            helper.getOpenEhrType(), 
+                            flatComposition
+                        );
+                        
+                        if (!success) {
+                            log.warn("Mapping failed for code: {}", helper.getMappingCode());
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("Error applying mapping: {}", e.getMessage(), e);
+                }
             }
 
             else {
