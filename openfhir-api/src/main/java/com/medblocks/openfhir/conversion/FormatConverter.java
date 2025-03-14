@@ -1,6 +1,7 @@
 package com.medblocks.openfhir.conversion;
 
 import org.pf4j.ExtensionPoint;
+import java.util.List;
 
 /**
  * Extension point for converting between different healthcare data formats
@@ -35,4 +36,17 @@ public interface FormatConverter extends ExtensionPoint {
      */
     boolean applyFhirToOpenEhrMapping(String mappingCode, String openEhrPath, Object fhirValue, 
                                      String openEhrType, Object flatComposition);
+                                     
+    /**
+     * Applies a specific mapping function to convert OpenEHR data to FHIR format
+     * 
+     * @param mappingCode The code identifying the mapping function to use
+     * @param fhirPath The path to the FHIR data element
+     * @param openEhrValue The OpenEHR value or context (often a JsonObject with flat paths)
+     * @param fhirType The FHIR data type or resource type
+     * @param createdValues A list to populate with created FHIR resources/elements
+     * @return True if mapping was successful, false otherwise
+     */
+    boolean applyOpenEhrToFhirMapping(String mappingCode, String fhirPath, Object openEhrValue,
+                                      String fhirType, List<Object> createdValues);
 } 

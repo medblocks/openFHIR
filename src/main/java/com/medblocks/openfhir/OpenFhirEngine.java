@@ -205,7 +205,7 @@ public class OpenFhirEngine {
     public String toFhir(final String openEhrCompositionJson, final String incomingTemplateId) {
         // find the context mapper for the given template
         final FhirConnectContextEntity fhirConnectContext = getContextForOpenEhr(openEhrCompositionJson, incomingTemplateId);
-
+System.out.println("openEhrCompositionJson: " + openEhrCompositionJson);
         // validate prerequisites before starting any kind of mapping logic
         validatePrerequisites(fhirConnectContext, fhirConnectContext != null ? fhirConnectContext.getFhirConnectContext().getContext().getTemplate().getId() : incomingTemplateId);
 

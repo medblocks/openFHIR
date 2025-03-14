@@ -14,7 +14,7 @@ context:
   template:
     id: "KDS_Medikationseintrag"
     sem_ver: "16.0.0"
-  archetypes:
+  archetypes: 
     - "OBSERVATION.medication_statement.v0"
     - "CLUSTER.medication.v2"
     - "CLUSTER.medication.v2.substance"
