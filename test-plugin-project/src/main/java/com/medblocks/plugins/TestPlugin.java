@@ -93,6 +93,8 @@ public class TestPlugin extends Plugin {
             switch (mappingCode) {
                 case "ratio_to_dv_quantity":
                     return dv_quantity_to_ratio(fhirPath, openEhrValue, fhirType, createdValues);
+                case "dosageDurationToAdministrationDuration":
+                    return administrationDurationToDosageDuration(fhirPath, openEhrValue, fhirType, createdValues);
                 // Add other mapping functions as needed
                 default:
                     log.warn("Unknown mapping code for OpenEHR to FHIR: {}", mappingCode);
@@ -103,7 +105,7 @@ public class TestPlugin extends Plugin {
         /**
          * Converts FHIR dosage duration to OpenEHR administration duration
          * This function extracts the time duration from the denominator of a FHIR Ratio
-         * and maps it to an OpenEHR DV_DURATION
+         * and maps it to an OpenEHR DV_DURATION in ISO 8601 format
          */
         private boolean dosageDurationToAdministrationDuration(String openEhrPath, Object fhirValue, 
                                                           String openEhrType, Object flatComposition) {
@@ -143,18 +145,60 @@ public class TestPlugin extends Plugin {
                     return false;
                 }
                 
-                // Map the time unit to the appropriate OpenEHR duration field
-                // The value is cast to int as DV_DURATION fields are integers
+                // Convert to ISO 8601 duration format: P[nnY][nnM][nnW][nnD][T[nnH][nnM][nnS]]
                 int timeValue = (int) Math.round(value);
-                flatJson.add(openEhrPath + "|" + timeUnit, new JsonPrimitive(timeValue));
+                String isoDuration = formatIso8601Duration(timeValue, timeUnit);
                 
-                log.info("Mapped duration: {} {} to {}|{}", timeValue, timeUnit, openEhrPath, timeUnit);
+                // Add the ISO 8601 duration to the flat composition
+                flatJson.add(openEhrPath, new JsonPrimitive(isoDuration));
+                
+                log.info("Mapped duration: {} {} to {} with ISO 8601 format: {}", 
+                         timeValue, timeUnit, openEhrPath, isoDuration);
                 return true;
                 
             } catch (Exception e) {
                 log.error("Error mapping dosage duration to administration duration", e);
                 return false;
             }
+        }
+        
+        /**
+         * Formats a time value and unit into ISO 8601 duration format
+         * @param value the time value
+         * @param unit the time unit (year, month, week, day, hour, minute, second)
+         * @return ISO 8601 formatted duration string
+         */
+        private String formatIso8601Duration(int value, String unit) {
+            StringBuilder duration = new StringBuilder("P");
+            
+            switch (unit) {
+                case "year":
+                    duration.append(value).append("Y");
+                    break;
+                case "month":
+                    duration.append(value).append("M");
+                    break;
+                case "week":
+                    duration.append(value).append("W");
+                    break;
+                case "day":
+                    duration.append(value).append("D");
+                    break;
+                case "hour":
+                    duration.append("T").append(value).append("H");
+                    break;
+                case "minute":
+                    duration.append("T").append(value).append("M");
+                    break;
+                case "second":
+                    duration.append("T").append(value).append("S");
+                    break;
+                default:
+                    // Default to hours if unit is not recognized
+                    duration.append("T").append(value).append("H");
+            }
+            
+            return duration.toString();
         }
         
         /**
@@ -261,8 +305,8 @@ public class TestPlugin extends Plugin {
         
         /**
          * Converts OpenEHR DV_QUANTITY to FHIR Ratio
-         * OpenEHR DV_QUANTITY has magnitude and unit (e.g., "ml/h")
-         * FHIR Ratio requires separate numerator and denominator quantities
+         * This function extracts magnitude and unit from OpenEHR DV_QUANTITY
+         * and maps it to the numerator of a FHIR Ratio
          */
         private boolean dv_quantity_to_ratio(String fhirPath, Object openEhrValue, 
                                         String fhirType, List<Object> createdValues) {
@@ -275,33 +319,54 @@ public class TestPlugin extends Plugin {
                 
                 // Handle different potential input types
                 if (openEhrValue instanceof JsonObject) {
-                    // We're likely receiving the full flat JSON object
-                    JsonObject flatJson = (JsonObject) openEhrValue;
+                    JsonObject jsonValue = (JsonObject) openEhrValue;
                     
-                    // Look for paths that might contain our DV_QUANTITY values
-                    // This would typically use the fhirPath parameter to determine what we're looking for
-                    for (String key : flatJson.keySet()) {
-                        if (key.endsWith("|magnitude")) {
-                            String basePath = key.substring(0, key.indexOf("|magnitude"));
-                            String unitPath = basePath + "|unit";
-                            
-                            if (flatJson.has(unitPath) && key.contains("rate")) {
-                                // Found our magnitude and unit
-                                magnitude = flatJson.get(key).getAsDouble();
-                                unit = flatJson.get(unitPath).getAsString();
-                                break;
+                    // Check if we have the magnitude and unit directly
+                    if (jsonValue.has("magnitude") && jsonValue.has("unit")) {
+                        magnitude = jsonValue.get("magnitude").getAsDouble();
+                        unit = jsonValue.get("unit").getAsString();
+                    } else {
+                        // Look for paths with quantity_value|magnitude pattern
+                        for (Map.Entry<String, JsonElement> entry : jsonValue.entrySet()) {
+                            String key = entry.getKey();
+                            if (key.endsWith("|magnitude")) {
+                                String basePath = key.substring(0, key.indexOf("|magnitude"));
+                                String unitPath = basePath + "|unit";
+                                
+                                if (jsonValue.has(unitPath)) {
+                                    magnitude = jsonValue.get(key).getAsDouble();
+                                    unit = jsonValue.get(unitPath).getAsString();
+                                    break;
+                                }
                             }
                         }
                     }
+                } else if (openEhrValue instanceof Map) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> dataMap = (Map<String, Object>) openEhrValue;
                     
-                    if (unit.isEmpty()) {
-                        log.warn("Could not find rate quantity in flat JSON");
-                        return false;
+                    // Check for direct magnitude and unit keys
+                    if (dataMap.containsKey("magnitude") && dataMap.containsKey("unit")) {
+                        magnitude = Double.parseDouble(dataMap.get("magnitude").toString());
+                        unit = dataMap.get("unit").toString();
+                    } else {
+                        // Look for nested paths
+                        for (String key : dataMap.keySet()) {
+                            if (key.endsWith("|magnitude")) {
+                                String basePath = key.substring(0, key.indexOf("|magnitude"));
+                                String unitPath = basePath + "|unit";
+                                
+                                if (dataMap.containsKey(unitPath)) {
+                                    magnitude = Double.parseDouble(dataMap.get(key).toString());
+                                    unit = dataMap.get(unitPath).toString();
+                                    break;
+                                }
+                            }
+                        }
                     }
-                } else if (openEhrValue instanceof StringType) {
-                    // If we're given a string, parse it for magnitude and unit
-                    String valueStr = ((StringType) openEhrValue).getValue();
-                    // Example: "250 ml/h" needs to be parsed into magnitude=250, unit="ml/h"
+                } else if (openEhrValue instanceof String) {
+                    // Try to parse a string like "600 mg"
+                    String valueStr = (String) openEhrValue;
                     Pattern pattern = Pattern.compile("(\\d+(?:\\.\\d+)?)\\s*(.+)");
                     Matcher matcher = pattern.matcher(valueStr);
                     if (matcher.find()) {
@@ -311,66 +376,172 @@ public class TestPlugin extends Plugin {
                         log.warn("Could not parse quantity from string: {}", valueStr);
                         return false;
                     }
-                } else if (openEhrValue instanceof Map) {
-                    // Handle case where we get a map with magnitude and unit keys
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> dataMap = (Map<String, Object>) openEhrValue;
-                    if (dataMap.containsKey("magnitude")) {
-                        magnitude = Double.parseDouble(dataMap.get("magnitude").toString());
-                    }
-                    if (dataMap.containsKey("unit")) {
-                        unit = dataMap.get("unit").toString();
-                    }
                 } else {
-                    log.warn("Unexpected OpenEHR value type: {}", openEhrValue.getClass().getName());
+                    log.warn("Unsupported OpenEHR value type: {}", openEhrValue.getClass().getName());
                     return false;
                 }
                 
-                // Parse the unit into numerator and denominator
-                // Example: "ml/h" -> numerator="ml", denominator="h"
-                String numeratorUnit;
-                String denominatorUnit;
-                if (unit.contains("/")) {
-                    String[] parts = unit.split("/", 2);
-                    numeratorUnit = parts[0].trim();
-                    denominatorUnit = parts[1].trim();
-                } else {
-                    // If no division in unit, use the whole unit as numerator and "1" as denominator
-                    numeratorUnit = unit;
-                    denominatorUnit = "1";
+                if (magnitude == 0.0 && unit.isEmpty()) {
+                    log.warn("Could not extract magnitude and unit from OpenEHR value");
+                    return false;
                 }
                 
                 // Create FHIR Ratio
                 Ratio ratio = new Ratio();
                 
-                // Set numerator (e.g., 250 ml)
+                // Set numerator with the extracted values
                 Quantity numerator = new Quantity();
                 numerator.setValue(magnitude);
-                numerator.setUnit(numeratorUnit);
+                numerator.setUnit(unit);
                 numerator.setSystem("http://unitsofmeasure.org");
-                numerator.setCode(numeratorUnit);
+                numerator.setCode(unit);
                 ratio.setNumerator(numerator);
-                
-                // Set denominator (e.g., 1 h)
-                Quantity denominator = new Quantity();
-                denominator.setValue(1); // Assumed to be 1 as per convention
-                denominator.setUnit(denominatorUnit);
-                denominator.setSystem("http://unitsofmeasure.org");
-                denominator.setCode(denominatorUnit);
-                ratio.setDenominator(denominator);
                 
                 // Add the created ratio to the result list
                 createdValues.add(ratio);
                 
-                log.info("Created FHIR Ratio: numerator={} {}, denominator={} {}", 
-                        magnitude, numeratorUnit, 1, denominatorUnit);
-                
+                log.info("Created FHIR Ratio with numerator: {} {}", magnitude, unit);
                 return true;
                 
             } catch (Exception e) {
                 log.error("Error mapping OpenEHR DV_QUANTITY to FHIR Ratio", e);
                 return false;
             }
+        }
+
+        /**
+         * Converts OpenEHR administration duration to FHIR dosage duration
+         * This function extracts the time duration from an OpenEHR DV_DURATION in ISO 8601 format
+         * and maps it to the denominator of a FHIR Ratio
+         */
+        private boolean administrationDurationToDosageDuration(String fhirPath, Object openEhrValue, 
+                                                              String fhirType, List<Object> createdValues) {
+            log.info("Converting OpenEHR administration duration to FHIR dosage duration");
+            
+            try {
+                // Extract the ISO 8601 duration string from the OpenEHR data
+                String isoDuration = null;
+                
+                if (openEhrValue instanceof JsonObject) {
+                    JsonObject jsonValue = (JsonObject) openEhrValue;
+                    
+                    // Look for a duration field
+                    for (Map.Entry<String, JsonElement> entry : jsonValue.entrySet()) {
+                        String key = entry.getKey();
+                        if (key.endsWith("/duration") || key.equals("duration")) {
+                            isoDuration = jsonValue.get(key).getAsString();
+                            break;
+                        }
+                    }
+                } else if (openEhrValue instanceof Map) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> dataMap = (Map<String, Object>) openEhrValue;
+                    
+                    // Look for a duration field
+                    for (String key : dataMap.keySet()) {
+                        if (key.endsWith("/duration") || key.equals("duration")) {
+                            isoDuration = dataMap.get(key).toString();
+                            break;
+                        }
+                    }
+                } else if (openEhrValue instanceof String) {
+                    // Assume the string is the ISO duration directly
+                    isoDuration = (String) openEhrValue;
+                    
+                    // Validate that it looks like an ISO 8601 duration
+                    if (!isoDuration.startsWith("P")) {
+                        log.warn("String value does not appear to be an ISO 8601 duration: {}", isoDuration);
+                        return false;
+                    }
+                } else {
+                    log.warn("Unsupported OpenEHR value type for duration: {}", 
+                            openEhrValue != null ? openEhrValue.getClass().getName() : "null");
+                    return false;
+                }
+                
+                if (isoDuration == null || isoDuration.isEmpty()) {
+                    log.warn("Could not extract ISO 8601 duration from OpenEHR value");
+                    return false;
+                }
+                
+                // Parse the ISO 8601 duration
+                // Format: P[nnY][nnM][nnW][nnD][T[nnH][nnM][nnS]]
+                int value = 0;
+                String unit = "";
+                
+                // Extract the numeric value and unit from the ISO duration
+                if (isoDuration.contains("T")) {
+                    // Time component exists
+                    String timeComponent = isoDuration.substring(isoDuration.indexOf("T") + 1);
+                    
+                    if (timeComponent.contains("H")) {
+                        value = extractNumericValue(timeComponent, "H");
+                        unit = "h";
+                    } else if (timeComponent.contains("M")) {
+                        value = extractNumericValue(timeComponent, "M");
+                        unit = "min";
+                    } else if (timeComponent.contains("S")) {
+                        value = extractNumericValue(timeComponent, "S");
+                        unit = "s";
+                    }
+                } else {
+                    // Date component only
+                    if (isoDuration.contains("Y")) {
+                        value = extractNumericValue(isoDuration, "Y");
+                        unit = "a";
+                    } else if (isoDuration.contains("M")) {
+                        value = extractNumericValue(isoDuration, "M");
+                        unit = "mo";
+                    } else if (isoDuration.contains("W")) {
+                        value = extractNumericValue(isoDuration, "W");
+                        unit = "wk";
+                    } else if (isoDuration.contains("D")) {
+                        value = extractNumericValue(isoDuration, "D");
+                        unit = "d";
+                    }
+                }
+                
+                if (value == 0 || unit.isEmpty()) {
+                    log.warn("Could not parse value and unit from ISO duration: {}", isoDuration);
+                    return false;
+                }
+                
+                // Create FHIR Ratio with denominator
+                Ratio ratio = new Ratio();
+                
+                // Set denominator with the extracted time value and unit
+                Quantity denominator = new Quantity();
+                denominator.setValue(value);
+                denominator.setUnit(unit);
+                denominator.setSystem("http://unitsofmeasure.org");
+                denominator.setCode(unit);
+                ratio.setDenominator(denominator);
+                
+                // Add the created ratio to the result list
+                createdValues.add(ratio);
+                
+                log.info("Created FHIR Ratio with denominator: {} {}", value, unit);
+                return true;
+                
+            } catch (Exception e) {
+                log.error("Error mapping OpenEHR administration duration to FHIR dosage duration", e);
+                return false;
+            }
+        }
+
+        /**
+         * Helper method to extract numeric value from ISO 8601 duration string
+         * @param durationStr the duration string
+         * @param unitChar the unit character to look for (Y, M, W, D, H, M, S)
+         * @return the numeric value
+         */
+        private int extractNumericValue(String durationStr, String unitChar) {
+            Pattern pattern = Pattern.compile("(\\d+)" + unitChar);
+            Matcher matcher = pattern.matcher(durationStr);
+            if (matcher.find()) {
+                return Integer.parseInt(matcher.group(1));
+            }
+            return 0;
         }
     }
 } 
