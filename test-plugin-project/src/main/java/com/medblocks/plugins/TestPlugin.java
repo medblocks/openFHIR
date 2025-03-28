@@ -12,6 +12,9 @@ import com.google.gson.JsonElement;
 import org.hl7.fhir.r4.model.Ratio;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.Base;
+import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
 
 import java.util.HashMap;
 import java.util.List;
@@ -83,76 +86,200 @@ public class TestPlugin extends Plugin {
         }
         
         @Override
-        public boolean applyOpenEhrToFhirMapping(String mappingCode, String fhirPath, Object openEhrValue,
-                                             String fhirType, List<Object> createdValues, String openEhrPath) {
+        public Object applyOpenEhrToFhirMapping(String mappingCode, String openEhrPath, 
+                                               JsonObject flatJsonObject, String fhirPath, 
+                                               Resource targetResource) {
             log.info("Applying OpenEHR to FHIR mapping function: {}", mappingCode);
-            log.info("FHIR Path: {}, Value type: {}, FHIR Type: {}", fhirPath, 
-                     openEhrValue != null ? openEhrValue.getClass().getName() : "null", fhirType);
-            
-            // Special handler for the input format with tägliche_dosierung periode
-            if (mappingCode.equals("dosageDurationToAdministrationDuration") && openEhrValue instanceof JsonObject) {
-                JsonObject jsonObj = (JsonObject) openEhrValue;
-                String periodeKey = "medikamentenliste/aussage_zur_medikamenteneinnahme:0/dosierung:0/tägliche_dosierung:0/periode";
-                
-                // Check if this is the specific input format we're encountering
-                if (jsonObj.has(periodeKey)) {
-                    String isoDuration = jsonObj.get(periodeKey).getAsString();
-                    log.info("Found ISO duration directly: {}", isoDuration);
-                    
-                    // Create a Ratio with time unit in denominator
-                    try {
-                        // Parse the ISO 8601 duration like "PT3H"
-                        Pattern pattern = Pattern.compile("PT(\\d+)([HMS])");
-                        Matcher matcher = pattern.matcher(isoDuration);
-                        
-                        if (matcher.find()) {
-                            int value = Integer.parseInt(matcher.group(1));
-                            String unitChar = matcher.group(2);
-                            
-                            // Map the unit character to UCUM code
-                            String unit;
-                            switch (unitChar) {
-                                case "H": unit = "h"; break;
-                                case "M": unit = "min"; break;
-                                case "S": unit = "s"; break;
-                                default: unit = "h";
-                            }
-                            
-                            // Create FHIR Ratio
-                            Ratio ratio = new Ratio();
-                            
-                            // Set denominator
-                            Quantity denominator = new Quantity();
-                            denominator.setValue(value);
-                            denominator.setUnit(unit);
-                            denominator.setSystem("http://unitsofmeasure.org");
-                            denominator.setCode(unit);
-                            ratio.setDenominator(denominator);
-                            
-                            // Add to created values
-                            createdValues.add(ratio);
-                            log.info("Created FHIR Ratio with denominator: {} {}", value, unit);
-                            return true;
-                        }
-                    } catch (Exception e) {
-                        log.error("Error parsing special case ISO duration: {}", isoDuration, e);
-                    }
-                }
-            }
+            log.info("OpenEHR Path: {}, FHIR Path: {}", openEhrPath, fhirPath);
             
             // Dispatch to the appropriate mapping function based on the mappingCode
             switch (mappingCode) {
                 case "ratio_to_dv_quantity":
-                    return dv_quantity_to_ratio(fhirPath, openEhrValue, fhirType, createdValues, openEhrPath);
+                    return openEhrToFhirRatioToDvQuantity(openEhrPath, flatJsonObject, fhirPath, targetResource);
                 case "dosageDurationToAdministrationDuration":
-                    return dosageDurationToAdministrationDuration(fhirPath, openEhrValue, fhirType, createdValues);
+                    return openEhrToFhirDosageDurationToAdministrationDuration(openEhrPath, flatJsonObject, fhirPath, targetResource);
                 // Add other mapping functions as needed
                 default:
-                    log.warn("Unknown mapping code for OpenEHR to FHIR: {}", mappingCode);
-                    return false;
+                    log.warn("Unknown mapping code: {}", mappingCode);
+                    return null;
             }
         }
         
+        /**
+         * Converts OpenEHR DV_QUANTITY to FHIR Ratio
+         * For medication dosage, mapping the magnitude and unit to the Ratio's numerator
+         * 
+         * @param openEhrPath The path to the OpenEHR data element
+         * @param flatJsonObject The complete OpenEHR flat JSON object
+         * @param fhirPath The FHIR path where the result should be placed
+         * @param targetResource The FHIR resource being populated
+         * @return The created FHIR Ratio object
+         */
+        private Object openEhrToFhirRatioToDvQuantity(String openEhrPath, JsonObject flatJsonObject, 
+                                                     String fhirPath, Resource targetResource) {
+            log.info("Converting OpenEHR DV_QUANTITY to FHIR Ratio");
+            
+            try {
+                // Extract the base path (without the |magnitude or |unit suffix)
+                String basePath = openEhrPath;
+                if (basePath.contains("|")) {
+                    basePath = basePath.substring(0, basePath.lastIndexOf("|"));
+                }
+                
+                // Now we need to find the magnitude and unit values from the flat JSON
+                String magnitudePath = basePath + "/quantity_value|magnitude";
+                String unitPath = basePath + "/quantity_value|unit";
+                
+                log.info("Looking for magnitude at path: {}", magnitudePath);
+                log.info("Looking for unit at path: {}", unitPath);
+                
+                // Extract values from the flat JSON
+                double magnitude = 0.0;
+                String unit = "";
+                
+                if (flatJsonObject.has(magnitudePath)) {
+                    magnitude = flatJsonObject.get(magnitudePath).getAsDouble();
+                }
+                
+                if (flatJsonObject.has(unitPath)) {
+                    unit = flatJsonObject.get(unitPath).getAsString();
+                }
+                
+                log.info("Extracted magnitude: {}, unit: {}", magnitude, unit);
+                
+                // Create a new Ratio with the numerator populated
+                Ratio ratio = new Ratio();
+                
+                // Set the numerator
+                Quantity numerator = new Quantity();
+                numerator.setValue(magnitude);
+                numerator.setUnit(unit);
+                numerator.setSystem("http://unitsofmeasure.org");
+                numerator.setCode(unit);
+                ratio.setNumerator(numerator);
+                
+                // For now, create an empty denominator (will be filled by duration mapping if needed)
+                Quantity denominator = new Quantity();
+                denominator.setValue(1);
+                denominator.setUnit("h");
+                denominator.setSystem("http://unitsofmeasure.org");
+                denominator.setCode("h");
+                ratio.setDenominator(denominator);
+                
+                log.info("Created Ratio with numerator value: {}, unit: {}", magnitude, unit);
+                
+                return ratio;
+                
+            } catch (Exception e) {
+                log.error("Error mapping OpenEHR DV_QUANTITY to FHIR Ratio", e);
+                return null;
+            }
+        }
+        
+        /**
+         * Converts OpenEHR Duration to FHIR Ratio's denominator
+         * Extracts duration from ISO 8601 format and maps to FHIR Ratio denominator
+         * 
+         * @param openEhrPath The path to the OpenEHR data element
+         * @param flatJsonObject The complete OpenEHR flat JSON object
+         * @param fhirPath The FHIR path where the result should be placed
+         * @param targetResource The FHIR resource being populated
+         * @return The updated FHIR Ratio object
+         */
+        private Object openEhrToFhirDosageDurationToAdministrationDuration(String openEhrPath, JsonObject flatJsonObject, 
+                                                                         String fhirPath, Resource targetResource) {
+            log.info("Converting OpenEHR Duration to FHIR Ratio Denominator");
+            
+            try {
+                // Extract the ISO 8601 duration from the flat JSON
+                if (!flatJsonObject.has(openEhrPath)) {
+                    log.warn("No duration found at path: {}", openEhrPath);
+                    return null;
+                }
+                
+                String isoDuration = flatJsonObject.get(openEhrPath).getAsString();
+                log.info("Found ISO 8601 duration: {}", isoDuration);
+                
+                // Parse the ISO 8601 duration
+                int value = 0;
+                String unit = "";
+                
+                // Check for hours (most common case)
+                if (isoDuration.contains("H")) {
+                    value = extractNumericValue(isoDuration, "H");
+                    unit = "h";
+                } 
+                // Check for minutes
+                else if (isoDuration.contains("M") && isoDuration.contains("T")) {
+                    value = extractNumericValue(isoDuration, "M");
+                    unit = "min";
+                } 
+                // Check for seconds
+                else if (isoDuration.contains("S")) {
+                    value = extractNumericValue(isoDuration, "S");
+                    unit = "s";
+                } 
+                // Check for days
+                else if (isoDuration.contains("D")) {
+                    value = extractNumericValue(isoDuration, "D");
+                    unit = "d";
+                } 
+                // Check for weeks
+                else if (isoDuration.contains("W")) {
+                    value = extractNumericValue(isoDuration, "W");
+                    unit = "wk";
+                } 
+                // Check for months
+                else if (isoDuration.contains("M") && !isoDuration.contains("T")) {
+                    value = extractNumericValue(isoDuration, "M");
+                    unit = "mo";
+                } 
+                // Check for years
+                else if (isoDuration.contains("Y")) {
+                    value = extractNumericValue(isoDuration, "Y");
+                    unit = "a";
+                }
+                
+                log.info("Parsed duration: {} {}", value, unit);
+                
+                // Create or update the Ratio
+                Ratio ratio;
+                
+                // Try to find an existing Ratio in the resource
+                if (targetResource instanceof Base) {
+                    // For simplicity, we'll assume the ratio is already created
+                    // In a real implementation, you might need to navigate to the exact path
+                    ratio = new Ratio(); // Placeholder - in real code, find the existing ratio
+                } else {
+                    ratio = new Ratio();
+                }
+                
+                // Create the denominator
+                Quantity denominator = new Quantity();
+                denominator.setValue(value);
+                denominator.setUnit(unit);
+                denominator.setSystem("http://unitsofmeasure.org");
+                denominator.setCode(unit);
+                
+                // If ratio doesn't have a numerator yet, create one
+                if (ratio.getNumerator() == null) {
+                    Quantity numerator = new Quantity();
+                    numerator.setValue(1);
+                    ratio.setNumerator(numerator);
+                }
+                
+                ratio.setDenominator(denominator);
+                
+                log.info("Created/updated Ratio with denominator value: {}, unit: {}", value, unit);
+                
+                return ratio;
+                
+            } catch (Exception e) {
+                log.error("Error mapping OpenEHR Duration to FHIR Ratio denominator", e);
+                return null;
+            }
+        }
+
         /**
          * Converts FHIR dosage duration to OpenEHR administration duration
          * This function extracts the time duration from the denominator of a FHIR Ratio
@@ -354,29 +481,7 @@ public class TestPlugin extends Plugin {
             }
         }
         
-        /**
-         * Converts OpenEHR DV_QUANTITY to FHIR Ratio
-         * This function extracts magnitude and unit from OpenEHR DV_QUANTITY
-         * and maps it to the numerator of a FHIR Ratio
-         */
-        private boolean dv_quantity_to_ratio(String fhirPath, Object openEhrValue, 
-                                        String fhirType, List<Object> createdValues, String openEhrPath) {
-            log.info("Converting OpenEHR DV_QUANTITY to FHIR Ratio");
-            
-         return true;
-        }
-
-        /**
-         * Converts OpenEHR administration duration to FHIR dosage duration
-         * This function extracts the time duration from an OpenEHR DV_DURATION in ISO 8601 format
-         * and maps it to the denominator of a FHIR Ratio
-         */
-        private boolean dosageDurationToAdministrationDuration(String fhirPath, Object openEhrValue, 
-                                                              String fhirType, List<Object> createdValues) {
-            log.info("Converting OpenEHR administration duration to FHIR dosage duration");
-           
-            return true;
-        }
+   
 
         /**
          * Helper method to extract numeric value from ISO 8601 duration string

@@ -76,9 +76,7 @@ import org.hl7.fhir.r4.utils.FHIRPathUtilityClasses.ClassTypeInfo;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.pf4j.PluginManager;
-import com.medblocks.openfhir.conversion.FormatConverter;
-import com.medblocks.openfhir.util.SpringContext;
+
 
 /**
  * Engine doing translation from openEHR to FHIR according to the openFHIR state configuration
@@ -1301,81 +1299,74 @@ public class OpenEhrToFhir {
             } 
             
             else if(mapping.getMappingCode()!=null){
-                //get programmed mapping function from plugin using above result fhir object
-                String fullOpenEhrPath = "";
-                
-                // Initialize values list
-                values = new ArrayList<>();
-                
-              
-               
-                
+                // Plugin-based custom mapping
                 try {
-                    // Get current function context
-                    String mappingFhirPath = mapping.getWith().getFhir();
-                    int currentIndex = getHardcodedIndex(mapping, flatJsonObject);
-                    if (currentIndex == -1) {
-                        currentIndex = openFhirStringUtils.getLastMostCommonIndex(new ArrayList<>(flatJsonObject.keySet()));
-                    }
+                    values = new ArrayList<>();
                     
                     // Get the plugin manager
-                    PluginManager pluginManager = SpringContext.getBean(PluginManager.class);
+                    org.pf4j.PluginManager pluginManager = com.medblocks.openfhir.util.SpringContext.getBean(org.pf4j.PluginManager.class);
                     
                     // Get all FormatConverter extensions
-                    List<FormatConverter> converters = pluginManager.getExtensions(FormatConverter.class);
+                    List<com.medblocks.openfhir.conversion.FormatConverter> converters = 
+                        pluginManager.getExtensions(com.medblocks.openfhir.conversion.FormatConverter.class);
                     
                     if (converters.isEmpty()) {
-                        log.warn("No FormatConverter extensions found for mapping code: {}", mapping.getMappingCode());
+                        log.warn("No FormatConverter plugins found for mapping code: {}", mapping.getMappingCode());
+                        
+                        // Fallback to standard processing
+                        values = joinedEntries.values().stream()
+                            .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList());
                     } else {
-                        // Use the first converter for now
-                        FormatConverter converter = converters.get(0);
-                        
-                        // Create data object for the current index
-                        List<Object> separatelyCreatedValues = new ArrayList<>();
-                        
-                        // Apply the mapping
-                        boolean success = false;
-
-                        System.out.println(" mapping.getMappingCode() " +  mapping.getMappingCode());
-                        System.out.println(" mappingFhirPath " +  mappingFhirPath);  
-                        System.out.println(" flatJsonObject " +  flatJsonObject);
-                        System.out.println(" rmType " +  rmType);
-                        System.out.println(" separatelyCreatedValues " +  separatelyCreatedValues);
-                        System.out.println(" fullOpenEhrPath " +  fullOpenEhrPath);
-
-                        try {
-                            success = converter.applyOpenEhrToFhirMapping(
-                                mapping.getMappingCode(),
-                                mappingFhirPath,
-                                flatJsonObject, // Pass the full flatJsonObject as context
-                                rmType,
-                                separatelyCreatedValues,  // Container for the returned objects
-                                fullOpenEhrPath  // Pass the actual path variable that's available in this context
-                            );
-                        } catch (Exception e) {
-                            log.error("Error calling applyOpenEhrToFhirMapping: {}", e.getMessage(), e);
-                        }
-                        
-                        if (!success) {
-                            log.warn("Mapping failed for code: {}", mapping.getMappingCode());
-                        } else if (!separatelyCreatedValues.isEmpty()) {
-                            // If the mapping was successful and returned values, add them to the values list
-                            for (Object createdValue : separatelyCreatedValues) {
-                                if (createdValue instanceof Base) {
-                                    values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)createdValue, currentIndex, fullOpenEhrPath));
-                                } else {
-                                    log.warn("Created value is not a Base instance: {}", createdValue.getClass().getName());
+                        // For each entry in joinedEntries, apply the plugin mapping
+                        for (List<String> entryPaths : joinedEntries.values()) {
+                            if (entryPaths != null && !entryPaths.isEmpty()) {
+                                String fullOpenEhrPath = entryPaths.get(0);
+                                
+                                // Get the first available converter for now
+                                com.medblocks.openfhir.conversion.FormatConverter converter = converters.get(0);
+                                
+                                // Apply the mapping
+                                Object result = converter.applyOpenEhrToFhirMapping(
+                                    mapping.getMappingCode(),
+                                    fullOpenEhrPath, 
+                                    flatJsonObject,
+                                    mapping.getWith().getFhir(),
+                                    null
+                                );
+                                
+                                if (result != null) {
+                                    // Extract the index from the path
+                                    int index = openFhirStringUtils.getFirstIndex(fullOpenEhrPath);
+                                    if (index == -1) {
+                                        index = openFhirStringUtils.getLastMostCommonIndex(new ArrayList<>(flatJsonObject.keySet()));
+                                    }
+                                    
+                                    // Add the result to our values
+                                    values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)result, index, fullOpenEhrPath));
+                                    log.info("Plugin mapping successful for {}: created {}", 
+                                           mapping.getMappingCode(), result.getClass().getSimpleName());
                                 }
                             }
-                        } else {
-                            // If no specific values were returned but mapping was successful,
-                            // add a placeholder value to ensure mapping is tracked
-                            values.add(new OpenEhrToFhirHelper.DataWithIndex(new StringType("mapped-via-plugin"), 
-                                                                             currentIndex, fullOpenEhrPath));
+                        }
+                        
+                        // If no values were added by the plugin, fall back to standard processing
+                        if (values.isEmpty()) {
+                            values = joinedEntries.values().stream()
+                                .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList());
                         }
                     }
                 } catch (Exception e) {
-                    log.error("Error applying custom mapping: {}", e.getMessage(), e);
+                    log.error("Error applying plugin mapping: {}", e.getMessage(), e);
+                    
+                    // Fall back to standard processing
+                    values = joinedEntries.values().stream()
+                        .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
                 }
             } else {
                 values = joinedEntries.values().stream()
