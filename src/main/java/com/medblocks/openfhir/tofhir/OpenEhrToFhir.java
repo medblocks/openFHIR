@@ -155,6 +155,9 @@ public class OpenEhrToFhir {
         final Map<String, Map<String, Object>> intermediateCaches = new HashMap<>();
         final Set<String> createdAndAdded = new HashSet<>();
         final Set<String> archetypesAlreadyProcessed = new HashSet<>();
+        
+        // Track resources created by plugins so we can add them directly
+        final List<Resource> pluginCreatedResources = new ArrayList<>();
 
         // loop through top level content/archetypes within the Composition
         for (final ContentItem archetypesWithinContent : composition.getContent()) {
@@ -186,7 +189,17 @@ public class OpenEhrToFhir {
                            creatingBundle,
                            archetypesAlreadyProcessed,
                            archetypesWithinContent,
-                           archetypeNodeId);
+                           archetypeNodeId,
+                           pluginCreatedResources);
+        }
+        
+        // Add any plugin-created resources to the bundle
+        for (Resource resource : pluginCreatedResources) {
+            if (!createdAndAdded.contains(String.valueOf(resource.hashCode()))) {
+                addEntryToBundle(creatingBundle, resource);
+                createdAndAdded.add(String.valueOf(resource.hashCode()));
+                log.info("Added plugin-created resource to bundle: {}", resource.getResourceType());
+            }
         }
 
         return creatingBundle;
@@ -209,6 +222,7 @@ public class OpenEhrToFhir {
      * @param archetypesAlreadyProcessed set of archetypes already processed
      * @param archetypesWithinContent archetype within a Composition that is currently being mapped
      * @param archetypeNodeId archetype id within a Composition that is currently being mapped
+     * @param pluginCreatedResources list to track resources created by plugins for addition to the bundle
      */
     private void handleMappings(final List<OpenFhirFhirConnectModelMapper> theMappers,
                                 final Set<String> createdAndAdded,
@@ -220,7 +234,8 @@ public class OpenEhrToFhir {
                                 final Bundle creatingBundle,
                                 final Set<String> archetypesAlreadyProcessed,
                                 final ContentItem archetypesWithinContent,
-                                final String archetypeNodeId) {
+                                final String archetypeNodeId,
+                                final List<Resource> pluginCreatedResources) {
         for (final OpenFhirFhirConnectModelMapper theMapper : theMappers) {
             if (theMapper.getFhirConfig() == null) {
                 // if fhir config is null, it means it's a slot mapper and it can't be a first-level Composition.content one
@@ -260,7 +275,8 @@ public class OpenEhrToFhir {
                                         null,
                                         null,
                                         firstFlatPath,
-                                        false);
+                                        false,
+                                        pluginCreatedResources);
 
             // within helpers, you should have everything you need to create a FHIR Resource now
             final List<Resource> created = createResourceFromOpenEhrToFhirHelper(helpers,
@@ -855,7 +871,8 @@ public class OpenEhrToFhir {
                                      final String parentFollowedByFhir,
                                      final String parentFollowedByOpenEhr,
                                      final String slotContext,
-                                     final boolean possibleRecursion) {
+                                     final boolean possibleRecursion,
+                                     final List<Resource> pluginCreatedResources) {
         if (mappings == null) {
             return;
         }
@@ -924,7 +941,7 @@ public class OpenEhrToFhir {
                 handleReferenceMapping(mapping, resourceType, parentFollowedByFhir, parentFollowedByOpenEhr, theMapper,
                                        firstFlatPath, definedMappingWithOpenEhr, fhirPath, isFollowedBy, helpers,
                                        webTemplate,
-                                       flatJsonObject, slotContext, openehr, possibleRecursion);
+                                       flatJsonObject, slotContext, openehr, possibleRecursion, pluginCreatedResources);
             } else {
                 final String OPENEHR_CONTENT_SUFFIX = "content/content";
                 if (openehr.endsWith(OPENEHR_CONTENT_SUFFIX) && OPENEHR_TYPE_MEDIA.equals(rmType)) {
@@ -939,13 +956,11 @@ public class OpenEhrToFhir {
                 }
 
                 if (mapping.getSlotArchetype() != null) {
-                    handleSlotMapping(mapping, resourceType, parentFollowedByFhir, theMapper, firstFlatPath,
-                                      definedMappingWithOpenEhr,
-                                      openFhirStringUtils.getFhirPathWithConditions(fhirPath,
-                                                                                    mapping.getFhirCondition(),
-                                                                                    resourceType, parentFollowedByFhir),
-                                      helpers, webTemplate, flatJsonObject, slotContext, openehr,
-                                      possibleRecursion);
+                    handleSlotMapping(mapping, resourceType, parentFollowedByFhir,
+                                   theMapper, firstFlatPath,
+                                   definedMappingWithOpenEhr, fhirPath,
+                                   helpers, webTemplate, flatJsonObject,
+                                   slotContext, openehr, possibleRecursion, pluginCreatedResources);
                 } else {
                     // adds regex pattern to simplified path in a way that we can extract data from a given flat path
                     final String withRegex = openFhirStringUtils.addRegexPatternToSimplifiedFlatFormat(openehr);
@@ -960,7 +975,7 @@ public class OpenEhrToFhir {
                                          firstFlatPath, definedMappingWithOpenEhr, fhirPath, isFollowedBy, helpers,
                                          webTemplate,
                                          flatJsonObject, slotContext, openehr, joinedEntries, rmType, hardcodedValue,
-                                         possibleRecursion);
+                                         possibleRecursion, pluginCreatedResources);
                 }
             }
 
@@ -1039,13 +1054,12 @@ public class OpenEhrToFhir {
                                       final String slotContext, final String openehr,
                                       final Map<String, List<String>> joinedEntries,
                                       final String rmType, final String hardcodedValue,
-                                      final boolean possibleRecursion) {
+                                      final boolean possibleRecursion,
+                                      final List<Resource> pluginCreatedResources) {
         String openEhrPath = null;
         List<OpenEhrToFhirHelper.DataWithIndex> values = extractValues(mapping, joinedEntries, rmType, flatJsonObject,
-                                                                       hardcodedValue);
-//        if(values != null && openehr.equals(parentFollowedByOpenEhr) && rmType!=null  ){
-//           values.clear();
-//        }
+                                                                       hardcodedValue, pluginCreatedResources);
+        
         if (!OPENEHR_TYPE_NONE.equals(mapping.getWith().getType())) {
             openEhrPath = openehr;
         } else if (mapping.getFhirCondition() != null) {
@@ -1096,7 +1110,8 @@ public class OpenEhrToFhir {
                                                                                       parentFollowedByFhir),
                                         definedMappingWithOpenEhr == null ? firstFlatPath : definedMappingWithOpenEhr,
                                         slotContext,
-                                        possibleRecursion);
+                                        possibleRecursion,
+                                        pluginCreatedResources);
         }
     }
 
@@ -1108,7 +1123,8 @@ public class OpenEhrToFhir {
                                    final String definedMappingWithOpenEhr, final String fhirPath,
                                    final List<OpenEhrToFhirHelper> helpers, final WebTemplate webTemplate,
                                    final JsonObject flatJsonObject,
-                                   final String slotContext, final String openehr, final boolean breakRecursion) {
+                                   final String slotContext, final String openehr, final boolean breakRecursion,
+                                   final List<Resource> pluginCreatedResources) {
         final String templateId = webTemplate.getTemplateId();
 
         final List<OpenFhirFhirConnectModelMapper> slotArchetypeMapperss = openFhirTemplateRepo.getMapperForArchetype(
@@ -1142,7 +1158,8 @@ public class OpenEhrToFhir {
                                         helpers, webTemplate, flatJsonObject, true, childWithParentFhirPath,
                                         definedMappingWithOpenEhr,
                                         definedMappingWithOpenEhr,
-                                        possibleRecursion);
+                                        possibleRecursion,
+                                        pluginCreatedResources);
 
             // slot archetype can be followed by other mappers as well
             if (mapping.getFollowedBy() != null) {
@@ -1161,7 +1178,10 @@ public class OpenEhrToFhir {
                                                                                           mapping.getFhirCondition(),
                                                                                           resourceType,
                                                                                           parentFollowedByFhir),
-                                            definedMappingWithOpenEhr, slotContext, possibleRecursion);
+                                            definedMappingWithOpenEhr == null ? firstFlatPath : definedMappingWithOpenEhr,
+                                            slotContext,
+                                            possibleRecursion,
+                                            pluginCreatedResources);
             }
         }
     }
@@ -1178,7 +1198,8 @@ public class OpenEhrToFhir {
                                         final List<OpenEhrToFhirHelper> helpers, final WebTemplate webTemplate,
                                         final JsonObject flatJsonObject,
                                         final String slotContext, final String openehr,
-                                        final boolean possibleRecursion) {
+                                        final boolean possibleRecursion,
+                                        final List<Resource> pluginCreatedResources) {
         final List<Mapping> referencedMapping = mapping.getReference().getMappings();
         final String wConditions = openFhirStringUtils.getFhirPathWithConditions(mapping.getWith().getFhir(),
                                                                                  mapping.getFhirCondition(),
@@ -1191,7 +1212,7 @@ public class OpenEhrToFhir {
             // condition itself needs to be evaluted and added to the generated FHIR
             addConditionInReferenceMapping(parentFollowedByOpenEhr, parentFollowedByFhir, theMapper, resourceType,
                                            firstFlatPath, definedMappingWithOpenEhr, fhirPath, mapping, isFollowedBy,
-                                           helpers);
+                                           helpers, pluginCreatedResources);
         }
 
         // narrow refeence mapping if openehr condition exists
@@ -1236,7 +1257,8 @@ public class OpenEhrToFhir {
                                         parentFollowedByFhir,
                                         parentFollowedByOpenEhr,
                                         slotContext,
-                                        possibleRecursion);
+                                        possibleRecursion,
+                                        pluginCreatedResources);
         } else {
             // recursive call so all $reference.mappings are handled
             prepareOpenEhrToFhirHelpers(theMapper,
@@ -1250,7 +1272,8 @@ public class OpenEhrToFhir {
                                         parentFollowedByFhir,
                                         parentFollowedByOpenEhr,
                                         slotContext,
-                                        possibleRecursion);
+                                        possibleRecursion,
+                                        pluginCreatedResources);
         }
 
     }
@@ -1266,12 +1289,14 @@ public class OpenEhrToFhir {
      * @param hardcodedValue if there is no mapping but rather a hardcoding, this will hold a value that needs
      *         to be
      *         hardcoded
+     * @param pluginCreatedResources list to track resources created by plugins for addition to the bundle
      */
     private List<OpenEhrToFhirHelper.DataWithIndex> extractValues(final Mapping mapping,
                                                                   final Map<String, List<String>> joinedEntries,
                                                                   final String rmType,
                                                                   final JsonObject flatJsonObject,
-                                                                  final String hardcodedValue) {
+                                                                  final String hardcodedValue,
+                                                                  final List<Resource> pluginCreatedResources) {
         List<OpenEhrToFhirHelper.DataWithIndex> values = null;
         if (!OPENEHR_TYPE_NONE.equals(mapping.getWith().getType())) {
             if (StringUtils.isNotEmpty(hardcodedValue) && !joinedEntries.isEmpty()) {
@@ -1329,14 +1354,29 @@ public class OpenEhrToFhir {
                                 // Get the first available converter for now
                                 com.medblocks.openfhir.conversion.FormatConverter converter = converters.get(0);
                                 
+                                // Extract the resource type from the fhir path
+                                String resourceType = mapping.getWith().getFhir().split("\\.")[0];
+                                
+                                // Find or create a target resource to modify
+                                Resource targetResource = null;
+                                if (resourceType != null && !resourceType.isEmpty()) {
+                                    // Try to find an existing resource of this type in the bundle
+                                    targetResource = fhirInstanceCreatorUtility.create(resourceType);
+                                }
+
+                                System.out.println("Created targetResource: " + targetResource);
+                                
                                 // Apply the mapping
                                 Object result = converter.applyOpenEhrToFhirMapping(
                                     mapping.getMappingCode(),
                                     fullOpenEhrPath, 
                                     flatJsonObject,
                                     mapping.getWith().getFhir(),
-                                    null
+                                    targetResource
                                 );
+
+                                System.out.println("Plugin mapping result: " + result);
+                                System.out.println("Modified targetResource: " + targetResource);
                                 
                                 if (result != null) {
                                     // Extract the index from the path
@@ -1345,10 +1385,57 @@ public class OpenEhrToFhir {
                                         index = openFhirStringUtils.getLastMostCommonIndex(new ArrayList<>(flatJsonObject.keySet()));
                                     }
                                     
-                                    // Add the result to our values
-                                    values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)result, index, fullOpenEhrPath));
-                                    log.info("Plugin mapping successful for {}: created {}", 
-                                           mapping.getMappingCode(), result.getClass().getSimpleName());
+                                    // Handle both cases: when result is a Resource and when it's a datatype
+                                    if (result instanceof Resource) {
+                                        // Add the result directly as a resource
+                                        values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)result, index, fullOpenEhrPath));
+                                        log.info("Added resource result to values: {}", 
+                                            result.getClass().getSimpleName());
+                                        
+                                        // Track the resource for direct bundle inclusion at the end
+                                        // but don't short-circuit the normal flow
+                                        pluginCreatedResources.add((Resource)result);
+                                    } else {
+                                        // Add the result as a data element
+                                        values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)result, index, fullOpenEhrPath));
+                                        log.info("Added data element result to values: {}", 
+                                            result.getClass().getSimpleName());
+                                        
+                                        // If we have a targetResource and it's different from the result, 
+                                        // ensure we also include that in the values
+                                        if (targetResource != null && targetResource != result) {
+                                            boolean alreadyIncluded = false;
+                                            for (OpenEhrToFhirHelper.DataWithIndex value : values) {
+                                                if (value.getData() == targetResource) {
+                                                    alreadyIncluded = true;
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            if (!alreadyIncluded) {
+                                                values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)targetResource, index, fullOpenEhrPath));
+                                                log.info("Added modified target resource to values: {}", 
+                                                    targetResource.getClass().getSimpleName());
+                                                
+                                                // Track the resource but don't short-circuit the normal flow
+                                                pluginCreatedResources.add(targetResource);
+                                            }
+                                        }
+                                    }
+                                } else if (targetResource != null) {
+                                    // If result is null but we have a targetResource, add that instead
+                                    // This ensures resources that were modified by the plugin are included
+                                    int index = openFhirStringUtils.getFirstIndex(fullOpenEhrPath);
+                                    if (index == -1) {
+                                        index = openFhirStringUtils.getLastMostCommonIndex(new ArrayList<>(flatJsonObject.keySet()));
+                                    }
+                                    
+                                    values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)targetResource, index, fullOpenEhrPath));
+                                    log.info("No direct result but added modified target resource to values: {}", 
+                                        targetResource.getClass().getSimpleName());
+                                    
+                                    // Track the resource but don't short-circuit the normal flow
+                                    pluginCreatedResources.add(targetResource);
                                 }
                             }
                         }
@@ -1894,7 +1981,8 @@ public class OpenEhrToFhir {
                                                 final String resourceType, final String firstFlatPath,
                                                 final String definedMappingWithOpenEhr, final String fhirPath,
                                                 final Mapping mapping, final boolean isFollowedBy,
-                                                final List<OpenEhrToFhirHelper> helpers) {
+                                                final List<OpenEhrToFhirHelper> helpers,
+                                                final List<Resource> pluginCreatedResources) {
         final String parentFollowedByFhirPath = parentFollowedByFhir == null ? null
                 : parentFollowedByFhir.replace(FhirConnectConst.FHIR_RESOURCE_FC, resourceType);
         final String parentFollowedByOpenEhr1 = parentFollowedByOpenEhr == null ? null
