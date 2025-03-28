@@ -45,8 +45,9 @@ public interface FormatConverter extends ExtensionPoint {
      * @param openEhrValue The OpenEHR value or context (often a JsonObject with flat paths)
      * @param fhirType The FHIR data type or resource type
      * @param createdValues A list to populate with created FHIR resources/elements
+     * @param openEhrPath The OpenEHR path from the mapping context
      * @return True if mapping was successful, false otherwise
      */
     boolean applyOpenEhrToFhirMapping(String mappingCode, String fhirPath, Object openEhrValue,
-                                      String fhirType, List<Object> createdValues);
+                                      String fhirType, List<Object> createdValues, String openEhrPath);
 } 

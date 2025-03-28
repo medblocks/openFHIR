@@ -1298,22 +1298,17 @@ public class OpenEhrToFhir {
                 }
                 values.add(new OpenEhrToFhirHelper.DataWithIndex(new StringType(hardcodedValue), index,
                                                                  fullOpenEhrPath));
-            } else if(mapping.getMappingCode()!=null){
+            } 
+            
+            else if(mapping.getMappingCode()!=null){
                 //get programmed mapping function from plugin using above result fhir object
                 String fullOpenEhrPath = "";
                 
                 // Initialize values list
                 values = new ArrayList<>();
                 
-                // Determine the fullOpenEhrPath similar to how it's done in the existing code
-                if (mapping.getOpenehrCondition() != null) {
-                    final String targetRoot = mapping.getOpenehrCondition().getTargetRoot();
-                    final String piped = openFhirStringUtils.addRegexPatternToSimplifiedFlatFormat(targetRoot);
-                    final List<String> allEntriesThatMatch = openFhirStringUtils.getAllEntriesThatMatch(piped, flatJsonObject);
-                    if (!allEntriesThatMatch.isEmpty()) {
-                        fullOpenEhrPath = allEntriesThatMatch.get(0);
-                    }
-                }
+              
+               
                 
                 try {
                     // Get current function context
@@ -1340,13 +1335,22 @@ public class OpenEhrToFhir {
                         
                         // Apply the mapping
                         boolean success = false;
+
+                        System.out.println(" mapping.getMappingCode() " +  mapping.getMappingCode());
+                        System.out.println(" mappingFhirPath " +  mappingFhirPath);  
+                        System.out.println(" flatJsonObject " +  flatJsonObject);
+                        System.out.println(" rmType " +  rmType);
+                        System.out.println(" separatelyCreatedValues " +  separatelyCreatedValues);
+                        System.out.println(" fullOpenEhrPath " +  fullOpenEhrPath);
+
                         try {
                             success = converter.applyOpenEhrToFhirMapping(
                                 mapping.getMappingCode(),
                                 mappingFhirPath,
                                 flatJsonObject, // Pass the full flatJsonObject as context
                                 rmType,
-                                separatelyCreatedValues  // Container for the returned objects
+                                separatelyCreatedValues,  // Container for the returned objects
+                                fullOpenEhrPath  // Pass the actual path variable that's available in this context
                             );
                         } catch (Exception e) {
                             log.error("Error calling applyOpenEhrToFhirMapping: {}", e.getMessage(), e);
@@ -1731,6 +1735,10 @@ public class OpenEhrToFhir {
                                                              final String path,
                                                              final String value,
                                                              final String code) {
+
+  
+
+
         final String magnitude = fetchValue(joinedValues, "magnitude");
         final String unit = fetchValue(joinedValues, "unit");
         final String ordinal = fetchValue(joinedValues, "ordinal");

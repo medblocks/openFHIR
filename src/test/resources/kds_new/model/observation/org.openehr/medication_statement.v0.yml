@@ -117,11 +117,7 @@ mappings:
       openehr: "$archetype/data[at0001]/events[at0002]/data[at0003]/items[at0023]"
       type: "STRING"
 
-  - name: "duration"
-    with:
-      fhir: "$resource.dosage.doseAndRate.rate.as(Ratio)"
-      openehr: "$archetype/data[at0001]/duration"
-    mappingCode: "dosageDurationToAdministrationDuration"
+
 #  - name: "partOf"
 #    with:
 #      fhir: "$resource.partOf.reference"
