@@ -77,7 +77,9 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
+import org.pf4j.PluginManager;
+import com.medblocks.openfhir.util.SpringContext;
+import com.medblocks.openfhir.conversion.FormatConverter;
 /**
  * Engine doing translation from openEHR to FHIR according to the openFHIR state configuration
  */
@@ -1304,11 +1306,11 @@ public class OpenEhrToFhir {
                     values = new ArrayList<>();
                     
                     // Get the plugin manager
-                    org.pf4j.PluginManager pluginManager = com.medblocks.openfhir.util.SpringContext.getBean(org.pf4j.PluginManager.class);
+                    PluginManager pluginManager = SpringContext.getBean(PluginManager.class);
                     
                     // Get all FormatConverter extensions
-                    List<com.medblocks.openfhir.conversion.FormatConverter> converters = 
-                        pluginManager.getExtensions(com.medblocks.openfhir.conversion.FormatConverter.class);
+                    List<FormatConverter> converters = 
+                        pluginManager.getExtensions(FormatConverter.class);
                     
                     if (converters.isEmpty()) {
                         log.warn("No FormatConverter plugins found for mapping code: {}", mapping.getMappingCode());
