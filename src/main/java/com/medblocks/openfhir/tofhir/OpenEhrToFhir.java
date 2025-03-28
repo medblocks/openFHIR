@@ -1352,7 +1352,7 @@ public class OpenEhrToFhir {
                                 String fullOpenEhrPath = entryPaths.get(0);
                                 
                                 // Get the first available converter for now
-                                com.medblocks.openfhir.conversion.FormatConverter converter = converters.get(0);
+                                FormatConverter converter = converters.get(0);
                                 
                                 // Extract the resource type from the fhir path
                                 String resourceType = mapping.getWith().getFhir().split("\\.")[0];
