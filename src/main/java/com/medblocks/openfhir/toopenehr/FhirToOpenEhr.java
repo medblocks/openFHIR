@@ -11,6 +11,7 @@ import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.fc.schema.model.Mapping;
 import com.medblocks.openfhir.fc.schema.model.With;
+import com.medblocks.openfhir.plugin.api.FormatConverter;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenEhrPopulator;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
@@ -29,7 +30,7 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.pf4j.PluginManager;
-import com.medblocks.openfhir.conversion.FormatConverter;
+
 import com.medblocks.openfhir.util.SpringContext;
 
 import java.util.*;

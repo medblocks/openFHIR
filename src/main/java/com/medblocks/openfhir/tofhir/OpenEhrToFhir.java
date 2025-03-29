@@ -79,7 +79,7 @@ import org.springframework.stereotype.Component;
 
 import org.pf4j.PluginManager;
 import com.medblocks.openfhir.util.SpringContext;
-import com.medblocks.openfhir.conversion.FormatConverter;
+
 /**
  * Engine doing translation from openEHR to FHIR according to the openFHIR state configuration
  */
@@ -1324,140 +1324,143 @@ public class OpenEhrToFhir {
                 values.add(new OpenEhrToFhirHelper.DataWithIndex(new StringType(hardcodedValue), index,
                                                                  fullOpenEhrPath));
             } 
+
+            // TO DO: Implement plugin-based custom mapping
             
-            else if(mapping.getMappingCode()!=null){
-                // Plugin-based custom mapping
-                try {
-                    values = new ArrayList<>();
+            // else if(mapping.getMappingCode()!=null){
+            //     // Plugin-based custom mapping
+            //     try {
+            //         values = new ArrayList<>();
                     
-                    // Get the plugin manager
-                    PluginManager pluginManager = SpringContext.getBean(PluginManager.class);
+            //         // Get the plugin manager
+            //         PluginManager pluginManager = SpringContext.getBean(PluginManager.class);
                     
-                    // Get all FormatConverter extensions
-                    List<FormatConverter> converters = 
-                        pluginManager.getExtensions(FormatConverter.class);
+            //         // Get all FormatConverter extensions
+            //         List<FormatConverter> converters = 
+            //             pluginManager.getExtensions(FormatConverter.class);
                     
-                    if (converters.isEmpty()) {
-                        log.warn("No FormatConverter plugins found for mapping code: {}", mapping.getMappingCode());
+            //         if (converters.isEmpty()) {
+            //             log.warn("No FormatConverter plugins found for mapping code: {}", mapping.getMappingCode());
                         
-                        // Fallback to standard processing
-                        values = joinedEntries.values().stream()
-                            .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toList());
-                    } else {
-                        // For each entry in joinedEntries, apply the plugin mapping
-                        for (List<String> entryPaths : joinedEntries.values()) {
-                            if (entryPaths != null && !entryPaths.isEmpty()) {
-                                String fullOpenEhrPath = entryPaths.get(0);
+            //             // Fallback to standard processing
+            //             values = joinedEntries.values().stream()
+            //                 .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
+            //                 .filter(Objects::nonNull)
+            //                 .collect(Collectors.toList());
+            //         } else {
+            //             // For each entry in joinedEntries, apply the plugin mapping
+            //             for (List<String> entryPaths : joinedEntries.values()) {
+            //                 if (entryPaths != null && !entryPaths.isEmpty()) {
+            //                     String fullOpenEhrPath = entryPaths.get(0);
                                 
-                                // Get the first available converter for now
-                                FormatConverter converter = converters.get(0);
+            //                     // Get the first available converter for now
+            //                     FormatConverter converter = converters.get(0);
                                 
-                                // Extract the resource type from the fhir path
-                                String resourceType = mapping.getWith().getFhir().split("\\.")[0];
+            //                     // Extract the resource type from the fhir path
+            //                     String resourceType = mapping.getWith().getFhir().split("\\.")[0];
                                 
-                                // Find or create a target resource to modify
-                                Resource targetResource = null;
-                                if (resourceType != null && !resourceType.isEmpty()) {
-                                    // Try to find an existing resource of this type in the bundle
-                                    targetResource = fhirInstanceCreatorUtility.create(resourceType);
-                                }
+            //                     // Find or create a target resource to modify
+            //                     Resource targetResource = null;
+            //                     if (resourceType != null && !resourceType.isEmpty()) {
+            //                         // Try to find an existing resource of this type in the bundle
+            //                         targetResource = fhirInstanceCreatorUtility.create(resourceType);
+            //                     }
 
-                                System.out.println("Created targetResource: " + targetResource);
+            //                     System.out.println("Created targetResource: " + targetResource);
                                 
-                                // Apply the mapping
-                                Object result = converter.applyOpenEhrToFhirMapping(
-                                    mapping.getMappingCode(),
-                                    fullOpenEhrPath, 
-                                    flatJsonObject,
-                                    mapping.getWith().getFhir(),
-                                    targetResource
-                                );
+            //                     // Apply the mapping
+            //                     Object result = converter.applyOpenEhrToFhirMapping(
+            //                         mapping.getMappingCode(),
+            //                         fullOpenEhrPath, 
+            //                         flatJsonObject,
+            //                         mapping.getWith().getFhir(),
+            //                         targetResource
+            //                     );
 
-                                System.out.println("Plugin mapping result: " + result);
-                                System.out.println("Modified targetResource: " + targetResource);
+            //                     System.out.println("Plugin mapping result: " + result);
+            //                     System.out.println("Modified targetResource: " + targetResource);
                                 
-                                if (result != null) {
-                                    // Extract the index from the path
-                                    int index = openFhirStringUtils.getFirstIndex(fullOpenEhrPath);
-                                    if (index == -1) {
-                                        index = openFhirStringUtils.getLastMostCommonIndex(new ArrayList<>(flatJsonObject.keySet()));
-                                    }
+            //                     if (result != null) {
+            //                         // Extract the index from the path
+            //                         int index = openFhirStringUtils.getFirstIndex(fullOpenEhrPath);
+            //                         if (index == -1) {
+            //                             index = openFhirStringUtils.getLastMostCommonIndex(new ArrayList<>(flatJsonObject.keySet()));
+            //                         }
                                     
-                                    // Handle both cases: when result is a Resource and when it's a datatype
-                                    if (result instanceof Resource) {
-                                        // Add the result directly as a resource
-                                        values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)result, index, fullOpenEhrPath));
-                                        log.info("Added resource result to values: {}", 
-                                            result.getClass().getSimpleName());
+            //                         // Handle both cases: when result is a Resource and when it's a datatype
+            //                         if (result instanceof Resource) {
+            //                             // Add the result directly as a resource
+            //                             values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)result, index, fullOpenEhrPath));
+            //                             log.info("Added resource result to values: {}", 
+            //                                 result.getClass().getSimpleName());
                                         
-                                        // Track the resource for direct bundle inclusion at the end
-                                        // but don't short-circuit the normal flow
-                                        pluginCreatedResources.add((Resource)result);
-                                    } else {
-                                        // Add the result as a data element
-                                        values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)result, index, fullOpenEhrPath));
-                                        log.info("Added data element result to values: {}", 
-                                            result.getClass().getSimpleName());
+            //                             // Track the resource for direct bundle inclusion at the end
+            //                             // but don't short-circuit the normal flow
+            //                             pluginCreatedResources.add((Resource)result);
+            //                         } else {
+            //                             // Add the result as a data element
+            //                             values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)result, index, fullOpenEhrPath));
+            //                             log.info("Added data element result to values: {}", 
+            //                                 result.getClass().getSimpleName());
                                         
-                                        // If we have a targetResource and it's different from the result, 
-                                        // ensure we also include that in the values
-                                        if (targetResource != null && targetResource != result) {
-                                            boolean alreadyIncluded = false;
-                                            for (OpenEhrToFhirHelper.DataWithIndex value : values) {
-                                                if (value.getData() == targetResource) {
-                                                    alreadyIncluded = true;
-                                                    break;
-                                                }
-                                            }
+            //                             // If we have a targetResource and it's different from the result, 
+            //                             // ensure we also include that in the values
+            //                             if (targetResource != null && targetResource != result) {
+            //                                 boolean alreadyIncluded = false;
+            //                                 for (OpenEhrToFhirHelper.DataWithIndex value : values) {
+            //                                     if (value.getData() == targetResource) {
+            //                                         alreadyIncluded = true;
+            //                                         break;
+            //                                     }
+            //                                 }
                                             
-                                            if (!alreadyIncluded) {
-                                                values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)targetResource, index, fullOpenEhrPath));
-                                                log.info("Added modified target resource to values: {}", 
-                                                    targetResource.getClass().getSimpleName());
+            //                                 if (!alreadyIncluded) {
+            //                                     values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)targetResource, index, fullOpenEhrPath));
+            //                                     log.info("Added modified target resource to values: {}", 
+            //                                         targetResource.getClass().getSimpleName());
                                                 
-                                                // Track the resource but don't short-circuit the normal flow
-                                                pluginCreatedResources.add(targetResource);
-                                            }
-                                        }
-                                    }
-                                } else if (targetResource != null) {
-                                    // If result is null but we have a targetResource, add that instead
-                                    // This ensures resources that were modified by the plugin are included
-                                    int index = openFhirStringUtils.getFirstIndex(fullOpenEhrPath);
-                                    if (index == -1) {
-                                        index = openFhirStringUtils.getLastMostCommonIndex(new ArrayList<>(flatJsonObject.keySet()));
-                                    }
+            //                                     // Track the resource but don't short-circuit the normal flow
+            //                                     pluginCreatedResources.add(targetResource);
+            //                                 }
+            //                             }
+            //                         }
+            //                     } else if (targetResource != null) {
+            //                         // If result is null but we have a targetResource, add that instead
+            //                         // This ensures resources that were modified by the plugin are included
+            //                         int index = openFhirStringUtils.getFirstIndex(fullOpenEhrPath);
+            //                         if (index == -1) {
+            //                             index = openFhirStringUtils.getLastMostCommonIndex(new ArrayList<>(flatJsonObject.keySet()));
+            //                         }
                                     
-                                    values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)targetResource, index, fullOpenEhrPath));
-                                    log.info("No direct result but added modified target resource to values: {}", 
-                                        targetResource.getClass().getSimpleName());
+            //                         values.add(new OpenEhrToFhirHelper.DataWithIndex((Base)targetResource, index, fullOpenEhrPath));
+            //                         log.info("No direct result but added modified target resource to values: {}", 
+            //                             targetResource.getClass().getSimpleName());
                                     
-                                    // Track the resource but don't short-circuit the normal flow
-                                    pluginCreatedResources.add(targetResource);
-                                }
-                            }
-                        }
+            //                         // Track the resource but don't short-circuit the normal flow
+            //                         pluginCreatedResources.add(targetResource);
+            //                     }
+            //                 }
+            //             }
                         
-                        // If no values were added by the plugin, fall back to standard processing
-                        if (values.isEmpty()) {
-                            values = joinedEntries.values().stream()
-                                .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
-                                .filter(Objects::nonNull)
-                                .collect(Collectors.toList());
-                        }
-                    }
-                } catch (Exception e) {
-                    log.error("Error applying plugin mapping: {}", e.getMessage(), e);
+            //             // If no values were added by the plugin, fall back to standard processing
+            //             if (values.isEmpty()) {
+            //                 values = joinedEntries.values().stream()
+            //                     .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
+            //                     .filter(Objects::nonNull)
+            //                     .collect(Collectors.toList());
+            //             }
+            //         }
+            //     } catch (Exception e) {
+            //         log.error("Error applying plugin mapping: {}", e.getMessage(), e);
                     
-                    // Fall back to standard processing
-                    values = joinedEntries.values().stream()
-                        .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-                }
-            } else {
+            //         // Fall back to standard processing
+            //         values = joinedEntries.values().stream()
+            //             .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
+            //             .filter(Objects::nonNull)
+            //             .collect(Collectors.toList());
+            //     }
+            // } 
+            else {
                 values = joinedEntries.values().stream()
                         .map(strings -> valueToDataPoint(strings, rmType, flatJsonObject, true))
                         .filter(Objects::nonNull)

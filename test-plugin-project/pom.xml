@@ -31,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>com.medblocks</groupId>
-            <artifactId>openfhir-api</artifactId>
+            <artifactId>openfhir-plugin-api</artifactId>
             <version>1.0.0</version>
             <scope>provided</scope>
         </dependency>

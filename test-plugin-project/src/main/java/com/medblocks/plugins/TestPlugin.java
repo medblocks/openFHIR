@@ -5,9 +5,10 @@ import org.pf4j.Plugin;
 import org.pf4j.PluginWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.medblocks.openfhir.conversion.FormatConverter;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.medblocks.openfhir.plugin.api.FormatConverter;
 import com.google.gson.JsonElement;
 import org.hl7.fhir.r4.model.Ratio;
 import org.hl7.fhir.r4.model.Quantity;
@@ -50,22 +51,7 @@ public class TestPlugin extends Plugin {
         
         private static final Logger log = LoggerFactory.getLogger(TestFormatConverter.class);
         
-        @Override
-        public String toFHIR(String openEhrData) {
-            log.info("Converting from OpenEHR to FHIR: {}", openEhrData);
-            // Implement the actual conversion logic here
-            // This is just a placeholder implementation
-            return "{ \"resourceType\": \"Patient\", \"id\": \"example\", \"converted\": true, \"source\": \"" + openEhrData + "\" }";
-        }
-        
-        @Override
-        public String toOpenEHR(String fhirData) {
-            log.info("Converting from FHIR to OpenEHR: {}", fhirData);
-            // Implement the actual conversion logic here
-            // This is just a placeholder implementation
-            return "{ \"archetypeId\": \"openEHR-EHR-COMPOSITION.example.v1\", \"converted\": true, \"source\": \"" + fhirData + "\" }";
-        }
-        
+
         @Override
         public boolean applyFhirToOpenEhrMapping(String mappingCode, String openEhrPath, Object fhirValue, 
                                                String openEhrType, Object flatComposition) {

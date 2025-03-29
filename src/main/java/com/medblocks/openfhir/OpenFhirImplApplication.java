@@ -16,7 +16,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.medblocks.openfhir.conversion.FormatConverter;
+import com.medblocks.openfhir.plugin.api.FormatConverter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,38 +41,38 @@ public class OpenFhirImplApplication {
         return pluginManager;
     }
 
-    @Bean
-    public CommandLineRunner testExtensions(PluginManager pluginManager) {
-        return args -> {
-            // Get all FormatConverter extensions
-            List<FormatConverter> converters = pluginManager.getExtensions(FormatConverter.class);
+    // @Bean
+    // public CommandLineRunner testExtensions(PluginManager pluginManager) {
+    //     return args -> {
+    //         // Get all FormatConverter extensions
+    //         List<FormatConverter> converters = pluginManager.getExtensions(FormatConverter.class);
             
-            log.info("Found {} FormatConverter extensions", converters.size());
+    //         log.info("Found {} FormatConverter extensions", converters.size());
             
-            if (converters.isEmpty()) {
-                log.warn("No FormatConverter extensions found! Check if plugins are loaded correctly.");
+    //         if (converters.isEmpty()) {
+    //             log.warn("No FormatConverter extensions found! Check if plugins are loaded correctly.");
                 
-                // Debug info to help troubleshoot
-                log.info("Loaded plugins: {}", pluginManager.getPlugins());
-                log.info("Started plugins: {}", pluginManager.getStartedPlugins());
-                log.info("Plugin root: {}", pluginManager.getPluginsRoot());
-            } else {
-                // Test each converter
-                for (FormatConverter converter : converters) {
-                    log.info("Testing converter: {}", converter.getClass().getName());
+    //             // Debug info to help troubleshoot
+    //             log.info("Loaded plugins: {}", pluginManager.getPlugins());
+    //             log.info("Started plugins: {}", pluginManager.getStartedPlugins());
+    //             log.info("Plugin root: {}", pluginManager.getPluginsRoot());
+    //         } else {
+    //             // Test each converter
+    //             for (FormatConverter converter : converters) {
+    //                 log.info("Testing converter: {}", converter.getClass().getName());
                     
-                    // Test OpenEHR to FHIR conversion
-                    String sampleOpenEhr = "{\"example\": \"openEHR data\"}";
-                    String fhirResult = converter.toFHIR(sampleOpenEhr);
-                    log.info("OpenEHR to FHIR result: {}", fhirResult);
+    //                 // Test OpenEHR to FHIR conversion
+    //                 String sampleOpenEhr = "{\"example\": \"openEHR data\"}";
+    //                 String fhirResult = converter.toFHIR(sampleOpenEhr);
+    //                 log.info("OpenEHR to FHIR result: {}", fhirResult);
                     
-                    // Test FHIR to OpenEHR conversion
-                    String sampleFhir = "{\"resourceType\": \"Patient\", \"id\": \"test\"}";
-                    String openEhrResult = converter.toOpenEHR(sampleFhir);
-                    log.info("FHIR to OpenEHR result: {}", openEhrResult);
-                }
-            }
-        };
-    }
+    //                 // Test FHIR to OpenEHR conversion
+    //                 String sampleFhir = "{\"resourceType\": \"Patient\", \"id\": \"test\"}";
+    //                 String openEhrResult = converter.toOpenEHR(sampleFhir);
+    //                 log.info("FHIR to OpenEHR result: {}", openEhrResult);
+    //             }
+    //         }
+    //     };
+    // }
 
 }  

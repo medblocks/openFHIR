@@ -8,12 +8,6 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
-    <modules>
-        <module>openfhir-api</module>
-        <module>.</module> <!-- Main application -->
-        <module>test-plugin-project</module>
-    </modules>
-
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
