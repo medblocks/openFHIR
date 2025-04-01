@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 /**
  * Class for helping with mapping from FHIR to openEHR
@@ -59,16 +60,26 @@ public class FhirToOpenEhrHelper {
     private List<FhirToOpenEhrHelper> fhirToOpenEhrHelpers;
 
     public FhirToOpenEhrHelper doClone() {
-        return FhirToOpenEhrHelper.builder()
-                .fhirPath(fhirPath)
-                .limitingCriteria(limitingCriteria)
-                .openEhrPath(openEhrPath)
-                .openEhrType(openEhrType)
-                .archetype(archetype)
-                .hardcodingValue(hardcodingValue)
-                .multiple(multiple)
-                .fhirToOpenEhrHelpers(fhirToOpenEhrHelpers == null ? null : fhirToOpenEhrHelpers.stream().map(FhirToOpenEhrHelper::doClone).collect(Collectors.toList()))
+        FhirToOpenEhrHelper clone = FhirToOpenEhrHelper.builder()
+                .archetype(this.archetype)
+                .fhirPath(this.fhirPath)
+                .limitingCriteria(this.limitingCriteria)
+                .multiple(this.multiple)
+                .hardcodingValue(this.hardcodingValue)
+                .openEhrPath(this.openEhrPath)
+                .openEhrType(this.openEhrType)
+                .mappingCode(this.mappingCode)
                 .build();
+        
+        if (this.fhirToOpenEhrHelpers != null) {
+            List<FhirToOpenEhrHelper> clonedHelpers = new ArrayList<>();
+            for (FhirToOpenEhrHelper helper : this.fhirToOpenEhrHelpers) {
+                clonedHelpers.add(helper.doClone());
+            }
+            clone.setFhirToOpenEhrHelpers(clonedHelpers);
+        }
+        
+        return clone;
     }
 
     public Boolean getMultiple() {

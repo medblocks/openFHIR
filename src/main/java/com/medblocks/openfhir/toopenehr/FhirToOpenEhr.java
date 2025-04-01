@@ -11,6 +11,7 @@ import com.medblocks.openfhir.fc.schema.context.FhirConnectContext;
 import com.medblocks.openfhir.fc.schema.model.Condition;
 import com.medblocks.openfhir.fc.schema.model.Mapping;
 import com.medblocks.openfhir.fc.schema.model.With;
+import com.medblocks.openfhir.plugin.api.FormatConverter;
 import com.medblocks.openfhir.util.OpenEhrCachedUtils;
 import com.medblocks.openfhir.util.OpenEhrPopulator;
 import com.medblocks.openfhir.util.OpenFhirMapperUtils;
@@ -28,6 +29,9 @@ import org.hl7.fhir.r4.model.*;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.pf4j.PluginManager;
+
+import com.medblocks.openfhir.util.SpringContext;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -115,6 +119,7 @@ public class FhirToOpenEhr {
         // do the actual mapping (evaluate fhir paths and create json flat structure from it, based on helpers)
         return resolveFhirPaths(helpers, toRunEngineOn);
     }
+
 
     /**
      * If resource is not already a bundle, it will wrap it to a Bundle
@@ -236,6 +241,12 @@ public class FhirToOpenEhr {
             boolean somethingWasAdded = false;
             for (final FhirToOpenEhrHelper fhirToOpenEhrHelper : artifactHelpers) {
                 final FhirToOpenEhrHelper cloned = fhirToOpenEhrHelper.doClone();
+                
+                // If mappingCode is lost in cloning, set it explicitly
+                if (fhirToOpenEhrHelper.getMappingCode() != null && cloned.getMappingCode() == null) {
+                    cloned.setMappingCode(fhirToOpenEhrHelper.getMappingCode());
+                }
+                
                 if (fhirToOpenEhrHelper.getMultiple() && (mainMultiple == null || fhirToOpenEhrHelper.getOpenEhrPath()
                         .startsWith(mainMultiple))) {
 
@@ -323,6 +334,8 @@ public class FhirToOpenEhr {
     boolean addDataPoints(final FhirToOpenEhrHelper helper, final JsonObject flatComposition, final Base toResolveOn) {
         List<Base> results;
         final String fhirPath = helper.getFhirPath();
+
+        // Regular processing for non-mappingCode cases
         if (StringUtils.isEmpty(fhirPath) || FHIR_ROOT_FC.equals(fhirPath)) {
             // just take the one roResolveOn
             log.debug("Taking Base itself as fhirPath is {}", fhirPath);
@@ -330,9 +343,8 @@ public class FhirToOpenEhr {
         } else {
             final String fhirPathToEvaluateOn = openFhirStringUtils.fixFhirPathCasting(
                     fhirPath.startsWith(".") ? fhirPath.substring(1) : fhirPath);
-            results = fhirPathR4.evaluate(toResolveOn,
-                                          fhirPathToEvaluateOn,
-                                          Base.class);
+            results = fhirPathR4.evaluate(toResolveOn, fhirPathToEvaluateOn, Base.class);
+            // Try resolve if needed
             if (fhirPath.endsWith(RESOLVE) && results.isEmpty()) {
                 final List<Base> reference = fhirPathR4.evaluate(toResolveOn,
                                                                  fhirPath.replace("." + RESOLVE, ""),
@@ -346,9 +358,8 @@ public class FhirToOpenEhr {
                 }
             }
         }
+        
         if (results == null || results.isEmpty()) {
-            // todo: here within helpers we should have an info whether something is required in openEHR template or not
-            // if it is required, add nullflavors
             log.warn("No results found for FHIRPath {}, evaluating on type: {}", fhirPath,
                      toResolveOn.getClass());
             return false;
@@ -363,47 +374,62 @@ public class FhirToOpenEhr {
             log.debug("Setting value taken with fhirPath {} from object type {}", fhirPath,
                       toResolveOn.getClass());
 
-            if (StringUtils.isNotEmpty(helper.getHardcodingValue())) {
+            // Now check the conditions explicitly as separate steps to see which one's evaluating true
+            boolean isHardcodingCondition = StringUtils.isNotEmpty(helper.getHardcodingValue());
+            boolean isMappingCodeCondition = helper.getMappingCode() != null;
+            
+            
+            // Original logic but with debug outputs
+            if (isHardcodingCondition) {
+                System.out.println("Entering hardcoding branch");
                 log.debug("Hardcoding value {} to path: {}", helper.getHardcodingValue(), thePath);
-                // is it ok we use string type here? could it be something else? probably it could be..
                 openEhrPopulator.setFhirPathValue(thePath, new StringType(helper.getHardcodingValue()),
                                                   helper.getOpenEhrType(), flatComposition);
-            } else if (helper.getMappingCode() != null) {
-                // get programmed mapping function from plugin using above result fhir object
-                // String className = "com.medblocks.openfhir."+helper.getMappingCode();
-                //
-                //        try {
-                //            // Step 1: Load the class
-                //            Class<?> clazz = Class.forName(className);
-                //
-                //            // Step 2: Create an instance of the class
-                //            Object instance = clazz.getDeclaredConstructor().newInstance();
-                //
-                //            // Step 3: Use the instance (optional)
-                //            if (instance instanceof MyClass) {
-                //                MyClass myClassInstance = (MyClass) instance;
-                //                myClassInstance.setFhirPathValue(thePath, result, helper.getOpenEhrType(), flatComposition); // Call the plugin function
-                //            }
-                //        } catch (ClassNotFoundException e) {
-                //            System.err.println("Class not found: " + className);
-                //        } catch (InstantiationException | IllegalAccessException e) {
-                //            System.err.println("Failed to instantiate class: " + e.getMessage());
-                //        } catch (NoSuchMethodException e) {
-                //            System.err.println("No public no-argument constructor found: " + e.getMessage());
-                //        } catch (Exception e) {
-                //            System.err.println("An unexpected error occurred: " + e.getMessage());
-                //        }
-            }
-
-            else {
+            } else if (isMappingCodeCondition) {
+                System.out.println("Entering mappingCode branch");
+            
+                log.info("Using mapping code: {}", helper.getMappingCode());
+                
+                try {
+                    // Get the plugin manager
+                    PluginManager pluginManager = SpringContext.getBean(PluginManager.class);
+                    
+                    // Get all FormatConverter extensions
+                    List<FormatConverter> converters = pluginManager.getExtensions(FormatConverter.class);
+                    
+                    if (converters.isEmpty()) {
+                        log.warn("No FormatConverter extensions found for mapping code: {}", helper.getMappingCode());
+                    } else {
+                        // Use the first converter for now
+                        FormatConverter converter = converters.get(0);
+                        
+                        // Apply the mapping
+                        boolean success = converter.applyFhirToOpenEhrMapping(
+                            helper.getMappingCode(), 
+                            thePath, 
+                            result, 
+                            helper.getOpenEhrType(), 
+                            flatComposition
+                        );
+                        
+                        if (!success) {
+                            log.warn("Mapping failed for code: {}", helper.getMappingCode());
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("Error applying mapping: {}", e.getMessage(), e);
+                }
+            } else {
                 openEhrPopulator.setFhirPathValue(thePath, result, helper.getOpenEhrType(), flatComposition);
             }
-
 
             if (helper.getFhirToOpenEhrHelpers() != null) {
                 // iterate over inner elements
                 for (FhirToOpenEhrHelper fhirToOpenEhrHelper : helper.getFhirToOpenEhrHelpers()) {
                     FhirToOpenEhrHelper copy = fhirToOpenEhrHelper.doClone();
+                    
+                    // Make sure mappingCode is properly copied
+                    copy.setMappingCode(fhirToOpenEhrHelper.getMappingCode());
 
                     if (copy.getOpenEhrPath().startsWith(helper.getOpenEhrPath())) {
                         final String newOne = copy.getOpenEhrPath().replace(helper.getOpenEhrPath(), thePath);
@@ -422,7 +448,6 @@ public class FhirToOpenEhr {
             if (evaluated && noMoreRecurringOptions) {
                 break;
             }
-
         }
 
         return true;
@@ -523,7 +548,7 @@ public class FhirToOpenEhr {
         for (final Mapping mapping : mappings) {
 
             final With with = mapping.getWith();
-            if (with == null || with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue())) {
+             if (with == null || (with.getOpenehr() == null && StringUtils.isNotEmpty(with.getValue()))) {
                 // this is hardcoding to FHIR, nothing to do here which is mapping to openEHR
                 continue;
             }
@@ -532,8 +557,13 @@ public class FhirToOpenEhr {
                 // this is unidirectional mapping toFhir only, ignore
                 continue;
             }
+             // Add null check for with.getOpenehr()
+             if (with.getOpenehr() == null) {
+                log.warn("Skipping mapping with null openEHR path for FHIR path: {}", with.getFhir());
+                continue;
+            }
             final FhirToOpenEhrHelper initialHelper = createHelper(mainArtifact, fhirConnectMapper, bundle);
-            if (with.getOpenehr() != null && with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_CONTEXT_FC)) {
+            if (with.getOpenehr().startsWith(FhirConnectConst.OPENEHR_CONTEXT_FC)) {
                 continue;
             }
 
@@ -757,7 +787,9 @@ public class FhirToOpenEhr {
             final String replacedFhirRoot = fhirPath.replace("." + FHIR_ROOT_FC, "")
                     .replace(FHIR_ROOT_FC, "");
             initialHelper.setFhirPath(replacedFhirRoot);
-            initialHelper.setMappingCode(mapping.getMappingCode()!=null?mapping.getMappingCode():null);
+            if (mapping.getMappingCode() != null) {
+                initialHelper.setMappingCode(mapping.getMappingCode());
+            } 
             initialHelper.setMultiple(multiple);
             fixLimitingCriteriaForInnerCreatedResources(fhirConnectMapper.getFhirConfig().getResource(), initialHelper);
             if (needsToBeAddedToParentHelpers) {
@@ -842,8 +874,8 @@ public class FhirToOpenEhr {
         final String limitingCriteria;
         if (fhirConfig.getCondition() != null) {
             final String existingFhirPath = stringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,
-                                                                      fhirConfig.getCondition(),
-                                                                      fhirConfig.getResource());
+                                                                  fhirConfig.getCondition(),
+                                                                  fhirConfig.getResource());
             if (bundle && existingFhirPath.startsWith(fhirConfig.getResource())) {
                 final String withoutResourceType = existingFhirPath.replace(fhirConfig.getResource() + ".", "");
                 limitingCriteria = String.format("Bundle.entry.resource.ofType(%s).where(%s)", fhirConfig.getResource(),

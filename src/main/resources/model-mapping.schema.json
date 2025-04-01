@@ -1,314 +1,259 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "FHIRConnect Model Schema",
-  "type": "object",
-  "properties": {
-    "engine": {
-      "type": "string",
-      "pattern": "^FHIRConnect/v[0-9]+\\.[0-9]+\\.[0-9]+$"
-    },
-    "type": {
-      "type": "string",
-      "enum": [
-        "model",
-        "extension"
-      ]
-    },
-    "metadata": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "version"
-      ]
-    },
-    "spec": {
-      "type": "object",
-      "properties": {
-        "system": {
-          "type": "string",
-          "enum": [
-            "FHIR"
-          ]
-        },
-        "version": {
-          "type": "string",
-          "enum": [
-            "R4"
-          ]
-        },
-        "extends": {
-          "type": "string"
-        },
-        "openEhrConfig": {
-          "type": "object",
-          "properties": {
-            "archetype": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "archetype"
-          ]
-        },
-        "fhirConfig": {
-          "type": "object",
-          "properties": {
-            "structureDefinition": {
-              "type": "string",
-              "format": "uri"
-            }
-          },
-          "required": [
-            "structureDefinition"
-          ]
-        }
-      },
-      "required": [
-        "system",
-        "version"
-      ]
-    },
-    "mappings": {
-      "$ref": "#/$defs/mappings"
-    }
-  },
-  "$defs": {
-    "mappings": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/mapping"
-      },
-      "title": "Mappings"
-    },
-    "mapping": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string",
-          "enum": [
-            "NONE",
-            "QUANTITY",
-            "DATETIME",
-            "CODEABLECONCEPT",
-            "CODING",
-            "STRING",
-            "DOSAGE",
-            "ID",
-            "IDENTIFIER",
-            "PROPORTION"
-          ]
-        },
-        "extension": {
-          "type": "string",
-          "enum": [
-            "add",
-            "append",
-            "overwrite"
-          ]
-        },
-        "appendTo": {
-          "type": "string"
-        },
-        "with": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "fhir": {
-              "type": "string"
-            },
-            "openehr": {
-              "type": "string"
-            },
-            "type": {
-              "type": "string"
-            }
-          }
-        },
-        "unidirectional": {
-          "type": "string"
-        },
-        "manual": {
-          "type": "array",
-          "additionalProperties": false,
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "openehr": {
-              "type": "array",
-              "properties": {
-                "path": {
-                  "type": "string"
-                },
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "fhirCondition": {
-              "type": "object"
-            },
-            "value": {
-              "type": "string"
-            },
-            "unidirectional": {
-              "type": "string"
-            }
-          }
-        },
-        "fhirCondition": {
-          "type": [
-            "object",
-            "null"
-          ],
-          "properties": {
-            "targetRoot": {
-              "type": "string"
-            },
-            "targetAttribute": {
-              "type": "string"
-            },
-            "targetAttributes": {
-              "type": "array"
-            },
-            "operator": {
-              "type": "string"
-            },
-            "criteria": {
-              "type": "string"
-            },
-            "criterias": {
-              "type": "array"
-            },
-            "identifying": {
-              "type": "boolean"
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "targetRoot",
-            "operator"
-          ]
-        },
-        "openehrCondition": {
-          "type": [
-            "object",
-            "null"
-          ],
-          "properties": {
-            "targetRoot": {
-              "type": "string"
-            },
-            "targetAttributes": {
-              "type": "array"
-            },
-            "targetAttribute": {
-              "type": "string"
-            },
-            "operator": {
-              "type": "string"
-            },
-            "criteria": {
-              "type": "string"
-            },
-            "criterias": {
-              "type": "array"
-            },
-            "identifying": {
-              "type": "boolean"
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "targetRoot",
-            "operator"
-          ],
-          "oneOf": [
-            {
-              "required": [
-                "targetAttribute"
-              ]
-            },
-            {
-              "required": [
-                "targetAttributes"
-              ]
-            }
-          ]
-        },
-        "followedBy": {
-          "type": [
-            "object",
-            "null"
-          ],
-          "properties": {
-            "mappings": {
-              "type": "array",
-              "items": {
-                "$ref": "#/$defs/mapping"
-              },
-              "additionalProperties": false,
-              "title": "Following Mappings"
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "mappings"
-          ]
-        },
-        "reference": {
-          "type": [
-            "object",
-            "null"
-          ],
-          "properties": {
-            "resourceType": {
-              "type": "string"
-            },
-            "mappings": {
-              "type": "array",
-              "items": {
-                "$ref": "#/$defs/mapping"
-              },
-              "additionalProperties": false,
-              "title": "Reference Mappings"
-            }
-          },
-          "additionalProperties": false,
-          "required": [
-            "resourceType",
-            "mappings"
-          ]
-        },
-        "slotArchetype": {
-          "type": [
-            "string",
-            "null"
-          ]
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "title": "Model Mapping"
-    }
-  },
-  "required": [
-    "grammar",
-    "type",
-    "metadata",
-    "spec"
-  ]
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "FHIRConnect Model Schema",
+	"type": "object",
+	"properties": {
+		"engine": {
+			"type": "string",
+			"pattern": "^FHIRConnect/v[0-9]+\\.[0-9]+\\.[0-9]+$"
+		},
+		"type": {
+			"type": "string",
+			"enum": ["model", "extension"]
+		},
+		"metadata": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"version": {
+					"type": "string"
+				}
+			},
+			"required": ["name", "version"]
+		},
+		"spec": {
+			"type": "object",
+			"properties": {
+				"system": {
+					"type": "string",
+					"enum": ["FHIR"]
+				},
+				"version": {
+					"type": "string",
+					"enum": ["R4"]
+				},
+				"extends": {
+					"type": "string"
+				},
+				"openEhrConfig": {
+					"type": "object",
+					"properties": {
+						"archetype": {
+							"type": "string"
+						}
+					},
+					"required": ["archetype"]
+				},
+				"fhirConfig": {
+					"type": "object",
+					"properties": {
+						"structureDefinition": {
+							"type": "string",
+							"format": "uri"
+						}
+					},
+					"required": ["structureDefinition"]
+				}
+			},
+			"required": ["system", "version"]
+		},
+		"mappings": {
+			"$ref": "#/$defs/mappings"
+		}
+	},
+	"$defs": {
+		"mappings": {
+			"type": "array",
+			"items": {
+				"$ref": "#/$defs/mapping"
+			},
+			"title": "Mappings"
+		},
+		"mapping": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"NONE",
+						"QUANTITY",
+						"DATETIME",
+						"CODEABLECONCEPT",
+						"CODING",
+						"STRING",
+						"DOSAGE",
+						"ID",
+						"IDENTIFIER",
+						"PROPORTION"
+					]
+				},
+				"extension": {
+					"type": "string",
+					"enum": ["add", "append", "overwrite"]
+				},
+				"appendTo": {
+					"type": "string"
+				},
+				"with": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"fhir": {
+							"type": "string"
+						},
+						"openehr": {
+							"type": "string"
+						},
+						"type": {
+							"type": "string"
+						}
+					}
+				},
+				"mappingCode": {
+					"type": "string"
+				},
+				"unidirectional": {
+					"type": "string"
+				},
+				"manual": {
+					"type": "array",
+					"additionalProperties": false,
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"openehr": {
+							"type": "array",
+							"properties": {
+								"path": {
+									"type": "string"
+								},
+								"value": {
+									"type": "string"
+								}
+							}
+						},
+						"fhirCondition": {
+							"type": "object"
+						},
+						"value": {
+							"type": "string"
+						},
+						"unidirectional": {
+							"type": "string"
+						}
+					}
+				},
+				"fhirCondition": {
+					"type": ["object", "null"],
+					"properties": {
+						"targetRoot": {
+							"type": "string"
+						},
+						"targetAttribute": {
+							"type": "string"
+						},
+						"targetAttributes": {
+							"type": "array"
+						},
+						"operator": {
+							"type": "string"
+						},
+						"criteria": {
+							"type": "string"
+						},
+						"criterias": {
+							"type": "array"
+						},
+						"identifying": {
+							"type": "boolean"
+						}
+					},
+					"additionalProperties": false,
+					"required": ["targetRoot", "operator"]
+				},
+				"openehrCondition": {
+					"type": ["object", "null"],
+					"properties": {
+						"targetRoot": {
+							"type": "string"
+						},
+						"targetAttributes": {
+							"type": "array"
+						},
+						"targetAttribute": {
+							"type": "string"
+						},
+						"operator": {
+							"type": "string"
+						},
+						"criteria": {
+							"type": "string"
+						},
+						"criterias": {
+							"type": "array"
+						},
+						"identifying": {
+							"type": "boolean"
+						}
+					},
+					"additionalProperties": false,
+					"required": ["targetRoot", "operator"],
+					"oneOf": [
+						{
+							"required": ["targetAttribute"]
+						},
+						{
+							"required": ["targetAttributes"]
+						}
+					]
+				},
+				"followedBy": {
+					"type": ["object", "null"],
+					"properties": {
+						"mappings": {
+							"type": "array",
+							"items": {
+								"$ref": "#/$defs/mapping"
+							},
+							"additionalProperties": false,
+							"title": "Following Mappings"
+						}
+					},
+					"additionalProperties": false,
+					"required": ["mappings"]
+				},
+				"reference": {
+					"type": ["object", "null"],
+					"properties": {
+						"resourceType": {
+							"type": "string"
+						},
+						"mappings": {
+							"type": "array",
+							"items": {
+								"$ref": "#/$defs/mapping"
+							},
+							"additionalProperties": false,
+							"title": "Reference Mappings"
+						}
+					},
+					"additionalProperties": false,
+					"required": ["resourceType", "mappings"]
+				},
+				"slotArchetype": {
+					"type": ["string", "null"]
+				}
+			},
+			"required": ["name"],
+			"title": "Model Mapping"
+		}
+	},
+	"required": ["grammar", "type", "metadata", "spec"]
 }

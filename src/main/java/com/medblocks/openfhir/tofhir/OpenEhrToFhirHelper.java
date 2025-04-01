@@ -72,6 +72,11 @@ public class OpenEhrToFhirHelper {
      * if it's followed by, here is an openEHR Path of a parent element
      */
     private String parentFollowedByOpenEhr;
+    
+    /**
+     * Custom mapping code for plugin-based conversion
+     */
+    private String mappingCode;
 
 
     @Data
