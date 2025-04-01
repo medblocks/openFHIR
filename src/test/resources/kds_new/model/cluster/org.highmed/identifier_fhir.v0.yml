@@ -1,13 +1,14 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: model
 metadata:
   name:  CLUSTER.identifier_fhir.v0
-  version: 0.0.1-alpha # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1-alpha 
+spec: 
   system: FHIR
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.identifier_fhir.v0
+    revision: 0.0.1-alpha
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Identifier
 
@@ -22,4 +23,4 @@ mappings:
       targetRoot: "$fhirRoot" # fhirRoot is already an Identifier
       targetAttribute: "system"
       operator: "one of"
-      criteria: "[external identifier]"
+      criteria: "external identifier"

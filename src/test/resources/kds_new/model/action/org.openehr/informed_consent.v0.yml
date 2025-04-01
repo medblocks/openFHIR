@@ -1,13 +1,14 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: model
 metadata:
   name: ACTION.informed_consent.v0
-  version: 0.0.1-alpha # version of this particular mapping
-spec: # schema specific to the FHIRConnect v0.0.1 engine
+  version: 0.0.1-alpha 
+spec: 
   system: FHIR
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ACTION.informed_consent.v0
+    revision: 0.0.1-alpha
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Consent
 
@@ -20,10 +21,11 @@ mappings:
       openehr: "$composition/context/start_time"
       type: "DATETIME"
 
-  - name: "healthCareFacility"
-    with:
-      fhir: "$resource.organization"
-      openehr: "$composition/context/health_care_facility"
+# Not supported reference to party identifier
+#  - name: "healthCareFacility"
+#    with:
+#      fhir: "$resource.organization"
+#      openehr: "$composition/context/health_care_facility"
 
   # ism transition hardcoding to fhir based on openEhr value
   - name: "ISMTransition"
@@ -33,140 +35,140 @@ mappings:
     manual:
       - name: "draft"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Initial"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "524"
         fhirCondition:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[draft]"
+          criteria: "draft"
 
         fhir:
           - path: "status"
             value: "draft"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[524]"
+          criteria: "524"
 
       - name: "proposed"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Planned"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "526"
         fhirCondition:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[proposed]"
+          criteria: "proposed"
         fhir:
           - path: "status"
             value: "proposed"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[526]"
+          criteria: "526"
 
       - name: "active"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Active"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "245"
         fhirCondition:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[[active]]"
+          criteria: "active"
         fhir:
           - path: "status"
             value: "active"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[245]"
+          criteria: "245"
 
       - name: "rejected"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Cancelled"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "528"
         fhirCondition:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[rejected]"
+          criteria: "rejected"
         fhir:
           - path: "status"
             value: "rejected"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[528]"
+          criteria: "528"
 
       - name: "inactive"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Completed"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "532"
         fhirCondition:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[inactive]"
+          criteria: "inactive"
         fhir:
           - path: "status"
             value: "inactive"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[532]"
+          criteria: "532"
 
       - name: "entered-in-error"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "openehr"
           - path: "value"
             value: "Cancelled"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "528"
         fhirCondition:
           targetRoot: "$fhirRoot"
           targetAttribute: "status"
           operator: "one of"
-          criteria: "[entered-in-error]"
+          criteria: "entered-in-error"
         fhir:
           - path: "status"
             value: "entered-in-error"
         openehrCondition:
           targetRoot: "$openehrRoot"
-          targetAttribute: "defining_code"
+          targetAttribute: "defining_code/code_string"
           operator: "one of"
-          criteria: "[528]"
+          criteria: "528"
 
 
 
-  - name: "studie"
+  - name: "study"
     with:
       fhir: "$resource"
       openehr: "$archetype/description[at0001]/items[openEHR-EHR-CLUSTER.study_participation.v1]"

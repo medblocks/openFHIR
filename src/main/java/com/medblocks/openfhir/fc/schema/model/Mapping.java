@@ -7,10 +7,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 
 
 /**
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
         "extension",
         "appendTo",
         "with",
+        "mappingCode",
+        "unidirectional",
         "manual",
         "fhirCondition",
         "openehrCondition",
@@ -47,10 +52,17 @@ public class Mapping {
      */
     @JsonProperty("with")
     private With with;
+    @JsonProperty("mappingCode")
+    private String mappingCode;
+    @JsonProperty("unidirectional")
+    private String unidirectional;
     @JsonProperty("manual")
     private List<Manual> manual;
     @JsonProperty("fhirCondition")
     private Condition fhirCondition;
+    @Getter
+    @Setter
+    private List<Condition> typeConditions; // just a helper, not actually de/serialized
     @JsonProperty("openehrCondition")
     private Condition openehrCondition;
     @JsonProperty("followedBy")
@@ -65,12 +77,16 @@ public class Mapping {
         mapping.setAppendTo(appendTo);
         mapping.setSlotArchetype(slotArchetype);
         mapping.setWith(with == null ? null : with.copy());
+        mapping.setMappingCode(mappingCode);
         mapping.setManual(manual == null ? null : manual.stream().map(e -> e.copy())
                 .collect(Collectors.toList()));
         mapping.setFhirCondition(fhirCondition == null ? null : fhirCondition.copy());
         mapping.setOpenehrCondition(openehrCondition == null ? null : openehrCondition.copy());
         mapping.setFollowedBy(followedBy == null ? null : followedBy.copy());
         mapping.setReference(reference == null ? null : reference.copy());
+        mapping.setUnidirectional(unidirectional);
+        mapping.setTypeConditions(typeConditions == null ? null : typeConditions.stream().map(e -> e.copy())
+                .collect(Collectors.toList()));
         return mapping;
     }
 
@@ -80,11 +96,22 @@ public class Mapping {
         this.setSlotArchetype(copyingFrom.getSlotArchetype());
         this.setAppendTo(copyingFrom.getAppendTo());
         this.setWith(copyingFrom.getWith());
+        this.setMappingCode(copyingFrom.getMappingCode());
         this.setFhirCondition(copyingFrom.getFhirCondition());
         this.setOpenehrCondition(copyingFrom.getOpenehrCondition());
         this.setFollowedBy(copyingFrom.getFollowedBy());
         this.setReference(copyingFrom.getReference());
         this.setManual(copyingFrom.getManual());
+        this.setUnidirectional(copyingFrom.getUnidirectional());
+        this.setTypeConditions(copyingFrom.getTypeConditions());
+        return this;
+    }
+
+    public Mapping addTypeCondition(final Condition condition) {
+        if(this.typeConditions == null) {
+            this.typeConditions = new ArrayList<>();
+        }
+        this.typeConditions.add(condition);
         return this;
     }
 
@@ -145,6 +172,24 @@ public class Mapping {
         return this;
     }
 
+    @JsonProperty("unidirectional")
+    public String getUnidirectional() {
+        return unidirectional;
+    }
+
+    /**
+     * (Required)
+     */
+    @JsonProperty("unidirectional")
+    public void setUnidirectional(String unidirectional) {
+        this.unidirectional = unidirectional;
+    }
+
+    public Mapping withUnidirectional(String unidirectional) {
+        this.unidirectional = unidirectional;
+        return this;
+    }
+
     @JsonProperty("extension")
     public ModelExtension getExtension() {
         return extension;
@@ -195,6 +240,19 @@ public class Mapping {
 
     public Mapping withWith(With with) {
         this.with = with;
+        return this;
+    }
+
+    @JsonProperty("mappingCode")
+    public String getMappingCode() {
+        return mappingCode;
+    }
+    public void setMappingCode(String mappingCode) {
+        this.mappingCode = mappingCode;
+    }
+
+    public Mapping withMappingCode(String mappingCode) {
+        this.mappingCode = mappingCode;
         return this;
     }
 

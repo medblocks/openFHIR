@@ -9,8 +9,8 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "profileUrl",
-    "templateId",
+    "profile",
+    "template",
     "archetypes",
     "extensions",
     "start"
@@ -22,15 +22,15 @@ public class Context {
      * (Required)
      * 
      */
-    @JsonProperty("profileUrl")
-    private URI profileUrl;
+    @JsonProperty("profile")
+    private ContextProfile profile;
     /**
      * 
      * (Required)
      * 
      */
-    @JsonProperty("templateId")
-    private String templateId;
+    @JsonProperty("template")
+    private ContextTemplate template;
     /**
      * 
      * (Required)
@@ -58,9 +58,9 @@ public class Context {
      * (Required)
      * 
      */
-    @JsonProperty("profileUrl")
-    public URI getProfileUrl() {
-        return profileUrl;
+    @JsonProperty("profile")
+    public ContextProfile getProfile() {
+        return profile;
     }
 
     /**
@@ -68,9 +68,9 @@ public class Context {
      * (Required)
      * 
      */
-    @JsonProperty("profileUrl")
-    public void setProfileUrl(URI profileUrl) {
-        this.profileUrl = profileUrl;
+    @JsonProperty("profile")
+    public void setProfile(ContextProfile profile) {
+        this.profile = profile;
     }
 
     /**
@@ -78,9 +78,9 @@ public class Context {
      * (Required)
      * 
      */
-    @JsonProperty("templateId")
-    public String getTemplateId() {
-        return templateId;
+    @JsonProperty("template")
+    public ContextTemplate getTemplate() {
+        return template;
     }
 
     /**
@@ -88,9 +88,9 @@ public class Context {
      * (Required)
      * 
      */
-    @JsonProperty("templateId")
-    public void setTemplateId(String templateId) {
-        this.templateId = templateId;
+    @JsonProperty("template")
+    public void setTemplate(ContextTemplate template) {
+        this.template = template;
     }
 
     /**

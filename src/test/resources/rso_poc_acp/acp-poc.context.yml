@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: context
 metadata:
   name: "ACP_POC"
@@ -8,8 +8,10 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
 
 context:
-  profileUrl: "Observation"
-  templateId: "ACP_POC"
+  profile:
+    url: "Observation"
+  template:
+    id: "ACP_POC"
   archetypes:
     - "openEHR-EHR-EVALUATION.advance_care_directive.v2"
     - "openEHR-EHR-EVALUATION.advance_intervention_decisions.v1"

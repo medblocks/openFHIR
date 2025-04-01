@@ -88,7 +88,7 @@ public class OpenFhirEngine {
 
         final Resource resource = parseIncomingFhirResource(incomingFhirResource);
         for (final FhirConnectContextEntity context : allUserContexts) {
-            final Condition condition = getContextCondition(context.getFhirConnectContext().getContext().getProfileUrl());
+            final Condition condition = getContextCondition(context.getFhirConnectContext().getContext().getProfile().getUrl());
             final String resourceType = "Bundle"; // todo: always bundle?
             final String fhirPathWithCondition = openFhirStringUtils.amendFhirPath(FhirConnectConst.FHIR_RESOURCE_FC,
                     Collections.singletonList(condition),
@@ -114,7 +114,7 @@ public class OpenFhirEngine {
         return fallbackContext;
     }
 
-    private Condition getContextCondition(final URI profileUrl) {
+    private Condition getContextCondition(final String profileUrl) {
         if(profileUrl == null) {
             return null;
         }
@@ -122,7 +122,7 @@ public class OpenFhirEngine {
         condition.setTargetRoot("Bundle"); // todo: always bundle?
         condition.setTargetAttribute("entry.resource.meta.profile"); // todo: modify accordingly to the agreement, which should this point to now that we've removed general approach?
         condition.setOperator("one of");
-        condition.setCriteria(profileUrl.toString());
+        condition.setCriteria(profileUrl);
         return condition;
     }
 
@@ -168,7 +168,7 @@ public class OpenFhirEngine {
             log.error(logMsg);
             throw new IllegalArgumentException(logMsg);
         }
-        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getContext().getTemplateId();
+        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getContext().getTemplate().getId();
 
         validatePrerequisites(fhirConnectContext, templateIdToUse);
 
@@ -205,11 +205,11 @@ public class OpenFhirEngine {
     public String toFhir(final String openEhrCompositionJson, final String incomingTemplateId) {
         // find the context mapper for the given template
         final FhirConnectContextEntity fhirConnectContext = getContextForOpenEhr(openEhrCompositionJson, incomingTemplateId);
-
+System.out.println("openEhrCompositionJson: " + openEhrCompositionJson);
         // validate prerequisites before starting any kind of mapping logic
-        validatePrerequisites(fhirConnectContext, fhirConnectContext != null ? fhirConnectContext.getFhirConnectContext().getContext().getTemplateId() : incomingTemplateId);
+        validatePrerequisites(fhirConnectContext, fhirConnectContext != null ? fhirConnectContext.getFhirConnectContext().getContext().getTemplate().getId() : incomingTemplateId);
 
-        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getContext().getTemplateId(); // fhirConnectContext can not be null because prerequisites are validated above
+        final String templateIdToUse = fhirConnectContext.getFhirConnectContext().getContext().getTemplate().getId(); // fhirConnectContext can not be null because prerequisites are validated above
 
 
         final OPERATIONALTEMPLATE operationalTemplate = cachedUtils.getOperationalTemplate(templateIdToUse);

@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: context
 metadata:
   name: "Growth chart"
@@ -8,8 +8,10 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
 
 context:
-  profileUrl: "Observation"
-  templateId: "Growth chart"
+  profile:
+    url: "Observation"
+  template:
+    id: "Growth chart"
   archetypes:
     - "openEHR-EHR-OBSERVATION.body_weight.v2"
     - "openEHR-EHR-OBSERVATION.height.v2"

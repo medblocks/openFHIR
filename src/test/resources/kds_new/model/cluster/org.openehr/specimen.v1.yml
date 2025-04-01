@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: model
 metadata:
   name: CLUSTER.specimen.v1
@@ -8,6 +8,7 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-CLUSTER.specimen.v1
+    revision: 1.1.2
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 
@@ -31,6 +32,12 @@ mappings:
             openehr: "items[at0015]"
             type: "DATETIME"
 
+        - name: "collected"
+          with:
+            fhir: "collected.as(Period)" # same as onset; try to provide both and use the one that's present
+            openehr: "items[at0015]"
+            type: "PERIOD"
+
         - name: "collector"
           with:
             fhir: "collector.as(Reference).identifier" # explicitly cast to Reference to avoid adding a Resource
@@ -39,21 +46,18 @@ mappings:
 
         - name: "specimenCollectionMethod"
           with:
-            fhir: "method.text"
+            fhir: "method"
             openehr: "items[at0007]"
-            type: "STRING"
 
         - name: "specimenCollectionBodySite"
           with:
-            fhir: "bodySite.text"
-            openehr: "items[at0087, 'Körperstelle']"
-            type: "STRING"
+            fhir: "bodySite"
+            openehr: "items[at0087]"
 
         - name: "samplingContext"
           with:
-            fhir: "fastingStatus.as(CodeableConcept).text"
+            fhir: "fastingStatus.as(CodeableConcept)"
             openehr: "items[at0008]" #Sampling context
-            type: "STRING"
 
   - name: "type"
     with:
@@ -91,6 +95,45 @@ mappings:
       openehr: "$archetype/items[at0003]"
       type: "STRING"
 
+  - name: "request"
+    with:
+      fhir: "$resource.parent"
+      openehr: "$archetype/items[at0003]"
+      type: "NONE"
+    followedBy:
+      mappings:
+        - name: "identifier"
+          with:
+            fhir: "$fhirRoot.as(Reference).identifier"
+            openehr: "$openehrRoot"
+          openehrCondition:
+            targetRoot: "$openehrRoot"
+            targetAttribute: "links"
+            operator: "empty"
+
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.as(Specimen)"
+            openehr: "$reference"
+          openehrCondition:
+            targetRoot: "$openehrRoot"
+            targetAttribute: "links"
+            operator: "not empty"
+          reference:
+            resourceType: "Specimen"
+            mappings:
+              - name: "identifierInReference"
+                with:
+                  fhir: "$fhirRoot.identifier"
+                  openehr: "$openehrRoot"
+#              - name: "specimenLink"
+#                with:
+#                  fhir: "$fhirRoot"
+#                  openehr: "$openehrRoot/links"
+#                openehrLink:
+#                  meaning: "the parent of this specimen"
+#                  type: "parent"
+
   - name: "status"
     with:
       fhir: "$resource"
@@ -99,7 +142,7 @@ mappings:
       targetRoot: "$resource"
       targetAttribute: "status"
       operator: "not in"
-      criteria: "[entered-in-error]"
+      criteria: "entered-in-error"
     manual:
       - name: "available"
         fhir:
@@ -107,23 +150,21 @@ mappings:
             value: "available"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0041]/defining_code"
+          targetAttribute: "items[at0041]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0062]"
+          criteria: "at0062"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0062" # Zufriedenstellend
           - path: "value"
             value: "Satisfactory "
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttributes:
-            - "status"
+          targetAttribute: "status"
           operator: "one of"
-          criteria: "[available]"
+          criteria: "available"
 
       - name: "unavailable"
         fhir:
@@ -131,23 +172,21 @@ mappings:
             value: "unavailable"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0041]/defining_code"
+          targetAttribute: "items[at0041]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0064]"
+          criteria: "at0064"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0064"
           - path: "value"
             value: "Unsatisfactory - not analysed"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttributes:
-            - "status"
+          targetAttribute: "status"
           operator: "one of"
-          criteria: "[unavailable]"
+          criteria: "unavailable"
 
       - name: "unsatisfactory"
         fhir:
@@ -155,23 +194,21 @@ mappings:
             value: "unsatisfactory"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttributes:
-            - "items[at0041]/defining_code"
+          targetAttribute: "items[at0041]/defining_code/code_string"
           operator: "one of"
-          criteria: "[at0064]"
+          criteria: "at0064"
         openehr:
-          - path: "terminology_id"
+          - path: "defining_code/terminology_id"
             value: "local"
-          - path: "defining_code"
+          - path: "defining_code/code_string"
             value: "at0064"
           - path: "value"
             value: "Unsatisfactory - not analysed"
         fhirCondition:
           targetRoot: "$fhirRoot"
-          targetAttributes:
-            - "status"
+          targetAttribute: "status"
           operator: "one of"
-          criteria: "[unsatisfactory]"
+          criteria: "unsatisfactory"
 
 
 

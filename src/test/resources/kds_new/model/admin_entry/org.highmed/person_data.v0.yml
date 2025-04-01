@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: model
 metadata:
   name: ADMIN_ENTRY.person_data.v0
@@ -8,13 +8,14 @@ spec:
   version: R4
   openEhrConfig:
     archetype: openEHR-EHR-ADMIN_ENTRY.person_data.v0
+    revision: 0.0.1-alpha
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Patient
     condition:
       - targetRoot: "$resource"
         targetAttribute: "active"  # exclude non-active patients
         operator: "one of"
-        criteria: "[false]"
+        criteria: "false"
 
 mappings:
   - name: "personData"
@@ -31,7 +32,7 @@ mappings:
 
   - name: "deathDateTime"
     with:
-      fhir: "$resource.deceased.as(DateTime)"
+      fhir: "$resource.deceased.as(DateTimeType)"
       openehr: "$archetype/data[at0001]/items[at0024]"
     manual:
       - name: "deathboolean"
@@ -40,8 +41,7 @@ mappings:
             value: "True"
     fhirCondition:
       targetRoot: "$resource"
-      targetAttributes:
-        - "deceased"
+      targetAttribute: "deceased"
       operator: "not empty"
     followedBy:
       mappings:
@@ -65,12 +65,11 @@ mappings:
 #      mappings:
 #        - name: "links"
 #          with:
-#            fhir: "$fhirRoot.other.reference"
+#            fhir: "$fhirRoot.other"
 #            openehr: "$archetype/links" # will use link
-#            type: "REFERENCED_MAPPING" # execute mapping or use already mapped one to get Composition URI
-#            openehrLink:
-#              meaning: "Part of referenced event"
-#              type: "partOf"
+#          openehrLink:
+#            meaning: "Part of referenced event"
+#            type: "partOf"
 #          followedBy:
 #              mappings:
 #                - name: "type"

@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.0.1
 type: context
 metadata:
   name: "NEWS2 Encounter Parent"
@@ -8,8 +8,10 @@ spec: # schema specific to the FHIRConnect v0.0.1 engine
   version: R4
 
 context:
-  profileUrl: "Observation"
-  templateId: "NEWS2 Encounter Parent"
+  profile:
+    url: "Observation"
+  template:
+    id: "NEWS2 Encounter Parent"
   archetypes:
     - "openEHR-EHR-OBSERVATION.news2.v1"
     - "openEHR-EHR-OBSERVATION.acvpu.v1"

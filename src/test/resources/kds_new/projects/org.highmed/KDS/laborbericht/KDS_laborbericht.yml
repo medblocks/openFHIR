@@ -1,4 +1,4 @@
-engine: FHIRConnect/v0.0.1
+grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
   name: KDS_laborbericht
@@ -32,11 +32,41 @@ mappings:
     slotArchetype: "CLUSTER.case_identification.v0"
 
 
+  - name: "fallIdentifikationReference" # if reference is accessible overwrite fallIdentifikationIdentifier
+    extension: "add"
+    with:
+      fhir: "$resource.encounter"
+      openehr: "$reference"
+    reference: #type None
+      resourceType: "Encounter"
+      mappings:
+        - name: "identifierInReference"
+          with:
+            fhir: "$fhirRoot.identifier"
+            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]"
+          slotArchetype: "CLUSTER.case_identification.v0"
+  #        - name: "encounterMapping" # link mappings not suppoorted
+  #          with:
+  #            fhir: "$fhirRoot"
+  #            openehr: "$composition/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.case_identification.v0]/links" # will use link
+  #            openehrLink:
+  #              meaning: "the case this composition relates to"
+  #              type: "case"
+
+
   - name: "status" #TODO @deprecated needs to go once mapping is updated
     extension: "overwrite"
     with:
       fhir: "$resource.status"
       openehr: "$composition/context/other_context[at0001]/items[at0005]"
+      type: "CODING"
+
+#TODO does not work
+#  - name: "eventTime" #TODO @deprecated needs to go once mapping is updated
+#    extension: "overwrite"
+#    with:
+#      fhir: "$resource.effective.as(DateTimeType)"
+#      openEHR: "$archetype/data[at0001]/events[at0002]/time" # period -> interval event, datetime to pointInTime event
 
   - name: "berichtIdParent"
     extension: "add"
@@ -47,7 +77,7 @@ mappings:
       targetRoot: "$resource.identifier"
       targetAttribute: "type.coding.code"
       operator: "one of"
-      criteria: "[FILL]"
+      criteria: "FILL"
     followedBy:
       mappings:
         - name: "type"

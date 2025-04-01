@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
         "targetAttributes",
         "operator",
         "criteria",
+        "criterias",
         "identifying",
 })
 
@@ -44,6 +45,8 @@ public class Condition {
      */
     @JsonProperty("criteria")
     private String criteria;
+    @JsonProperty("criterias")
+    private List<String> criterias;
     @JsonProperty("identifying")
     private Boolean identifying;
 
@@ -54,6 +57,7 @@ public class Condition {
         condition.setTargetAttribute(targetAttribute);
         condition.setOperator(operator);
         condition.setCriteria(criteria);
+        condition.setCriterias(criterias);
         condition.setIdentifying(identifying == null ? null : new Boolean(identifying.booleanValue()));
         return condition;
     }
@@ -148,17 +152,15 @@ public class Condition {
         return this;
     }
 
-    /**
-     * (Required)
-     */
     @JsonProperty("criteria")
     public String getCriteria() {
+        if(criteria == null && criterias != null && !criterias.isEmpty()) {
+            // todo: this needs to be adjusted once we support more condition on more criterias
+            return criterias.get(0);
+        }
         return criteria;
     }
 
-    /**
-     * (Required)
-     */
     @JsonProperty("criteria")
     public void setCriteria(String criteria) {
         this.criteria = criteria;
@@ -168,6 +170,25 @@ public class Condition {
         this.criteria = criteria;
         return this;
     }
+
+
+
+    @JsonProperty("criterias")
+    public List<String> getCriterias() {
+        if(StringUtils.isNotBlank(criteria)) {
+            return List.of(criteria);
+        }
+        return criterias;
+    }
+
+    @JsonProperty("criterias")
+    public void setCriterias(List<String> criterias) {
+        this.criterias = criterias;
+    }
+
+
+
+
 
     @JsonProperty("identifying")
     public Boolean getIdentifying() {
