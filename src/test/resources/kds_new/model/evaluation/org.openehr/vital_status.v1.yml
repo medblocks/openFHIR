@@ -73,7 +73,6 @@ mappings:
 #          with:
 #            fhir: "$fhirRoot"
 #            openehr: "$openEHRRoot" # reference to party_identified NOT SUPPORTED since 1..1 whole mapping is commented out
-  -
   - name: "effective"
     with:
       fhir: "$resource.effective"
