@@ -209,6 +209,10 @@ public class FhirInstanceCreatorUtility {
 
     public Object newInstance(final Class clazz) {
         try {
+            // Handle abstract Type class by returning StringType as default
+            if (clazz == org.hl7.fhir.r4.model.Type.class) {
+                return new StringType();
+            }
             return clazz.getDeclaredConstructor().newInstance();
         } catch (final Exception e) {
             log.error("Error trying to create a new instance of class: {}", clazz, e);

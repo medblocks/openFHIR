@@ -26,6 +26,7 @@ import lombok.Setter;
         "extension",
         "appendTo",
         "with",
+        "mappingCode",
         "unidirectional",
         "manual",
         "fhirCondition",
@@ -51,6 +52,8 @@ public class Mapping {
      */
     @JsonProperty("with")
     private With with;
+    @JsonProperty("mappingCode")
+    private String mappingCode;
     @JsonProperty("unidirectional")
     private String unidirectional;
     @JsonProperty("manual")
@@ -74,6 +77,7 @@ public class Mapping {
         mapping.setAppendTo(appendTo);
         mapping.setSlotArchetype(slotArchetype);
         mapping.setWith(with == null ? null : with.copy());
+        mapping.setMappingCode(mappingCode);
         mapping.setManual(manual == null ? null : manual.stream().map(e -> e.copy())
                 .collect(Collectors.toList()));
         mapping.setFhirCondition(fhirCondition == null ? null : fhirCondition.copy());
@@ -92,6 +96,7 @@ public class Mapping {
         this.setSlotArchetype(copyingFrom.getSlotArchetype());
         this.setAppendTo(copyingFrom.getAppendTo());
         this.setWith(copyingFrom.getWith());
+        this.setMappingCode(copyingFrom.getMappingCode());
         this.setFhirCondition(copyingFrom.getFhirCondition());
         this.setOpenehrCondition(copyingFrom.getOpenehrCondition());
         this.setFollowedBy(copyingFrom.getFollowedBy());
@@ -237,6 +242,19 @@ public class Mapping {
         this.with = with;
         return this;
     }
+
+     @JsonProperty("mappingCode")
+     public String getMappingCode() {
+         return mappingCode;
+     }
+     public void setMappingCode(String mappingCode) {
+         this.mappingCode = mappingCode;
+     }
+ 
+     public Mapping withMappingCode(String mappingCode) {
+         this.mappingCode = mappingCode;
+         return this;
+     }
 
     @JsonProperty("fhirCondition")
     public Condition getFhirCondition() {

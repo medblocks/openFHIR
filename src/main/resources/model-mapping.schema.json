@@ -277,6 +277,9 @@
             }
           }
         },
+        "mappingCode": {
+ 					"type": "string"
+ 				},
         "unidirectional": {
           "type": "string"
         },
