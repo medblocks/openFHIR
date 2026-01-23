@@ -121,41 +121,27 @@
               "extension": [
                 {
                   "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
-                  "valueCodeableConcept": {
-                    "coding": [
+                    "valueCoding":
                       {
                         "system": "local",
                         "code": "†",
                         "display": "Primary code in multiple coding"
                       }
-                    ],
-                    "text": "Primary code in multiple coding"
-                  }
                 },
                 {
                   "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
+                  "valueCoding": {
                         "system": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
                         "code": "L",
                         "display": "Left side"
                       }
-                    ],
-                    "text": "Left side"
-                  }
                 },
                 {
                   "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
-                        "code": "G",
-                        "display": "Confirmed diagnosis"
-                      }
-                    ],
-                    "text": "Confirmed diagnosis"
+                  "valueCoding": {
+                    "system": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
+                    "code": "G",
+                    "display": "Confirmed diagnosis"
                   }
                 }
               ]

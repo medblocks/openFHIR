@@ -1,0 +1,1 @@
+Couldn't find any Context mapper for the given Resource. Make sure at least one Context mapper exists where fhir.resourceType is of this type (Bundle) and condition within the context mapper allows for it to be applied on this specific resource.

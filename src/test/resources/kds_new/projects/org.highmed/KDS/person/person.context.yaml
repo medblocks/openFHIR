@@ -2,8 +2,8 @@ grammar: FHIRConnect/v0.9.0
 type: context
 metadata:
   name:  KDS_Person.context
-  version: 0.0.1a 
-spec: 
+  version: 0.0.1a
+spec:
   system: FHIR
   version: R4
 
@@ -20,13 +20,15 @@ context:
     - "CLUSTER.person.v1"
     - "CLUSTER.structured_name.v1"
     - "CLUSTER.address.v1"
+    - "CLUSTER.organisation.v1"
     - "CLUSTER.person_birth_data_iso.v0"
     - "CLUSTER.death_details.v1"
-    - "CLUSTER.observation_status_fhir.v1"
+    - "ADMIN_ENTRY.versicherungsinformationen.v0"
   extensions:
     - "KDS_person_data.v0"
     - "KDS_gender.v1"
     - "KDS_cluster_person.v1"
+    - "KDS_address"
     - "KDS_structured_name.v1.person_name-structured_name"
     - "KDS_admin_entry_person.v0"
   start: "ADMIN_ENTRY.person_data.v0"

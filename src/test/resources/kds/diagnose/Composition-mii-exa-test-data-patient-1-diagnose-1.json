@@ -1,0 +1,277 @@
+{
+  "_type" : "COMPOSITION",
+  "name" : {
+    "_type" : "DV_TEXT",
+    "value" : "Diagnose"
+  },
+  "archetype_details" : {
+    "archetype_id" : {
+      "value" : "openEHR-EHR-COMPOSITION.report.v1"
+    },
+    "template_id" : {
+      "value" : "KDS_Diagnose"
+    },
+    "rm_version" : "1.0.4"
+  },
+  "language" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_639-1"
+    },
+    "code_string" : "de"
+  },
+  "territory" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_3166-1"
+    },
+    "code_string" : "DE"
+  },
+  "category" : {
+    "_type" : "DV_CODED_TEXT",
+    "value" : "event",
+    "defining_code" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "openehr"
+      },
+      "code_string" : "433"
+    }
+  },
+  "composer" : {
+    "_type" : "PARTY_SELF"
+  },
+  "context" : {
+    "_type" : "EVENT_CONTEXT",
+    "start_time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2024-02-21T00:00:00"
+    },
+    "setting" : {
+      "_type" : "DV_CODED_TEXT",
+      "value" : "other care",
+      "defining_code" : {
+        "_type" : "CODE_PHRASE",
+        "terminology_id" : {
+          "_type" : "TERMINOLOGY_ID",
+          "value" : "openehr"
+        },
+        "code_string" : "238"
+      }
+    }
+  },
+  "content" : [ {
+    "_type" : "EVALUATION",
+    "name" : {
+      "_type" : "DV_TEXT",
+      "value" : "Diagnose"
+    },
+    "archetype_details" : {
+      "archetype_id" : {
+        "value" : "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+      },
+      "rm_version" : "1.0.4"
+    },
+    "language" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "ISO_639-1"
+      },
+      "code_string" : "de"
+    },
+    "encoding" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "IANA_character-sets"
+      },
+      "code_string" : "UTF-8"
+    },
+    "subject" : {
+      "_type" : "PARTY_SELF"
+    },
+    "data" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Structure"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Kodierte Diagnose"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "mappings" : [ {
+            "_type" : "TERM_MAPPING",
+            "match" : "?",
+            "target" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "http://fhir.de/CodeSystem/bfarm/alpha-id"
+              },
+              "code_string" : "I29578",
+              "preferred_term" : "Masern mit Otitis"
+            }
+          }, {
+            "_type" : "TERM_MAPPING",
+            "match" : "?",
+            "target" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "http://snomed.info/sct"
+              },
+              "code_string" : "13420004",
+              "preferred_term" : "Post measles otitis media (disorder)"
+            }
+          } ],
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+            },
+            "code_string" : "B05.3"
+          }
+        },
+        "archetype_node_id" : "at0002"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Anatomische Lokalisation"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.anatomical_location.v1"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Name der Körperstelle"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Middle ear structure (body structure)",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "http://snomed.info/sct"
+              },
+              "code_string" : "25342003"
+            }
+          },
+          "archetype_node_id" : "at0001"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.anatomical_location.v1"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Klinisch relevanter Zeitraum (Zeitpunkt des Auftretens)"
+        },
+        "value" : {
+          "_type" : "DV_DATE_TIME",
+          "value" : "2024-02-21T00:00:00"
+        },
+        "archetype_node_id" : "at0077"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Klinischer Status"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Klinischer Status"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "http://terminology.hl7.org/CodeSystem/condition-clinical"
+              },
+              "code_string" : "active"
+            }
+          },
+          "archetype_node_id" : "at0003"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Diagnoserolle"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Hauptdiagnose",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "local"
+              },
+              "code_string" : "at0064"
+            }
+          },
+          "archetype_node_id" : "at0063"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Diagnosesicherheit"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "gesicherte Diagnose",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT"
+            },
+            "code_string" : "G"
+          }
+        },
+        "archetype_node_id" : "at0073"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Diagnoseerläuterung"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "Masernotitis"
+        },
+        "archetype_node_id" : "at0069"
+      } ],
+      "archetype_node_id" : "at0001"
+    },
+    "archetype_node_id" : "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+  } ],
+  "archetype_node_id" : "openEHR-EHR-COMPOSITION.report.v1"
+}

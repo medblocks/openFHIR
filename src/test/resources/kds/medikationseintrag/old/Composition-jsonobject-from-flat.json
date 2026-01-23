@@ -1,0 +1,1 @@
+{"timestamp":1769173414487,"status":500,"error":"Internal Server Error","message":"HAPI-1838: Invalid JSON content detected, missing required element: 'resourceType'","path":"/openfhir/toopenehr"}

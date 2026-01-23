@@ -2,14 +2,14 @@ grammar: FHIRConnect/v0.9.0
 type: context
 metadata:
   name:  KDS_medikationseintrag.context
-  version: 0.0.1a 
-spec: 
+  version: 0.0.1a
+spec:
   system: FHIR
   version: R4
 
 context:
   profile:
-    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/MedicationStatement"
+    url: "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
     version: "2025.0.0"
   template:
     id: "KDS_Medikationseintrag"

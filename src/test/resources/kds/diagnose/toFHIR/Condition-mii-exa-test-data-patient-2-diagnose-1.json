@@ -1,0 +1,98 @@
+{
+  "resourceType": "Bundle",
+  "id": "mii-exa-test-data-bundle-pat-2",
+  "meta": {
+    "security": [
+      {
+        "code": "HTEST",
+        "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+        "display": "test health data"
+      }
+    ]
+  },
+  "type": "transaction",
+  "timestamp": "2025-06-18T13:53:00+02:00",
+  "entry": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      },
+      "fullUrl": "https://www.medizininformatik-initiative.de/Condition/mii-exa-test-data-patient-2-diagnose-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "mii-exa-test-data-patient-2-diagnose-1",
+        "meta": {
+          "security": [
+            {
+              "code": "HTEST",
+              "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+              "display": "test health data"
+            }
+          ],
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "code": "C34.1",
+              "version": "2024"
+            },
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
+              "code": "I30011",
+              "version": "2024",
+              "display": "Bösartige Neubildung des Lungenoberlappens"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "254637007",
+              "version": "http://snomed.info/sct/900000000000207008/version/20230731",
+              "display": "Non-small cell lung cancer (disorder)"
+            }
+          ]
+        },
+        "note": [
+          {
+            "text": "Bösartige Neubildung: Oberlappen-Bronchus"
+          }
+        ],
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "45653009",
+                "version": "http://snomed.info/sct/900000000000207008/version/20230731",
+                "display": "Structure of upper lobe of lung (body structure)"
+              }
+            ]
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "code": "active",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "code": "confirmed",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/mii-exa-test-data-patient-2"
+        },
+        "recordedDate": "2024-03-02"
+      }
+    }
+  ]
+}
