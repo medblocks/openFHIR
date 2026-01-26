@@ -135,6 +135,19 @@ public class TestOpenFhirMappingContext extends OpenFhirMappingContext {
             }
         });
 
+        final String start = context.getContext().getStart();
+        if (start != null) {
+            final List<OpenFhirFhirConnectModelMapper> archetypeMappers = mappers.get(start);
+            if (archetypeMappers == null) {
+                context.getContext().setStart(start);
+            } else {
+                final String overridenMapper = archetypeMappers.get(0).getOpenEhrConfig()
+                        .getArchetype();
+                context.getContext().setStart(overridenMapper);
+            }
+        }
+
+
         return mappers;
     }
 

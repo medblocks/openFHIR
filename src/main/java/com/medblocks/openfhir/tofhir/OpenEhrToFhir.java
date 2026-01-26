@@ -164,8 +164,57 @@ public class OpenEhrToFhir {
         final Set<String> createdAndAdded = new HashSet<>();
         final Set<String> archetypesAlreadyProcessed = new HashSet<>();
 
-        // first the parent itself
-        // get mapper by templateid (context) + archetype id (model)
+        if (StringUtils.isEmpty(context.getContext().getStart())
+                || context.getContext().getStart().equals(composition.getArchetypeNodeId())) {
+            // fallback to the previous logic
+            // first the parent itself
+            // get mapper by templateid (context) + archetype id (model)
+            handleParentCompositionMapping(webTemplate, templateId, creatingBundle, flatJsonObject,
+                                           archetypesAlreadyProcessed, isMultipleByResourceType,
+                                           intermediateCaches,
+                                           createdAndAdded, composition);
+
+            // all content
+            handleContentCompositionsMapping(webTemplate, templateId, creatingBundle, flatJsonObject,
+                                             archetypesAlreadyProcessed, isMultipleByResourceType,
+                                             intermediateCaches,
+                                             createdAndAdded, composition);
+        } else {
+            // find where to start
+            final ContentItem startingContentItem = composition.getContent().stream()
+                    .filter(c -> c.getArchetypeNodeId().equals(context.getContext().getStart()))
+                    .findAny().orElse(null);
+            if (startingContentItem == null) {
+                final String availableStarts = composition.getContent().stream().map(c -> c.getArchetypeNodeId())
+                        .collect(Collectors.joining(", "));
+                log.error(
+                        "context.start archetype '{}' not found within composition content. Available starts are: {}",
+                        context.getContext().getStart(), availableStarts);
+                return creatingBundle;
+            }
+            handleContentItemMapping(webTemplate,
+                                     templateId,
+                                     creatingBundle,
+                                     flatJsonObject,
+                                     archetypesAlreadyProcessed,
+                                     isMultipleByResourceType,
+                                     intermediateCaches,
+                                     createdAndAdded,
+                                     startingContentItem);
+        }
+
+        return creatingBundle;
+    }
+
+    private void handleParentCompositionMapping(final WebTemplate webTemplate,
+                                                final String templateId,
+                                                final Bundle creatingBundle,
+                                                final JsonObject flatJsonObject,
+                                                final Set<String> archetypesAlreadyProcessed,
+                                                final Map<String, Boolean> isMultipleByResourceType,
+                                                final Map<String, Map<String, Object>> intermediateCaches,
+                                                final Set<String> createdAndAdded,
+                                                final Composition composition) {
         final List<OpenFhirFhirConnectModelMapper> parentMappers = openFhirTemplateRepo.getMapperForArchetype(
                 templateId, composition.getArchetypeNodeId());
         if (parentMappers != null) {
@@ -181,41 +230,68 @@ public class OpenEhrToFhir {
                            composition.getArchetypeNodeId(),
                            true);
         }
+    }
 
+    private void handleContentCompositionsMapping(final WebTemplate webTemplate,
+                                                  final String templateId,
+                                                  final Bundle creatingBundle,
+                                                  final JsonObject flatJsonObject,
+                                                  final Set<String> archetypesAlreadyProcessed,
+                                                  final Map<String, Boolean> isMultipleByResourceType,
+                                                  final Map<String, Map<String, Object>> intermediateCaches,
+                                                  final Set<String> createdAndAdded,
+                                                  final Composition composition) {
         // loop through top level content/archetypes within the Composition
         for (final ContentItem archetypesWithinContent : composition.getContent()) {
+            handleContentItemMapping(webTemplate,
+                                     templateId,
+                                     creatingBundle,
+                                     flatJsonObject,
+                                     archetypesAlreadyProcessed,
+                                     isMultipleByResourceType,
+                                     intermediateCaches,
+                                     createdAndAdded,
+                                     archetypesWithinContent);
+        }
+    }
 
-            // elements instantiated throughout the mapping (FHIR dataelements instantiated, key'd by created object + fhir path + openehr path)
-            // instanced here so multiple archetypes can share them
-            final Map<String, Object> instantiatedIntermediateElements = new HashMap<>();
+    private void handleContentItemMapping(final WebTemplate webTemplate,
+                                          final String templateId,
+                                          final Bundle creatingBundle,
+                                          final JsonObject flatJsonObject,
+                                          final Set<String> archetypesAlreadyProcessed,
+                                          final Map<String, Boolean> isMultipleByResourceType,
+                                          final Map<String, Map<String, Object>> intermediateCaches,
+                                          final Set<String> createdAndAdded,
+                                          final ContentItem archetypesWithinContent) {
+        // elements instantiated throughout the mapping (FHIR dataelements instantiated, key'd by created object + fhir path + openehr path)
+        // instanced here so multiple archetypes can share them
+        final Map<String, Object> instantiatedIntermediateElements = new HashMap<>();
 
-            final String archetypeNodeId = archetypesWithinContent.getArchetypeNodeId();
-            if (archetypesAlreadyProcessed.contains(archetypeNodeId)) {
-                continue;
-            }
-
-            // get mapper by templateid (context) + archetype id (model)
-            final List<OpenFhirFhirConnectModelMapper> theMappers = openFhirTemplateRepo.getMapperForArchetype(
-                    templateId, archetypeNodeId);
-            if (theMappers == null) {
-                log.error("No mappers defined for archetype within this composition: {}. No mapping possible.",
-                          archetypeNodeId);
-                continue;
-            }
-            handleMappings(theMappers,
-                           createdAndAdded,
-                           intermediateCaches,
-                           isMultipleByResourceType,
-                           flatJsonObject,
-                           webTemplate,
-                           instantiatedIntermediateElements,
-                           creatingBundle,
-                           archetypesAlreadyProcessed,
-                           archetypeNodeId,
-                           false);
+        final String archetypeNodeId = archetypesWithinContent.getArchetypeNodeId();
+        if (archetypesAlreadyProcessed.contains(archetypeNodeId)) {
+            return;
         }
 
-        return creatingBundle;
+        // get mapper by templateid (context) + archetype id (model)
+        final List<OpenFhirFhirConnectModelMapper> theMappers = openFhirTemplateRepo.getMapperForArchetype(
+                templateId, archetypeNodeId);
+        if (theMappers == null) {
+            log.error("No mappers defined for archetype within this composition: {}. No mapping possible.",
+                      archetypeNodeId);
+            return;
+        }
+        handleMappings(theMappers,
+                       createdAndAdded,
+                       intermediateCaches,
+                       isMultipleByResourceType,
+                       flatJsonObject,
+                       webTemplate,
+                       instantiatedIntermediateElements,
+                       creatingBundle,
+                       archetypesAlreadyProcessed,
+                       archetypeNodeId,
+                       false);
     }
 
     /**

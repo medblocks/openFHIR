@@ -20,4 +20,4 @@ context:
     - "OBSERVATION.pulse.v2"
     - "OBSERVATION.respiration.v2"
     - "OBSERVATION.pulse_oximetry.v1"
-  start: "OBSERVATION.news2.v1"
+  start: "openEHR-EHR-COMPOSITION.encounter.v1"
