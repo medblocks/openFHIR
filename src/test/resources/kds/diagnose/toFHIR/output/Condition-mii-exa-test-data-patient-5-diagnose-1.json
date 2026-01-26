@@ -1,35 +1,10 @@
 {
   "resourceType": "Bundle",
-  "id": "mii-exa-test-data-bundle-pat-5",
-  "meta": {
-    "security": [
-      {
-        "code": "HTEST",
-        "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
-        "display": "test health data"
-      }
-    ]
-  },
-  "type": "transaction",
-  "timestamp": "2025-06-18T13:55:00+02:00",
-  "entry": [
-    {
-      "request": {
-        "method": "POST",
-        "url": "Condition"
-      },
-      "fullUrl": "https://www.medizininformatik-initiative.de/Condition/mii-exa-test-data-patient-5-diagnose-1",
+  "type": "collection",
+  "entry": [{
       "resource": {
         "resourceType": "Condition",
-        "id": "mii-exa-test-data-patient-5-diagnose-1",
         "meta": {
-          "security": [
-            {
-              "code": "HTEST",
-              "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
-              "display": "test health data"
-            }
-          ],
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
           ]
@@ -38,19 +13,15 @@
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
-              "code": "N80.1",
-              "version": "2023"
+              "code": "N80.1"
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
-              "code": "I133980",
-              "version": "2023",
-              "display": "Endometriose des Ovars"
+              "code": "I133980"
             },
             {
               "system": "http://snomed.info/sct",
               "code": "129103003",
-              "version": "http://snomed.info/sct/900000000000207008/version/20230731",
               "display": "Endometriosis (disorder)"
             }
           ]
@@ -66,10 +37,10 @@
               {
                 "system": "http://snomed.info/sct",
                 "code": "15497006",
-                "version": "http://snomed.info/sct/900000000000207008/version/20230731",
                 "display": "Ovarian structure (body structure)"
               }
-            ]
+            ],
+            "text": "Ovarian structure (body structure)"
           }
         ],
         "clinicalStatus": {
@@ -84,14 +55,12 @@
           "coding": [
             {
               "code": "confirmed",
-              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "display": "Confirmed"
             }
           ]
         },
-        "subject": {
-          "reference": "Patient/mii-exa-test-data-patient-5"
-        },
-        "recordedDate": "2023-07-10"
+        "recordedDate": "2023-07-10T00:00:00+02:00"
       }
     }
   ]

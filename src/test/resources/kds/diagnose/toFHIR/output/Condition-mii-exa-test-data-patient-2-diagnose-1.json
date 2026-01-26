@@ -56,8 +56,9 @@
         "verificationStatus": {
           "coding": [
             {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
               "code": "confirmed",
-              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+              "display": "Confirmed"
             }
           ]
         },

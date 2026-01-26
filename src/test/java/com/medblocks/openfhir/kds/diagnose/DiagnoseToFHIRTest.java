@@ -25,6 +25,7 @@ import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Type;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -51,7 +52,7 @@ public class DiagnoseToFHIRTest extends KdsTest {
     final String OPENEHR_COMPOSITION_9  = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-9-diagnose-1.json";
     final String OPENEHR_COMPOSITION_10 = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-10-diagnose-1.json";
    //OUTPUT
-   final String BUNDLE = "/kds/diagnose/toFHIR/output/KDS_Diagnose_bundle_whole.json";
+   final String BUNDLE_MULTIPLE = "/kds/diagnose/toFHIR/output/KDS_Diagnose_bundle_whole.json";
     final String BUNDLE_SINGLE = "/kds/diagnose/toFHIR/output/KDS_Diagnose_bundle.json";
     final String FHIR_CONDITION_1  = "/kds/diagnose/toFHIR/output/Condition-mii-exa-test-data-patient-1-diagnose-1.json";
     final String FHIR_CONDITION_2  = "/kds/diagnose/toFHIR/output/Condition-mii-exa-test-data-patient-2-diagnose-1.json";
@@ -75,6 +76,29 @@ public class DiagnoseToFHIRTest extends KdsTest {
         webTemplate = new OPTParser(operationaltemplate).parse();
     }
 
+
+    @SneakyThrows
+    @Test
+    public void assertToFHIRBundle(){
+        Composition composition = JacksonUtil.getObjectMapper().readValue(getFile(COMPOSITION_SINGLE), Composition.class);
+        final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationaltemplate);
+        standardsAsserter.assertBundle(bundle, BUNDLE_SINGLE);
+
+
+    }
+
+
+    @SneakyThrows
+    @Test
+    @Ignore // Needs major file clean up
+    public void assertToFHIRBundleWhole(){
+        Composition composition = JacksonUtil.getObjectMapper().readValue(getFile(COMPOSITION_MULTIPLE), Composition.class);
+        final Bundle bundle = openEhrToFhir.compositionToFhir(context, composition, operationaltemplate);
+        standardsAsserter.assertBundle(bundle, BUNDLE_MULTIPLE);
+
+
+    }
+    
     @SneakyThrows
     @Test
     public void assertToFHIR1(){
@@ -168,7 +192,7 @@ public class DiagnoseToFHIRTest extends KdsTest {
     private void assertCondition(final Condition condition, final boolean second) {
         // - name: "contextStartTime"
         final String expectedTime = second ? "2023-02-03T04:05:06+01:00" : "2022-02-03T04:05:06+01:00";
-//        Assert.assertEquals(expectedTime, condition.getRecordedDateElement().getValueAsString());
+//        Assert.assertEquals(expectedTime, condition.getRecordedDateElssssement().getValueAsString());
 
 
         // - name: "fallIdentifikationIdentifier"

@@ -350,14 +350,14 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "Start of adulthood phase",
+                  "value": "Adulthood",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
                       "_type": "TERMINOLOGY_ID",
                       "value": "http://snomed.info/sct"
                     },
-                    "code_string": "424144002"
+                    "code_string": "41847000"
                   }
                 },
                 "archetype_node_id": "at0001"
@@ -370,14 +370,14 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "End of middle age phase",
+                  "value": "Old age",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
                       "_type": "TERMINOLOGY_ID",
                       "value": "http://snomed.info/sct"
                     },
-                    "code_string": "367640001"
+                    "code_string": "271872005"
                   }
                 },
                 "archetype_node_id": "at0002"

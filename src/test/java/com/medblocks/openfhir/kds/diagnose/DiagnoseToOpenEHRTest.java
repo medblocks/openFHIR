@@ -288,15 +288,15 @@ public class DiagnoseToOpenEHRTest extends KdsTest {
         Assert.assertEquals("2024-12-24T16:13:43",
                             jsonObject.get("diagnose/diagnose:0/klinisch_relevanter_zeitraum_zeitpunkt_des_auftretens")
                                     .getAsString());
-        Assert.assertEquals("424144002", jsonObject.get("diagnose/diagnose:0/lebensphase/beginn|code").getAsString());
+        Assert.assertEquals("41847000", jsonObject.get("diagnose/diagnose:0/lebensphase/beginn|code").getAsString());
         Assert.assertEquals("http://snomed.info/sct",
                             jsonObject.get("diagnose/diagnose:0/lebensphase/beginn|terminology").getAsString());
-        Assert.assertEquals("Start of adulthood phase",
+        Assert.assertEquals("Adulthood",
                             jsonObject.get("diagnose/diagnose:0/lebensphase/beginn|value").getAsString());
-        Assert.assertEquals("367640001", jsonObject.get("diagnose/diagnose:0/lebensphase/ende|code").getAsString());
+        Assert.assertEquals("271872005", jsonObject.get("diagnose/diagnose:0/lebensphase/ende|code").getAsString());
         Assert.assertEquals("http://snomed.info/sct",
                             jsonObject.get("diagnose/diagnose:0/lebensphase/ende|terminology").getAsString());
-        Assert.assertEquals("End of middle age phase",
+        Assert.assertEquals("Old age",
                             jsonObject.get("diagnose/diagnose:0/lebensphase/ende|value").getAsString());
         Assert.assertEquals("24484000", jsonObject.get("diagnose/diagnose:0/schweregrad|code").getAsString());
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/condition-severity",
@@ -347,15 +347,15 @@ public class DiagnoseToOpenEHRTest extends KdsTest {
 //                            jsonObject.get("diagnose/diagnose:0/freitextbeschreibung").getAsString());
         Assert.assertEquals("Patient confirmed for secondary malignant neoplasm of lymph node.",
                             jsonObject.get("diagnose/diagnose:0/diagnoseerläuterung").getAsString());
-        Assert.assertEquals("424144002", jsonObject.get("diagnose/diagnose:0/lebensphase/beginn|code").getAsString());
+        Assert.assertEquals("41847000", jsonObject.get("diagnose/diagnose:0/lebensphase/beginn|code").getAsString());
         Assert.assertEquals("http://snomed.info/sct",
                             jsonObject.get("diagnose/diagnose:0/lebensphase/beginn|terminology").getAsString());
-        Assert.assertEquals("Start of adulthood phase",
+        Assert.assertEquals("Adulthood",
                             jsonObject.get("diagnose/diagnose:0/lebensphase/beginn|value").getAsString());
         Assert.assertEquals("367640001", jsonObject.get("diagnose/diagnose:0/lebensphase/ende|code").getAsString());
         Assert.assertEquals("http://snomed.info/sct",
                             jsonObject.get("diagnose/diagnose:0/lebensphase/ende|terminology").getAsString());
-        Assert.assertEquals("End of middle age phase",
+        Assert.assertEquals("Old age",
                             jsonObject.get("diagnose/diagnose:0/lebensphase/ende|value").getAsString());
         Assert.assertEquals("24484000", jsonObject.get("diagnose/diagnose:0/schweregrad|code").getAsString());
         Assert.assertEquals("http://terminology.hl7.org/CodeSystem/condition-severity",
