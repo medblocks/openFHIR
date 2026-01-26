@@ -670,14 +670,14 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "ref_Upper lobe",
+                  "value": "Beiderseits",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
                       "_type": "TERMINOLOGY_ID",
                       "value": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation"
                     },
-                    "code_string": "ref_U"
+                    "code_string": "B"
                   }
                 },
                 "archetype_node_id": "at0002"
@@ -873,14 +873,14 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "ref_Suspected diagnosis",
+              "value": "Verdacht auf Diagnose",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
                   "_type": "TERMINOLOGY_ID",
                   "value": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit"
                 },
-                "code_string": "ref_S"
+                "code_string": "V"
               }
             },
             "archetype_node_id": "at0073"

@@ -5,6 +5,11 @@
     {
       "resource": {
         "resourceType": "Condition",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
         "clinicalStatus": {
           "coding": [
             {
@@ -16,10 +21,6 @@
         "code": {
           "coding": [
             {
-              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
-              "code": "B05.3"
-            },
-            {
               "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
               "code": "I29578",
               "display": "Masern mit Otitis"
@@ -30,35 +31,34 @@
               "display": "Post measles otitis media (disorder)"
             },
             {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "code": "B05.3",
               "extension": [
                 {
                   "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
-                        "code": "G",
-                        "display": "gesicherte Diagnose"
-                      }
-                    ],
-                    "text": "gesicherte Diagnose"
+                  "valueCoding": {
+                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
+                    "code": "G",
+                    "display": "gesicherte Diagnose"
+                  }
+                },
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                  "valueCoding": {
+                    "system": "http://fhir.de/ValueSet/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                    "code": "!",
+                    "display": "!"
                   }
                 },
                 {
                   "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://snomed.info/sct",
-                        "code": "25342003",
-                        "display": "Middle ear structure (body structure)"
-                      }
-                    ],
-                    "text": "Middle ear structure (body structure)"
+                  "valueCoding": {
+                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION",
+                    "code": "B",
+                    "display": "beiderseits"
                   }
                 }
-              ],
-              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+              ]
             }
           ]
         },

@@ -65,7 +65,16 @@ mappings:
                 - path: "url"
                   value: "http://hl7.org/fhir/StructureDefinition/condition-assertedDate"
 
-  #/data[at0001]/items[at0073] ->
+  - name: "metaURL"
+    extension: "add"
+    unidirectional: "openEHR->fhir"
+    with:
+      fhir: "$resource.meta"
+    manual:
+      - name: "profileUrl"
+        fhir:
+          - path: "profile"
+            value: "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
 
 #  - name: "problemDiagnose2" # THIS SHOULD be for the export from openehr->fhir but it does not work since i cannot work on the codings since the transformation does not allow it
 #    extension: "add"
@@ -150,14 +159,9 @@ mappings:
 #                  type: "CODING"
 #
 
-#  - name: "icd10ProblemDiagnose"
-#    extension: "append"
-#    appendTo: "problemDiagnose"
-  - name: "problemDiagnose"
-    with:
-      fhir: "$resource.code"
-      openehr: "$archetype/data[at0001]/items[at0002]"
-    extension: "overwrite"
+  - name: "icd10ProblemDiagnose"
+    extension: "append"
+    appendTo: "problemDiagnose"
     followedBy:
       mappings:
         - name: "coding"
@@ -194,6 +198,12 @@ mappings:
                 followedBy:
                   mappings:
                     - name: "extensionValue"
+                      with:
+                        fhir: "value"
+                        openehr: "data[at0001]/items[at0073]"
+                        type: "CODING"
+                    - name: "extensionValue"#TODO Bugfix since Coding maps no display
+                      unidirectional: "fhir->openEHR"
                       with:
                         fhir: "value"
                         openehr: "data[at0001]/items[at0073]"

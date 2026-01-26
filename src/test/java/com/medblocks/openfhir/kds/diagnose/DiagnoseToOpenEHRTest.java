@@ -1,44 +1,142 @@
-package com.medblocks.openfhir.kds;
+package com.medblocks.openfhir.kds.diagnose;
 
 import com.google.gson.JsonObject;
+import com.medblocks.openfhir.kds.KdsTest;
 import com.nedap.archie.rm.composition.Composition;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
-import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.CodeableConcept;
-import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.Condition;
-import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.r4.model.Encounter;
-import org.hl7.fhir.r4.model.Extension;
-import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.Type;
+import org.hl7.fhir.r4.model.*;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DiagnoseTest extends KdsBidirectionalTest {
+import java.util.List;
+
+public class DiagnoseToOpenEHRTest extends KdsTest {
+
 
     final String MODEL_MAPPINGS = "/kds_new/";
     final String CONTEXT_MAPPING = "/kds_new/projects/org.highmed/KDS/diagnose/KDS_diagnose.context.yaml";
-    final String HELPER_LOCATION = "/kds/diagnose/";
-    final String OPT = "KDS_Diagnose.opt";
-    final String FLAT = "KDS_Diagnose_Composition.flat.json";
-    final String FLAT_MULTIPLE = "KDS_Diagnose_multiple_Composition.flat.json"; // todo change to multiple
-    final String BUNDLE = "KDS_Diagnose_bundle_whole.json";
-    final String BUNDLE_SINGLE = "KDS_Diagnose_bundle.json";
+    final String OPT = "/kds/diagnose/KDS_Diagnose.opt";
+    final String BUNDLE = "/kds/diagnose/toOpenEHR/input/KDS_Diagnose_bundle_whole.json";
+    final String BUNDLE_SINGLE = "/kds/diagnose/toOpenEHR/input/KDS_Diagnose_bundle.json";
+    final String FHIR_CONDITION_1  = "/kds/diagnose/toOpenEHR/input/Condition-mii-exa-test-data-patient-1-diagnose-1.json";
+    final String FHIR_CONDITION_2  = "/kds/diagnose/toOpenEHR/input/Condition-mii-exa-test-data-patient-2-diagnose-1.json";
+    final String FHIR_CONDITION_3  = "/kds/diagnose/toOpenEHR/input/Condition-mii-exa-test-data-patient-3-diagnose-1.json";
+    final String FHIR_CONDITION_4  = "/kds/diagnose/toOpenEHR/input/Condition-mii-exa-test-data-patient-4-diagnose-1.json";
+    final String FHIR_CONDITION_5  = "/kds/diagnose/toOpenEHR/input/Condition-mii-exa-test-data-patient-5-diagnose-1.json";
+    final String FHIR_CONDITION_6  = "/kds/diagnose/toOpenEHR/input/Condition-mii-exa-test-data-patient-6-diagnose-1.json";
+    final String FHIR_CONDITION_7  = "/kds/diagnose/toOpenEHR/input/Condition-mii-exa-test-data-patient-7-diagnose-1.json";
+    final String FHIR_CONDITION_8  = "/kds/diagnose/toOpenEHR/input/Condition-mii-exa-test-data-patient-8-diagnose-1.json";
+    final String FHIR_CONDITION_9  = "/kds/diagnose/toOpenEHR/input/Condition-mii-exa-test-data-patient-9-diagnose-1.json";
+    final String FHIR_CONDITION_10 = "/kds/diagnose/toOpenEHR/input/Condition-mii-exa-test-data-patient-10-diagnose-1.json";
+
+    final String FLAT = "/kds/diagnose/toOpenEHR/output/KDS_Diagnose_Composition.flat.json";
+    final String COMPOSITION_SINGLE = "/kds/diagnose/toOpenEHR/output/KDS_Diagnose_Composition_bundle.json";
+    final String COMPOSITION_MULTIPLE = "/kds/diagnose/toOpenEHR/output/KDS_Diagnose_Composition_bundle_whole.json";
+    final String FLAT_MULTIPLE = "/kds/diagnose/toOpenEHR/output/KDS_Diagnose_multiple_Composition.flat.json"; // todo change to multiple
+    final String OPENEHR_COMPOSITION_1  = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-1-diagnose-1.json";
+    final String OPENEHR_COMPOSITION_2  = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-2-diagnose-1.json";
+    final String OPENEHR_COMPOSITION_3  = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-3-diagnose-1.json";
+    final String OPENEHR_COMPOSITION_4  = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-4-diagnose-1.json";
+    final String OPENEHR_COMPOSITION_5  = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-5-diagnose-1.json";
+    final String OPENEHR_COMPOSITION_6  = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-6-diagnose-1.json";
+    final String OPENEHR_COMPOSITION_7  = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-7-diagnose-1.json";
+    final String OPENEHR_COMPOSITION_8  = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-8-diagnose-1.json";
+    final String OPENEHR_COMPOSITION_9  = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-9-diagnose-1.json";
+    final String OPENEHR_COMPOSITION_10 = "/kds/diagnose/toOpenEHR/output/Composition-mii-exa-test-data-patient-10-diagnose-1.json";
+
 
     @SneakyThrows
     @Override
-    protected void prepareState() {
+    public void prepareState() {
         context = getContext(CONTEXT_MAPPING);
-        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(HELPER_LOCATION + OPT));
+        operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream( OPT));
         operationaltemplate = getOperationalTemplate();
         repo.initRepository(context, operationaltemplate, getClass().getResource(MODEL_MAPPINGS).getFile());
         webTemplate = new OPTParser(operationaltemplate).parse();
+    }
+
+    @Test
+    public void assertToOpenEHRBundle() {
+        final Composition composition = fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(BUNDLE_SINGLE), operationaltemplate);
+        standardsAsserter.assertComposition(composition, COMPOSITION_SINGLE);
+    }
+
+    @Test
+    public void assertToOpenEHRBundleWhole() {
+        final Composition composition = fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(BUNDLE), operationaltemplate);
+        standardsAsserter.assertComposition(composition, COMPOSITION_MULTIPLE);
+    }
+
+    @Test
+    public void assertToOpenEHR1() {
+        final Composition composition =
+                fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(FHIR_CONDITION_1), operationaltemplate);
+        standardsAsserter.assertComposition(composition, OPENEHR_COMPOSITION_1);
+    }
+
+    @Test
+    public void assertToOpenEHR2() {
+        final Composition composition =
+                fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(FHIR_CONDITION_2), operationaltemplate);
+        standardsAsserter.assertComposition(composition, OPENEHR_COMPOSITION_2);
+    }
+
+    @Test
+    public void assertToOpenEHR3() {
+        final Composition composition =
+                fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(FHIR_CONDITION_3), operationaltemplate);
+        standardsAsserter.assertComposition(composition, OPENEHR_COMPOSITION_3);
+    }
+
+    @Test
+    public void assertToOpenEHR4() {
+        final Composition composition =
+                fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(FHIR_CONDITION_4), operationaltemplate);
+        standardsAsserter.assertComposition(composition, OPENEHR_COMPOSITION_4);
+    }
+
+    @Test
+    public void assertToOpenEHR5() {
+        final Composition composition =
+                fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(FHIR_CONDITION_5), operationaltemplate);
+        standardsAsserter.assertComposition(composition, OPENEHR_COMPOSITION_5);
+    }
+
+    @Test
+    public void assertToOpenEHR6() {
+        final Composition composition =
+                fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(FHIR_CONDITION_6), operationaltemplate);
+        standardsAsserter.assertComposition(composition, OPENEHR_COMPOSITION_6);
+    }
+
+    @Test
+    public void assertToOpenEHR7() {
+        final Composition composition =
+                fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(FHIR_CONDITION_7), operationaltemplate);
+        standardsAsserter.assertComposition(composition, OPENEHR_COMPOSITION_7);
+    }
+
+    @Test
+    public void assertToOpenEHR8() {
+        final Composition composition =
+                fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(FHIR_CONDITION_8), operationaltemplate);
+        standardsAsserter.assertComposition(composition, OPENEHR_COMPOSITION_8);
+    }
+
+    @Test
+    public void assertToOpenEHR9() {
+        final Composition composition =
+                fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(FHIR_CONDITION_9), operationaltemplate);
+        standardsAsserter.assertComposition(composition, OPENEHR_COMPOSITION_9);
+    }
+
+    @Test
+    public void assertToOpenEHR10() {
+        final Composition composition =
+                fhirToOpenEhr.fhirToCompositionRm(context, getTestBundle(FHIR_CONDITION_10), operationaltemplate);
+        standardsAsserter.assertComposition(composition, OPENEHR_COMPOSITION_10);
     }
 
     private void assertCondition(final Condition condition, final boolean second) {
@@ -154,33 +252,8 @@ public class DiagnoseTest extends KdsBidirectionalTest {
     }
 
     @Test
-    public void toFhir() {
-        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(
-                getFlat(HELPER_LOCATION + FLAT_MULTIPLE), new OPTParser(operationaltemplate).parse());
-        final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
-        final List<Bundle.BundleEntryComponent> allConditions = bundle.getEntry().stream()
-                .filter(en -> en.getResource() instanceof Condition).collect(Collectors.toList());
-        Assert.assertEquals(2, allConditions.size());
-        final Condition condition = (Condition) allConditions.get(0).getResource(); // first condition
-        final Condition conditionSecond = (Condition) allConditions.get(1).getResource(); // second condition
-
-        assertCondition(condition, false);
-//        assertCondition(conditionSecond, true);
-
-        final Type referencedExtensionCondition = condition.getExtensionByUrl(
-                        "http://hl7.org/fhir/StructureDefinition/condition-related")
-                .getValue();
-        Assert.assertNotNull(referencedExtensionCondition);
-        Assert.assertTrue(conditionSecond.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/condition-related")
-                                  .getValue().isEmpty());
-
-        assertCondition((Condition) ((Reference) referencedExtensionCondition).getResource(), true);
-
-    }
-
-    @Test
     public void toOpenEhr_single() {
-        final Bundle testBundle = getTestBundle(HELPER_LOCATION + BUNDLE_SINGLE);
+        final Bundle testBundle = getTestBundle(BUNDLE_SINGLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
         Assert.assertEquals("2022-02-03T01:00:00", jsonObject.get("diagnose/context/start_time").getAsString());
@@ -200,12 +273,12 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                 "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|terminology").getAsString());
         Assert.assertEquals("†", jsonObject.get(
                 "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|value").getAsString());
-        Assert.assertEquals("L", jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|code")
+        Assert.assertEquals("321667001", jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|code")
                 .getAsString());
-        Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
+        Assert.assertEquals("http://snomed.info/sct",
                             jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|terminology")
                                     .getAsString());
-        Assert.assertEquals("Left side",
+        Assert.assertEquals("Respiratory tract, Upper lobe, bronchus or lung",
                             jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|value")
                                     .getAsString());
 //        Assert.assertEquals("Secondary malignant neoplasm of lymph node",
@@ -244,7 +317,7 @@ public class DiagnoseTest extends KdsBidirectionalTest {
 
     public JsonObject toOpenEhr() {
 
-        final Bundle testBundle = getTestBundle(HELPER_LOCATION + BUNDLE);
+        final Bundle testBundle = getTestBundle(BUNDLE);
         final JsonObject jsonObject = fhirToOpenEhr.fhirToFlatJsonObject(context, testBundle, operationaltemplate);
 
         Assert.assertEquals("2022-02-03T01:00:00", jsonObject.get("diagnose/context/start_time").getAsString());
@@ -262,12 +335,12 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                 "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|terminology").getAsString());
         Assert.assertEquals("†", jsonObject.get(
                 "diagnose/diagnose:0/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|value").getAsString());
-        Assert.assertEquals("L", jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|code")
+        Assert.assertEquals("321667001", jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|code")
                 .getAsString());
-        Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
+        Assert.assertEquals("http://snomed.info/sct",
                             jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|terminology")
                                     .getAsString());
-        Assert.assertEquals("Left side",
+        Assert.assertEquals("Respiratory tract, Upper lobe, bronchus or lung",
                             jsonObject.get("diagnose/diagnose:0/anatomische_lokalisation/name_der_körperstelle|value")
                                     .getAsString());
 //        Assert.assertEquals("Secondary malignant neoplasm of lymph node",
@@ -311,10 +384,10 @@ public class DiagnoseTest extends KdsBidirectionalTest {
         Assert.assertEquals("ref_C34.1", jsonObject.get("diagnose/diagnose:1/kodierte_diagnose|code").getAsString());
         Assert.assertEquals("Malignant neoplasm of upper lobe, bronchus or lung", jsonObject.get("diagnose/diagnose:1/kodierte_diagnose|value").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/bfarm/icd-10-gm", jsonObject.get("diagnose/diagnose:1/kodierte_diagnose|terminology").getAsString());
-        Assert.assertEquals("ref_S", jsonObject.get("diagnose/diagnose:1/diagnosesicherheit|code").getAsString());
+        Assert.assertEquals("V", jsonObject.get("diagnose/diagnose:1/diagnosesicherheit|code").getAsString());
         Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
                             jsonObject.get("diagnose/diagnose:1/diagnosesicherheit|terminology").getAsString());
-        Assert.assertEquals("ref_Suspected diagnosis",
+        Assert.assertEquals("Verdacht auf Diagnose",
                             jsonObject.get("diagnose/diagnose:1/diagnosesicherheit|value").getAsString());
         Assert.assertEquals("at0003", jsonObject.get(
                 "diagnose/diagnose:1/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|code").getAsString());
@@ -322,12 +395,12 @@ public class DiagnoseTest extends KdsBidirectionalTest {
                 "diagnose/diagnose:1/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|terminology").getAsString());
         Assert.assertEquals("*", jsonObject.get(
                 "diagnose/diagnose:1/mehrfachkodierungskennzeichen_icd-10-gm/mehrfachkodierungkennzeichen|value").getAsString());
-        Assert.assertEquals("ref_U", jsonObject.get("diagnose/diagnose:1/anatomische_lokalisation/name_der_körperstelle|code")
+        Assert.assertEquals("ref_368209003", jsonObject.get("diagnose/diagnose:1/anatomische_lokalisation/name_der_körperstelle|code")
                 .getAsString());
-        Assert.assertEquals("http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
+        Assert.assertEquals("http://snomed.info/sct",
                             jsonObject.get("diagnose/diagnose:1/anatomische_lokalisation/name_der_körperstelle|terminology")
                                     .getAsString());
-        Assert.assertEquals("ref_Upper lobe",
+        Assert.assertEquals("Entire cardiovascular system",
                             jsonObject.get("diagnose/diagnose:1/anatomische_lokalisation/name_der_körperstelle|value")
                                     .getAsString());
 //        Assert.assertEquals("Malignant neoplasm of upper lobe, bronchus or lung",

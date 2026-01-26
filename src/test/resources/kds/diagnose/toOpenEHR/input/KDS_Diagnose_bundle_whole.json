@@ -353,42 +353,29 @@
               "extension": [
                 {
                   "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
+                  "valueCoding": {
+
                         "system": "local",
                         "code": "*",
                         "display": "ref_Primary code in multiple coding"
-                      }
-                    ],
-                    "text": "ref_Primary code in multiple coding"
-                  }
-                },
+
+                }},
                 {
                   "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
+                      "valueCoding": {
                         "system": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
-                        "code": "ref_U",
-                        "display": "ref_Upper lobe"
-                      }
-                    ],
-                    "text": "ref_Upper lobe"
+                        "code": "B",
+                        "display": "Beiderseits"
                   }
                 },
                 {
                   "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
-                  "valueCodeableConcept": {
-                    "coding": [
+                    "valueCoding":
                       {
                         "system": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
-                        "code": "ref_S",
-                        "display": "ref_Suspected diagnosis"
+                        "code": "V",
+                        "display": "Verdacht auf Diagnose"
                       }
-                    ],
-                    "text": "ref_Suspected diagnosis"
-                  }
                 }
               ]
             },

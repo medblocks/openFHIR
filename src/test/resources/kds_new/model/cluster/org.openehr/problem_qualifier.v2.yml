@@ -10,7 +10,7 @@ spec:
     archetype: openEHR-EHR-CLUSTER.problem_qualifier.v2
     revision: 2.0.1
   fhirConfig:
-    structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/Coding
 
 mappings:
   - name: "statusCoded"
@@ -47,7 +47,7 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/defining_code/code_string"
           operator: "one of"
           criteria: "at0017"
 
@@ -74,11 +74,11 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/defining_code/code_string"
           operator: "one of"
           criteria: "at0017"
 
-      - name: "preliminary"
+      - name: "preliminary"#TODO this is wrong
         openehr:
           - path: "defining_code/terminology_id"
             value: "local"
@@ -87,7 +87,7 @@ mappings:
           - path: "value"
             value: "Preliminary"
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$resource.verificationStatus.coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "unconfirmed"
@@ -101,7 +101,7 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/defining_code/code_string"
           operator: "one of"
           criteria: "at0016"
 
@@ -112,7 +112,7 @@ mappings:
           - path: "defining_code/code_string"
             value: "at0018"
           - path: "value"
-            value: "Established"
+            value: "Festgestellt"
         fhirCondition:
           targetRoot: "$fhirRoot"
           targetAttribute: "code"
@@ -128,7 +128,7 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/defining_code/code_string"
           operator: "one of"
           criteria: "at0018"
 
@@ -155,6 +155,6 @@ mappings:
             value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/defining_code/code_string"
           operator: "one of"
           criteria: "at0088"
