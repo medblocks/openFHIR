@@ -10,7 +10,7 @@ spec:
     archetype: openEHR-EHR-CLUSTER.problem_qualifier.v2
     revision: 2.0.1
   fhirConfig:
-    structureDefinition: http://hl7.org/fhir/StructureDefinition/Coding
+    structureDefinition: http://hl7.org/fhir/StructureDefinition/BackboneElement
 
 mappings:
   - name: "statusCoded"
@@ -31,9 +31,8 @@ mappings:
             value: "at0017"
           - path: "value"
             value: "Working"
-
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$resource.verificationStatus.coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "provisional"
@@ -60,7 +59,7 @@ mappings:
           - path: "value"
             value: "Working"
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$resource.verificationStatus.coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "differential"
@@ -114,7 +113,7 @@ mappings:
           - path: "value"
             value: "Festgestellt"
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$resource.verificationStatus.coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "confirmed"
@@ -141,7 +140,7 @@ mappings:
           - path: "value"
             value: "Refuted"
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$resource.verificationStatus.coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "refuted"

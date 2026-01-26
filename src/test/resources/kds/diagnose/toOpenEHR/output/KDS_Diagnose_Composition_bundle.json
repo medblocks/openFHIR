@@ -438,6 +438,26 @@
                 "_type": "ELEMENT",
                 "name": {
                   "_type": "DV_TEXT",
+                  "value": "Diagnosestatus"
+                },
+                "value": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "Festgestellt",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {
+                      "_type": "TERMINOLOGY_ID",
+                      "value": "local"
+                    },
+                    "code_string": "at0018"
+                  }
+                },
+                "archetype_node_id": "at0004"
+              },
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
                   "value": "Klinischer Status"
                 },
                 "value": {
