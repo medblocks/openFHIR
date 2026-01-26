@@ -1,6 +1,7 @@
-package com.medblocks.openfhir.kds;
+package com.medblocks.openfhir.kds.person;
 
 import com.google.gson.JsonObject;
+import com.medblocks.openfhir.kds.KdsBidirectionalTest;
 import com.nedap.archie.rm.composition.Composition;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public class PersonTest extends KdsBidirectionalTest {
 
     @SneakyThrows
     @Override
-    protected void prepareState() {
+    public void prepareState() {
         context = getContext(CONTEXT);
         operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(HELPER_LOCATION + OPT));
         operationaltemplate = getOperationalTemplate();
@@ -47,7 +48,7 @@ public class PersonTest extends KdsBidirectionalTest {
     @Test
     public void kdsPerson_toFhir() {
         // openEHR to FHIR
-        final String initialFlat = getFlat(HELPER_LOCATION + FLAT);
+        final String initialFlat = getFile(HELPER_LOCATION + FLAT);
         final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(initialFlat, webTemplate);
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
 

@@ -1,6 +1,7 @@
-package com.medblocks.openfhir.kds;
+package com.medblocks.openfhir.kds.fall;
 
 import com.google.gson.JsonObject;
+import com.medblocks.openfhir.kds.KdsBidirectionalTest;
 import com.nedap.archie.rm.composition.Composition;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class FallTest extends KdsBidirectionalTest {
 
     @SneakyThrows
     @Override
-    protected void prepareState() {
+    public void prepareState() {
         context = getContext(CONTEXT_MAPPING);
         operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(HELPER_LOCATION + OPT));
         operationaltemplate = getOperationalTemplate();
@@ -43,7 +44,7 @@ public class FallTest extends KdsBidirectionalTest {
     @Test
     public void toFhir() {
         final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(
-                getFlat(HELPER_LOCATION + FLAT), new OPTParser(operationaltemplate).parse());
+                getFile(HELPER_LOCATION + FLAT), new OPTParser(operationaltemplate).parse());
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
         final List<Bundle.BundleEntryComponent> allEncounters = bundle.getEntry().stream()
                 .filter(en -> en.getResource() instanceof Encounter).collect(Collectors.toList());

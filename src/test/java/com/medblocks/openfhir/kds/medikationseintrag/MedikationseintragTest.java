@@ -1,30 +1,21 @@
-package com.medblocks.openfhir.kds;
+package com.medblocks.openfhir.kds.medikationseintrag;
 
 import ca.uhn.fhir.context.FhirContext;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.medblocks.openfhir.kds.KdsBidirectionalTest;
 import com.nedap.archie.rm.composition.Composition;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
 import lombok.SneakyThrows;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.xmlbeans.XmlException;
-import org.bson.types.Code;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonUnmarshaller;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.r4.model.*;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.TimeZone;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.openehr.schemas.v1.TemplateDocument;
 
 public class MedikationseintragTest extends KdsBidirectionalTest {
 
@@ -39,7 +30,7 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
 
     @SneakyThrows
     @Override
-    protected void prepareState() {
+    public void prepareState() {
         context = getContext(CONTEXT);
         operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(HELPER_LOCATION + OPT));
         operationaltemplate = getOperationalTemplate();
@@ -50,7 +41,7 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
     @Test
     public void kdsMedicationList_toFhir() throws IOException {
         // openEHR to FHIR
-        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat(HELPER_LOCATION + FLAT), webTemplate);
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFile(HELPER_LOCATION + FLAT), webTemplate);
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
 
         final List<MedicationStatement> requests = bundle.getEntry().stream()
@@ -160,7 +151,7 @@ public class MedikationseintragTest extends KdsBidirectionalTest {
     @Test
     public void kdsMedicationList_toFhir_testOpenEhrCondition() throws IOException {
         // openEHR to FHIR
-        final String flat = getFlat(HELPER_LOCATION + FLAT);
+        final String flat = getFile(HELPER_LOCATION + FLAT);
         final Gson gson = new Gson();
         final JsonObject flatJsonObject = gson.fromJson(flat, JsonObject.class);
 

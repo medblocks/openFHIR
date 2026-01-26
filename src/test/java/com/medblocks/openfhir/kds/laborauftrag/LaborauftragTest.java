@@ -1,9 +1,10 @@
-package com.medblocks.openfhir.kds;
+package com.medblocks.openfhir.kds.laborauftrag;
 
 import static org.junit.Assert.assertEquals;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.medblocks.openfhir.kds.KdsBidirectionalTest;
 import com.nedap.archie.rm.composition.Composition;
 import java.io.IOException;
 import java.util.List;
@@ -35,7 +36,7 @@ public class LaborauftragTest extends KdsBidirectionalTest {
 
     @SneakyThrows
     @Override
-    protected void prepareState() {
+    public void prepareState() {
         context = getContext(CONTEXT);
         operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(HELPER_LOCATION + OPT));
         operationaltemplate = getOperationalTemplate();
@@ -47,7 +48,7 @@ public class LaborauftragTest extends KdsBidirectionalTest {
     public void kdsServiceRequest_toFhir_toOpenEhr() throws IOException {
 
         // openEHR to FHIR
-        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat(HELPER_LOCATION + FLAT),
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFile(HELPER_LOCATION + FLAT),
                                                                                      webTemplate);
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
 
@@ -125,7 +126,7 @@ public class LaborauftragTest extends KdsBidirectionalTest {
 
     @Test
     public void toFhir() {
-        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat(HELPER_LOCATION + FLAT),
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFile(HELPER_LOCATION + FLAT),
                                                                                      new OPTParser(
                                                                                              operationaltemplate).parse());
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);

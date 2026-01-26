@@ -31,9 +31,8 @@ mappings:
             value: "at0017"
           - path: "value"
             value: "Working"
-
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$resource.verificationStatus.coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "provisional"
@@ -44,10 +43,10 @@ mappings:
           - path: "display"
             value: "Provisional"
           - path: "system"
-            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+            value: "http://terminology.hl7.org/CodeSystem/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/defining_code/code_string"
           operator: "one of"
           criteria: "at0017"
 
@@ -60,7 +59,7 @@ mappings:
           - path: "value"
             value: "Working"
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$resource.verificationStatus.coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "differential"
@@ -71,14 +70,14 @@ mappings:
           - path: "display"
             value: "Differential"
           - path: "system"
-            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+            value: "http://terminology.hl7.org/CodeSystem/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/defining_code/code_string"
           operator: "one of"
           criteria: "at0017"
 
-      - name: "preliminary"
+      - name: "preliminary"#TODO this is wrong
         openehr:
           - path: "defining_code/terminology_id"
             value: "local"
@@ -87,7 +86,7 @@ mappings:
           - path: "value"
             value: "Preliminary"
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$resource.verificationStatus.coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "unconfirmed"
@@ -98,10 +97,10 @@ mappings:
           - path: "display"
             value: "Unconfirmed"
           - path: "system"
-            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+            value: "http://terminology.hl7.org/CodeSystem/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/defining_code/code_string"
           operator: "one of"
           criteria: "at0016"
 
@@ -112,9 +111,9 @@ mappings:
           - path: "defining_code/code_string"
             value: "at0018"
           - path: "value"
-            value: "Established"
+            value: "Festgestellt"
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$resource.verificationStatus.coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "confirmed"
@@ -125,10 +124,10 @@ mappings:
           - path: "display"
             value: "Confirmed"
           - path: "system"
-            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+            value: "http://terminology.hl7.org/CodeSystem/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/defining_code/code_string"
           operator: "one of"
           criteria: "at0018"
 
@@ -141,7 +140,7 @@ mappings:
           - path: "value"
             value: "Refuted"
         fhirCondition:
-          targetRoot: "$fhirRoot"
+          targetRoot: "$resource.verificationStatus.coding"
           targetAttribute: "code"
           operator: "one of"
           criteria: "refuted"
@@ -152,9 +151,9 @@ mappings:
           - path: "display"
             value: "Refuted"
           - path: "system"
-            value: "http://hl7.org/fhir/ValueSet/condition-ver-status"
+            value: "http://terminology.hl7.org/CodeSystem/condition-ver-status"
         openehrCondition:
           targetRoot: "$archetype"
-          targetAttribute: "items[at0004]/code_string"
+          targetAttribute: "items[at0004]/defining_code/code_string"
           operator: "one of"
           criteria: "at0088"

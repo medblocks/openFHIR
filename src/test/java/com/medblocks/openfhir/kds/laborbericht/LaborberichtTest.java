@@ -1,8 +1,9 @@
-package com.medblocks.openfhir.kds;
+package com.medblocks.openfhir.kds.laborbericht;
 
 import static org.junit.Assert.assertEquals;
 
 import com.google.gson.JsonObject;
+import com.medblocks.openfhir.kds.KdsBidirectionalTest;
 import com.nedap.archie.rm.composition.Composition;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +16,6 @@ import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Specimen;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class LaborberichtTest extends KdsBidirectionalTest {
@@ -31,7 +31,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
 
     @SneakyThrows
     @Override
-    protected void prepareState() {
+    public void prepareState() {
         context = getContext(CONTEXT);
         operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(HELPER_LOCATION + OPT));
         operationaltemplate = getOperationalTemplate();
@@ -116,7 +116,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
 
     @Test
     public void toFhir() {
-        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat(HELPER_LOCATION + FLAT),
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFile(HELPER_LOCATION + FLAT),
                                                                                      new OPTParser(
                                                                                              operationaltemplate).parse());
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
@@ -250,7 +250,7 @@ public class LaborberichtTest extends KdsBidirectionalTest {
     @Test
     public void toFhir_multiples() {
         final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(
-                getFlat(HELPER_LOCATION + "KDS_Laborbericht_multiples.flat.json"),
+                getFile(HELPER_LOCATION + "KDS_Laborbericht_multiples.flat.json"),
                 new OPTParser(operationaltemplate).parse());
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
         final List<Bundle.BundleEntryComponent> allDiagnosticReports = bundle.getEntry().stream()

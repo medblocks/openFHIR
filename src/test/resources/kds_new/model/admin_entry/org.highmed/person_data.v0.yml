@@ -12,12 +12,17 @@ spec:
   fhirConfig:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/Patient
 
-preprocessor:
-  fhirCondition:
-    targetRoot: "$resource"
-    targetAttribute: "active"  # exclude non-active patients
-    operator: "one of"
-    criteria: "false"
+#preprocessor: Logic not supported yet
+#  fhirCondition:
+#    - targetRoot: "$resource"
+#      targetAttribute: "active"  # exclude non-active patients
+#      operator: "not empty"
+#  if yes:
+#  fhirCondition:
+#    targetRoot: "$resource"
+#    targetAttribute: "active"  # exclude non-active patients
+#    operator: "one of"
+#    criteria: "true"
 
 mappings:
   - name: "personData"
@@ -30,7 +35,7 @@ mappings:
     with:
       fhir: "$resource.deceased.as(Boolean)"
       openehr: "$archetype/data[at0001]/items[at0024]/items[at0025]"
-      
+
 
   - name: "deathDateTime"
     with:
@@ -39,7 +44,7 @@ mappings:
     manual:
       - name: "deathboolean"
         openehr:
-          - path: "items[at0025]/value"
+          - path: "items[at0025]"
             value: "True"
     fhirCondition:
       targetRoot: "$resource"

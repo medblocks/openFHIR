@@ -21,6 +21,7 @@ context:
     - "CLUSTER.address.v1"
     - "CLUSTER.person_birth_data_iso.v0"
   extensions:
+    - "KDS_address_pseudo"
     - "KDS_admin_entry_perso_pseudo"
     - "KDS_person_pseudo_cluster.v1"
     - "KDS_gender.v1"

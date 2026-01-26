@@ -13,33 +13,33 @@ spec:
     structureDefinition: http://hl7.org/fhir/StructureDefinition/CodeableConcept
 
 mappings:
-  - name: "bodySiteCoding" # parent only used to condition on a certain fhir type
-    with:
-      fhir: "$resource"
-      openehr: "$archetype"
-      type: "NONE"
-    fhirCondition:
-      targetRoot: "$fhirRoot"
-      operator: "type"
-      criteria: "CodeableConcept"
-    followedBy:
-      mappings:
-        - name: "bodySiteText"
-          with:
-            fhir: "text"
-            openehr: "items[at0001]" #Name of body site
-          fhirCondition:
-            targetRoot: "$fhirRoot"
-            targetAttribute: "coding"
-            operator: "empty"
-  #
+#  - name: "bodySiteCoding" # parent only used to condition on a certain fhir type
+#    with:
+#      fhir: "$resource"
+#      openehr: "$archetype"
+#      type: "NONE"
+#    openehrCondition:
+#      targetRoot: "$archetype"
+#      targetAttribute: "items[at0001]"
+#      operator: "type"
+#      criteria: "CodeableConcept"
+#    followedBy:
+#      mappings:
+#        - name: "bodySiteText"
+#          with:
+#            fhir: "text"
+#            openehr: "items[at0001]" #Name of body site
+#          fhirCondition:
+#            targetRoot: "$fhirRoot"
+#            targetAttribute: "coding"
+#            operator: "empty"
+
   - name: "bodySiteCoded"
     with:
       fhir: "$fhirRoot"
       openehr: "$archetype/items[at0001]" #Name of body site
-      
-    openehrCondition:
-      targetRoot: "$archetype"
-      targetAttribute: "items[at0001]"
-      operator: "type"
-      criteria: "DV_CODED_TEXT"
+#    openehrCondition:
+#      targetRoot: "$archetype"
+#      targetAttribute: "items[at0001]"
+#      operator: "type"
+#      criteria: "DV_CODED_TEXT"

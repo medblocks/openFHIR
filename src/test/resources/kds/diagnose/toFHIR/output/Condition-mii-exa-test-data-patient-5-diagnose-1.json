@@ -1,0 +1,67 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [{
+      "resource": {
+        "resourceType": "Condition",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "code": "N80.1"
+            },
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
+              "code": "I133980"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "129103003",
+              "display": "Endometriosis (disorder)"
+            }
+          ]
+        },
+        "note": [
+          {
+            "text": "Endometriose des Ovars"
+          }
+        ],
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "15497006",
+                "display": "Ovarian structure (body structure)"
+              }
+            ],
+            "text": "Ovarian structure (body structure)"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "code": "active",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "code": "confirmed",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "recordedDate": "2023-07-10T00:00:00+02:00"
+      }
+    }
+  ]
+}

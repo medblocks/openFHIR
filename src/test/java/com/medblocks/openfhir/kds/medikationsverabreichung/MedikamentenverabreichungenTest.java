@@ -1,6 +1,7 @@
-package com.medblocks.openfhir.kds;
+package com.medblocks.openfhir.kds.medikationsverabreichung;
 
 import com.google.gson.JsonObject;
+import com.medblocks.openfhir.kds.KdsBidirectionalTest;
 import com.nedap.archie.rm.composition.Composition;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
@@ -8,7 +9,6 @@ import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.FlatJsonU
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeableConcept;
-import org.hl7.fhir.r4.model.Medication;
 import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Period;
@@ -30,7 +30,7 @@ public class MedikamentenverabreichungenTest extends KdsBidirectionalTest {
 
     @SneakyThrows
     @Override
-    protected void prepareState() {
+    public void prepareState() {
         context = getContext(CONTEXT);
         operationaltemplateSerialized = IOUtils.toString(this.getClass().getResourceAsStream(HELPER_LOCATION + OPT));
         operationaltemplate = getOperationalTemplate();
@@ -41,7 +41,7 @@ public class MedikamentenverabreichungenTest extends KdsBidirectionalTest {
     @Test
     public void toFhir() {
         // openEHR to FHIR
-        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFlat(HELPER_LOCATION + FLAT), webTemplate);
+        final Composition compositionFromFlat = new FlatJsonUnmarshaller().unmarshal(getFile(HELPER_LOCATION + FLAT), webTemplate);
         final Bundle bundle = openEhrToFhir.compositionToFhir(context, compositionFromFlat, operationaltemplate);
 
         final List<MedicationAdministration> administrations = bundle.getEntry().stream()

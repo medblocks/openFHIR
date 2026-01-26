@@ -121,41 +121,27 @@
               "extension": [
                 {
                   "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
-                  "valueCodeableConcept": {
-                    "coding": [
+                    "valueCoding":
                       {
                         "system": "local",
                         "code": "†",
                         "display": "Primary code in multiple coding"
                       }
-                    ],
-                    "text": "Primary code in multiple coding"
-                  }
                 },
                 {
                   "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
+                  "valueCoding": {
                         "system": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
                         "code": "L",
                         "display": "Left side"
                       }
-                    ],
-                    "text": "Left side"
-                  }
                 },
                 {
                   "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
-                        "code": "G",
-                        "display": "Confirmed diagnosis"
-                      }
-                    ],
-                    "text": "Confirmed diagnosis"
+                  "valueCoding": {
+                    "system": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
+                    "code": "G",
+                    "display": "Confirmed diagnosis"
                   }
                 }
               ]
@@ -249,7 +235,7 @@
                       "display": "Adulthood"
                     }
                   ],
-                  "text": "Start of adulthood phase"
+                  "text": "Adulthood"
                 }
               }
             ]
@@ -320,111 +306,98 @@
           "coding": [
             {
               "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-              "code": "ref_active",
-              "display": "ref_Active"
+              "code": "active",
+              "display": "Active"
             }
           ],
-          "text": "ref_active"
+          "text": "active"
         },
         "verificationStatus": {
           "coding": [
             {
               "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
-              "code": "ref_confirmed",
-              "display": "ref_Confirmed"
+              "code": "confirmed",
+              "display": "Confirmed"
             }
           ],
-          "text": "ref_confirmed"
+          "text": "confirmed"
         },
         "category": [
           {
             "coding": [
               {
                 "system": "http://terminology.hl7.org/CodeSystem/condition-category",
-                "code": "ref_problem-list-item",
-                "display": "ref_Problem List Item"
+                "code": "problem-list-item",
+                "display": "Problem List Item"
               }
             ],
-            "text": "ref_Problem List Item"
+            "text": "Problem List Item"
           }
         ],
         "severity": {
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "ref_24484000",
-              "display": "ref_Severe"
+              "code": "24484000",
+              "display": "Severe"
             }
           ],
-          "text": "ref_Severe"
+          "text": "Severe"
         },
         "code": {
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
-              "code": "ref_C34.1",
-              "display": "ref_Malignant neoplasm of upper lobe, bronchus or lung",
+              "code": "C34.1",
+              "display": "Malignant neoplasm of upper lobe, bronchus or lung",
               "extension": [
                 {
                   "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
+                  "valueCoding": {
+
                         "system": "local",
                         "code": "*",
-                        "display": "ref_Primary code in multiple coding"
-                      }
-                    ],
-                    "text": "ref_Primary code in multiple coding"
-                  }
-                },
+                        "display": "Primary code in multiple coding"
+
+                }},
                 {
                   "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
+                      "valueCoding": {
                         "system": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
-                        "code": "ref_U",
-                        "display": "ref_Upper lobe"
-                      }
-                    ],
-                    "text": "ref_Upper lobe"
+                        "code": "B",
+                        "display": "Beiderseits"
                   }
                 },
                 {
                   "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
-                  "valueCodeableConcept": {
-                    "coding": [
+                    "valueCoding":
                       {
                         "system": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
-                        "code": "ref_S",
-                        "display": "ref_Suspected diagnosis"
+                        "code": "V",
+                        "display": "Verdacht auf Diagnose"
                       }
-                    ],
-                    "text": "ref_Suspected diagnosis"
-                  }
                 }
               ]
             },
             {
               "system": "http://terminology.hl7.org/CodeSystem/icd-o-3",
-              "code": "ref_C34.1",
-              "display": "ref_Malignant neoplasm of upper lobe, bronchus or lung"
+              "code": "C34.1",
+              "display": "Malignant neoplasm of upper lobe, bronchus or lung"
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
-              "code": "ref_098H5",
-              "display": "ref_Malignant neoplasm of upper lobe, bronchus or lung, unspecified"
+              "code": "098H5",
+              "display": "Malignant neoplasm of upper lobe, bronchus or lung, unspecified"
             },
             {
               "system": "http://snomed.info/sct",
-              "code": "ref_254626006",
-              "display": "ref_Malignant neoplasm of the upper lobe of lung"
+              "code": "254626006",
+              "display": "Malignant neoplasm of the upper lobe of lung"
             },
             {
               "system": "http://www.orpha.net",
-              "code": "ref_830",
-              "display": "ref_Malignant neoplasm of upper lobe, bronchus or lung"
+              "code": "830",
+              "display": "Malignant neoplasm of upper lobe, bronchus or lung"
             }
           ],
           "text": "Malignant neoplasm of upper lobe, bronchus or lung"
@@ -434,14 +407,14 @@
             "coding": [
               {
                 "system": "http://snomed.info/sct",
-                "code": "ref_368209003",
-                "display": "ref_Entire cardiovascular system"
+                "code": "368209003",
+                "display": "Entire cardiovascular system"
               },
               {
                 "system": "http://terminology.hl7.org/CodeSystem/icd-o-3",
                 "version": "2022",
-                "code": "ref_C34.1",
-                "display": "ref_Upper lobe, bronchus or lung"
+                "code": "C34.1",
+                "display": "Upper lobe, bronchus or lung"
               }
             ],
             "text": "Entire cardiovascular system"
@@ -490,11 +463,11 @@
                   "coding": [
                     {
                       "system": "http://snomed.info/sct",
-                      "code": "ref_424144002",
-                      "display": "ref_Adulthood"
+                      "code": "424144002",
+                      "display": "Adulthood"
                     }
                   ],
-                  "text": "ref_Start of adulthood phase"
+                  "text": "Adulthood"
                 }
               }
             ]
@@ -507,11 +480,11 @@
                   "coding": [
                     {
                       "system": "http://snomed.info/sct",
-                      "code": "ref_367640001",
-                      "display": "ref_Middle age"
+                      "code": "367640001",
+                      "display": "Middle age"
                     }
                   ],
-                  "text": "ref_End of middle age phase"
+                  "text": "End of middle age phase"
                 }
               }
             ]
@@ -580,7 +553,7 @@
         ],
         "note": [
           {
-            "text": "ref_The patient has a history of high blood pressure, now presenting with severe hypertension."
+            "text": "The patient has a history of high blood pressure, now presenting with severe hypertension."
           }
         ]
       }

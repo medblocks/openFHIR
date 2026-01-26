@@ -1,7 +1,8 @@
-package com.medblocks.openfhir.kds;
+package com.medblocks.openfhir.kds.medikationseintrag;
 
 import ca.uhn.fhir.context.FhirContext;
 import com.google.gson.JsonObject;
+import com.medblocks.openfhir.kds.KdsBidirectionalTest;
 import org.hl7.fhir.r4.model.Bundle;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class DebugMedikationseintragPrintTest extends KdsBidirectionalTest {
     final String BUNDLE = "KDS_Medikationseintrag_v1-Fhir-Bundle-input.json";
 
     @Override
-    protected void prepareState() {
+    public void prepareState() {
         context = getContext(CONTEXT);
         try {
             operationaltemplateSerialized = new String(
@@ -47,7 +48,7 @@ public class DebugMedikationseintragPrintTest extends KdsBidirectionalTest {
     }
 
     @Override
-    protected JsonObject toOpenEhr() {
+    public JsonObject toOpenEhr() {
         return null; // not used in this debug test
     }
 }

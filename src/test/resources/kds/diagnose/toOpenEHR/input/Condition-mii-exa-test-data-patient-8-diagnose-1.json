@@ -1,0 +1,98 @@
+{
+  "resourceType": "Bundle",
+  "id": "mii-exa-test-data-bundle-pat-8",
+  "meta": {
+    "security": [
+      {
+        "code": "HTEST",
+        "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+        "display": "test health data"
+      }
+    ]
+  },
+  "type": "transaction",
+  "timestamp": "2025-06-18T13:58:00+02:00",
+  "entry": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      },
+      "fullUrl": "https://www.medizininformatik-initiative.de/Condition/mii-exa-test-data-patient-8-diagnose-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "mii-exa-test-data-patient-8-diagnose-1",
+        "meta": {
+          "security": [
+            {
+              "code": "HTEST",
+              "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+              "display": "test health data"
+            }
+          ],
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "code": "I25.9",
+              "version": "2023"
+            },
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
+              "code": "I26852",
+              "version": "2023",
+              "display": "Chronische ischämische Herzkrankheit"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "413838009",
+              "version": "http://snomed.info/sct/900000000000207008/version/20230731",
+              "display": "Chronic ischemic heart disease (disorder)"
+            }
+          ]
+        },
+        "note": [
+          {
+            "text": "Chronische ischämische Herzkrankheit, nicht näher bezeichnet"
+          }
+        ],
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "80891009",
+                "version": "http://snomed.info/sct/900000000000207008/version/20230731",
+                "display": "Heart structure (body structure)"
+              }
+            ]
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "code": "active",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "code": "confirmed",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/mii-exa-test-data-patient-8"
+        },
+        "recordedDate": "2023-11-10"
+      }
+    }
+  ]
+}

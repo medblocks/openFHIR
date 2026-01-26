@@ -108,7 +108,6 @@
                 <artifactId>jjwt</artifactId>
                 <version>${jjwt.version}</version>
             </dependency>
-
             <!-- JUnit -->
             <dependency>
                 <groupId>junit</groupId>
@@ -116,7 +115,7 @@
                 <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
-            
+
             <!-- EHRBase -->
             <dependency>
                 <groupId>org.ehrbase.openehr.sdk</groupId>
@@ -133,7 +132,7 @@
                 <artifactId>web-template</artifactId>
                 <version>${ehrbase.version}</version>
             </dependency>
-            
+
 
             <!-- JSON Schema Validator -->
             <dependency>
@@ -241,7 +240,7 @@
             <groupId>com.github.java-json-tools</groupId>
             <artifactId>json-schema-validator</artifactId>
         </dependency>
-          <dependency>
+        <dependency>
             <groupId>org.pf4j</groupId>
             <artifactId>pf4j</artifactId>
             <version>3.11.0</version>
@@ -250,6 +249,12 @@
             <groupId>com.medblocks</groupId>
             <artifactId>openfhir-plugin-api</artifactId>
             <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>2.0-rc1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>

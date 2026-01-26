@@ -1,0 +1,96 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
+              "code": "I29578",
+              "display": "Masern mit Otitis"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "13420004",
+              "display": "Post measles otitis media (disorder)"
+            },
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "code": "B05.3",
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
+                  "valueCoding": {
+                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
+                    "code": "G",
+                    "display": "gesicherte Diagnose"
+                  }
+                },
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                  "valueCoding": {
+                    "system": "http://fhir.de/ValueSet/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                    "code": "!",
+                    "display": "!"
+                  }
+                },
+                {
+                  "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
+                  "valueCoding": {
+                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION",
+                    "code": "B",
+                    "display": "beiderseits"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "25342003",
+                "display": "Middle ear structure (body structure)"
+              }
+            ],
+            "text": "Middle ear structure (body structure)"
+          }
+        ],
+        "onsetDateTime": "2024-02-21T00:00:00+01:00",
+        "recordedDate": "2024-02-21T00:00:00+01:00",
+        "note": [
+          {
+            "text": "Masernotitis"
+          }
+        ]
+      }
+    }
+  ]
+}
