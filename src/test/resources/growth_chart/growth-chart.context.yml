@@ -17,4 +17,4 @@ context:
     - "OBSERVATION.height.v2"
     - "OBSERVATION.body_mass_index.v2"
     - "OBSERVATION.head_circumference.v1"
-  start: "OBSERVATION.body_weight.v2"
+  start: "openEHR-EHR-COMPOSITION.growth_chart.v0"
