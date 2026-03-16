@@ -2,8 +2,8 @@ grammar: FHIRConnect/v0.9.0
 type: context
 metadata:
   name:  KDS_Vitalstatus.context
-  version: 0.0.1a 
-spec: 
+  version: 0.0.1a
+spec:
   system: FHIR
   version: R4
 
@@ -17,7 +17,6 @@ context:
   archetypes:
     - "EVALUATION.vital_status.v1"
     - "CLUSTER.case_identification.v0"
-    - "CLUSTER.observation_status_fhir.v1"
   extensions:
     - "KDS_vital_status"
   start: "EVALUATION.vital_status.v1"

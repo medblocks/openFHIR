@@ -1,7 +1,7 @@
 grammar: FHIRConnect/v0.9.0
 type: extension
 metadata:
-  name: KDS_gender.v1
+  name: KDS_gender_pseudo.v1
   version: 0.0.1-alpha
 spec:
   system: FHIR
@@ -14,7 +14,7 @@ mappings:
     with:
       fhir: "$fhirRoot.extension"
       openehr: "$archetype/data[at0002]/items[at0014]"
-      
+
     fhirCondition:
       targetRoot: "$fhirRoot.extension"
       targetAttribute: "url"
